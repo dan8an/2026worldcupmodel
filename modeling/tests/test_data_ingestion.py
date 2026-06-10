@@ -4,6 +4,8 @@ from io import BytesIO
 from urllib.error import HTTPError
 from unittest.mock import patch
 
+from sqlalchemy.pool import NullPool
+
 from scripts.data_ingestion.providers import (
     ApiFootballProvider,
     RateLimitError,
@@ -184,13 +186,33 @@ class DataIngestionTests(unittest.TestCase):
         )
 
     def test_postgres_engine_disables_prepared_statement_cache(self):
-        with patch("scripts.database.create_engine") as create_engine:
+        with (
+            patch("scripts.database.create_engine") as create_engine,
+            patch("scripts.database.event.listen") as listen,
+        ):
             create_database_engine("postgresql://host/database")
 
         create_engine.assert_called_once_with(
             "postgresql+psycopg://host/database",
             pool_pre_ping=True,
             connect_args={"prepare_threshold": None},
+        )
+        self.assertEqual(listen.call_args.args[1], "connect")
+
+    def test_supabase_pooler_uses_null_pool(self):
+        with (
+            patch("scripts.database.create_engine") as create_engine,
+            patch("scripts.database.event.listen"),
+        ):
+            create_database_engine(
+                "postgresql://user:password@project.pooler.supabase.com:6543/postgres"
+            )
+
+        create_engine.assert_called_once_with(
+            "postgresql+psycopg://user:password@project.pooler.supabase.com:6543/postgres",
+            pool_pre_ping=True,
+            connect_args={"prepare_threshold": None},
+            poolclass=NullPool,
         )
 
     def test_sqlite_engine_does_not_receive_psycopg_connect_args(self):

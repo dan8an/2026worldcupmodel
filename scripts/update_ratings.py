@@ -231,15 +231,17 @@ class RatingRepository:
         self.engine = engine
         self.schema = None if engine.dialect.name == "sqlite" else "public"
         self.metadata = MetaData()
+        self.tables: dict[str, Table] = {}
 
     def _table(self, name: str) -> Table:
-        return Table(
-            name,
-            self.metadata,
-            schema=self.schema,
-            autoload_with=self.engine,
-            extend_existing=True,
-        )
+        if name not in self.tables:
+            self.tables[name] = Table(
+                name,
+                self.metadata,
+                schema=self.schema,
+                autoload_with=self.engine,
+            )
+        return self.tables[name]
 
     def assert_schema(self) -> None:
         inspector = inspect(self.engine)
