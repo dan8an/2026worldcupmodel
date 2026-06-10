@@ -481,15 +481,6 @@ Exit criteria:
 - Calibrate and compare against baselines
 - Add model-performance page
 
-Current progress:
-
-- Historical dataset and time-safe feature pipeline implemented
-- Chronological walk-forward evaluation implemented for 2022-2026
-- Equal-probability, Elo, and form/H2H models compared
-- Metrics and calibration bins published through the API and model page
-- Form/H2H layer failed the promotion gate and remains experimental
-- LightGBM training and probability calibration remain pending
-
 Exit criteria:
 
 - Model beats Elo-only baseline on held-out log loss or is not promoted
