@@ -25,9 +25,9 @@ def test_production_cors_preflight_for_v1_endpoint():
     assert "content-type" in response.headers["access-control-allow-headers"].lower()
 
 
-def test_production_cors_preflight_for_api_endpoint():
+def test_production_cors_preflight_for_teams_endpoint():
     response = client.options(
-        "/api/predictions",
+        "/v1/teams",
         headers={
             "Origin": "https://footballoracle.vercel.app",
             "Access-Control-Request-Method": "GET",
@@ -35,6 +35,20 @@ def test_production_cors_preflight_for_api_endpoint():
     )
 
     assert response.status_code == 200
+    assert (
+        response.headers["access-control-allow-origin"]
+        == "https://footballoracle.vercel.app"
+    )
+
+
+def test_v1_teams_get_allows_production_origin():
+    response = client.get(
+        "/v1/teams",
+        headers={"Origin": "https://footballoracle.vercel.app"},
+    )
+
+    assert response.status_code == 200
+    assert response.json()
     assert (
         response.headers["access-control-allow-origin"]
         == "https://footballoracle.vercel.app"

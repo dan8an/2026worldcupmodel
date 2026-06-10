@@ -11,7 +11,7 @@ if (!configuredApiUrl) {
 const API_URL = configuredApiUrl.replace(/\/+$/, "");
 
 async function request<T>(path: string, options?: RequestInit): Promise<T> {
-  const response = await fetch(`${API_URL}/api${path}`, {
+  const response = await fetch(`${API_URL}/v1${path}`, {
     ...options,
     headers: { "Content-Type": "application/json", ...options?.headers },
   });
