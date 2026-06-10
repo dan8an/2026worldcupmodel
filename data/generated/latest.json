@@ -1,0 +1,4758 @@
+{
+  "model_version": "context-0.2.0",
+  "generated_at": "2026-06-10T00:46:29.520392+00:00",
+  "data_cutoff": "2026-06-10T00:46:29.520392+00:00",
+  "predictions": [
+    {
+      "match_id": "WC26-001",
+      "home_team_id": "MEX",
+      "away_team_id": "RSA",
+      "home_xg": 1.614,
+      "away_xg": 0.892,
+      "top_scores": [
+        {
+          "home": 1,
+          "away": 0,
+          "probability": 0.13167429514616066
+        },
+        {
+          "home": 1,
+          "away": 1,
+          "probability": 0.1174768352512476
+        },
+        {
+          "home": 2,
+          "away": 0,
+          "probability": 0.10626304645433449
+        },
+        {
+          "home": 2,
+          "away": 1,
+          "probability": 0.09480549250523565
+        },
+        {
+          "home": 0,
+          "away": 0,
+          "probability": 0.08158113559114417
+        }
+      ],
+      "confidence": "High uncertainty",
+      "key_factors": [
+        "Mexico has the stronger baseline rating",
+        "Adjusted rating gap: 187 Elo-equivalent points",
+        "Mexico receives the tournament co-host adjustment",
+        "Recent weighted form favors Mexico (42/11 matches)"
+      ],
+      "context": {
+        "home_form_elo": 19.062,
+        "away_form_elo": -19.511,
+        "home_h2h_elo": 0.0,
+        "away_h2h_elo": -0.0,
+        "home_availability_elo": 0.0,
+        "away_availability_elo": 0.0,
+        "historical_matches_home": 42,
+        "historical_matches_away": 11,
+        "h2h_matches": 0,
+        "availability_reports": 0,
+        "data_cutoff": "2026-06-10T00:46:29.520392+00:00"
+      },
+      "probabilities": {
+        "home_win": 0.543608,
+        "draw": 0.248762,
+        "away_win": 0.20763
+      }
+    },
+    {
+      "match_id": "WC26-002",
+      "home_team_id": "KOR",
+      "away_team_id": "CZE",
+      "home_xg": 1.391,
+      "away_xg": 1.035,
+      "top_scores": [
+        {
+          "home": 1,
+          "away": 1,
+          "probability": 0.1272653886580365
+        },
+        {
+          "home": 1,
+          "away": 0,
+          "probability": 0.12290520096090934
+        },
+        {
+          "home": 0,
+          "away": 1,
+          "probability": 0.09151406838389468
+        },
+        {
+          "home": 2,
+          "away": 1,
+          "probability": 0.08849174469185474
+        },
+        {
+          "home": 0,
+          "away": 0,
+          "probability": 0.08837874212363647
+        }
+      ],
+      "confidence": "High uncertainty",
+      "key_factors": [
+        "South Korea has the stronger baseline rating",
+        "Adjusted rating gap: 118 Elo-equivalent points",
+        "Fixture ordering adds no home advantage; this is modeled as a neutral-site match",
+        "Recent weighted form favors South Korea (26/10 matches)"
+      ],
+      "context": {
+        "home_form_elo": 11.828,
+        "away_form_elo": -33.581,
+        "home_h2h_elo": 0.0,
+        "away_h2h_elo": -0.0,
+        "home_availability_elo": 0.0,
+        "away_availability_elo": 0.0,
+        "historical_matches_home": 26,
+        "historical_matches_away": 10,
+        "h2h_matches": 0,
+        "availability_reports": 0,
+        "data_cutoff": "2026-06-10T00:46:29.520392+00:00"
+      },
+      "probabilities": {
+        "home_win": 0.450523,
+        "draw": 0.269489,
+        "away_win": 0.279987
+      }
+    },
+    {
+      "match_id": "WC26-007",
+      "home_team_id": "CAN",
+      "away_team_id": "BIH",
+      "home_xg": 1.562,
+      "away_xg": 0.922,
+      "top_scores": [
+        {
+          "home": 1,
+          "away": 0,
+          "probability": 0.13031461233644745
+        },
+        {
+          "home": 1,
+          "away": 1,
+          "probability": 0.12010771289019374
+        },
+        {
+          "home": 2,
+          "away": 0,
+          "probability": 0.10180001268382535
+        },
+        {
+          "home": 2,
+          "away": 1,
+          "probability": 0.09382652088224215
+        },
+        {
+          "home": 0,
+          "away": 0,
+          "probability": 0.08340813395152345
+        }
+      ],
+      "confidence": "High uncertainty",
+      "key_factors": [
+        "Canada has the stronger baseline rating",
+        "Adjusted rating gap: 161 Elo-equivalent points",
+        "Canada receives the tournament co-host adjustment",
+        "Recent weighted form favors Canada (28/10 matches)"
+      ],
+      "context": {
+        "home_form_elo": -6.195,
+        "away_form_elo": -36.952,
+        "home_h2h_elo": 0.0,
+        "away_h2h_elo": -0.0,
+        "home_availability_elo": 0.0,
+        "away_availability_elo": 0.0,
+        "historical_matches_home": 28,
+        "historical_matches_away": 10,
+        "h2h_matches": 0,
+        "availability_reports": 0,
+        "data_cutoff": "2026-06-10T00:46:29.520392+00:00"
+      },
+      "probabilities": {
+        "home_win": 0.523217,
+        "draw": 0.254333,
+        "away_win": 0.22245
+      }
+    },
+    {
+      "match_id": "WC26-019",
+      "home_team_id": "USA",
+      "away_team_id": "PAR",
+      "home_xg": 1.439,
+      "away_xg": 1.001,
+      "top_scores": [
+        {
+          "home": 1,
+          "away": 1,
+          "probability": 0.12555208365836537
+        },
+        {
+          "home": 1,
+          "away": 0,
+          "probability": 0.1254660586162884
+        },
+        {
+          "home": 2,
+          "away": 1,
+          "probability": 0.09033556220372765
+        },
+        {
+          "home": 2,
+          "away": 0,
+          "probability": 0.09027366661176942
+        },
+        {
+          "home": 0,
+          "away": 1,
+          "probability": 0.0872487275576324
+        }
+      ],
+      "confidence": "High uncertainty",
+      "key_factors": [
+        "United States has the stronger baseline rating",
+        "Adjusted rating gap: 95 Elo-equivalent points",
+        "United States receives the tournament co-host adjustment",
+        "Recent weighted form favors United States (40/21 matches)",
+        "Head-to-head adjustment uses 1 recent meetings and is capped"
+      ],
+      "context": {
+        "home_form_elo": -10.117,
+        "away_form_elo": -11.267,
+        "home_h2h_elo": 2.778,
+        "away_h2h_elo": -2.778,
+        "home_availability_elo": 0.0,
+        "away_availability_elo": 0.0,
+        "historical_matches_home": 40,
+        "historical_matches_away": 21,
+        "h2h_matches": 1,
+        "availability_reports": 0,
+        "data_cutoff": "2026-06-10T00:46:29.520392+00:00"
+      },
+      "probabilities": {
+        "home_win": 0.47174,
+        "draw": 0.265861,
+        "away_win": 0.262399
+      }
+    },
+    {
+      "match_id": "WC26-008",
+      "home_team_id": "QAT",
+      "away_team_id": "SUI",
+      "home_xg": 0.997,
+      "away_xg": 1.444,
+      "top_scores": [
+        {
+          "home": 0,
+          "away": 1,
+          "probability": 0.12570785676631616
+        },
+        {
+          "home": 1,
+          "away": 1,
+          "probability": 0.12536044683624467
+        },
+        {
+          "home": 0,
+          "away": 2,
+          "probability": 0.09076048521799375
+        },
+        {
+          "home": 1,
+          "away": 2,
+          "probability": 0.09050965687174764
+        },
+        {
+          "home": 0,
+          "away": 0,
+          "probability": 0.08705586585850325
+        }
+      ],
+      "confidence": "High uncertainty",
+      "key_factors": [
+        "Switzerland has the stronger baseline rating",
+        "Adjusted rating gap: 148 Elo-equivalent points",
+        "Fixture ordering adds no home advantage; this is modeled as a neutral-site match",
+        "Recent weighted form favors Switzerland (19/20 matches)",
+        "Head-to-head adjustment uses 1 recent meetings and is capped"
+      ],
+      "context": {
+        "home_form_elo": -19.296,
+        "away_form_elo": 22.019,
+        "home_h2h_elo": 2.778,
+        "away_h2h_elo": -2.778,
+        "home_availability_elo": 0.0,
+        "away_availability_elo": 0.0,
+        "historical_matches_home": 19,
+        "historical_matches_away": 20,
+        "h2h_matches": 1,
+        "availability_reports": 0,
+        "data_cutoff": "2026-06-10T00:46:29.520392+00:00"
+      },
+      "probabilities": {
+        "home_win": 0.260653,
+        "draw": 0.265456,
+        "away_win": 0.473891
+      }
+    },
+    {
+      "match_id": "WC26-020",
+      "home_team_id": "AUS",
+      "away_team_id": "TUR",
+      "home_xg": 1.246,
+      "away_xg": 1.156,
+      "top_scores": [
+        {
+          "home": 1,
+          "away": 1,
+          "probability": 0.13041539309920291
+        },
+        {
+          "home": 1,
+          "away": 0,
+          "probability": 0.11282752573012125
+        },
+        {
+          "home": 0,
+          "away": 1,
+          "probability": 0.10468396248042686
+        },
+        {
+          "home": 0,
+          "away": 0,
+          "probability": 0.09056624520777981
+        },
+        {
+          "home": 2,
+          "away": 1,
+          "probability": 0.08123581852568729
+        }
+      ],
+      "confidence": "High uncertainty",
+      "key_factors": [
+        "Australia has the stronger baseline rating",
+        "Adjusted rating gap: 30 Elo-equivalent points",
+        "Fixture ordering adds no home advantage; this is modeled as a neutral-site match",
+        "Recent weighted form favors Australia (25/15 matches)"
+      ],
+      "context": {
+        "home_form_elo": 16.943,
+        "away_form_elo": -16.551,
+        "home_h2h_elo": 0.0,
+        "away_h2h_elo": -0.0,
+        "home_availability_elo": 0.0,
+        "away_availability_elo": 0.0,
+        "historical_matches_home": 25,
+        "historical_matches_away": 15,
+        "h2h_matches": 0,
+        "availability_reports": 0,
+        "data_cutoff": "2026-06-10T00:46:29.520392+00:00"
+      },
+      "probabilities": {
+        "home_win": 0.383714,
+        "draw": 0.27616,
+        "away_win": 0.340126
+      }
+    },
+    {
+      "match_id": "WC26-013",
+      "home_team_id": "BRA",
+      "away_team_id": "MAR",
+      "home_xg": 1.208,
+      "away_xg": 1.192,
+      "top_scores": [
+        {
+          "home": 1,
+          "away": 1,
+          "probability": 0.13062890103201238
+        },
+        {
+          "home": 1,
+          "away": 0,
+          "probability": 0.10954543766743098
+        },
+        {
+          "home": 0,
+          "away": 1,
+          "probability": 0.10817371862215301
+        },
+        {
+          "home": 0,
+          "away": 0,
+          "probability": 0.09071451460556415
+        },
+        {
+          "home": 2,
+          "away": 1,
+          "probability": 0.07887271512055033
+        }
+      ],
+      "confidence": "High uncertainty",
+      "key_factors": [
+        "Brazil has the stronger baseline rating",
+        "Adjusted rating gap: 5 Elo-equivalent points",
+        "Fixture ordering adds no home advantage; this is modeled as a neutral-site match",
+        "Recent weighted form favors Morocco (32/21 matches)",
+        "Head-to-head adjustment uses 1 recent meetings and is capped"
+      ],
+      "context": {
+        "home_form_elo": 19.117,
+        "away_form_elo": 38.939,
+        "home_h2h_elo": -2.778,
+        "away_h2h_elo": 2.778,
+        "home_availability_elo": 0.0,
+        "away_availability_elo": 0.0,
+        "historical_matches_home": 32,
+        "historical_matches_away": 21,
+        "h2h_matches": 1,
+        "availability_reports": 0,
+        "data_cutoff": "2026-06-10T00:46:29.520392+00:00"
+      },
+      "probabilities": {
+        "home_win": 0.365361,
+        "draw": 0.276612,
+        "away_win": 0.358027
+      }
+    },
+    {
+      "match_id": "WC26-014",
+      "home_team_id": "HAI",
+      "away_team_id": "SCO",
+      "home_xg": 1.017,
+      "away_xg": 1.416,
+      "top_scores": [
+        {
+          "home": 1,
+          "away": 1,
+          "probability": 0.12638516330340566
+        },
+        {
+          "home": 0,
+          "away": 1,
+          "probability": 0.12432052308156288
+        },
+        {
+          "home": 1,
+          "away": 2,
+          "probability": 0.08951077661872528
+        },
+        {
+          "home": 1,
+          "away": 0,
+          "probability": 0.08922506376671852
+        },
+        {
+          "home": 0,
+          "away": 2,
+          "probability": 0.08804851993554366
+        }
+      ],
+      "confidence": "High uncertainty",
+      "key_factors": [
+        "Scotland has the stronger baseline rating",
+        "Adjusted rating gap: 133 Elo-equivalent points",
+        "Fixture ordering adds no home advantage; this is modeled as a neutral-site match",
+        "Recent weighted form favors Haiti (7/17 matches)"
+      ],
+      "context": {
+        "home_form_elo": -21.4,
+        "away_form_elo": -22.526,
+        "home_h2h_elo": 0.0,
+        "away_h2h_elo": -0.0,
+        "home_availability_elo": 0.0,
+        "away_availability_elo": 0.0,
+        "historical_matches_home": 7,
+        "historical_matches_away": 17,
+        "h2h_matches": 0,
+        "availability_reports": 0,
+        "data_cutoff": "2026-06-10T00:46:29.520392+00:00"
+      },
+      "probabilities": {
+        "home_win": 0.270454,
+        "draw": 0.267626,
+        "away_win": 0.461921
+      }
+    },
+    {
+      "match_id": "WC26-025",
+      "home_team_id": "GER",
+      "away_team_id": "CUW",
+      "home_xg": 1.686,
+      "away_xg": 0.854,
+      "top_scores": [
+        {
+          "home": 1,
+          "away": 0,
+          "probability": 0.13296174604071984
+        },
+        {
+          "home": 1,
+          "away": 1,
+          "probability": 0.11358035243154395
+        },
+        {
+          "home": 2,
+          "away": 0,
+          "probability": 0.11206827926523208
+        },
+        {
+          "home": 2,
+          "away": 1,
+          "probability": 0.09573245714931825
+        },
+        {
+          "home": 0,
+          "away": 0,
+          "probability": 0.07887524474412774
+        }
+      ],
+      "confidence": "Moderate confidence",
+      "key_factors": [
+        "Germany has the stronger baseline rating",
+        "Adjusted rating gap: 272 Elo-equivalent points",
+        "Fixture ordering adds no home advantage; this is modeled as a neutral-site match",
+        "Recent weighted form favors Germany (25/7 matches)"
+      ],
+      "context": {
+        "home_form_elo": 20.845,
+        "away_form_elo": -20.701,
+        "home_h2h_elo": 0.0,
+        "away_h2h_elo": -0.0,
+        "home_availability_elo": 0.0,
+        "away_availability_elo": 0.0,
+        "historical_matches_home": 25,
+        "historical_matches_away": 7,
+        "h2h_matches": 0,
+        "availability_reports": 0,
+        "data_cutoff": "2026-06-10T00:46:29.520392+00:00"
+      },
+      "probabilities": {
+        "home_win": 0.570761,
+        "draw": 0.240511,
+        "away_win": 0.188729
+      }
+    },
+    {
+      "match_id": "WC26-031",
+      "home_team_id": "NED",
+      "away_team_id": "JPN",
+      "home_xg": 1.252,
+      "away_xg": 1.151,
+      "top_scores": [
+        {
+          "home": 1,
+          "away": 1,
+          "probability": 0.13035751766436515
+        },
+        {
+          "home": 1,
+          "away": 0,
+          "probability": 0.11330298204936995
+        },
+        {
+          "home": 0,
+          "away": 1,
+          "probability": 0.10415217200188821
+        },
+        {
+          "home": 0,
+          "away": 0,
+          "probability": 0.09052605393358693
+        },
+        {
+          "home": 2,
+          "away": 1,
+          "probability": 0.08157814707554636
+        }
+      ],
+      "confidence": "High uncertainty",
+      "key_factors": [
+        "Netherlands has the stronger baseline rating",
+        "Adjusted rating gap: 34 Elo-equivalent points",
+        "Fixture ordering adds no home advantage; this is modeled as a neutral-site match",
+        "Recent weighted form favors Japan (26/27 matches)"
+      ],
+      "context": {
+        "home_form_elo": 5.401,
+        "away_form_elo": 20.399,
+        "home_h2h_elo": 0.0,
+        "away_h2h_elo": -0.0,
+        "home_availability_elo": 0.0,
+        "away_availability_elo": 0.0,
+        "historical_matches_home": 26,
+        "historical_matches_away": 27,
+        "h2h_matches": 0,
+        "availability_reports": 0,
+        "data_cutoff": "2026-06-10T00:46:29.520392+00:00"
+      },
+      "probabilities": {
+        "home_win": 0.386478,
+        "draw": 0.276037,
+        "away_win": 0.337485
+      }
+    },
+    {
+      "match_id": "WC26-026",
+      "home_team_id": "CIV",
+      "away_team_id": "ECU",
+      "home_xg": 1.099,
+      "away_xg": 1.311,
+      "top_scores": [
+        {
+          "home": 1,
+          "away": 1,
+          "probability": 0.12942143631921432
+        },
+        {
+          "home": 0,
+          "away": 1,
+          "probability": 0.11779320744237705
+        },
+        {
+          "home": 1,
+          "away": 0,
+          "probability": 0.0987483143754413
+        },
+        {
+          "home": 0,
+          "away": 0,
+          "probability": 0.08987599744389883
+        },
+        {
+          "home": 1,
+          "away": 2,
+          "probability": 0.08481110935851148
+        }
+      ],
+      "confidence": "High uncertainty",
+      "key_factors": [
+        "Ecuador has the stronger baseline rating",
+        "Adjusted rating gap: 71 Elo-equivalent points",
+        "Fixture ordering adds no home advantage; this is modeled as a neutral-site match",
+        "Recent weighted form favors Ecuador (12/29 matches)"
+      ],
+      "context": {
+        "home_form_elo": 6.942,
+        "away_form_elo": 14.653,
+        "home_h2h_elo": 0.0,
+        "away_h2h_elo": -0.0,
+        "home_availability_elo": 0.0,
+        "away_availability_elo": 0.0,
+        "historical_matches_home": 12,
+        "historical_matches_away": 29,
+        "h2h_matches": 0,
+        "availability_reports": 0,
+        "data_cutoff": "2026-06-10T00:46:29.520392+00:00"
+      },
+      "probabilities": {
+        "home_win": 0.311766,
+        "draw": 0.274055,
+        "away_win": 0.414179
+      }
+    },
+    {
+      "match_id": "WC26-032",
+      "home_team_id": "SWE",
+      "away_team_id": "TUN",
+      "home_xg": 1.102,
+      "away_xg": 1.307,
+      "top_scores": [
+        {
+          "home": 1,
+          "away": 1,
+          "probability": 0.12949015027522257
+        },
+        {
+          "home": 0,
+          "away": 1,
+          "probability": 0.11755650297906546
+        },
+        {
+          "home": 1,
+          "away": 0,
+          "probability": 0.09905224410638026
+        },
+        {
+          "home": 0,
+          "away": 0,
+          "probability": 0.08992371546890457
+        },
+        {
+          "home": 1,
+          "away": 2,
+          "probability": 0.0846406821449271
+        }
+      ],
+      "confidence": "High uncertainty",
+      "key_factors": [
+        "Tunisia has the stronger baseline rating",
+        "Adjusted rating gap: 69 Elo-equivalent points",
+        "Fixture ordering adds no home advantage; this is modeled as a neutral-site match",
+        "Recent weighted form favors Tunisia (13/20 matches)"
+      ],
+      "context": {
+        "home_form_elo": -56.919,
+        "away_form_elo": 2.394,
+        "home_h2h_elo": 0.0,
+        "away_h2h_elo": -0.0,
+        "home_availability_elo": 0.0,
+        "away_availability_elo": 0.0,
+        "historical_matches_home": 13,
+        "historical_matches_away": 20,
+        "h2h_matches": 0,
+        "availability_reports": 0,
+        "data_cutoff": "2026-06-10T00:46:29.520392+00:00"
+      },
+      "probabilities": {
+        "home_win": 0.313163,
+        "draw": 0.2742,
+        "away_win": 0.412636
+      }
+    },
+    {
+      "match_id": "WC26-037",
+      "home_team_id": "BEL",
+      "away_team_id": "EGY",
+      "home_xg": 1.397,
+      "away_xg": 1.031,
+      "top_scores": [
+        {
+          "home": 1,
+          "away": 1,
+          "probability": 0.12705229839150253
+        },
+        {
+          "home": 1,
+          "away": 0,
+          "probability": 0.1232707641459566
+        },
+        {
+          "home": 0,
+          "away": 1,
+          "probability": 0.09093738711418588
+        },
+        {
+          "home": 2,
+          "away": 1,
+          "probability": 0.08875495018508875
+        },
+        {
+          "home": 0,
+          "away": 0,
+          "probability": 0.08823076277187675
+        }
+      ],
+      "confidence": "High uncertainty",
+      "key_factors": [
+        "Belgium has the stronger baseline rating",
+        "Adjusted rating gap: 122 Elo-equivalent points",
+        "Fixture ordering adds no home advantage; this is modeled as a neutral-site match",
+        "Recent weighted form favors Belgium (18/20 matches)",
+        "Head-to-head adjustment uses 1 recent meetings and is capped"
+      ],
+      "context": {
+        "home_form_elo": 24.542,
+        "away_form_elo": -2.644,
+        "home_h2h_elo": -2.778,
+        "away_h2h_elo": 2.778,
+        "home_availability_elo": 0.0,
+        "away_availability_elo": 0.0,
+        "historical_matches_home": 18,
+        "historical_matches_away": 20,
+        "h2h_matches": 1,
+        "availability_reports": 0,
+        "data_cutoff": "2026-06-10T00:46:29.520392+00:00"
+      },
+      "probabilities": {
+        "home_win": 0.453398,
+        "draw": 0.269038,
+        "away_win": 0.277564
+      }
+    },
+    {
+      "match_id": "WC26-043",
+      "home_team_id": "ESP",
+      "away_team_id": "CPV",
+      "home_xg": 1.726,
+      "away_xg": 0.834,
+      "top_scores": [
+        {
+          "home": 1,
+          "away": 0,
+          "probability": 0.1333960884500998
+        },
+        {
+          "home": 2,
+          "away": 0,
+          "probability": 0.1150990351130969
+        },
+        {
+          "home": 1,
+          "away": 1,
+          "probability": 0.11131328603525947
+        },
+        {
+          "home": 2,
+          "away": 1,
+          "probability": 0.09604518368407183
+        },
+        {
+          "home": 0,
+          "away": 0,
+          "probability": 0.07730089308004132
+        }
+      ],
+      "confidence": "Moderate confidence",
+      "key_factors": [
+        "Spain has the stronger baseline rating",
+        "Adjusted rating gap: 291 Elo-equivalent points",
+        "Fixture ordering adds no home advantage; this is modeled as a neutral-site match",
+        "Recent weighted form favors Spain (28/11 matches)"
+      ],
+      "context": {
+        "home_form_elo": 33.737,
+        "away_form_elo": -9.183,
+        "home_h2h_elo": 0.0,
+        "away_h2h_elo": -0.0,
+        "home_availability_elo": 0.0,
+        "away_availability_elo": 0.0,
+        "historical_matches_home": 28,
+        "historical_matches_away": 11,
+        "h2h_matches": 0,
+        "availability_reports": 0,
+        "data_cutoff": "2026-06-10T00:46:29.520392+00:00"
+      },
+      "probabilities": {
+        "home_win": 0.585313,
+        "draw": 0.23571,
+        "away_win": 0.178977
+      }
+    },
+    {
+      "match_id": "WC26-038",
+      "home_team_id": "IRN",
+      "away_team_id": "NZL",
+      "home_xg": 1.625,
+      "away_xg": 0.886,
+      "top_scores": [
+        {
+          "home": 1,
+          "away": 0,
+          "probability": 0.13191108156142164
+        },
+        {
+          "home": 1,
+          "away": 1,
+          "probability": 0.1169080871819324
+        },
+        {
+          "home": 2,
+          "away": 0,
+          "probability": 0.10716439194125409
+        },
+        {
+          "home": 2,
+          "away": 1,
+          "probability": 0.0949759787242236
+        },
+        {
+          "home": 0,
+          "away": 0,
+          "probability": 0.08118617165411972
+        }
+      ],
+      "confidence": "High uncertainty",
+      "key_factors": [
+        "Iran has the stronger baseline rating",
+        "Adjusted rating gap: 242 Elo-equivalent points",
+        "Fixture ordering adds no home advantage; this is modeled as a neutral-site match",
+        "Recent weighted form favors Iran (17/17 matches)"
+      ],
+      "context": {
+        "home_form_elo": -5.346,
+        "away_form_elo": -53.758,
+        "home_h2h_elo": 0.0,
+        "away_h2h_elo": -0.0,
+        "home_availability_elo": 0.0,
+        "away_availability_elo": 0.0,
+        "historical_matches_home": 17,
+        "historical_matches_away": 17,
+        "h2h_matches": 0,
+        "availability_reports": 0,
+        "data_cutoff": "2026-06-10T00:46:29.520392+00:00"
+      },
+      "probabilities": {
+        "home_win": 0.547772,
+        "draw": 0.247557,
+        "away_win": 0.20467
+      }
+    },
+    {
+      "match_id": "WC26-044",
+      "home_team_id": "KSA",
+      "away_team_id": "URU",
+      "home_xg": 0.964,
+      "away_xg": 1.494,
+      "top_scores": [
+        {
+          "home": 0,
+          "away": 1,
+          "probability": 0.1279156178965859
+        },
+        {
+          "home": 1,
+          "away": 1,
+          "probability": 0.12329579781243408
+        },
+        {
+          "home": 0,
+          "away": 2,
+          "probability": 0.09555014871849091
+        },
+        {
+          "home": 1,
+          "away": 2,
+          "probability": 0.09209924488554182
+        },
+        {
+          "home": 0,
+          "away": 0,
+          "probability": 0.08562208181419034
+        }
+      ],
+      "confidence": "High uncertainty",
+      "key_factors": [
+        "Uruguay has the stronger baseline rating",
+        "Adjusted rating gap: 175 Elo-equivalent points",
+        "Fixture ordering adds no home advantage; this is modeled as a neutral-site match",
+        "Recent weighted form favors Uruguay (28/30 matches)",
+        "Head-to-head adjustment uses 1 recent meetings and is capped"
+      ],
+      "context": {
+        "home_form_elo": -28.918,
+        "away_form_elo": -0.907,
+        "home_h2h_elo": -2.778,
+        "away_h2h_elo": 2.778,
+        "home_availability_elo": 0.0,
+        "away_availability_elo": 0.0,
+        "historical_matches_home": 28,
+        "historical_matches_away": 30,
+        "h2h_matches": 1,
+        "availability_reports": 0,
+        "data_cutoff": "2026-06-10T00:46:29.520392+00:00"
+      },
+      "probabilities": {
+        "home_win": 0.24377,
+        "draw": 0.261084,
+        "away_win": 0.495146
+      }
+    },
+    {
+      "match_id": "WC26-049",
+      "home_team_id": "FRA",
+      "away_team_id": "SEN",
+      "home_xg": 1.361,
+      "away_xg": 1.058,
+      "top_scores": [
+        {
+          "home": 1,
+          "away": 1,
+          "probability": 0.12818402561581838
+        },
+        {
+          "home": 1,
+          "away": 0,
+          "probability": 0.12111196373226063
+        },
+        {
+          "home": 0,
+          "away": 1,
+          "probability": 0.09421461438520601
+        },
+        {
+          "home": 0,
+          "away": 0,
+          "probability": 0.08901668445542944
+        },
+        {
+          "home": 2,
+          "away": 1,
+          "probability": 0.08720061388722766
+        }
+      ],
+      "confidence": "High uncertainty",
+      "key_factors": [
+        "France has the stronger baseline rating",
+        "Adjusted rating gap: 100 Elo-equivalent points",
+        "Fixture ordering adds no home advantage; this is modeled as a neutral-site match",
+        "Recent weighted form favors France (27/16 matches)"
+      ],
+      "context": {
+        "home_form_elo": 20.692,
+        "away_form_elo": -3.374,
+        "home_h2h_elo": 0.0,
+        "away_h2h_elo": -0.0,
+        "home_availability_elo": 0.0,
+        "away_availability_elo": 0.0,
+        "historical_matches_home": 27,
+        "historical_matches_away": 16,
+        "h2h_matches": 0,
+        "availability_reports": 0,
+        "data_cutoff": "2026-06-10T00:46:29.520392+00:00"
+      },
+      "probabilities": {
+        "home_win": 0.437025,
+        "draw": 0.271435,
+        "away_win": 0.29154
+      }
+    },
+    {
+      "match_id": "WC26-055",
+      "home_team_id": "ARG",
+      "away_team_id": "ALG",
+      "home_xg": 1.384,
+      "away_xg": 1.041,
+      "top_scores": [
+        {
+          "home": 1,
+          "away": 1,
+          "probability": 0.12748435902895955
+        },
+        {
+          "home": 1,
+          "away": 0,
+          "probability": 0.12251190516294563
+        },
+        {
+          "home": 0,
+          "away": 1,
+          "probability": 0.0921240503083292
+        },
+        {
+          "home": 0,
+          "away": 0,
+          "probability": 0.08853080488122192
+        },
+        {
+          "home": 2,
+          "away": 1,
+          "probability": 0.08820857171732084
+        }
+      ],
+      "confidence": "High uncertainty",
+      "key_factors": [
+        "Argentina has the stronger baseline rating",
+        "Adjusted rating gap: 114 Elo-equivalent points",
+        "Fixture ordering adds no home advantage; this is modeled as a neutral-site match",
+        "Recent weighted form favors Algeria (24/13 matches)"
+      ],
+      "context": {
+        "home_form_elo": 20.826,
+        "away_form_elo": 46.798,
+        "home_h2h_elo": 0.0,
+        "away_h2h_elo": -0.0,
+        "home_availability_elo": 0.0,
+        "away_availability_elo": 0.0,
+        "historical_matches_home": 24,
+        "historical_matches_away": 13,
+        "h2h_matches": 0,
+        "availability_reports": 0,
+        "data_cutoff": "2026-06-10T00:46:29.520392+00:00"
+      },
+      "probabilities": {
+        "home_win": 0.44748,
+        "draw": 0.269953,
+        "away_win": 0.282567
+      }
+    },
+    {
+      "match_id": "WC26-050",
+      "home_team_id": "IRQ",
+      "away_team_id": "NOR",
+      "home_xg": 1.046,
+      "away_xg": 1.376,
+      "top_scores": [
+        {
+          "home": 1,
+          "away": 1,
+          "probability": 0.12771735690665081
+        },
+        {
+          "home": 0,
+          "away": 1,
+          "probability": 0.12207174188501768
+        },
+        {
+          "home": 1,
+          "away": 0,
+          "probability": 0.09279449460607415
+        },
+        {
+          "home": 0,
+          "away": 0,
+          "probability": 0.08869260896295195
+        },
+        {
+          "home": 1,
+          "away": 2,
+          "probability": 0.08789165415721276
+        }
+      ],
+      "confidence": "High uncertainty",
+      "key_factors": [
+        "Norway has the stronger baseline rating",
+        "Adjusted rating gap: 110 Elo-equivalent points",
+        "Fixture ordering adds no home advantage; this is modeled as a neutral-site match",
+        "Recent weighted form favors Norway (18/14 matches)"
+      ],
+      "context": {
+        "home_form_elo": -27.642,
+        "away_form_elo": -6.284,
+        "home_h2h_elo": 0.0,
+        "away_h2h_elo": -0.0,
+        "home_availability_elo": 0.0,
+        "away_availability_elo": 0.0,
+        "historical_matches_home": 18,
+        "historical_matches_away": 14,
+        "h2h_matches": 0,
+        "availability_reports": 0,
+        "data_cutoff": "2026-06-10T00:46:29.520392+00:00"
+      },
+      "probabilities": {
+        "home_win": 0.285422,
+        "draw": 0.270447,
+        "away_win": 0.444131
+      }
+    },
+    {
+      "match_id": "WC26-056",
+      "home_team_id": "AUT",
+      "away_team_id": "JOR",
+      "home_xg": 1.496,
+      "away_xg": 0.963,
+      "top_scores": [
+        {
+          "home": 1,
+          "away": 0,
+          "probability": 0.1279864417615005
+        },
+        {
+          "home": 1,
+          "away": 1,
+          "probability": 0.12321845268824884
+        },
+        {
+          "home": 2,
+          "away": 0,
+          "probability": 0.0957160297059885
+        },
+        {
+          "home": 2,
+          "away": 1,
+          "probability": 0.09215023806828031
+        },
+        {
+          "home": 0,
+          "away": 0,
+          "probability": 0.08556836992239505
+        }
+      ],
+      "confidence": "High uncertainty",
+      "key_factors": [
+        "Austria has the stronger baseline rating",
+        "Adjusted rating gap: 176 Elo-equivalent points",
+        "Fixture ordering adds no home advantage; this is modeled as a neutral-site match",
+        "Recent weighted form favors Austria (19/23 matches)"
+      ],
+      "context": {
+        "home_form_elo": 33.227,
+        "away_form_elo": -15.349,
+        "home_h2h_elo": 0.0,
+        "away_h2h_elo": -0.0,
+        "home_availability_elo": 0.0,
+        "away_availability_elo": 0.0,
+        "historical_matches_home": 19,
+        "historical_matches_away": 23,
+        "h2h_matches": 0,
+        "availability_reports": 0,
+        "data_cutoff": "2026-06-10T00:46:29.520392+00:00"
+      },
+      "probabilities": {
+        "home_win": 0.495885,
+        "draw": 0.26092,
+        "away_win": 0.243195
+      }
+    },
+    {
+      "match_id": "WC26-061",
+      "home_team_id": "POR",
+      "away_team_id": "COD",
+      "home_xg": 1.631,
+      "away_xg": 0.883,
+      "top_scores": [
+        {
+          "home": 1,
+          "away": 0,
+          "probability": 0.13203936744370548
+        },
+        {
+          "home": 1,
+          "away": 1,
+          "probability": 0.11658019115904189
+        },
+        {
+          "home": 2,
+          "away": 0,
+          "probability": 0.10767493134770689
+        },
+        {
+          "home": 2,
+          "away": 1,
+          "probability": 0.0950683445594679
+        },
+        {
+          "home": 0,
+          "away": 0,
+          "probability": 0.08095846608266799
+        }
+      ],
+      "confidence": "High uncertainty",
+      "key_factors": [
+        "Portugal has the stronger baseline rating",
+        "Adjusted rating gap: 245 Elo-equivalent points",
+        "Fixture ordering adds no home advantage; this is modeled as a neutral-site match",
+        "Recent weighted form favors Portugal (23/10 matches)"
+      ],
+      "context": {
+        "home_form_elo": 37.986,
+        "away_form_elo": -30.818,
+        "home_h2h_elo": 0.0,
+        "away_h2h_elo": -0.0,
+        "home_availability_elo": 0.0,
+        "away_availability_elo": 0.0,
+        "historical_matches_home": 23,
+        "historical_matches_away": 10,
+        "h2h_matches": 0,
+        "availability_reports": 0,
+        "data_cutoff": "2026-06-10T00:46:29.520392+00:00"
+      },
+      "probabilities": {
+        "home_win": 0.550138,
+        "draw": 0.246863,
+        "away_win": 0.202999
+      }
+    },
+    {
+      "match_id": "WC26-067",
+      "home_team_id": "ENG",
+      "away_team_id": "CRO",
+      "home_xg": 1.269,
+      "away_xg": 1.135,
+      "top_scores": [
+        {
+          "home": 1,
+          "away": 1,
+          "probability": 0.13014882321664248
+        },
+        {
+          "home": 1,
+          "away": 0,
+          "probability": 0.11467542496080803
+        },
+        {
+          "home": 0,
+          "away": 1,
+          "probability": 0.10257644438196076
+        },
+        {
+          "home": 0,
+          "away": 0,
+          "probability": 0.0903811272337795
+        },
+        {
+          "home": 2,
+          "away": 1,
+          "probability": 0.08256630597178177
+        }
+      ],
+      "confidence": "High uncertainty",
+      "key_factors": [
+        "England has the stronger baseline rating",
+        "Adjusted rating gap: 45 Elo-equivalent points",
+        "Fixture ordering adds no home advantage; this is modeled as a neutral-site match",
+        "Recent weighted form favors England (17/29 matches)",
+        "Head-to-head adjustment uses 4 recent meetings and is capped"
+      ],
+      "context": {
+        "home_form_elo": 2.445,
+        "away_form_elo": 0.487,
+        "home_h2h_elo": 5.366,
+        "away_h2h_elo": -5.366,
+        "home_availability_elo": 0.0,
+        "away_availability_elo": 0.0,
+        "historical_matches_home": 17,
+        "historical_matches_away": 29,
+        "h2h_matches": 4,
+        "availability_reports": 0,
+        "data_cutoff": "2026-06-10T00:46:29.520392+00:00"
+      },
+      "probabilities": {
+        "home_win": 0.394622,
+        "draw": 0.275595,
+        "away_win": 0.329782
+      }
+    },
+    {
+      "match_id": "WC26-062",
+      "home_team_id": "UZB",
+      "away_team_id": "COL",
+      "home_xg": 0.991,
+      "away_xg": 1.453,
+      "top_scores": [
+        {
+          "home": 0,
+          "away": 1,
+          "probability": 0.12613190016608622
+        },
+        {
+          "home": 1,
+          "away": 1,
+          "probability": 0.12500972393334198
+        },
+        {
+          "home": 0,
+          "away": 2,
+          "probability": 0.09163018789285
+        },
+        {
+          "home": 1,
+          "away": 2,
+          "probability": 0.09081496811958208
+        },
+        {
+          "home": 0,
+          "away": 0,
+          "probability": 0.08681230828704305
+        }
+      ],
+      "confidence": "High uncertainty",
+      "key_factors": [
+        "Colombia has the stronger baseline rating",
+        "Adjusted rating gap: 153 Elo-equivalent points",
+        "Fixture ordering adds no home advantage; this is modeled as a neutral-site match",
+        "Recent weighted form favors Colombia (17/32 matches)"
+      ],
+      "context": {
+        "home_form_elo": -11.901,
+        "away_form_elo": 15.164,
+        "home_h2h_elo": 0.0,
+        "away_h2h_elo": -0.0,
+        "home_availability_elo": 0.0,
+        "away_availability_elo": 0.0,
+        "historical_matches_home": 17,
+        "historical_matches_away": 32,
+        "h2h_matches": 0,
+        "availability_reports": 0,
+        "data_cutoff": "2026-06-10T00:46:29.520392+00:00"
+      },
+      "probabilities": {
+        "home_win": 0.257548,
+        "draw": 0.264713,
+        "away_win": 0.477739
+      }
+    },
+    {
+      "match_id": "WC26-068",
+      "home_team_id": "GHA",
+      "away_team_id": "PAN",
+      "home_xg": 0.98,
+      "away_xg": 1.469,
+      "top_scores": [
+        {
+          "home": 0,
+          "away": 1,
+          "probability": 0.1268598951086596
+        },
+        {
+          "home": 1,
+          "away": 1,
+          "probability": 0.12436032453042974
+        },
+        {
+          "home": 0,
+          "away": 2,
+          "probability": 0.09317498803881294
+        },
+        {
+          "home": 1,
+          "away": 2,
+          "probability": 0.09133912447823493
+        },
+        {
+          "home": 0,
+          "away": 0,
+          "probability": 0.0863613364794651
+        }
+      ],
+      "confidence": "High uncertainty",
+      "key_factors": [
+        "Panama has the stronger baseline rating",
+        "Adjusted rating gap: 162 Elo-equivalent points",
+        "Fixture ordering adds no home advantage; this is modeled as a neutral-site match",
+        "Recent weighted form favors Panama (14/24 matches)"
+      ],
+      "context": {
+        "home_form_elo": -65.0,
+        "away_form_elo": -25.948,
+        "home_h2h_elo": 0.0,
+        "away_h2h_elo": -0.0,
+        "home_availability_elo": 0.0,
+        "away_availability_elo": 0.0,
+        "historical_matches_home": 14,
+        "historical_matches_away": 24,
+        "h2h_matches": 0,
+        "availability_reports": 0,
+        "data_cutoff": "2026-06-10T00:46:29.520392+00:00"
+      },
+      "probabilities": {
+        "home_win": 0.252078,
+        "draw": 0.263338,
+        "away_win": 0.484584
+      }
+    },
+    {
+      "match_id": "WC26-003",
+      "home_team_id": "MEX",
+      "away_team_id": "KOR",
+      "home_xg": 1.339,
+      "away_xg": 1.075,
+      "top_scores": [
+        {
+          "home": 1,
+          "away": 1,
+          "probability": 0.12875151760801307
+        },
+        {
+          "home": 1,
+          "away": 0,
+          "probability": 0.11976557049492267
+        },
+        {
+          "home": 0,
+          "away": 1,
+          "probability": 0.096119219137526
+        },
+        {
+          "home": 0,
+          "away": 0,
+          "probability": 0.08941077611667574
+        },
+        {
+          "home": 2,
+          "away": 1,
+          "probability": 0.08623121075634432
+        }
+      ],
+      "confidence": "High uncertainty",
+      "key_factors": [
+        "Mexico has the stronger baseline rating",
+        "Adjusted rating gap: 38 Elo-equivalent points",
+        "Mexico receives the tournament co-host adjustment",
+        "Recent weighted form favors Mexico (42/26 matches)",
+        "Head-to-head adjustment uses 3 recent meetings and is capped"
+      ],
+      "context": {
+        "home_form_elo": 19.062,
+        "away_form_elo": 11.828,
+        "home_h2h_elo": 1.771,
+        "away_h2h_elo": -1.771,
+        "home_availability_elo": 0.0,
+        "away_availability_elo": 0.0,
+        "historical_matches_home": 42,
+        "historical_matches_away": 26,
+        "h2h_matches": 3,
+        "availability_reports": 0,
+        "data_cutoff": "2026-06-10T00:46:29.520392+00:00"
+      },
+      "probabilities": {
+        "home_win": 0.427461,
+        "draw": 0.272636,
+        "away_win": 0.299903
+      }
+    },
+    {
+      "match_id": "WC26-009",
+      "home_team_id": "CAN",
+      "away_team_id": "QAT",
+      "home_xg": 1.438,
+      "away_xg": 1.002,
+      "top_scores": [
+        {
+          "home": 1,
+          "away": 1,
+          "probability": 0.1256034580547298
+        },
+        {
+          "home": 1,
+          "away": 0,
+          "probability": 0.12539995851496638
+        },
+        {
+          "home": 2,
+          "away": 1,
+          "probability": 0.09028797013077577
+        },
+        {
+          "home": 2,
+          "away": 0,
+          "probability": 0.09014168784960018
+        },
+        {
+          "home": 0,
+          "away": 1,
+          "probability": 0.08736617210717834
+        }
+      ],
+      "confidence": "High uncertainty",
+      "key_factors": [
+        "Canada has the stronger baseline rating",
+        "Adjusted rating gap: 95 Elo-equivalent points",
+        "Canada receives the tournament co-host adjustment",
+        "Recent weighted form favors Canada (28/19 matches)",
+        "Head-to-head adjustment uses 1 recent meetings and is capped"
+      ],
+      "context": {
+        "home_form_elo": -6.195,
+        "away_form_elo": -19.296,
+        "home_h2h_elo": 3.056,
+        "away_h2h_elo": -3.056,
+        "home_availability_elo": 0.0,
+        "away_availability_elo": 0.0,
+        "historical_matches_home": 28,
+        "historical_matches_away": 19,
+        "h2h_matches": 1,
+        "availability_reports": 0,
+        "data_cutoff": "2026-06-10T00:46:29.520392+00:00"
+      },
+      "probabilities": {
+        "home_win": 0.471157,
+        "draw": 0.26597,
+        "away_win": 0.262873
+      }
+    },
+    {
+      "match_id": "WC26-004",
+      "home_team_id": "CZE",
+      "away_team_id": "RSA",
+      "home_xg": 1.253,
+      "away_xg": 1.149,
+      "top_scores": [
+        {
+          "home": 1,
+          "away": 1,
+          "probability": 0.13034013817318216
+        },
+        {
+          "home": 1,
+          "away": 0,
+          "probability": 0.1134351641340535
+        },
+        {
+          "home": 0,
+          "away": 1,
+          "probability": 0.10400306978031233
+        },
+        {
+          "home": 0,
+          "away": 0,
+          "probability": 0.0905139848424876
+        },
+        {
+          "home": 2,
+          "away": 1,
+          "probability": 0.08167331817651853
+        }
+      ],
+      "confidence": "High uncertainty",
+      "key_factors": [
+        "Czechia has the stronger baseline rating",
+        "Adjusted rating gap: 35 Elo-equivalent points",
+        "Fixture ordering adds no home advantage; this is modeled as a neutral-site match",
+        "Recent weighted form favors South Africa (10/11 matches)"
+      ],
+      "context": {
+        "home_form_elo": -33.581,
+        "away_form_elo": -19.511,
+        "home_h2h_elo": 0.0,
+        "away_h2h_elo": -0.0,
+        "home_availability_elo": 0.0,
+        "away_availability_elo": 0.0,
+        "historical_matches_home": 10,
+        "historical_matches_away": 11,
+        "h2h_matches": 0,
+        "availability_reports": 0,
+        "data_cutoff": "2026-06-10T00:46:29.520392+00:00"
+      },
+      "probabilities": {
+        "home_win": 0.387251,
+        "draw": 0.276,
+        "away_win": 0.336748
+      }
+    },
+    {
+      "match_id": "WC26-010",
+      "home_team_id": "SUI",
+      "away_team_id": "BIH",
+      "home_xg": 1.592,
+      "away_xg": 0.904,
+      "top_scores": [
+        {
+          "home": 1,
+          "away": 0,
+          "probability": 0.1311480590204802
+        },
+        {
+          "home": 1,
+          "away": 1,
+          "probability": 0.11860400899169266
+        },
+        {
+          "home": 2,
+          "away": 0,
+          "probability": 0.10441355011829097
+        },
+        {
+          "home": 2,
+          "away": 1,
+          "probability": 0.09442660249474571
+        },
+        {
+          "home": 0,
+          "away": 0,
+          "probability": 0.08236389513311991
+        }
+      ],
+      "confidence": "High uncertainty",
+      "key_factors": [
+        "Switzerland has the stronger baseline rating",
+        "Adjusted rating gap: 226 Elo-equivalent points",
+        "Fixture ordering adds no home advantage; this is modeled as a neutral-site match",
+        "Recent weighted form favors Switzerland (20/10 matches)"
+      ],
+      "context": {
+        "home_form_elo": 22.019,
+        "away_form_elo": -36.952,
+        "home_h2h_elo": 0.0,
+        "away_h2h_elo": -0.0,
+        "home_availability_elo": 0.0,
+        "away_availability_elo": 0.0,
+        "historical_matches_home": 20,
+        "historical_matches_away": 10,
+        "h2h_matches": 0,
+        "availability_reports": 0,
+        "data_cutoff": "2026-06-10T00:46:29.520392+00:00"
+      },
+      "probabilities": {
+        "home_win": 0.535115,
+        "draw": 0.251149,
+        "away_win": 0.213736
+      }
+    },
+    {
+      "match_id": "WC26-015",
+      "home_team_id": "BRA",
+      "away_team_id": "HAI",
+      "home_xg": 1.739,
+      "away_xg": 0.828,
+      "top_scores": [
+        {
+          "home": 1,
+          "away": 0,
+          "probability": 0.13350097264249103
+        },
+        {
+          "home": 2,
+          "away": 0,
+          "probability": 0.11610530587315553
+        },
+        {
+          "home": 1,
+          "away": 1,
+          "probability": 0.11052214095618283
+        },
+        {
+          "home": 2,
+          "away": 1,
+          "probability": 0.09612070030259354
+        },
+        {
+          "home": 0,
+          "away": 0,
+          "probability": 0.07675148677512696
+        }
+      ],
+      "confidence": "Moderate confidence",
+      "key_factors": [
+        "Brazil has the stronger baseline rating",
+        "Adjusted rating gap: 297 Elo-equivalent points",
+        "Fixture ordering adds no home advantage; this is modeled as a neutral-site match",
+        "Recent weighted form favors Brazil (32/7 matches)"
+      ],
+      "context": {
+        "home_form_elo": 19.117,
+        "away_form_elo": -21.4,
+        "home_h2h_elo": 0.0,
+        "away_h2h_elo": -0.0,
+        "home_availability_elo": 0.0,
+        "away_availability_elo": 0.0,
+        "historical_matches_home": 32,
+        "historical_matches_away": 7,
+        "h2h_matches": 0,
+        "availability_reports": 0,
+        "data_cutoff": "2026-06-10T00:46:29.520392+00:00"
+      },
+      "probabilities": {
+        "home_win": 0.590215,
+        "draw": 0.234035,
+        "away_win": 0.17575
+      }
+    },
+    {
+      "match_id": "WC26-021",
+      "home_team_id": "USA",
+      "away_team_id": "AUS",
+      "home_xg": 1.317,
+      "away_xg": 1.094,
+      "top_scores": [
+        {
+          "home": 1,
+          "away": 1,
+          "probability": 0.12929148875707577
+        },
+        {
+          "home": 1,
+          "away": 0,
+          "probability": 0.11821992446005637
+        },
+        {
+          "home": 0,
+          "away": 1,
+          "probability": 0.09819439596117768
+        },
+        {
+          "home": 0,
+          "away": 0,
+          "probability": 0.08978575608130264
+        },
+        {
+          "home": 2,
+          "away": 1,
+          "probability": 0.08511834561124056
+        }
+      ],
+      "confidence": "High uncertainty",
+      "key_factors": [
+        "United States has the stronger baseline rating",
+        "Adjusted rating gap: 24 Elo-equivalent points",
+        "United States receives the tournament co-host adjustment",
+        "Recent weighted form favors Australia (40/25 matches)",
+        "Head-to-head adjustment uses 1 recent meetings and is capped"
+      ],
+      "context": {
+        "home_form_elo": -10.117,
+        "away_form_elo": 16.943,
+        "home_h2h_elo": 2.778,
+        "away_h2h_elo": -2.778,
+        "home_availability_elo": 0.0,
+        "away_availability_elo": 0.0,
+        "historical_matches_home": 40,
+        "historical_matches_away": 25,
+        "h2h_matches": 1,
+        "availability_reports": 0,
+        "data_cutoff": "2026-06-10T00:46:29.520392+00:00"
+      },
+      "probabilities": {
+        "home_win": 0.416986,
+        "draw": 0.27378,
+        "away_win": 0.309235
+      }
+    },
+    {
+      "match_id": "WC26-016",
+      "home_team_id": "SCO",
+      "away_team_id": "MAR",
+      "home_xg": 0.99,
+      "away_xg": 1.454,
+      "top_scores": [
+        {
+          "home": 0,
+          "away": 1,
+          "probability": 0.12619020747570378
+        },
+        {
+          "home": 1,
+          "away": 1,
+          "probability": 0.12495997725678244
+        },
+        {
+          "home": 0,
+          "away": 2,
+          "probability": 0.09175143549864674
+        },
+        {
+          "home": 1,
+          "away": 2,
+          "probability": 0.0908569493825067
+        },
+        {
+          "home": 0,
+          "away": 0,
+          "probability": 0.0867777619838767
+        }
+      ],
+      "confidence": "High uncertainty",
+      "key_factors": [
+        "Morocco has the stronger baseline rating",
+        "Adjusted rating gap: 154 Elo-equivalent points",
+        "Fixture ordering adds no home advantage; this is modeled as a neutral-site match",
+        "Recent weighted form favors Morocco (17/21 matches)"
+      ],
+      "context": {
+        "home_form_elo": -22.526,
+        "away_form_elo": 38.939,
+        "home_h2h_elo": 0.0,
+        "away_h2h_elo": -0.0,
+        "home_availability_elo": 0.0,
+        "away_availability_elo": 0.0,
+        "historical_matches_home": 17,
+        "historical_matches_away": 21,
+        "h2h_matches": 0,
+        "availability_reports": 0,
+        "data_cutoff": "2026-06-10T00:46:29.520392+00:00"
+      },
+      "probabilities": {
+        "home_win": 0.257117,
+        "draw": 0.264608,
+        "away_win": 0.478275
+      }
+    },
+    {
+      "match_id": "WC26-022",
+      "home_team_id": "TUR",
+      "away_team_id": "PAR",
+      "home_xg": 1.263,
+      "away_xg": 1.14,
+      "top_scores": [
+        {
+          "home": 1,
+          "away": 1,
+          "probability": 0.1302219507379718
+        },
+        {
+          "home": 1,
+          "away": 0,
+          "probability": 0.11423970806489987
+        },
+        {
+          "home": 0,
+          "away": 1,
+          "probability": 0.10308341958501888
+        },
+        {
+          "home": 0,
+          "away": 0,
+          "probability": 0.09043191023470266
+        },
+        {
+          "home": 2,
+          "away": 1,
+          "probability": 0.08225258980672791
+        }
+      ],
+      "confidence": "High uncertainty",
+      "key_factors": [
+        "Turkey has the stronger baseline rating",
+        "Adjusted rating gap: 41 Elo-equivalent points",
+        "Fixture ordering adds no home advantage; this is modeled as a neutral-site match",
+        "Recent weighted form favors Paraguay (15/21 matches)"
+      ],
+      "context": {
+        "home_form_elo": -16.551,
+        "away_form_elo": -11.267,
+        "home_h2h_elo": 0.0,
+        "away_h2h_elo": -0.0,
+        "home_availability_elo": 0.0,
+        "away_availability_elo": 0.0,
+        "historical_matches_home": 15,
+        "historical_matches_away": 21,
+        "h2h_matches": 0,
+        "availability_reports": 0,
+        "data_cutoff": "2026-06-10T00:46:29.520392+00:00"
+      },
+      "probabilities": {
+        "home_win": 0.392009,
+        "draw": 0.27575,
+        "away_win": 0.332241
+      }
+    },
+    {
+      "match_id": "WC26-027",
+      "home_team_id": "GER",
+      "away_team_id": "CIV",
+      "home_xg": 1.419,
+      "away_xg": 1.015,
+      "top_scores": [
+        {
+          "home": 1,
+          "away": 1,
+          "probability": 0.1262881933369196
+        },
+        {
+          "home": 1,
+          "away": 0,
+          "probability": 0.12446251405477801
+        },
+        {
+          "home": 2,
+          "away": 1,
+          "probability": 0.08961301011944016
+        },
+        {
+          "home": 0,
+          "away": 1,
+          "probability": 0.08898656431162195
+        },
+        {
+          "home": 2,
+          "away": 0,
+          "probability": 0.08831752388543465
+        }
+      ],
+      "confidence": "High uncertainty",
+      "key_factors": [
+        "Germany has the stronger baseline rating",
+        "Adjusted rating gap: 134 Elo-equivalent points",
+        "Fixture ordering adds no home advantage; this is modeled as a neutral-site match",
+        "Recent weighted form favors Germany (25/12 matches)"
+      ],
+      "context": {
+        "home_form_elo": 20.845,
+        "away_form_elo": 6.942,
+        "home_h2h_elo": 0.0,
+        "away_h2h_elo": -0.0,
+        "home_availability_elo": 0.0,
+        "away_availability_elo": 0.0,
+        "historical_matches_home": 25,
+        "historical_matches_away": 12,
+        "h2h_matches": 0,
+        "availability_reports": 0,
+        "data_cutoff": "2026-06-10T00:46:29.520392+00:00"
+      },
+      "probabilities": {
+        "home_win": 0.463107,
+        "draw": 0.26742,
+        "away_win": 0.269473
+      }
+    },
+    {
+      "match_id": "WC26-033",
+      "home_team_id": "NED",
+      "away_team_id": "SWE",
+      "home_xg": 1.533,
+      "away_xg": 0.94,
+      "top_scores": [
+        {
+          "home": 1,
+          "away": 0,
+          "probability": 0.12935594466539618
+        },
+        {
+          "home": 1,
+          "away": 1,
+          "probability": 0.1215422114873121
+        },
+        {
+          "home": 2,
+          "away": 0,
+          "probability": 0.099123846400122
+        },
+        {
+          "home": 2,
+          "away": 1,
+          "probability": 0.09313628015908526
+        },
+        {
+          "home": 0,
+          "away": 0,
+          "probability": 0.08440431353285563
+        }
+      ],
+      "confidence": "High uncertainty",
+      "key_factors": [
+        "Netherlands has the stronger baseline rating",
+        "Adjusted rating gap: 196 Elo-equivalent points",
+        "Fixture ordering adds no home advantage; this is modeled as a neutral-site match",
+        "Recent weighted form favors Netherlands (26/13 matches)"
+      ],
+      "context": {
+        "home_form_elo": 5.401,
+        "away_form_elo": -56.919,
+        "home_h2h_elo": 0.0,
+        "away_h2h_elo": -0.0,
+        "home_availability_elo": 0.0,
+        "away_availability_elo": 0.0,
+        "historical_matches_home": 26,
+        "historical_matches_away": 13,
+        "h2h_matches": 0,
+        "availability_reports": 0,
+        "data_cutoff": "2026-06-10T00:46:29.520392+00:00"
+      },
+      "probabilities": {
+        "home_win": 0.511139,
+        "draw": 0.25737,
+        "away_win": 0.231491
+      }
+    },
+    {
+      "match_id": "WC26-028",
+      "home_team_id": "ECU",
+      "away_team_id": "CUW",
+      "home_xg": 1.557,
+      "away_xg": 0.925,
+      "top_scores": [
+        {
+          "home": 1,
+          "away": 0,
+          "probability": 0.13014426166581394
+        },
+        {
+          "home": 1,
+          "away": 1,
+          "probability": 0.12038248745490845
+        },
+        {
+          "home": 2,
+          "away": 0,
+          "probability": 0.10130228263173711
+        },
+        {
+          "home": 2,
+          "away": 1,
+          "probability": 0.093703868399386
+        },
+        {
+          "home": 0,
+          "away": 0,
+          "probability": 0.0835989496214642
+        }
+      ],
+      "confidence": "High uncertainty",
+      "key_factors": [
+        "Ecuador has the stronger baseline rating",
+        "Adjusted rating gap: 208 Elo-equivalent points",
+        "Fixture ordering adds no home advantage; this is modeled as a neutral-site match",
+        "Recent weighted form favors Ecuador (29/7 matches)"
+      ],
+      "context": {
+        "home_form_elo": 14.653,
+        "away_form_elo": -20.701,
+        "home_h2h_elo": 0.0,
+        "away_h2h_elo": -0.0,
+        "home_availability_elo": 0.0,
+        "away_availability_elo": 0.0,
+        "historical_matches_home": 29,
+        "historical_matches_away": 7,
+        "h2h_matches": 0,
+        "availability_reports": 0,
+        "data_cutoff": "2026-06-10T00:46:29.520392+00:00"
+      },
+      "probabilities": {
+        "home_win": 0.520963,
+        "draw": 0.254915,
+        "away_win": 0.224122
+      }
+    },
+    {
+      "match_id": "WC26-034",
+      "home_team_id": "TUN",
+      "away_team_id": "JPN",
+      "home_xg": 1.077,
+      "away_xg": 1.338,
+      "top_scores": [
+        {
+          "home": 1,
+          "away": 1,
+          "probability": 0.12879956013842514
+        },
+        {
+          "home": 0,
+          "away": 1,
+          "probability": 0.11964022048339833
+        },
+        {
+          "home": 1,
+          "away": 0,
+          "probability": 0.09629174630139546
+        },
+        {
+          "home": 0,
+          "away": 0,
+          "probability": 0.08944413898501745
+        },
+        {
+          "home": 1,
+          "away": 2,
+          "probability": 0.0861409587480468
+        }
+      ],
+      "confidence": "High uncertainty",
+      "key_factors": [
+        "Japan has the stronger baseline rating",
+        "Adjusted rating gap: 87 Elo-equivalent points",
+        "Fixture ordering adds no home advantage; this is modeled as a neutral-site match",
+        "Recent weighted form favors Japan (20/27 matches)",
+        "Head-to-head adjustment uses 1 recent meetings and is capped"
+      ],
+      "context": {
+        "home_form_elo": 2.394,
+        "away_form_elo": 20.399,
+        "home_h2h_elo": 3.333,
+        "away_h2h_elo": -3.333,
+        "home_availability_elo": 0.0,
+        "away_availability_elo": 0.0,
+        "historical_matches_home": 20,
+        "historical_matches_away": 27,
+        "h2h_matches": 1,
+        "availability_reports": 0,
+        "data_cutoff": "2026-06-10T00:46:29.520392+00:00"
+      },
+      "probabilities": {
+        "home_win": 0.30067,
+        "draw": 0.272738,
+        "away_win": 0.426592
+      }
+    },
+    {
+      "match_id": "WC26-039",
+      "home_team_id": "BEL",
+      "away_team_id": "IRN",
+      "home_xg": 1.328,
+      "away_xg": 1.084,
+      "top_scores": [
+        {
+          "home": 1,
+          "away": 1,
+          "probability": 0.1290311768555121
+        },
+        {
+          "home": 1,
+          "away": 0,
+          "probability": 0.11900515891157158
+        },
+        {
+          "home": 0,
+          "away": 1,
+          "probability": 0.09715407831073843
+        },
+        {
+          "home": 0,
+          "away": 0,
+          "probability": 0.08960498392743897
+        },
+        {
+          "home": 2,
+          "away": 1,
+          "probability": 0.08568371441633153
+        }
+      ],
+      "confidence": "High uncertainty",
+      "key_factors": [
+        "Belgium has the stronger baseline rating",
+        "Adjusted rating gap: 81 Elo-equivalent points",
+        "Fixture ordering adds no home advantage; this is modeled as a neutral-site match",
+        "Recent weighted form favors Belgium (18/17 matches)"
+      ],
+      "context": {
+        "home_form_elo": 24.542,
+        "away_form_elo": -5.346,
+        "home_h2h_elo": 0.0,
+        "away_h2h_elo": -0.0,
+        "home_availability_elo": 0.0,
+        "away_availability_elo": 0.0,
+        "historical_matches_home": 18,
+        "historical_matches_away": 17,
+        "h2h_matches": 0,
+        "availability_reports": 0,
+        "data_cutoff": "2026-06-10T00:46:29.520392+00:00"
+      },
+      "probabilities": {
+        "home_win": 0.422245,
+        "draw": 0.273229,
+        "away_win": 0.304527
+      }
+    },
+    {
+      "match_id": "WC26-045",
+      "home_team_id": "ESP",
+      "away_team_id": "KSA",
+      "home_xg": 1.722,
+      "away_xg": 0.836,
+      "top_scores": [
+        {
+          "home": 1,
+          "away": 0,
+          "probability": 0.13335977159817855
+        },
+        {
+          "home": 2,
+          "away": 0,
+          "probability": 0.11478947114759189
+        },
+        {
+          "home": 1,
+          "away": 1,
+          "probability": 0.11155271055873174
+        },
+        {
+          "home": 2,
+          "away": 1,
+          "probability": 0.09601903555068853
+        },
+        {
+          "home": 0,
+          "away": 0,
+          "probability": 0.0774671601102304
+        }
+      ],
+      "confidence": "Moderate confidence",
+      "key_factors": [
+        "Spain has the stronger baseline rating",
+        "Adjusted rating gap: 289 Elo-equivalent points",
+        "Fixture ordering adds no home advantage; this is modeled as a neutral-site match",
+        "Recent weighted form favors Spain (28/28 matches)"
+      ],
+      "context": {
+        "home_form_elo": 33.737,
+        "away_form_elo": -28.918,
+        "home_h2h_elo": 0.0,
+        "away_h2h_elo": -0.0,
+        "home_availability_elo": 0.0,
+        "away_availability_elo": 0.0,
+        "historical_matches_home": 28,
+        "historical_matches_away": 28,
+        "h2h_matches": 0,
+        "availability_reports": 0,
+        "data_cutoff": "2026-06-10T00:46:29.520392+00:00"
+      },
+      "probabilities": {
+        "home_win": 0.583812,
+        "draw": 0.236217,
+        "away_win": 0.17997
+      }
+    },
+    {
+      "match_id": "WC26-040",
+      "home_team_id": "NZL",
+      "away_team_id": "EGY",
+      "home_xg": 0.932,
+      "away_xg": 1.545,
+      "top_scores": [
+        {
+          "home": 0,
+          "away": 1,
+          "probability": 0.12975585283990748
+        },
+        {
+          "home": 1,
+          "away": 1,
+          "probability": 0.12097528726762065
+        },
+        {
+          "home": 0,
+          "away": 2,
+          "probability": 0.10020508190615406
+        },
+        {
+          "home": 1,
+          "away": 2,
+          "probability": 0.09342421404473339
+        },
+        {
+          "home": 0,
+          "away": 0,
+          "probability": 0.0840106161580699
+        }
+      ],
+      "confidence": "High uncertainty",
+      "key_factors": [
+        "Egypt has the stronger baseline rating",
+        "Adjusted rating gap: 202 Elo-equivalent points",
+        "Fixture ordering adds no home advantage; this is modeled as a neutral-site match",
+        "Recent weighted form favors Egypt (17/20 matches)",
+        "Head-to-head adjustment uses 1 recent meetings and is capped"
+      ],
+      "context": {
+        "home_form_elo": -53.758,
+        "away_form_elo": -2.644,
+        "home_h2h_elo": -2.778,
+        "away_h2h_elo": 2.778,
+        "home_availability_elo": 0.0,
+        "away_availability_elo": 0.0,
+        "historical_matches_home": 17,
+        "historical_matches_away": 20,
+        "h2h_matches": 1,
+        "availability_reports": 0,
+        "data_cutoff": "2026-06-10T00:46:29.520392+00:00"
+      },
+      "probabilities": {
+        "home_win": 0.227823,
+        "draw": 0.25617,
+        "away_win": 0.516007
+      }
+    },
+    {
+      "match_id": "WC26-046",
+      "home_team_id": "URU",
+      "away_team_id": "CPV",
+      "home_xg": 1.487,
+      "away_xg": 0.968,
+      "top_scores": [
+        {
+          "home": 1,
+          "away": 0,
+          "probability": 0.12764063425448594
+        },
+        {
+          "home": 1,
+          "away": 1,
+          "probability": 0.12358861205757728
+        },
+        {
+          "home": 2,
+          "away": 0,
+          "probability": 0.09491436544180987
+        },
+        {
+          "home": 2,
+          "away": 1,
+          "probability": 0.09190125666322986
+        },
+        {
+          "home": 0,
+          "away": 0,
+          "probability": 0.08582542503998422
+        }
+      ],
+      "confidence": "High uncertainty",
+      "key_factors": [
+        "Uruguay has the stronger baseline rating",
+        "Adjusted rating gap: 172 Elo-equivalent points",
+        "Fixture ordering adds no home advantage; this is modeled as a neutral-site match",
+        "Recent weighted form favors Uruguay (30/11 matches)"
+      ],
+      "context": {
+        "home_form_elo": -0.907,
+        "away_form_elo": -9.183,
+        "home_h2h_elo": 0.0,
+        "away_h2h_elo": -0.0,
+        "home_availability_elo": 0.0,
+        "away_availability_elo": 0.0,
+        "historical_matches_home": 30,
+        "historical_matches_away": 11,
+        "h2h_matches": 0,
+        "availability_reports": 0,
+        "data_cutoff": "2026-06-10T00:46:29.520392+00:00"
+      },
+      "probabilities": {
+        "home_win": 0.492314,
+        "draw": 0.261704,
+        "away_win": 0.245982
+      }
+    },
+    {
+      "match_id": "WC26-051",
+      "home_team_id": "FRA",
+      "away_team_id": "IRQ",
+      "home_xg": 1.638,
+      "away_xg": 0.879,
+      "top_scores": [
+        {
+          "home": 1,
+          "away": 0,
+          "probability": 0.13218584927122187
+        },
+        {
+          "home": 1,
+          "away": 1,
+          "probability": 0.11618619707011886
+        },
+        {
+          "home": 2,
+          "away": 0,
+          "probability": 0.10827991117263741
+        },
+        {
+          "home": 2,
+          "away": 1,
+          "probability": 0.09517381147527974
+        },
+        {
+          "home": 0,
+          "away": 0,
+          "probability": 0.08068485907647142
+        }
+      ],
+      "confidence": "High uncertainty",
+      "key_factors": [
+        "France has the stronger baseline rating",
+        "Adjusted rating gap: 249 Elo-equivalent points",
+        "Fixture ordering adds no home advantage; this is modeled as a neutral-site match",
+        "Recent weighted form favors France (27/18 matches)"
+      ],
+      "context": {
+        "home_form_elo": 20.692,
+        "away_form_elo": -27.642,
+        "home_h2h_elo": 0.0,
+        "away_h2h_elo": -0.0,
+        "home_availability_elo": 0.0,
+        "away_availability_elo": 0.0,
+        "historical_matches_home": 27,
+        "historical_matches_away": 18,
+        "h2h_matches": 0,
+        "availability_reports": 0,
+        "data_cutoff": "2026-06-10T00:46:29.520392+00:00"
+      },
+      "probabilities": {
+        "home_win": 0.552949,
+        "draw": 0.246029,
+        "away_win": 0.201022
+      }
+    },
+    {
+      "match_id": "WC26-057",
+      "home_team_id": "ARG",
+      "away_team_id": "AUT",
+      "home_xg": 1.343,
+      "away_xg": 1.072,
+      "top_scores": [
+        {
+          "home": 1,
+          "away": 1,
+          "probability": 0.12865080738897916
+        },
+        {
+          "home": 1,
+          "away": 0,
+          "probability": 0.12002192501956033
+        },
+        {
+          "home": 0,
+          "away": 1,
+          "probability": 0.0957639281273149
+        },
+        {
+          "home": 0,
+          "away": 0,
+          "probability": 0.08934083846456889
+        },
+        {
+          "home": 2,
+          "away": 1,
+          "probability": 0.08641578601408341
+        }
+      ],
+      "confidence": "High uncertainty",
+      "key_factors": [
+        "Argentina has the stronger baseline rating",
+        "Adjusted rating gap: 90 Elo-equivalent points",
+        "Fixture ordering adds no home advantage; this is modeled as a neutral-site match",
+        "Recent weighted form favors Austria (24/19 matches)"
+      ],
+      "context": {
+        "home_form_elo": 20.826,
+        "away_form_elo": 33.227,
+        "home_h2h_elo": 0.0,
+        "away_h2h_elo": -0.0,
+        "home_availability_elo": 0.0,
+        "away_availability_elo": 0.0,
+        "historical_matches_home": 24,
+        "historical_matches_away": 19,
+        "h2h_matches": 0,
+        "availability_reports": 0,
+        "data_cutoff": "2026-06-10T00:46:29.520392+00:00"
+      },
+      "probabilities": {
+        "home_win": 0.429248,
+        "draw": 0.272423,
+        "away_win": 0.298329
+      }
+    },
+    {
+      "match_id": "WC26-052",
+      "home_team_id": "NOR",
+      "away_team_id": "SEN",
+      "home_xg": 1.143,
+      "away_xg": 1.26,
+      "top_scores": [
+        {
+          "home": 1,
+          "away": 1,
+          "probability": 0.1302645572115954
+        },
+        {
+          "home": 0,
+          "away": 1,
+          "probability": 0.11396614164393397
+        },
+        {
+          "home": 1,
+          "away": 0,
+          "probability": 0.10339849028819605
+        },
+        {
+          "home": 0,
+          "away": 0,
+          "probability": 0.09046149806360793
+        },
+        {
+          "home": 1,
+          "away": 2,
+          "probability": 0.08205562198363246
+        }
+      ],
+      "confidence": "High uncertainty",
+      "key_factors": [
+        "Senegal has the stronger baseline rating",
+        "Adjusted rating gap: 39 Elo-equivalent points",
+        "Fixture ordering adds no home advantage; this is modeled as a neutral-site match",
+        "Recent weighted form favors Senegal (14/16 matches)"
+      ],
+      "context": {
+        "home_form_elo": -6.284,
+        "away_form_elo": -3.374,
+        "home_h2h_elo": 0.0,
+        "away_h2h_elo": -0.0,
+        "home_availability_elo": 0.0,
+        "away_availability_elo": 0.0,
+        "historical_matches_home": 14,
+        "historical_matches_away": 16,
+        "h2h_matches": 0,
+        "availability_reports": 0,
+        "data_cutoff": "2026-06-10T00:46:29.520392+00:00"
+      },
+      "probabilities": {
+        "home_win": 0.333778,
+        "draw": 0.27584,
+        "away_win": 0.390381
+      }
+    },
+    {
+      "match_id": "WC26-058",
+      "home_team_id": "JOR",
+      "away_team_id": "ALG",
+      "home_xg": 0.992,
+      "away_xg": 1.452,
+      "top_scores": [
+        {
+          "home": 0,
+          "away": 1,
+          "probability": 0.12609022217464277
+        },
+        {
+          "home": 1,
+          "away": 1,
+          "probability": 0.12504505230328597
+        },
+        {
+          "home": 0,
+          "away": 2,
+          "probability": 0.09154377211529025
+        },
+        {
+          "home": 1,
+          "away": 2,
+          "probability": 0.0907849599657428
+        },
+        {
+          "home": 0,
+          "away": 0,
+          "probability": 0.08683684187728193
+        }
+      ],
+      "confidence": "High uncertainty",
+      "key_factors": [
+        "Algeria has the stronger baseline rating",
+        "Adjusted rating gap: 153 Elo-equivalent points",
+        "Fixture ordering adds no home advantage; this is modeled as a neutral-site match",
+        "Recent weighted form favors Algeria (23/13 matches)"
+      ],
+      "context": {
+        "home_form_elo": -15.349,
+        "away_form_elo": 46.798,
+        "home_h2h_elo": 0.0,
+        "away_h2h_elo": -0.0,
+        "home_availability_elo": 0.0,
+        "away_availability_elo": 0.0,
+        "historical_matches_home": 23,
+        "historical_matches_away": 13,
+        "h2h_matches": 0,
+        "availability_reports": 0,
+        "data_cutoff": "2026-06-10T00:46:29.520392+00:00"
+      },
+      "probabilities": {
+        "home_win": 0.257856,
+        "draw": 0.264788,
+        "away_win": 0.477356
+      }
+    },
+    {
+      "match_id": "WC26-063",
+      "home_team_id": "POR",
+      "away_team_id": "UZB",
+      "home_xg": 1.559,
+      "away_xg": 0.924,
+      "top_scores": [
+        {
+          "home": 1,
+          "away": 0,
+          "probability": 0.1302142976236216
+        },
+        {
+          "home": 1,
+          "away": 1,
+          "probability": 0.12027067855964955
+        },
+        {
+          "home": 2,
+          "away": 0,
+          "probability": 0.101505618212561
+        },
+        {
+          "home": 2,
+          "away": 1,
+          "probability": 0.09375429428900754
+        },
+        {
+          "home": 0,
+          "away": 0,
+          "probability": 0.08352130455531216
+        }
+      ],
+      "confidence": "High uncertainty",
+      "key_factors": [
+        "Portugal has the stronger baseline rating",
+        "Adjusted rating gap: 209 Elo-equivalent points",
+        "Fixture ordering adds no home advantage; this is modeled as a neutral-site match",
+        "Recent weighted form favors Portugal (23/17 matches)"
+      ],
+      "context": {
+        "home_form_elo": 37.986,
+        "away_form_elo": -11.901,
+        "home_h2h_elo": 0.0,
+        "away_h2h_elo": -0.0,
+        "home_availability_elo": 0.0,
+        "away_availability_elo": 0.0,
+        "historical_matches_home": 23,
+        "historical_matches_away": 17,
+        "h2h_matches": 0,
+        "availability_reports": 0,
+        "data_cutoff": "2026-06-10T00:46:29.520392+00:00"
+      },
+      "probabilities": {
+        "home_win": 0.521883,
+        "draw": 0.254678,
+        "away_win": 0.223439
+      }
+    },
+    {
+      "match_id": "WC26-069",
+      "home_team_id": "ENG",
+      "away_team_id": "GHA",
+      "home_xg": 1.744,
+      "away_xg": 0.826,
+      "top_scores": [
+        {
+          "home": 1,
+          "away": 0,
+          "probability": 0.1335335493344661
+        },
+        {
+          "home": 2,
+          "away": 0,
+          "probability": 0.11646568954481538
+        },
+        {
+          "home": 1,
+          "away": 1,
+          "probability": 0.11023392713026639
+        },
+        {
+          "home": 2,
+          "away": 1,
+          "probability": 0.09614415552081558
+        },
+        {
+          "home": 0,
+          "away": 0,
+          "probability": 0.07655133828490722
+        }
+      ],
+      "confidence": "Moderate confidence",
+      "key_factors": [
+        "England has the stronger baseline rating",
+        "Adjusted rating gap: 299 Elo-equivalent points",
+        "Fixture ordering adds no home advantage; this is modeled as a neutral-site match",
+        "Recent weighted form favors England (17/14 matches)"
+      ],
+      "context": {
+        "home_form_elo": 2.445,
+        "away_form_elo": -65.0,
+        "home_h2h_elo": 0.0,
+        "away_h2h_elo": -0.0,
+        "home_availability_elo": 0.0,
+        "away_availability_elo": 0.0,
+        "historical_matches_home": 17,
+        "historical_matches_away": 14,
+        "h2h_matches": 0,
+        "availability_reports": 0,
+        "data_cutoff": "2026-06-10T00:46:29.520392+00:00"
+      },
+      "probabilities": {
+        "home_win": 0.59198,
+        "draw": 0.233425,
+        "away_win": 0.174595
+      }
+    },
+    {
+      "match_id": "WC26-064",
+      "home_team_id": "COL",
+      "away_team_id": "COD",
+      "home_xg": 1.52,
+      "away_xg": 0.947,
+      "top_scores": [
+        {
+          "home": 1,
+          "away": 0,
+          "probability": 0.1289092582101733
+        },
+        {
+          "home": 1,
+          "away": 1,
+          "probability": 0.12213023886272156
+        },
+        {
+          "home": 2,
+          "away": 0,
+          "probability": 0.09796648107028284
+        },
+        {
+          "home": 2,
+          "away": 1,
+          "probability": 0.09281466591132477
+        },
+        {
+          "home": 0,
+          "away": 0,
+          "probability": 0.08481266587688997
+        }
+      ],
+      "confidence": "High uncertainty",
+      "key_factors": [
+        "Colombia has the stronger baseline rating",
+        "Adjusted rating gap: 189 Elo-equivalent points",
+        "Fixture ordering adds no home advantage; this is modeled as a neutral-site match",
+        "Recent weighted form favors Colombia (32/10 matches)"
+      ],
+      "context": {
+        "home_form_elo": 15.164,
+        "away_form_elo": -30.818,
+        "home_h2h_elo": 0.0,
+        "away_h2h_elo": -0.0,
+        "home_availability_elo": 0.0,
+        "away_availability_elo": 0.0,
+        "historical_matches_home": 32,
+        "historical_matches_away": 10,
+        "h2h_matches": 0,
+        "availability_reports": 0,
+        "data_cutoff": "2026-06-10T00:46:29.520392+00:00"
+      },
+      "probabilities": {
+        "home_win": 0.505944,
+        "draw": 0.258616,
+        "away_win": 0.23544
+      }
+    },
+    {
+      "match_id": "WC26-070",
+      "home_team_id": "PAN",
+      "away_team_id": "CRO",
+      "home_xg": 1.054,
+      "away_xg": 1.366,
+      "top_scores": [
+        {
+          "home": 1,
+          "away": 1,
+          "probability": 0.1280289862440347
+        },
+        {
+          "home": 0,
+          "away": 1,
+          "probability": 0.12144352776139385
+        },
+        {
+          "home": 1,
+          "away": 0,
+          "probability": 0.09373024385183257
+        },
+        {
+          "home": 0,
+          "away": 0,
+          "probability": 0.08890901822502412
+        },
+        {
+          "home": 1,
+          "away": 2,
+          "probability": 0.08743933998820357
+        }
+      ],
+      "confidence": "High uncertainty",
+      "key_factors": [
+        "Croatia has the stronger baseline rating",
+        "Adjusted rating gap: 104 Elo-equivalent points",
+        "Fixture ordering adds no home advantage; this is modeled as a neutral-site match",
+        "Recent weighted form favors Croatia (24/29 matches)"
+      ],
+      "context": {
+        "home_form_elo": -25.948,
+        "away_form_elo": 0.487,
+        "home_h2h_elo": 0.0,
+        "away_h2h_elo": -0.0,
+        "home_availability_elo": 0.0,
+        "away_availability_elo": 0.0,
+        "historical_matches_home": 24,
+        "historical_matches_away": 29,
+        "h2h_matches": 0,
+        "availability_reports": 0,
+        "data_cutoff": "2026-06-10T00:46:29.520392+00:00"
+      },
+      "probabilities": {
+        "home_win": 0.289443,
+        "draw": 0.271106,
+        "away_win": 0.439451
+      }
+    },
+    {
+      "match_id": "WC26-005",
+      "home_team_id": "CZE",
+      "away_team_id": "MEX",
+      "home_xg": 0.932,
+      "away_xg": 1.545,
+      "top_scores": [
+        {
+          "home": 0,
+          "away": 1,
+          "probability": 0.12978683385369746
+        },
+        {
+          "home": 1,
+          "away": 1,
+          "probability": 0.12092960850033221
+        },
+        {
+          "home": 0,
+          "away": 2,
+          "probability": 0.10029080689564226
+        },
+        {
+          "home": 1,
+          "away": 2,
+          "probability": 0.0934465203746622
+        },
+        {
+          "home": 0,
+          "away": 0,
+          "probability": 0.08397889479189738
+        }
+      ],
+      "confidence": "High uncertainty",
+      "key_factors": [
+        "Mexico has the stronger baseline rating",
+        "Adjusted rating gap: 152 Elo-equivalent points",
+        "Mexico receives the tournament co-host adjustment",
+        "Recent weighted form favors Mexico (10/42 matches)"
+      ],
+      "context": {
+        "home_form_elo": -33.581,
+        "away_form_elo": 19.062,
+        "home_h2h_elo": 0.0,
+        "away_h2h_elo": -0.0,
+        "home_availability_elo": 0.0,
+        "away_availability_elo": 0.0,
+        "historical_matches_home": 10,
+        "historical_matches_away": 42,
+        "h2h_matches": 0,
+        "availability_reports": 0,
+        "data_cutoff": "2026-06-10T00:46:29.520392+00:00"
+      },
+      "probabilities": {
+        "home_win": 0.227533,
+        "draw": 0.256073,
+        "away_win": 0.516394
+      }
+    },
+    {
+      "match_id": "WC26-011",
+      "home_team_id": "SUI",
+      "away_team_id": "CAN",
+      "home_xg": 1.223,
+      "away_xg": 1.177,
+      "top_scores": [
+        {
+          "home": 1,
+          "away": 1,
+          "probability": 0.1305787108290675
+        },
+        {
+          "home": 1,
+          "away": 0,
+          "probability": 0.11089996514997555
+        },
+        {
+          "home": 0,
+          "away": 1,
+          "probability": 0.1067703955011429
+        },
+        {
+          "home": 0,
+          "away": 0,
+          "probability": 0.09067966029796352
+        },
+        {
+          "home": 2,
+          "away": 1,
+          "probability": 0.07984797490798241
+        }
+      ],
+      "confidence": "High uncertainty",
+      "key_factors": [
+        "Switzerland has the stronger baseline rating",
+        "Adjusted rating gap: 65 Elo-equivalent points",
+        "Canada receives the tournament co-host adjustment",
+        "Recent weighted form favors Switzerland (20/28 matches)"
+      ],
+      "context": {
+        "home_form_elo": 22.019,
+        "away_form_elo": -6.195,
+        "home_h2h_elo": 0.0,
+        "away_h2h_elo": -0.0,
+        "home_availability_elo": 0.0,
+        "away_availability_elo": 0.0,
+        "historical_matches_home": 20,
+        "historical_matches_away": 28,
+        "h2h_matches": 0,
+        "availability_reports": 0,
+        "data_cutoff": "2026-06-10T00:46:29.520392+00:00"
+      },
+      "probabilities": {
+        "home_win": 0.372791,
+        "draw": 0.276506,
+        "away_win": 0.350704
+      }
+    },
+    {
+      "match_id": "WC26-017",
+      "home_team_id": "SCO",
+      "away_team_id": "BRA",
+      "home_xg": 0.977,
+      "away_xg": 1.474,
+      "top_scores": [
+        {
+          "home": 0,
+          "away": 1,
+          "probability": 0.12706243066031936
+        },
+        {
+          "home": 1,
+          "away": 1,
+          "probability": 0.12416808957270903
+        },
+        {
+          "home": 0,
+          "away": 2,
+          "probability": 0.09361745167719006
+        },
+        {
+          "home": 1,
+          "away": 2,
+          "probability": 0.09148495007542994
+        },
+        {
+          "home": 0,
+          "away": 0,
+          "probability": 0.08622783998104794
+        }
+      ],
+      "confidence": "High uncertainty",
+      "key_factors": [
+        "Brazil has the stronger baseline rating",
+        "Adjusted rating gap: 164 Elo-equivalent points",
+        "Fixture ordering adds no home advantage; this is modeled as a neutral-site match",
+        "Recent weighted form favors Brazil (17/32 matches)"
+      ],
+      "context": {
+        "home_form_elo": -22.526,
+        "away_form_elo": 19.117,
+        "home_h2h_elo": 0.0,
+        "away_h2h_elo": -0.0,
+        "home_availability_elo": 0.0,
+        "away_availability_elo": 0.0,
+        "historical_matches_home": 17,
+        "historical_matches_away": 32,
+        "h2h_matches": 0,
+        "availability_reports": 0,
+        "data_cutoff": "2026-06-10T00:46:29.520392+00:00"
+      },
+      "probabilities": {
+        "home_win": 0.250521,
+        "draw": 0.262931,
+        "away_win": 0.486548
+      }
+    },
+    {
+      "match_id": "WC26-006",
+      "home_team_id": "RSA",
+      "away_team_id": "KOR",
+      "home_xg": 0.991,
+      "away_xg": 1.452,
+      "top_scores": [
+        {
+          "home": 0,
+          "away": 1,
+          "probability": 0.12610523491685924
+        },
+        {
+          "home": 1,
+          "away": 1,
+          "probability": 0.12503234877459438
+        },
+        {
+          "home": 0,
+          "away": 2,
+          "probability": 0.09157487569489393
+        },
+        {
+          "home": 1,
+          "away": 2,
+          "probability": 0.09079576914013866
+        },
+        {
+          "home": 0,
+          "away": 0,
+          "probability": 0.08682801998235722
+        }
+      ],
+      "confidence": "High uncertainty",
+      "key_factors": [
+        "South Korea has the stronger baseline rating",
+        "Adjusted rating gap: 153 Elo-equivalent points",
+        "Fixture ordering adds no home advantage; this is modeled as a neutral-site match",
+        "Recent weighted form favors South Korea (11/26 matches)"
+      ],
+      "context": {
+        "home_form_elo": -19.511,
+        "away_form_elo": 11.828,
+        "home_h2h_elo": 0.0,
+        "away_h2h_elo": -0.0,
+        "home_availability_elo": 0.0,
+        "away_availability_elo": 0.0,
+        "historical_matches_home": 11,
+        "historical_matches_away": 26,
+        "h2h_matches": 0,
+        "availability_reports": 0,
+        "data_cutoff": "2026-06-10T00:46:29.520392+00:00"
+      },
+      "probabilities": {
+        "home_win": 0.257745,
+        "draw": 0.264761,
+        "away_win": 0.477494
+      }
+    },
+    {
+      "match_id": "WC26-012",
+      "home_team_id": "BIH",
+      "away_team_id": "QAT",
+      "home_xg": 1.096,
+      "away_xg": 1.314,
+      "top_scores": [
+        {
+          "home": 1,
+          "away": 1,
+          "probability": 0.1293478191278696
+        },
+        {
+          "home": 0,
+          "away": 1,
+          "probability": 0.11803812364960174
+        },
+        {
+          "home": 1,
+          "away": 0,
+          "probability": 0.09843134783160959
+        },
+        {
+          "home": 0,
+          "away": 0,
+          "probability": 0.08982487439435387
+        },
+        {
+          "home": 1,
+          "away": 2,
+          "probability": 0.08498744902771324
+        }
+      ],
+      "confidence": "High uncertainty",
+      "key_factors": [
+        "Qatar has the stronger baseline rating",
+        "Adjusted rating gap: 73 Elo-equivalent points",
+        "Fixture ordering adds no home advantage; this is modeled as a neutral-site match",
+        "Recent weighted form favors Qatar (10/19 matches)"
+      ],
+      "context": {
+        "home_form_elo": -36.952,
+        "away_form_elo": -19.296,
+        "home_h2h_elo": 0.0,
+        "away_h2h_elo": -0.0,
+        "home_availability_elo": 0.0,
+        "away_availability_elo": 0.0,
+        "historical_matches_home": 10,
+        "historical_matches_away": 19,
+        "h2h_matches": 0,
+        "availability_reports": 0,
+        "data_cutoff": "2026-06-10T00:46:29.520392+00:00"
+      },
+      "probabilities": {
+        "home_win": 0.310315,
+        "draw": 0.273899,
+        "away_win": 0.415785
+      }
+    },
+    {
+      "match_id": "WC26-018",
+      "home_team_id": "MAR",
+      "away_team_id": "HAI",
+      "home_xg": 1.717,
+      "away_xg": 0.839,
+      "top_scores": [
+        {
+          "home": 1,
+          "away": 0,
+          "probability": 0.13331355702568978
+        },
+        {
+          "home": 2,
+          "away": 0,
+          "probability": 0.1144167244425772
+        },
+        {
+          "home": 1,
+          "away": 1,
+          "probability": 0.111838573363007
+        },
+        {
+          "home": 2,
+          "away": 1,
+          "probability": 0.09598576105849665
+        },
+        {
+          "home": 0,
+          "away": 0,
+          "probability": 0.07766567594653263
+        }
+      ],
+      "confidence": "Moderate confidence",
+      "key_factors": [
+        "Morocco has the stronger baseline rating",
+        "Adjusted rating gap: 286 Elo-equivalent points",
+        "Fixture ordering adds no home advantage; this is modeled as a neutral-site match",
+        "Recent weighted form favors Morocco (21/7 matches)"
+      ],
+      "context": {
+        "home_form_elo": 38.939,
+        "away_form_elo": -21.4,
+        "home_h2h_elo": 0.0,
+        "away_h2h_elo": -0.0,
+        "home_availability_elo": 0.0,
+        "away_availability_elo": 0.0,
+        "historical_matches_home": 21,
+        "historical_matches_away": 7,
+        "h2h_matches": 0,
+        "availability_reports": 0,
+        "data_cutoff": "2026-06-10T00:46:29.520392+00:00"
+      },
+      "probabilities": {
+        "home_win": 0.58201,
+        "draw": 0.236823,
+        "away_win": 0.181168
+      }
+    },
+    {
+      "match_id": "WC26-023",
+      "home_team_id": "TUR",
+      "away_team_id": "USA",
+      "home_xg": 1.068,
+      "away_xg": 1.348,
+      "top_scores": [
+        {
+          "home": 1,
+          "away": 1,
+          "probability": 0.12852775362881838
+        },
+        {
+          "home": 0,
+          "away": 1,
+          "probability": 0.12032413925564256
+        },
+        {
+          "home": 1,
+          "away": 0,
+          "probability": 0.09534075319766107
+        },
+        {
+          "home": 0,
+          "away": 0,
+          "probability": 0.08925538446445722
+        },
+        {
+          "home": 1,
+          "away": 2,
+          "probability": 0.08663338026406263
+        }
+      ],
+      "confidence": "High uncertainty",
+      "key_factors": [
+        "United States has the stronger baseline rating",
+        "Adjusted rating gap: 43 Elo-equivalent points",
+        "United States receives the tournament co-host adjustment",
+        "Recent weighted form favors United States (15/40 matches)",
+        "Head-to-head adjustment uses 1 recent meetings and is capped"
+      ],
+      "context": {
+        "home_form_elo": -16.551,
+        "away_form_elo": -10.117,
+        "home_h2h_elo": 2.778,
+        "away_h2h_elo": -2.778,
+        "home_availability_elo": 0.0,
+        "away_availability_elo": 0.0,
+        "historical_matches_home": 15,
+        "historical_matches_away": 40,
+        "h2h_matches": 1,
+        "availability_reports": 0,
+        "data_cutoff": "2026-06-10T00:46:29.520392+00:00"
+      },
+      "probabilities": {
+        "home_win": 0.296462,
+        "draw": 0.272163,
+        "away_win": 0.431375
+      }
+    },
+    {
+      "match_id": "WC26-029",
+      "home_team_id": "ECU",
+      "away_team_id": "GER",
+      "home_xg": 1.108,
+      "away_xg": 1.299,
+      "top_scores": [
+        {
+          "home": 1,
+          "away": 1,
+          "probability": 0.1296458122425195
+        },
+        {
+          "home": 0,
+          "away": 1,
+          "probability": 0.11698738504488772
+        },
+        {
+          "home": 1,
+          "away": 0,
+          "probability": 0.09977355812037525
+        },
+        {
+          "home": 0,
+          "away": 0,
+          "probability": 0.09003181405730522
+        },
+        {
+          "home": 1,
+          "away": 2,
+          "probability": 0.08423091723231914
+        }
+      ],
+      "confidence": "High uncertainty",
+      "key_factors": [
+        "Germany has the stronger baseline rating",
+        "Adjusted rating gap: 64 Elo-equivalent points",
+        "Fixture ordering adds no home advantage; this is modeled as a neutral-site match",
+        "Recent weighted form favors Germany (29/25 matches)"
+      ],
+      "context": {
+        "home_form_elo": 14.653,
+        "away_form_elo": 20.845,
+        "home_h2h_elo": 0.0,
+        "away_h2h_elo": -0.0,
+        "home_availability_elo": 0.0,
+        "away_availability_elo": 0.0,
+        "historical_matches_home": 29,
+        "historical_matches_away": 25,
+        "h2h_matches": 0,
+        "availability_reports": 0,
+        "data_cutoff": "2026-06-10T00:46:29.520392+00:00"
+      },
+      "probabilities": {
+        "home_win": 0.316501,
+        "draw": 0.27453,
+        "away_win": 0.408969
+      }
+    },
+    {
+      "match_id": "WC26-035",
+      "home_team_id": "TUN",
+      "away_team_id": "NED",
+      "home_xg": 1.024,
+      "away_xg": 1.407,
+      "top_scores": [
+        {
+          "home": 1,
+          "away": 1,
+          "probability": 0.12672489744622273
+        },
+        {
+          "home": 0,
+          "away": 1,
+          "probability": 0.1238026772903405
+        },
+        {
+          "home": 1,
+          "away": 0,
+          "probability": 0.09008062031677541
+        },
+        {
+          "home": 1,
+          "away": 2,
+          "probability": 0.08913792764904514
+        },
+        {
+          "home": 0,
+          "away": 0,
+          "probability": 0.08800340100432134
+        }
+      ],
+      "confidence": "High uncertainty",
+      "key_factors": [
+        "Netherlands has the stronger baseline rating",
+        "Adjusted rating gap: 127 Elo-equivalent points",
+        "Fixture ordering adds no home advantage; this is modeled as a neutral-site match",
+        "Recent weighted form favors Netherlands (20/26 matches)"
+      ],
+      "context": {
+        "home_form_elo": 2.394,
+        "away_form_elo": 5.401,
+        "home_h2h_elo": 0.0,
+        "away_h2h_elo": -0.0,
+        "home_availability_elo": 0.0,
+        "away_availability_elo": 0.0,
+        "historical_matches_home": 20,
+        "historical_matches_away": 26,
+        "h2h_matches": 0,
+        "availability_reports": 0,
+        "data_cutoff": "2026-06-10T00:46:29.520392+00:00"
+      },
+      "probabilities": {
+        "home_win": 0.27399,
+        "draw": 0.268345,
+        "away_win": 0.457665
+      }
+    },
+    {
+      "match_id": "WC26-024",
+      "home_team_id": "PAR",
+      "away_team_id": "AUS",
+      "home_xg": 1.098,
+      "away_xg": 1.311,
+      "top_scores": [
+        {
+          "home": 1,
+          "away": 1,
+          "probability": 0.12940329485773233
+        },
+        {
+          "home": 0,
+          "away": 1,
+          "probability": 0.11785436651834981
+        },
+        {
+          "home": 1,
+          "away": 0,
+          "probability": 0.09866940265348356
+        },
+        {
+          "home": 0,
+          "away": 0,
+          "probability": 0.08986339920675858
+        },
+        {
+          "home": 1,
+          "away": 2,
+          "probability": 0.08485514389321186
+        }
+      ],
+      "confidence": "High uncertainty",
+      "key_factors": [
+        "Australia has the stronger baseline rating",
+        "Adjusted rating gap: 71 Elo-equivalent points",
+        "Fixture ordering adds no home advantage; this is modeled as a neutral-site match",
+        "Recent weighted form favors Australia (21/25 matches)"
+      ],
+      "context": {
+        "home_form_elo": -11.267,
+        "away_form_elo": 16.943,
+        "home_h2h_elo": 0.0,
+        "away_h2h_elo": -0.0,
+        "home_availability_elo": 0.0,
+        "away_availability_elo": 0.0,
+        "historical_matches_home": 21,
+        "historical_matches_away": 25,
+        "h2h_matches": 0,
+        "availability_reports": 0,
+        "data_cutoff": "2026-06-10T00:46:29.520392+00:00"
+      },
+      "probabilities": {
+        "home_win": 0.311405,
+        "draw": 0.274017,
+        "away_win": 0.414579
+      }
+    },
+    {
+      "match_id": "WC26-030",
+      "home_team_id": "CUW",
+      "away_team_id": "CIV",
+      "home_xg": 1.01,
+      "away_xg": 1.425,
+      "top_scores": [
+        {
+          "home": 1,
+          "away": 1,
+          "probability": 0.12606316374661103
+        },
+        {
+          "home": 0,
+          "away": 1,
+          "probability": 0.12478277369122104
+        },
+        {
+          "home": 1,
+          "away": 2,
+          "probability": 0.08984359705767915
+        },
+        {
+          "home": 0,
+          "away": 2,
+          "probability": 0.08893107951651748
+        },
+        {
+          "home": 1,
+          "away": 0,
+          "probability": 0.08844214709926593
+        }
+      ],
+      "confidence": "High uncertainty",
+      "key_factors": [
+        "Ivory Coast has the stronger baseline rating",
+        "Adjusted rating gap: 138 Elo-equivalent points",
+        "Fixture ordering adds no home advantage; this is modeled as a neutral-site match",
+        "Recent weighted form favors Ivory Coast (7/12 matches)"
+      ],
+      "context": {
+        "home_form_elo": -20.701,
+        "away_form_elo": 6.942,
+        "home_h2h_elo": 0.0,
+        "away_h2h_elo": -0.0,
+        "home_availability_elo": 0.0,
+        "away_availability_elo": 0.0,
+        "historical_matches_home": 7,
+        "historical_matches_away": 12,
+        "h2h_matches": 0,
+        "availability_reports": 0,
+        "data_cutoff": "2026-06-10T00:46:29.520392+00:00"
+      },
+      "probabilities": {
+        "home_win": 0.267244,
+        "draw": 0.266944,
+        "away_win": 0.465813
+      }
+    },
+    {
+      "match_id": "WC26-036",
+      "home_team_id": "JPN",
+      "away_team_id": "SWE",
+      "home_xg": 1.469,
+      "away_xg": 0.98,
+      "top_scores": [
+        {
+          "home": 1,
+          "away": 0,
+          "probability": 0.1268793448838409
+        },
+        {
+          "home": 1,
+          "away": 1,
+          "probability": 0.12434209329177513
+        },
+        {
+          "home": 2,
+          "away": 0,
+          "probability": 0.09321722650005122
+        },
+        {
+          "home": 2,
+          "away": 1,
+          "probability": 0.09135312831636544
+        },
+        {
+          "home": 0,
+          "away": 0,
+          "probability": 0.08634867589706607
+        }
+      ],
+      "confidence": "High uncertainty",
+      "key_factors": [
+        "Japan has the stronger baseline rating",
+        "Adjusted rating gap: 162 Elo-equivalent points",
+        "Fixture ordering adds no home advantage; this is modeled as a neutral-site match",
+        "Recent weighted form favors Japan (27/13 matches)"
+      ],
+      "context": {
+        "home_form_elo": 20.399,
+        "away_form_elo": -56.919,
+        "home_h2h_elo": 0.0,
+        "away_h2h_elo": -0.0,
+        "home_availability_elo": 0.0,
+        "away_availability_elo": 0.0,
+        "historical_matches_home": 27,
+        "historical_matches_away": 13,
+        "h2h_matches": 0,
+        "availability_reports": 0,
+        "data_cutoff": "2026-06-10T00:46:29.520392+00:00"
+      },
+      "probabilities": {
+        "home_win": 0.484772,
+        "draw": 0.263299,
+        "away_win": 0.251929
+      }
+    },
+    {
+      "match_id": "WC26-041",
+      "home_team_id": "NZL",
+      "away_team_id": "BEL",
+      "home_xg": 0.801,
+      "away_xg": 1.798,
+      "top_scores": [
+        {
+          "home": 0,
+          "away": 1,
+          "probability": 0.13370687048177055
+        },
+        {
+          "home": 0,
+          "away": 2,
+          "probability": 0.12021961230226165
+        },
+        {
+          "home": 1,
+          "away": 1,
+          "probability": 0.10706921564293465
+        },
+        {
+          "home": 1,
+          "away": 2,
+          "probability": 0.09626894674687478
+        },
+        {
+          "home": 0,
+          "away": 0,
+          "probability": 0.07435362197426017
+        }
+      ],
+      "confidence": "Moderate confidence",
+      "key_factors": [
+        "Belgium has the stronger baseline rating",
+        "Adjusted rating gap: 324 Elo-equivalent points",
+        "Fixture ordering adds no home advantage; this is modeled as a neutral-site match",
+        "Recent weighted form favors Belgium (17/18 matches)"
+      ],
+      "context": {
+        "home_form_elo": -53.758,
+        "away_form_elo": 24.542,
+        "home_h2h_elo": 0.0,
+        "away_h2h_elo": -0.0,
+        "home_availability_elo": 0.0,
+        "away_availability_elo": 0.0,
+        "historical_matches_home": 17,
+        "historical_matches_away": 18,
+        "h2h_matches": 0,
+        "availability_reports": 0,
+        "data_cutoff": "2026-06-10T00:46:29.520392+00:00"
+      },
+      "probabilities": {
+        "home_win": 0.162574,
+        "draw": 0.226723,
+        "away_win": 0.610703
+      }
+    },
+    {
+      "match_id": "WC26-047",
+      "home_team_id": "URU",
+      "away_team_id": "ESP",
+      "home_xg": 1.034,
+      "away_xg": 1.392,
+      "top_scores": [
+        {
+          "home": 1,
+          "away": 1,
+          "probability": 0.12720851328233682
+        },
+        {
+          "home": 0,
+          "away": 1,
+          "probability": 0.12300436512621668
+        },
+        {
+          "home": 1,
+          "away": 0,
+          "probability": 0.09135857944563514
+        },
+        {
+          "home": 1,
+          "away": 2,
+          "probability": 0.088563142890876
+        },
+        {
+          "home": 0,
+          "away": 0,
+          "probability": 0.08833924533495613
+        }
+      ],
+      "confidence": "High uncertainty",
+      "key_factors": [
+        "Spain has the stronger baseline rating",
+        "Adjusted rating gap: 119 Elo-equivalent points",
+        "Fixture ordering adds no home advantage; this is modeled as a neutral-site match",
+        "Recent weighted form favors Spain (30/28 matches)"
+      ],
+      "context": {
+        "home_form_elo": -0.907,
+        "away_form_elo": 33.737,
+        "home_h2h_elo": 0.0,
+        "away_h2h_elo": -0.0,
+        "home_availability_elo": 0.0,
+        "away_availability_elo": 0.0,
+        "historical_matches_home": 30,
+        "historical_matches_away": 28,
+        "h2h_matches": 0,
+        "availability_reports": 0,
+        "data_cutoff": "2026-06-10T00:46:29.520392+00:00"
+      },
+      "probabilities": {
+        "home_win": 0.279332,
+        "draw": 0.269369,
+        "away_win": 0.451298
+      }
+    },
+    {
+      "match_id": "WC26-053",
+      "home_team_id": "NOR",
+      "away_team_id": "FRA",
+      "home_xg": 1.008,
+      "away_xg": 1.428,
+      "top_scores": [
+        {
+          "home": 1,
+          "away": 1,
+          "probability": 0.12595200548735774
+        },
+        {
+          "home": 0,
+          "away": 1,
+          "probability": 0.12493641798964412
+        },
+        {
+          "home": 1,
+          "away": 2,
+          "probability": 0.08995422095254375
+        },
+        {
+          "home": 0,
+          "away": 2,
+          "probability": 0.08922889401699813
+        },
+        {
+          "home": 1,
+          "away": 0,
+          "probability": 0.08817767258890805
+        }
+      ],
+      "confidence": "High uncertainty",
+      "key_factors": [
+        "France has the stronger baseline rating",
+        "Adjusted rating gap: 139 Elo-equivalent points",
+        "Fixture ordering adds no home advantage; this is modeled as a neutral-site match",
+        "Recent weighted form favors France (14/27 matches)"
+      ],
+      "context": {
+        "home_form_elo": -6.284,
+        "away_form_elo": 20.692,
+        "home_h2h_elo": 0.0,
+        "away_h2h_elo": -0.0,
+        "home_availability_elo": 0.0,
+        "away_availability_elo": 0.0,
+        "historical_matches_home": 14,
+        "historical_matches_away": 27,
+        "h2h_matches": 0,
+        "availability_reports": 0,
+        "data_cutoff": "2026-06-10T00:46:29.520392+00:00"
+      },
+      "probabilities": {
+        "home_win": 0.266165,
+        "draw": 0.266708,
+        "away_win": 0.467127
+      }
+    },
+    {
+      "match_id": "WC26-042",
+      "home_team_id": "EGY",
+      "away_team_id": "IRN",
+      "home_xg": 1.133,
+      "away_xg": 1.271,
+      "top_scores": [
+        {
+          "home": 1,
+          "away": 1,
+          "probability": 0.1301157453930487
+        },
+        {
+          "home": 0,
+          "away": 1,
+          "probability": 0.11486063558799982
+        },
+        {
+          "home": 1,
+          "away": 0,
+          "probability": 0.10235899207886501
+        },
+        {
+          "home": 0,
+          "away": 0,
+          "probability": 0.09035815652295053
+        },
+        {
+          "home": 1,
+          "away": 2,
+          "probability": 0.08269965762335983
+        }
+      ],
+      "confidence": "High uncertainty",
+      "key_factors": [
+        "Iran has the stronger baseline rating",
+        "Adjusted rating gap: 46 Elo-equivalent points",
+        "Fixture ordering adds no home advantage; this is modeled as a neutral-site match",
+        "Recent weighted form favors Egypt (20/17 matches)"
+      ],
+      "context": {
+        "home_form_elo": -2.644,
+        "away_form_elo": -5.346,
+        "home_h2h_elo": 0.0,
+        "away_h2h_elo": -0.0,
+        "home_availability_elo": 0.0,
+        "away_availability_elo": 0.0,
+        "historical_matches_home": 20,
+        "historical_matches_away": 17,
+        "h2h_matches": 0,
+        "availability_reports": 0,
+        "data_cutoff": "2026-06-10T00:46:29.520392+00:00"
+      },
+      "probabilities": {
+        "home_win": 0.328733,
+        "draw": 0.275525,
+        "away_win": 0.395742
+      }
+    },
+    {
+      "match_id": "WC26-048",
+      "home_team_id": "CPV",
+      "away_team_id": "KSA",
+      "home_xg": 1.197,
+      "away_xg": 1.203,
+      "top_scores": [
+        {
+          "home": 1,
+          "away": 1,
+          "probability": 0.13063420370253317
+        },
+        {
+          "home": 0,
+          "away": 1,
+          "probability": 0.10912569738254277
+        },
+        {
+          "home": 1,
+          "away": 0,
+          "probability": 0.10859861345879959
+        },
+        {
+          "home": 0,
+          "away": 0,
+          "probability": 0.09071819701564801
+        },
+        {
+          "home": 1,
+          "away": 2,
+          "probability": 0.07857050211543079
+        }
+      ],
+      "confidence": "High uncertainty",
+      "key_factors": [
+        "Saudi Arabia has the stronger baseline rating",
+        "Adjusted rating gap: 2 Elo-equivalent points",
+        "Fixture ordering adds no home advantage; this is modeled as a neutral-site match",
+        "Recent weighted form favors Cape Verde (11/28 matches)"
+      ],
+      "context": {
+        "home_form_elo": -9.183,
+        "away_form_elo": -28.918,
+        "home_h2h_elo": 0.0,
+        "away_h2h_elo": -0.0,
+        "home_availability_elo": 0.0,
+        "away_availability_elo": 0.0,
+        "historical_matches_home": 11,
+        "historical_matches_away": 28,
+        "h2h_matches": 0,
+        "availability_reports": 0,
+        "data_cutoff": "2026-06-10T00:46:29.520392+00:00"
+      },
+      "probabilities": {
+        "home_win": 0.360279,
+        "draw": 0.276623,
+        "away_win": 0.363098
+      }
+    },
+    {
+      "match_id": "WC26-054",
+      "home_team_id": "SEN",
+      "away_team_id": "IRQ",
+      "home_xg": 1.445,
+      "away_xg": 0.997,
+      "top_scores": [
+        {
+          "home": 1,
+          "away": 0,
+          "probability": 0.12575491327200558
+        },
+        {
+          "home": 1,
+          "away": 1,
+          "probability": 0.1253224621855272
+        },
+        {
+          "home": 2,
+          "away": 0,
+          "probability": 0.09085597676671474
+        },
+        {
+          "home": 2,
+          "away": 1,
+          "probability": 0.09054353755584402
+        },
+        {
+          "home": 0,
+          "away": 0,
+          "probability": 0.08702948762883835
+        }
+      ],
+      "confidence": "High uncertainty",
+      "key_factors": [
+        "Senegal has the stronger baseline rating",
+        "Adjusted rating gap: 149 Elo-equivalent points",
+        "Fixture ordering adds no home advantage; this is modeled as a neutral-site match",
+        "Recent weighted form favors Senegal (16/18 matches)"
+      ],
+      "context": {
+        "home_form_elo": -3.374,
+        "away_form_elo": -27.642,
+        "home_h2h_elo": 0.0,
+        "away_h2h_elo": -0.0,
+        "home_availability_elo": 0.0,
+        "away_availability_elo": 0.0,
+        "historical_matches_home": 16,
+        "historical_matches_away": 18,
+        "h2h_matches": 0,
+        "availability_reports": 0,
+        "data_cutoff": "2026-06-10T00:46:29.520392+00:00"
+      },
+      "probabilities": {
+        "home_win": 0.474314,
+        "draw": 0.265375,
+        "away_win": 0.260311
+      }
+    },
+    {
+      "match_id": "WC26-059",
+      "home_team_id": "JOR",
+      "away_team_id": "ARG",
+      "home_xg": 0.86,
+      "away_xg": 1.674,
+      "top_scores": [
+        {
+          "home": 0,
+          "away": 1,
+          "probability": 0.13280392803939994
+        },
+        {
+          "home": 1,
+          "away": 1,
+          "probability": 0.11420717481765906
+        },
+        {
+          "home": 0,
+          "away": 2,
+          "probability": 0.11118877599602682
+        },
+        {
+          "home": 1,
+          "away": 2,
+          "probability": 0.09561882818836796
+        },
+        {
+          "home": 0,
+          "away": 0,
+          "probability": 0.07931053806781879
+        }
+      ],
+      "confidence": "Moderate confidence",
+      "key_factors": [
+        "Argentina has the stronger baseline rating",
+        "Adjusted rating gap: 267 Elo-equivalent points",
+        "Fixture ordering adds no home advantage; this is modeled as a neutral-site match",
+        "Recent weighted form favors Argentina (23/24 matches)"
+      ],
+      "context": {
+        "home_form_elo": -15.349,
+        "away_form_elo": 20.826,
+        "home_h2h_elo": 0.0,
+        "away_h2h_elo": -0.0,
+        "home_availability_elo": 0.0,
+        "away_availability_elo": 0.0,
+        "historical_matches_home": 23,
+        "historical_matches_away": 24,
+        "h2h_matches": 0,
+        "availability_reports": 0,
+        "data_cutoff": "2026-06-10T00:46:29.520392+00:00"
+      },
+      "probabilities": {
+        "home_win": 0.191571,
+        "draw": 0.241838,
+        "away_win": 0.566591
+      }
+    },
+    {
+      "match_id": "WC26-065",
+      "home_team_id": "COL",
+      "away_team_id": "POR",
+      "home_xg": 1.118,
+      "away_xg": 1.288,
+      "top_scores": [
+        {
+          "home": 1,
+          "away": 1,
+          "probability": 0.12985817147344794
+        },
+        {
+          "home": 0,
+          "away": 1,
+          "probability": 0.11611967360375022
+        },
+        {
+          "home": 1,
+          "away": 0,
+          "probability": 0.10084869159766131
+        },
+        {
+          "home": 0,
+          "away": 0,
+          "probability": 0.09017928574544995
+        },
+        {
+          "home": 1,
+          "away": 2,
+          "probability": 0.08360616499470017
+        }
+      ],
+      "confidence": "High uncertainty",
+      "key_factors": [
+        "Portugal has the stronger baseline rating",
+        "Adjusted rating gap: 56 Elo-equivalent points",
+        "Fixture ordering adds no home advantage; this is modeled as a neutral-site match",
+        "Recent weighted form favors Portugal (32/23 matches)"
+      ],
+      "context": {
+        "home_form_elo": 15.164,
+        "away_form_elo": 37.986,
+        "home_h2h_elo": 0.0,
+        "away_h2h_elo": -0.0,
+        "home_availability_elo": 0.0,
+        "away_availability_elo": 0.0,
+        "historical_matches_home": 32,
+        "historical_matches_away": 23,
+        "h2h_matches": 0,
+        "availability_reports": 0,
+        "data_cutoff": "2026-06-10T00:46:29.520392+00:00"
+      },
+      "probabilities": {
+        "home_win": 0.321535,
+        "draw": 0.27498,
+        "away_win": 0.403485
+      }
+    },
+    {
+      "match_id": "WC26-071",
+      "home_team_id": "PAN",
+      "away_team_id": "ENG",
+      "home_xg": 1.002,
+      "away_xg": 1.437,
+      "top_scores": [
+        {
+          "home": 1,
+          "away": 1,
+          "probability": 0.1256318698070233
+        },
+        {
+          "home": 0,
+          "away": 1,
+          "probability": 0.12536316500802397
+        },
+        {
+          "home": 1,
+          "away": 2,
+          "probability": 0.09026147880577723
+        },
+        {
+          "home": 0,
+          "away": 2,
+          "probability": 0.09006842514385892
+        },
+        {
+          "home": 1,
+          "away": 0,
+          "probability": 0.08743135454921566
+        }
+      ],
+      "confidence": "High uncertainty",
+      "key_factors": [
+        "England has the stronger baseline rating",
+        "Adjusted rating gap: 144 Elo-equivalent points",
+        "Fixture ordering adds no home advantage; this is modeled as a neutral-site match",
+        "Recent weighted form favors England (24/17 matches)",
+        "Head-to-head adjustment uses 1 recent meetings and is capped"
+      ],
+      "context": {
+        "home_form_elo": -25.948,
+        "away_form_elo": 2.445,
+        "home_h2h_elo": -3.333,
+        "away_h2h_elo": 3.333,
+        "home_availability_elo": 0.0,
+        "away_availability_elo": 0.0,
+        "historical_matches_home": 24,
+        "historical_matches_away": 17,
+        "h2h_matches": 1,
+        "availability_reports": 0,
+        "data_cutoff": "2026-06-10T00:46:29.520392+00:00"
+      },
+      "probabilities": {
+        "home_win": 0.263136,
+        "draw": 0.26603,
+        "away_win": 0.470833
+      }
+    },
+    {
+      "match_id": "WC26-060",
+      "home_team_id": "ALG",
+      "away_team_id": "AUT",
+      "home_xg": 1.165,
+      "away_xg": 1.236,
+      "top_scores": [
+        {
+          "home": 1,
+          "away": 1,
+          "probability": 0.13049748141849535
+        },
+        {
+          "home": 0,
+          "away": 1,
+          "probability": 0.1120196472469937
+        },
+        {
+          "home": 1,
+          "away": 0,
+          "probability": 0.10557171266065295
+        },
+        {
+          "home": 0,
+          "away": 0,
+          "probability": 0.09062325098506624
+        },
+        {
+          "home": 1,
+          "away": 2,
+          "probability": 0.08065414601783548
+        }
+      ],
+      "confidence": "High uncertainty",
+      "key_factors": [
+        "Austria has the stronger baseline rating",
+        "Adjusted rating gap: 24 Elo-equivalent points",
+        "Fixture ordering adds no home advantage; this is modeled as a neutral-site match",
+        "Recent weighted form favors Algeria (13/19 matches)"
+      ],
+      "context": {
+        "home_form_elo": 46.798,
+        "away_form_elo": 33.227,
+        "home_h2h_elo": 0.0,
+        "away_h2h_elo": -0.0,
+        "home_availability_elo": 0.0,
+        "away_availability_elo": 0.0,
+        "historical_matches_home": 13,
+        "historical_matches_away": 19,
+        "h2h_matches": 0,
+        "availability_reports": 0,
+        "data_cutoff": "2026-06-10T00:46:29.520392+00:00"
+      },
+      "probabilities": {
+        "home_win": 0.344584,
+        "draw": 0.276334,
+        "away_win": 0.379083
+      }
+    },
+    {
+      "match_id": "WC26-066",
+      "home_team_id": "COD",
+      "away_team_id": "UZB",
+      "home_xg": 1.147,
+      "away_xg": 1.255,
+      "top_scores": [
+        {
+          "home": 1,
+          "away": 1,
+          "probability": 0.13031690654441883
+        },
+        {
+          "home": 0,
+          "away": 1,
+          "probability": 0.113605478866343
+        },
+        {
+          "home": 1,
+          "away": 0,
+          "probability": 0.10381013494129296
+        },
+        {
+          "home": 0,
+          "away": 0,
+          "probability": 0.09049785176695753
+        },
+        {
+          "home": 1,
+          "away": 2,
+          "probability": 0.08179594478376694
+        }
+      ],
+      "confidence": "High uncertainty",
+      "key_factors": [
+        "Uzbekistan has the stronger baseline rating",
+        "Adjusted rating gap: 36 Elo-equivalent points",
+        "Fixture ordering adds no home advantage; this is modeled as a neutral-site match",
+        "Recent weighted form favors Uzbekistan (10/17 matches)"
+      ],
+      "context": {
+        "home_form_elo": -30.818,
+        "away_form_elo": -11.901,
+        "home_h2h_elo": 0.0,
+        "away_h2h_elo": -0.0,
+        "home_availability_elo": 0.0,
+        "away_availability_elo": 0.0,
+        "historical_matches_home": 10,
+        "historical_matches_away": 17,
+        "h2h_matches": 0,
+        "availability_reports": 0,
+        "data_cutoff": "2026-06-10T00:46:29.520392+00:00"
+      },
+      "probabilities": {
+        "home_win": 0.335798,
+        "draw": 0.275951,
+        "away_win": 0.388251
+      }
+    },
+    {
+      "match_id": "WC26-072",
+      "home_team_id": "CRO",
+      "away_team_id": "GHA",
+      "home_xg": 1.672,
+      "away_xg": 0.861,
+      "top_scores": [
+        {
+          "home": 1,
+          "away": 0,
+          "probability": 0.1327678854154357
+        },
+        {
+          "home": 1,
+          "away": 1,
+          "probability": 0.1143413257297597
+        },
+        {
+          "home": 2,
+          "away": 0,
+          "probability": 0.11099805013919684
+        },
+        {
+          "home": 2,
+          "away": 1,
+          "probability": 0.09559287749911369
+        },
+        {
+          "home": 0,
+          "away": 0,
+          "probability": 0.07940369842344425
+        }
+      ],
+      "confidence": "Moderate confidence",
+      "key_factors": [
+        "Croatia has the stronger baseline rating",
+        "Adjusted rating gap: 265 Elo-equivalent points",
+        "Fixture ordering adds no home advantage; this is modeled as a neutral-site match",
+        "Recent weighted form favors Croatia (29/14 matches)"
+      ],
+      "context": {
+        "home_form_elo": 0.487,
+        "away_form_elo": -65.0,
+        "home_h2h_elo": 0.0,
+        "away_h2h_elo": -0.0,
+        "home_availability_elo": 0.0,
+        "away_availability_elo": 0.0,
+        "historical_matches_home": 29,
+        "historical_matches_away": 14,
+        "h2h_matches": 0,
+        "availability_reports": 0,
+        "data_cutoff": "2026-06-10T00:46:29.520392+00:00"
+      },
+      "probabilities": {
+        "home_win": 0.56569,
+        "draw": 0.242122,
+        "away_win": 0.192188
+      }
+    }
+  ],
+  "simulation": {
+    "iterations": 50000,
+    "seed": 2026,
+    "monte_carlo_precision": {
+      "worst_case_standard_error": 0.002236,
+      "worst_case_95_margin": 0.004383
+    },
+    "teams": [
+      {
+        "team_id": "ESP",
+        "team_name": "Spain",
+        "round_of_32": 0.8818,
+        "round_of_16": 0.46288,
+        "quarterfinal": 0.2545,
+        "semifinal": 0.14576,
+        "final": 0.08782,
+        "champion": 0.06126
+      },
+      {
+        "team_id": "ARG",
+        "team_name": "Argentina",
+        "round_of_32": 0.82728,
+        "round_of_16": 0.39918,
+        "quarterfinal": 0.20798,
+        "semifinal": 0.1126,
+        "final": 0.06428,
+        "champion": 0.0428
+      },
+      {
+        "team_id": "POR",
+        "team_name": "Portugal",
+        "round_of_32": 0.84106,
+        "round_of_16": 0.43316,
+        "quarterfinal": 0.2265,
+        "semifinal": 0.11208,
+        "final": 0.06242,
+        "champion": 0.0419
+      },
+      {
+        "team_id": "FRA",
+        "team_name": "France",
+        "round_of_32": 0.83076,
+        "round_of_16": 0.4259,
+        "quarterfinal": 0.20742,
+        "semifinal": 0.112,
+        "final": 0.06364,
+        "champion": 0.04156
+      },
+      {
+        "team_id": "MEX",
+        "team_name": "Mexico",
+        "round_of_32": 0.83796,
+        "round_of_16": 0.44412,
+        "quarterfinal": 0.23394,
+        "semifinal": 0.12828,
+        "final": 0.06296,
+        "champion": 0.04062
+      },
+      {
+        "team_id": "BRA",
+        "team_name": "Brazil",
+        "round_of_32": 0.83596,
+        "round_of_16": 0.41776,
+        "quarterfinal": 0.20514,
+        "semifinal": 0.10016,
+        "final": 0.05528,
+        "champion": 0.03696
+      },
+      {
+        "team_id": "MAR",
+        "team_name": "Morocco",
+        "round_of_32": 0.82338,
+        "round_of_16": 0.42728,
+        "quarterfinal": 0.21882,
+        "semifinal": 0.11746,
+        "final": 0.05734,
+        "champion": 0.03632
+      },
+      {
+        "team_id": "CAN",
+        "team_name": "Canada",
+        "round_of_32": 0.79462,
+        "round_of_16": 0.42408,
+        "quarterfinal": 0.22772,
+        "semifinal": 0.12396,
+        "final": 0.07896,
+        "champion": 0.03464
+      },
+      {
+        "team_id": "BEL",
+        "team_name": "Belgium",
+        "round_of_32": 0.84456,
+        "round_of_16": 0.42774,
+        "quarterfinal": 0.21104,
+        "semifinal": 0.09842,
+        "final": 0.05226,
+        "champion": 0.03384
+      },
+      {
+        "team_id": "GER",
+        "team_name": "Germany",
+        "round_of_32": 0.82902,
+        "round_of_16": 0.41898,
+        "quarterfinal": 0.20528,
+        "semifinal": 0.09766,
+        "final": 0.0492,
+        "champion": 0.03226
+      },
+      {
+        "team_id": "ENG",
+        "team_name": "England",
+        "round_of_32": 0.8343,
+        "round_of_16": 0.39962,
+        "quarterfinal": 0.1843,
+        "semifinal": 0.09242,
+        "final": 0.04988,
+        "champion": 0.03216
+      },
+      {
+        "team_id": "USA",
+        "team_name": "United States",
+        "round_of_32": 0.78556,
+        "round_of_16": 0.38862,
+        "quarterfinal": 0.19574,
+        "semifinal": 0.10524,
+        "final": 0.04892,
+        "champion": 0.02994
+      },
+      {
+        "team_id": "AUT",
+        "team_name": "Austria",
+        "round_of_32": 0.72244,
+        "round_of_16": 0.37802,
+        "quarterfinal": 0.19926,
+        "semifinal": 0.10702,
+        "final": 0.06468,
+        "champion": 0.0295
+      },
+      {
+        "team_id": "NED",
+        "team_name": "Netherlands",
+        "round_of_32": 0.79864,
+        "round_of_16": 0.38576,
+        "quarterfinal": 0.19202,
+        "semifinal": 0.08736,
+        "final": 0.046,
+        "champion": 0.0284
+      },
+      {
+        "team_id": "COL",
+        "team_name": "Colombia",
+        "round_of_32": 0.7765,
+        "round_of_16": 0.37834,
+        "quarterfinal": 0.18538,
+        "semifinal": 0.09452,
+        "final": 0.04382,
+        "champion": 0.02696
+      },
+      {
+        "team_id": "SUI",
+        "team_name": "Switzerland",
+        "round_of_32": 0.80816,
+        "round_of_16": 0.40658,
+        "quarterfinal": 0.20526,
+        "semifinal": 0.09946,
+        "final": 0.04314,
+        "champion": 0.02628
+      },
+      {
+        "team_id": "AUS",
+        "team_name": "Australia",
+        "round_of_32": 0.68676,
+        "round_of_16": 0.3439,
+        "quarterfinal": 0.176,
+        "semifinal": 0.0926,
+        "final": 0.05672,
+        "champion": 0.02546
+      },
+      {
+        "team_id": "ECU",
+        "team_name": "Ecuador",
+        "round_of_32": 0.76084,
+        "round_of_16": 0.3802,
+        "quarterfinal": 0.18846,
+        "semifinal": 0.0969,
+        "final": 0.05514,
+        "champion": 0.0253
+      },
+      {
+        "team_id": "CRO",
+        "team_name": "Croatia",
+        "round_of_32": 0.7958,
+        "round_of_16": 0.38222,
+        "quarterfinal": 0.18566,
+        "semifinal": 0.09034,
+        "final": 0.04254,
+        "champion": 0.02494
+      },
+      {
+        "team_id": "ALG",
+        "team_name": "Algeria",
+        "round_of_32": 0.68938,
+        "round_of_16": 0.37212,
+        "quarterfinal": 0.19916,
+        "semifinal": 0.10394,
+        "final": 0.06192,
+        "champion": 0.02492
+      },
+      {
+        "team_id": "JPN",
+        "team_name": "Japan",
+        "round_of_32": 0.7553,
+        "round_of_16": 0.38534,
+        "quarterfinal": 0.1935,
+        "semifinal": 0.09174,
+        "final": 0.04162,
+        "champion": 0.02412
+      },
+      {
+        "team_id": "KOR",
+        "team_name": "South Korea",
+        "round_of_32": 0.74662,
+        "round_of_16": 0.3746,
+        "quarterfinal": 0.18734,
+        "semifinal": 0.09294,
+        "final": 0.04798,
+        "champion": 0.02332
+      },
+      {
+        "team_id": "URU",
+        "team_name": "Uruguay",
+        "round_of_32": 0.76944,
+        "round_of_16": 0.36592,
+        "quarterfinal": 0.17754,
+        "semifinal": 0.08422,
+        "final": 0.03588,
+        "champion": 0.02198
+      },
+      {
+        "team_id": "IRN",
+        "team_name": "Iran",
+        "round_of_32": 0.75798,
+        "round_of_16": 0.37244,
+        "quarterfinal": 0.17918,
+        "semifinal": 0.08342,
+        "final": 0.03858,
+        "champion": 0.01906
+      },
+      {
+        "team_id": "SEN",
+        "team_name": "Senegal",
+        "round_of_32": 0.70902,
+        "round_of_16": 0.34818,
+        "quarterfinal": 0.16824,
+        "semifinal": 0.07818,
+        "final": 0.03432,
+        "champion": 0.01888
+      },
+      {
+        "team_id": "NOR",
+        "team_name": "Norway",
+        "round_of_32": 0.65276,
+        "round_of_16": 0.31886,
+        "quarterfinal": 0.15472,
+        "semifinal": 0.07654,
+        "final": 0.04604,
+        "champion": 0.01776
+      },
+      {
+        "team_id": "CIV",
+        "team_name": "Ivory Coast",
+        "round_of_32": 0.65532,
+        "round_of_16": 0.34296,
+        "quarterfinal": 0.18134,
+        "semifinal": 0.10046,
+        "final": 0.04894,
+        "champion": 0.01734
+      },
+      {
+        "team_id": "TUR",
+        "team_name": "Turkey",
+        "round_of_32": 0.6402,
+        "round_of_16": 0.29966,
+        "quarterfinal": 0.14468,
+        "semifinal": 0.07384,
+        "final": 0.04384,
+        "champion": 0.01722
+      },
+      {
+        "team_id": "EGY",
+        "team_name": "Egypt",
+        "round_of_32": 0.7033,
+        "round_of_16": 0.34244,
+        "quarterfinal": 0.1683,
+        "semifinal": 0.07838,
+        "final": 0.04496,
+        "champion": 0.01624
+      },
+      {
+        "team_id": "TUN",
+        "team_name": "Tunisia",
+        "round_of_32": 0.61736,
+        "round_of_16": 0.31282,
+        "quarterfinal": 0.1589,
+        "semifinal": 0.0837,
+        "final": 0.04228,
+        "champion": 0.0157
+      },
+      {
+        "team_id": "PAN",
+        "team_name": "Panama",
+        "round_of_32": 0.65222,
+        "round_of_16": 0.3159,
+        "quarterfinal": 0.1481,
+        "semifinal": 0.06942,
+        "final": 0.0401,
+        "champion": 0.01518
+      },
+      {
+        "team_id": "PAR",
+        "team_name": "Paraguay",
+        "round_of_32": 0.57002,
+        "round_of_16": 0.28038,
+        "quarterfinal": 0.13896,
+        "semifinal": 0.0677,
+        "final": 0.0358,
+        "champion": 0.01264
+      },
+      {
+        "team_id": "SCO",
+        "team_name": "Scotland",
+        "round_of_32": 0.61476,
+        "round_of_16": 0.2939,
+        "quarterfinal": 0.14416,
+        "semifinal": 0.06708,
+        "final": 0.03562,
+        "champion": 0.0123
+      },
+      {
+        "team_id": "QAT",
+        "team_name": "Qatar",
+        "round_of_32": 0.58694,
+        "round_of_16": 0.29658,
+        "quarterfinal": 0.15072,
+        "semifinal": 0.08178,
+        "final": 0.03332,
+        "champion": 0.0114
+      },
+      {
+        "team_id": "CZE",
+        "team_name": "Czechia",
+        "round_of_32": 0.56836,
+        "round_of_16": 0.28238,
+        "quarterfinal": 0.14114,
+        "semifinal": 0.07828,
+        "final": 0.03402,
+        "champion": 0.01108
+      },
+      {
+        "team_id": "UZB",
+        "team_name": "Uzbekistan",
+        "round_of_32": 0.55412,
+        "round_of_16": 0.2812,
+        "quarterfinal": 0.14172,
+        "semifinal": 0.07692,
+        "final": 0.03324,
+        "champion": 0.01052
+      },
+      {
+        "team_id": "SWE",
+        "team_name": "Sweden",
+        "round_of_32": 0.50258,
+        "round_of_16": 0.23714,
+        "quarterfinal": 0.11234,
+        "semifinal": 0.05822,
+        "final": 0.02404,
+        "champion": 0.00734
+      },
+      {
+        "team_id": "RSA",
+        "team_name": "South Africa",
+        "round_of_32": 0.50876,
+        "round_of_16": 0.26032,
+        "quarterfinal": 0.13426,
+        "semifinal": 0.0657,
+        "final": 0.02486,
+        "champion": 0.00732
+      },
+      {
+        "team_id": "COD",
+        "team_name": "DR Congo",
+        "round_of_32": 0.48932,
+        "round_of_16": 0.23652,
+        "quarterfinal": 0.1153,
+        "semifinal": 0.05898,
+        "final": 0.0224,
+        "champion": 0.00682
+      },
+      {
+        "team_id": "KSA",
+        "team_name": "Saudi Arabia",
+        "round_of_32": 0.49418,
+        "round_of_16": 0.2475,
+        "quarterfinal": 0.1266,
+        "semifinal": 0.06182,
+        "final": 0.02324,
+        "champion": 0.00628
+      },
+      {
+        "team_id": "IRQ",
+        "team_name": "Iraq",
+        "round_of_32": 0.47138,
+        "round_of_16": 0.23562,
+        "quarterfinal": 0.11604,
+        "semifinal": 0.05846,
+        "final": 0.0214,
+        "champion": 0.0062
+      },
+      {
+        "team_id": "CPV",
+        "team_name": "Cape Verde",
+        "round_of_32": 0.49886,
+        "round_of_16": 0.25872,
+        "quarterfinal": 0.13714,
+        "semifinal": 0.06128,
+        "final": 0.02204,
+        "champion": 0.00574
+      },
+      {
+        "team_id": "JOR",
+        "team_name": "Jordan",
+        "round_of_32": 0.43568,
+        "round_of_16": 0.2191,
+        "quarterfinal": 0.11246,
+        "semifinal": 0.05076,
+        "final": 0.01934,
+        "champion": 0.0055
+      },
+      {
+        "team_id": "BIH",
+        "team_name": "Bosnia and Herzegovina",
+        "round_of_32": 0.47302,
+        "round_of_16": 0.23674,
+        "quarterfinal": 0.1161,
+        "semifinal": 0.04932,
+        "final": 0.01692,
+        "champion": 0.00388
+      },
+      {
+        "team_id": "CUW",
+        "team_name": "Curacao",
+        "round_of_32": 0.43086,
+        "round_of_16": 0.21542,
+        "quarterfinal": 0.10046,
+        "semifinal": 0.04076,
+        "final": 0.01354,
+        "champion": 0.00312
+      },
+      {
+        "team_id": "GHA",
+        "team_name": "Ghana",
+        "round_of_32": 0.37926,
+        "round_of_16": 0.18194,
+        "quarterfinal": 0.08342,
+        "semifinal": 0.03288,
+        "final": 0.01046,
+        "champion": 0.00302
+      },
+      {
+        "team_id": "HAI",
+        "team_name": "Haiti",
+        "round_of_32": 0.39122,
+        "round_of_16": 0.19228,
+        "quarterfinal": 0.08768,
+        "semifinal": 0.0344,
+        "final": 0.0109,
+        "champion": 0.00232
+      },
+      {
+        "team_id": "NZL",
+        "team_name": "New Zealand",
+        "round_of_32": 0.36638,
+        "round_of_16": 0.16868,
+        "quarterfinal": 0.07008,
+        "semifinal": 0.02464,
+        "final": 0.0074,
+        "champion": 0.0017
+      }
+    ]
+  }
+}

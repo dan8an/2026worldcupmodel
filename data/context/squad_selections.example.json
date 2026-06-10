@@ -1,0 +1,13 @@
+[
+  {
+    "team_id": "USA",
+    "player_name": "Example Player",
+    "selection_status": "final",
+    "importance": 0.75,
+    "confidence": 1.0,
+    "published_at": "2026-06-01T16:00:00+00:00",
+    "source_url": "https://example.com/official-squad",
+    "source_name": "Official federation",
+    "note": "Example only; do not copy into the live selection file."
+  }
+]

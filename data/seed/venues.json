@@ -1,0 +1,19 @@
+[
+  {"id":"MEX","name":"Mexico City Stadium","city":"Mexico City","country":"Mexico","timezone":"America/Mexico_City","latitude":19.3029,"longitude":-99.1505},
+  {"id":"GDL","name":"Guadalajara Stadium","city":"Guadalajara","country":"Mexico","timezone":"America/Mexico_City","latitude":20.6817,"longitude":-103.4627},
+  {"id":"MTY","name":"Monterrey Stadium","city":"Monterrey","country":"Mexico","timezone":"America/Monterrey","latitude":25.6692,"longitude":-100.2443},
+  {"id":"TOR","name":"Toronto Stadium","city":"Toronto","country":"Canada","timezone":"America/Toronto","latitude":43.6332,"longitude":-79.4186},
+  {"id":"VAN","name":"Vancouver Stadium","city":"Vancouver","country":"Canada","timezone":"America/Vancouver","latitude":49.2768,"longitude":-123.1119},
+  {"id":"ATL","name":"Atlanta Stadium","city":"Atlanta","country":"United States","timezone":"America/New_York","latitude":33.7554,"longitude":-84.4008},
+  {"id":"BOS","name":"Boston Stadium","city":"Foxborough","country":"United States","timezone":"America/New_York","latitude":42.0909,"longitude":-71.2643},
+  {"id":"DAL","name":"Dallas Stadium","city":"Arlington","country":"United States","timezone":"America/Chicago","latitude":32.7473,"longitude":-97.0945},
+  {"id":"HOU","name":"Houston Stadium","city":"Houston","country":"United States","timezone":"America/Chicago","latitude":29.6847,"longitude":-95.4107},
+  {"id":"KC","name":"Kansas City Stadium","city":"Kansas City","country":"United States","timezone":"America/Chicago","latitude":39.0489,"longitude":-94.4839},
+  {"id":"LA","name":"Los Angeles Stadium","city":"Inglewood","country":"United States","timezone":"America/Los_Angeles","latitude":33.9535,"longitude":-118.3392},
+  {"id":"MIA","name":"Miami Stadium","city":"Miami Gardens","country":"United States","timezone":"America/New_York","latitude":25.958,"longitude":-80.2389},
+  {"id":"NYNJ","name":"New York New Jersey Stadium","city":"East Rutherford","country":"United States","timezone":"America/New_York","latitude":40.8135,"longitude":-74.0745},
+  {"id":"PHI","name":"Philadelphia Stadium","city":"Philadelphia","country":"United States","timezone":"America/New_York","latitude":39.9008,"longitude":-75.1675},
+  {"id":"SEA","name":"Seattle Stadium","city":"Seattle","country":"United States","timezone":"America/Los_Angeles","latitude":47.5952,"longitude":-122.3316},
+  {"id":"SF","name":"San Francisco Bay Area Stadium","city":"Santa Clara","country":"United States","timezone":"America/Los_Angeles","latitude":37.403,"longitude":-121.97}
+]
+

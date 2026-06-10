@@ -1,0 +1,1469 @@
+{
+  "protocol": {
+    "start_year": 2022,
+    "end_date": "2026-06-08",
+    "minimum_prior_matches_per_team": 5,
+    "same_day_updates": "batched_after_predictions",
+    "rank_data": "excluded because current ranks would leak future information",
+    "availability_data": "excluded because no historical point-in-time archive is available"
+  },
+  "aggregate": {
+    "equal": {
+      "matches": 557,
+      "log_loss": 1.098612,
+      "brier_score": 0.666667,
+      "ranked_probability_score": 0.232595,
+      "accuracy": 0.43447,
+      "expected_calibration_error": 0.0,
+      "calibration_bins": [
+        {
+          "lower": 0.0,
+          "upper": 0.1,
+          "count": 0,
+          "mean_probability": 0.0,
+          "observed_rate": 0.0
+        },
+        {
+          "lower": 0.1,
+          "upper": 0.2,
+          "count": 0,
+          "mean_probability": 0.0,
+          "observed_rate": 0.0
+        },
+        {
+          "lower": 0.2,
+          "upper": 0.3,
+          "count": 0,
+          "mean_probability": 0.0,
+          "observed_rate": 0.0
+        },
+        {
+          "lower": 0.3,
+          "upper": 0.4,
+          "count": 1671,
+          "mean_probability": 0.333333,
+          "observed_rate": 0.333333
+        },
+        {
+          "lower": 0.4,
+          "upper": 0.5,
+          "count": 0,
+          "mean_probability": 0.0,
+          "observed_rate": 0.0
+        },
+        {
+          "lower": 0.5,
+          "upper": 0.6,
+          "count": 0,
+          "mean_probability": 0.0,
+          "observed_rate": 0.0
+        },
+        {
+          "lower": 0.6,
+          "upper": 0.7,
+          "count": 0,
+          "mean_probability": 0.0,
+          "observed_rate": 0.0
+        },
+        {
+          "lower": 0.7,
+          "upper": 0.8,
+          "count": 0,
+          "mean_probability": 0.0,
+          "observed_rate": 0.0
+        },
+        {
+          "lower": 0.8,
+          "upper": 0.9,
+          "count": 0,
+          "mean_probability": 0.0,
+          "observed_rate": 0.0
+        },
+        {
+          "lower": 0.9,
+          "upper": 1.0,
+          "count": 0,
+          "mean_probability": 0.0,
+          "observed_rate": 0.0
+        }
+      ]
+    },
+    "elo": {
+      "matches": 557,
+      "log_loss": 1.018397,
+      "brier_score": 0.609905,
+      "ranked_probability_score": 0.206618,
+      "accuracy": 0.506284,
+      "expected_calibration_error": 0.021728,
+      "calibration_bins": [
+        {
+          "lower": 0.0,
+          "upper": 0.1,
+          "count": 3,
+          "mean_probability": 0.090426,
+          "observed_rate": 0.0
+        },
+        {
+          "lower": 0.1,
+          "upper": 0.2,
+          "count": 79,
+          "mean_probability": 0.173626,
+          "observed_rate": 0.113924
+        },
+        {
+          "lower": 0.2,
+          "upper": 0.3,
+          "count": 813,
+          "mean_probability": 0.261347,
+          "observed_rate": 0.252153
+        },
+        {
+          "lower": 0.3,
+          "upper": 0.4,
+          "count": 353,
+          "mean_probability": 0.349779,
+          "observed_rate": 0.334278
+        },
+        {
+          "lower": 0.4,
+          "upper": 0.5,
+          "count": 261,
+          "mean_probability": 0.444591,
+          "observed_rate": 0.455939
+        },
+        {
+          "lower": 0.5,
+          "upper": 0.6,
+          "count": 134,
+          "mean_probability": 0.545524,
+          "observed_rate": 0.634328
+        },
+        {
+          "lower": 0.6,
+          "upper": 0.7,
+          "count": 25,
+          "mean_probability": 0.628301,
+          "observed_rate": 0.76
+        },
+        {
+          "lower": 0.7,
+          "upper": 0.8,
+          "count": 3,
+          "mean_probability": 0.739817,
+          "observed_rate": 0.666667
+        },
+        {
+          "lower": 0.8,
+          "upper": 0.9,
+          "count": 0,
+          "mean_probability": 0.0,
+          "observed_rate": 0.0
+        },
+        {
+          "lower": 0.9,
+          "upper": 1.0,
+          "count": 0,
+          "mean_probability": 0.0,
+          "observed_rate": 0.0
+        }
+      ]
+    },
+    "context": {
+      "matches": 557,
+      "log_loss": 1.018641,
+      "brier_score": 0.610427,
+      "ranked_probability_score": 0.206817,
+      "accuracy": 0.500898,
+      "expected_calibration_error": 0.014765,
+      "calibration_bins": [
+        {
+          "lower": 0.0,
+          "upper": 0.1,
+          "count": 3,
+          "mean_probability": 0.068965,
+          "observed_rate": 0.0
+        },
+        {
+          "lower": 0.1,
+          "upper": 0.2,
+          "count": 136,
+          "mean_probability": 0.166714,
+          "observed_rate": 0.147059
+        },
+        {
+          "lower": 0.2,
+          "upper": 0.3,
+          "count": 791,
+          "mean_probability": 0.259347,
+          "observed_rate": 0.252845
+        },
+        {
+          "lower": 0.3,
+          "upper": 0.4,
+          "count": 292,
+          "mean_probability": 0.349225,
+          "observed_rate": 0.356164
+        },
+        {
+          "lower": 0.4,
+          "upper": 0.5,
+          "count": 246,
+          "mean_probability": 0.444361,
+          "observed_rate": 0.426829
+        },
+        {
+          "lower": 0.5,
+          "upper": 0.6,
+          "count": 137,
+          "mean_probability": 0.547004,
+          "observed_rate": 0.59854
+        },
+        {
+          "lower": 0.6,
+          "upper": 0.7,
+          "count": 60,
+          "mean_probability": 0.637684,
+          "observed_rate": 0.683333
+        },
+        {
+          "lower": 0.7,
+          "upper": 0.8,
+          "count": 5,
+          "mean_probability": 0.737541,
+          "observed_rate": 0.8
+        },
+        {
+          "lower": 0.8,
+          "upper": 0.9,
+          "count": 1,
+          "mean_probability": 0.801605,
+          "observed_rate": 1.0
+        },
+        {
+          "lower": 0.9,
+          "upper": 1.0,
+          "count": 0,
+          "mean_probability": 0.0,
+          "observed_rate": 0.0
+        }
+      ]
+    }
+  },
+  "years": {
+    "2022": {
+      "equal": {
+        "matches": 155,
+        "log_loss": 1.098612,
+        "brier_score": 0.666667,
+        "ranked_probability_score": 0.240143,
+        "accuracy": 0.503226,
+        "expected_calibration_error": 0.0,
+        "calibration_bins": [
+          {
+            "lower": 0.0,
+            "upper": 0.1,
+            "count": 0,
+            "mean_probability": 0.0,
+            "observed_rate": 0.0
+          },
+          {
+            "lower": 0.1,
+            "upper": 0.2,
+            "count": 0,
+            "mean_probability": 0.0,
+            "observed_rate": 0.0
+          },
+          {
+            "lower": 0.2,
+            "upper": 0.3,
+            "count": 0,
+            "mean_probability": 0.0,
+            "observed_rate": 0.0
+          },
+          {
+            "lower": 0.3,
+            "upper": 0.4,
+            "count": 465,
+            "mean_probability": 0.333333,
+            "observed_rate": 0.333333
+          },
+          {
+            "lower": 0.4,
+            "upper": 0.5,
+            "count": 0,
+            "mean_probability": 0.0,
+            "observed_rate": 0.0
+          },
+          {
+            "lower": 0.5,
+            "upper": 0.6,
+            "count": 0,
+            "mean_probability": 0.0,
+            "observed_rate": 0.0
+          },
+          {
+            "lower": 0.6,
+            "upper": 0.7,
+            "count": 0,
+            "mean_probability": 0.0,
+            "observed_rate": 0.0
+          },
+          {
+            "lower": 0.7,
+            "upper": 0.8,
+            "count": 0,
+            "mean_probability": 0.0,
+            "observed_rate": 0.0
+          },
+          {
+            "lower": 0.8,
+            "upper": 0.9,
+            "count": 0,
+            "mean_probability": 0.0,
+            "observed_rate": 0.0
+          },
+          {
+            "lower": 0.9,
+            "upper": 1.0,
+            "count": 0,
+            "mean_probability": 0.0,
+            "observed_rate": 0.0
+          }
+        ]
+      },
+      "elo": {
+        "matches": 155,
+        "log_loss": 0.984283,
+        "brier_score": 0.583578,
+        "ranked_probability_score": 0.204937,
+        "accuracy": 0.574194,
+        "expected_calibration_error": 0.062749,
+        "calibration_bins": [
+          {
+            "lower": 0.0,
+            "upper": 0.1,
+            "count": 0,
+            "mean_probability": 0.0,
+            "observed_rate": 0.0
+          },
+          {
+            "lower": 0.1,
+            "upper": 0.2,
+            "count": 20,
+            "mean_probability": 0.172099,
+            "observed_rate": 0.2
+          },
+          {
+            "lower": 0.2,
+            "upper": 0.3,
+            "count": 234,
+            "mean_probability": 0.262057,
+            "observed_rate": 0.209402
+          },
+          {
+            "lower": 0.3,
+            "upper": 0.4,
+            "count": 92,
+            "mean_probability": 0.350737,
+            "observed_rate": 0.326087
+          },
+          {
+            "lower": 0.4,
+            "upper": 0.5,
+            "count": 77,
+            "mean_probability": 0.448132,
+            "observed_rate": 0.519481
+          },
+          {
+            "lower": 0.5,
+            "upper": 0.6,
+            "count": 35,
+            "mean_probability": 0.544427,
+            "observed_rate": 0.742857
+          },
+          {
+            "lower": 0.6,
+            "upper": 0.7,
+            "count": 7,
+            "mean_probability": 0.629696,
+            "observed_rate": 0.857143
+          },
+          {
+            "lower": 0.7,
+            "upper": 0.8,
+            "count": 0,
+            "mean_probability": 0.0,
+            "observed_rate": 0.0
+          },
+          {
+            "lower": 0.8,
+            "upper": 0.9,
+            "count": 0,
+            "mean_probability": 0.0,
+            "observed_rate": 0.0
+          },
+          {
+            "lower": 0.9,
+            "upper": 1.0,
+            "count": 0,
+            "mean_probability": 0.0,
+            "observed_rate": 0.0
+          }
+        ]
+      },
+      "context": {
+        "matches": 155,
+        "log_loss": 0.984541,
+        "brier_score": 0.583759,
+        "ranked_probability_score": 0.205215,
+        "accuracy": 0.554839,
+        "expected_calibration_error": 0.047912,
+        "calibration_bins": [
+          {
+            "lower": 0.0,
+            "upper": 0.1,
+            "count": 0,
+            "mean_probability": 0.0,
+            "observed_rate": 0.0
+          },
+          {
+            "lower": 0.1,
+            "upper": 0.2,
+            "count": 32,
+            "mean_probability": 0.162716,
+            "observed_rate": 0.125
+          },
+          {
+            "lower": 0.2,
+            "upper": 0.3,
+            "count": 233,
+            "mean_probability": 0.258947,
+            "observed_rate": 0.218884
+          },
+          {
+            "lower": 0.3,
+            "upper": 0.4,
+            "count": 73,
+            "mean_probability": 0.350657,
+            "observed_rate": 0.342466
+          },
+          {
+            "lower": 0.4,
+            "upper": 0.5,
+            "count": 73,
+            "mean_probability": 0.448961,
+            "observed_rate": 0.520548
+          },
+          {
+            "lower": 0.5,
+            "upper": 0.6,
+            "count": 34,
+            "mean_probability": 0.539619,
+            "observed_rate": 0.617647
+          },
+          {
+            "lower": 0.6,
+            "upper": 0.7,
+            "count": 19,
+            "mean_probability": 0.632681,
+            "observed_rate": 0.789474
+          },
+          {
+            "lower": 0.7,
+            "upper": 0.8,
+            "count": 1,
+            "mean_probability": 0.718404,
+            "observed_rate": 1.0
+          },
+          {
+            "lower": 0.8,
+            "upper": 0.9,
+            "count": 0,
+            "mean_probability": 0.0,
+            "observed_rate": 0.0
+          },
+          {
+            "lower": 0.9,
+            "upper": 1.0,
+            "count": 0,
+            "mean_probability": 0.0,
+            "observed_rate": 0.0
+          }
+        ]
+      }
+    },
+    "2023": {
+      "equal": {
+        "matches": 98,
+        "log_loss": 1.098612,
+        "brier_score": 0.666667,
+        "ranked_probability_score": 0.238662,
+        "accuracy": 0.418367,
+        "expected_calibration_error": 0.0,
+        "calibration_bins": [
+          {
+            "lower": 0.0,
+            "upper": 0.1,
+            "count": 0,
+            "mean_probability": 0.0,
+            "observed_rate": 0.0
+          },
+          {
+            "lower": 0.1,
+            "upper": 0.2,
+            "count": 0,
+            "mean_probability": 0.0,
+            "observed_rate": 0.0
+          },
+          {
+            "lower": 0.2,
+            "upper": 0.3,
+            "count": 0,
+            "mean_probability": 0.0,
+            "observed_rate": 0.0
+          },
+          {
+            "lower": 0.3,
+            "upper": 0.4,
+            "count": 294,
+            "mean_probability": 0.333333,
+            "observed_rate": 0.333333
+          },
+          {
+            "lower": 0.4,
+            "upper": 0.5,
+            "count": 0,
+            "mean_probability": 0.0,
+            "observed_rate": 0.0
+          },
+          {
+            "lower": 0.5,
+            "upper": 0.6,
+            "count": 0,
+            "mean_probability": 0.0,
+            "observed_rate": 0.0
+          },
+          {
+            "lower": 0.6,
+            "upper": 0.7,
+            "count": 0,
+            "mean_probability": 0.0,
+            "observed_rate": 0.0
+          },
+          {
+            "lower": 0.7,
+            "upper": 0.8,
+            "count": 0,
+            "mean_probability": 0.0,
+            "observed_rate": 0.0
+          },
+          {
+            "lower": 0.8,
+            "upper": 0.9,
+            "count": 0,
+            "mean_probability": 0.0,
+            "observed_rate": 0.0
+          },
+          {
+            "lower": 0.9,
+            "upper": 1.0,
+            "count": 0,
+            "mean_probability": 0.0,
+            "observed_rate": 0.0
+          }
+        ]
+      },
+      "elo": {
+        "matches": 98,
+        "log_loss": 1.017105,
+        "brier_score": 0.60971,
+        "ranked_probability_score": 0.21527,
+        "accuracy": 0.459184,
+        "expected_calibration_error": 0.043056,
+        "calibration_bins": [
+          {
+            "lower": 0.0,
+            "upper": 0.1,
+            "count": 2,
+            "mean_probability": 0.088757,
+            "observed_rate": 0.0
+          },
+          {
+            "lower": 0.1,
+            "upper": 0.2,
+            "count": 17,
+            "mean_probability": 0.171706,
+            "observed_rate": 0.058824
+          },
+          {
+            "lower": 0.2,
+            "upper": 0.3,
+            "count": 140,
+            "mean_probability": 0.262815,
+            "observed_rate": 0.271429
+          },
+          {
+            "lower": 0.3,
+            "upper": 0.4,
+            "count": 59,
+            "mean_probability": 0.349636,
+            "observed_rate": 0.389831
+          },
+          {
+            "lower": 0.4,
+            "upper": 0.5,
+            "count": 48,
+            "mean_probability": 0.442347,
+            "observed_rate": 0.354167
+          },
+          {
+            "lower": 0.5,
+            "upper": 0.6,
+            "count": 21,
+            "mean_probability": 0.555598,
+            "observed_rate": 0.619048
+          },
+          {
+            "lower": 0.6,
+            "upper": 0.7,
+            "count": 5,
+            "mean_probability": 0.618827,
+            "observed_rate": 0.8
+          },
+          {
+            "lower": 0.7,
+            "upper": 0.8,
+            "count": 2,
+            "mean_probability": 0.743235,
+            "observed_rate": 1.0
+          },
+          {
+            "lower": 0.8,
+            "upper": 0.9,
+            "count": 0,
+            "mean_probability": 0.0,
+            "observed_rate": 0.0
+          },
+          {
+            "lower": 0.9,
+            "upper": 1.0,
+            "count": 0,
+            "mean_probability": 0.0,
+            "observed_rate": 0.0
+          }
+        ]
+      },
+      "context": {
+        "matches": 98,
+        "log_loss": 1.013525,
+        "brier_score": 0.607586,
+        "ranked_probability_score": 0.214259,
+        "accuracy": 0.44898,
+        "expected_calibration_error": 0.067061,
+        "calibration_bins": [
+          {
+            "lower": 0.0,
+            "upper": 0.1,
+            "count": 2,
+            "mean_probability": 0.067012,
+            "observed_rate": 0.0
+          },
+          {
+            "lower": 0.1,
+            "upper": 0.2,
+            "count": 25,
+            "mean_probability": 0.162512,
+            "observed_rate": 0.12
+          },
+          {
+            "lower": 0.2,
+            "upper": 0.3,
+            "count": 136,
+            "mean_probability": 0.259679,
+            "observed_rate": 0.235294
+          },
+          {
+            "lower": 0.3,
+            "upper": 0.4,
+            "count": 52,
+            "mean_probability": 0.349074,
+            "observed_rate": 0.480769
+          },
+          {
+            "lower": 0.4,
+            "upper": 0.5,
+            "count": 43,
+            "mean_probability": 0.442812,
+            "observed_rate": 0.325581
+          },
+          {
+            "lower": 0.5,
+            "upper": 0.6,
+            "count": 21,
+            "mean_probability": 0.543315,
+            "observed_rate": 0.666667
+          },
+          {
+            "lower": 0.6,
+            "upper": 0.7,
+            "count": 13,
+            "mean_probability": 0.638755,
+            "observed_rate": 0.615385
+          },
+          {
+            "lower": 0.7,
+            "upper": 0.8,
+            "count": 1,
+            "mean_probability": 0.778978,
+            "observed_rate": 1.0
+          },
+          {
+            "lower": 0.8,
+            "upper": 0.9,
+            "count": 1,
+            "mean_probability": 0.801605,
+            "observed_rate": 1.0
+          },
+          {
+            "lower": 0.9,
+            "upper": 1.0,
+            "count": 0,
+            "mean_probability": 0.0,
+            "observed_rate": 0.0
+          }
+        ]
+      }
+    },
+    "2024": {
+      "equal": {
+        "matches": 139,
+        "log_loss": 1.098612,
+        "brier_score": 0.666667,
+        "ranked_probability_score": 0.221423,
+        "accuracy": 0.395683,
+        "expected_calibration_error": 0.0,
+        "calibration_bins": [
+          {
+            "lower": 0.0,
+            "upper": 0.1,
+            "count": 0,
+            "mean_probability": 0.0,
+            "observed_rate": 0.0
+          },
+          {
+            "lower": 0.1,
+            "upper": 0.2,
+            "count": 0,
+            "mean_probability": 0.0,
+            "observed_rate": 0.0
+          },
+          {
+            "lower": 0.2,
+            "upper": 0.3,
+            "count": 0,
+            "mean_probability": 0.0,
+            "observed_rate": 0.0
+          },
+          {
+            "lower": 0.3,
+            "upper": 0.4,
+            "count": 417,
+            "mean_probability": 0.333333,
+            "observed_rate": 0.333333
+          },
+          {
+            "lower": 0.4,
+            "upper": 0.5,
+            "count": 0,
+            "mean_probability": 0.0,
+            "observed_rate": 0.0
+          },
+          {
+            "lower": 0.5,
+            "upper": 0.6,
+            "count": 0,
+            "mean_probability": 0.0,
+            "observed_rate": 0.0
+          },
+          {
+            "lower": 0.6,
+            "upper": 0.7,
+            "count": 0,
+            "mean_probability": 0.0,
+            "observed_rate": 0.0
+          },
+          {
+            "lower": 0.7,
+            "upper": 0.8,
+            "count": 0,
+            "mean_probability": 0.0,
+            "observed_rate": 0.0
+          },
+          {
+            "lower": 0.8,
+            "upper": 0.9,
+            "count": 0,
+            "mean_probability": 0.0,
+            "observed_rate": 0.0
+          },
+          {
+            "lower": 0.9,
+            "upper": 1.0,
+            "count": 0,
+            "mean_probability": 0.0,
+            "observed_rate": 0.0
+          }
+        ]
+      },
+      "elo": {
+        "matches": 139,
+        "log_loss": 1.044213,
+        "brier_score": 0.628487,
+        "ranked_probability_score": 0.200175,
+        "accuracy": 0.47482,
+        "expected_calibration_error": 0.052868,
+        "calibration_bins": [
+          {
+            "lower": 0.0,
+            "upper": 0.1,
+            "count": 0,
+            "mean_probability": 0.0,
+            "observed_rate": 0.0
+          },
+          {
+            "lower": 0.1,
+            "upper": 0.2,
+            "count": 23,
+            "mean_probability": 0.176849,
+            "observed_rate": 0.043478
+          },
+          {
+            "lower": 0.2,
+            "upper": 0.3,
+            "count": 205,
+            "mean_probability": 0.25882,
+            "observed_rate": 0.307317
+          },
+          {
+            "lower": 0.3,
+            "upper": 0.4,
+            "count": 77,
+            "mean_probability": 0.346877,
+            "observed_rate": 0.285714
+          },
+          {
+            "lower": 0.4,
+            "upper": 0.5,
+            "count": 61,
+            "mean_probability": 0.441418,
+            "observed_rate": 0.393443
+          },
+          {
+            "lower": 0.5,
+            "upper": 0.6,
+            "count": 43,
+            "mean_probability": 0.542312,
+            "observed_rate": 0.534884
+          },
+          {
+            "lower": 0.6,
+            "upper": 0.7,
+            "count": 8,
+            "mean_probability": 0.61486,
+            "observed_rate": 0.75
+          },
+          {
+            "lower": 0.7,
+            "upper": 0.8,
+            "count": 0,
+            "mean_probability": 0.0,
+            "observed_rate": 0.0
+          },
+          {
+            "lower": 0.8,
+            "upper": 0.9,
+            "count": 0,
+            "mean_probability": 0.0,
+            "observed_rate": 0.0
+          },
+          {
+            "lower": 0.9,
+            "upper": 1.0,
+            "count": 0,
+            "mean_probability": 0.0,
+            "observed_rate": 0.0
+          }
+        ]
+      },
+      "context": {
+        "matches": 139,
+        "log_loss": 1.049084,
+        "brier_score": 0.63256,
+        "ranked_probability_score": 0.202027,
+        "accuracy": 0.47482,
+        "expected_calibration_error": 0.053554,
+        "calibration_bins": [
+          {
+            "lower": 0.0,
+            "upper": 0.1,
+            "count": 0,
+            "mean_probability": 0.0,
+            "observed_rate": 0.0
+          },
+          {
+            "lower": 0.1,
+            "upper": 0.2,
+            "count": 43,
+            "mean_probability": 0.167201,
+            "observed_rate": 0.162791
+          },
+          {
+            "lower": 0.2,
+            "upper": 0.3,
+            "count": 190,
+            "mean_probability": 0.256056,
+            "observed_rate": 0.310526
+          },
+          {
+            "lower": 0.3,
+            "upper": 0.4,
+            "count": 67,
+            "mean_probability": 0.344593,
+            "observed_rate": 0.283582
+          },
+          {
+            "lower": 0.4,
+            "upper": 0.5,
+            "count": 58,
+            "mean_probability": 0.442668,
+            "observed_rate": 0.362069
+          },
+          {
+            "lower": 0.5,
+            "upper": 0.6,
+            "count": 40,
+            "mean_probability": 0.55535,
+            "observed_rate": 0.5
+          },
+          {
+            "lower": 0.6,
+            "upper": 0.7,
+            "count": 19,
+            "mean_probability": 0.641222,
+            "observed_rate": 0.684211
+          },
+          {
+            "lower": 0.7,
+            "upper": 0.8,
+            "count": 0,
+            "mean_probability": 0.0,
+            "observed_rate": 0.0
+          },
+          {
+            "lower": 0.8,
+            "upper": 0.9,
+            "count": 0,
+            "mean_probability": 0.0,
+            "observed_rate": 0.0
+          },
+          {
+            "lower": 0.9,
+            "upper": 1.0,
+            "count": 0,
+            "mean_probability": 0.0,
+            "observed_rate": 0.0
+          }
+        ]
+      }
+    },
+    "2025": {
+      "equal": {
+        "matches": 106,
+        "log_loss": 1.098612,
+        "brier_score": 0.666667,
+        "ranked_probability_score": 0.227463,
+        "accuracy": 0.377358,
+        "expected_calibration_error": 0.0,
+        "calibration_bins": [
+          {
+            "lower": 0.0,
+            "upper": 0.1,
+            "count": 0,
+            "mean_probability": 0.0,
+            "observed_rate": 0.0
+          },
+          {
+            "lower": 0.1,
+            "upper": 0.2,
+            "count": 0,
+            "mean_probability": 0.0,
+            "observed_rate": 0.0
+          },
+          {
+            "lower": 0.2,
+            "upper": 0.3,
+            "count": 0,
+            "mean_probability": 0.0,
+            "observed_rate": 0.0
+          },
+          {
+            "lower": 0.3,
+            "upper": 0.4,
+            "count": 318,
+            "mean_probability": 0.333333,
+            "observed_rate": 0.333333
+          },
+          {
+            "lower": 0.4,
+            "upper": 0.5,
+            "count": 0,
+            "mean_probability": 0.0,
+            "observed_rate": 0.0
+          },
+          {
+            "lower": 0.5,
+            "upper": 0.6,
+            "count": 0,
+            "mean_probability": 0.0,
+            "observed_rate": 0.0
+          },
+          {
+            "lower": 0.6,
+            "upper": 0.7,
+            "count": 0,
+            "mean_probability": 0.0,
+            "observed_rate": 0.0
+          },
+          {
+            "lower": 0.7,
+            "upper": 0.8,
+            "count": 0,
+            "mean_probability": 0.0,
+            "observed_rate": 0.0
+          },
+          {
+            "lower": 0.8,
+            "upper": 0.9,
+            "count": 0,
+            "mean_probability": 0.0,
+            "observed_rate": 0.0
+          },
+          {
+            "lower": 0.9,
+            "upper": 1.0,
+            "count": 0,
+            "mean_probability": 0.0,
+            "observed_rate": 0.0
+          }
+        ]
+      },
+      "elo": {
+        "matches": 106,
+        "log_loss": 1.057206,
+        "brier_score": 0.639203,
+        "ranked_probability_score": 0.213031,
+        "accuracy": 0.433962,
+        "expected_calibration_error": 0.019463,
+        "calibration_bins": [
+          {
+            "lower": 0.0,
+            "upper": 0.1,
+            "count": 0,
+            "mean_probability": 0.0,
+            "observed_rate": 0.0
+          },
+          {
+            "lower": 0.1,
+            "upper": 0.2,
+            "count": 8,
+            "mean_probability": 0.180588,
+            "observed_rate": 0.125
+          },
+          {
+            "lower": 0.2,
+            "upper": 0.3,
+            "count": 153,
+            "mean_probability": 0.262625,
+            "observed_rate": 0.254902
+          },
+          {
+            "lower": 0.3,
+            "upper": 0.4,
+            "count": 87,
+            "mean_probability": 0.352899,
+            "observed_rate": 0.356322
+          },
+          {
+            "lower": 0.4,
+            "upper": 0.5,
+            "count": 46,
+            "mean_probability": 0.446512,
+            "observed_rate": 0.5
+          },
+          {
+            "lower": 0.5,
+            "upper": 0.6,
+            "count": 23,
+            "mean_probability": 0.542103,
+            "observed_rate": 0.478261
+          },
+          {
+            "lower": 0.6,
+            "upper": 0.7,
+            "count": 1,
+            "mean_probability": 0.663541,
+            "observed_rate": 1.0
+          },
+          {
+            "lower": 0.7,
+            "upper": 0.8,
+            "count": 0,
+            "mean_probability": 0.0,
+            "observed_rate": 0.0
+          },
+          {
+            "lower": 0.8,
+            "upper": 0.9,
+            "count": 0,
+            "mean_probability": 0.0,
+            "observed_rate": 0.0
+          },
+          {
+            "lower": 0.9,
+            "upper": 1.0,
+            "count": 0,
+            "mean_probability": 0.0,
+            "observed_rate": 0.0
+          }
+        ]
+      },
+      "context": {
+        "matches": 106,
+        "log_loss": 1.061344,
+        "brier_score": 0.642874,
+        "ranked_probability_score": 0.214464,
+        "accuracy": 0.45283,
+        "expected_calibration_error": 0.029487,
+        "calibration_bins": [
+          {
+            "lower": 0.0,
+            "upper": 0.1,
+            "count": 0,
+            "mean_probability": 0.0,
+            "observed_rate": 0.0
+          },
+          {
+            "lower": 0.1,
+            "upper": 0.2,
+            "count": 19,
+            "mean_probability": 0.177597,
+            "observed_rate": 0.157895
+          },
+          {
+            "lower": 0.2,
+            "upper": 0.3,
+            "count": 153,
+            "mean_probability": 0.262582,
+            "observed_rate": 0.27451
+          },
+          {
+            "lower": 0.3,
+            "upper": 0.4,
+            "count": 69,
+            "mean_probability": 0.354153,
+            "observed_rate": 0.391304
+          },
+          {
+            "lower": 0.4,
+            "upper": 0.5,
+            "count": 46,
+            "mean_probability": 0.446025,
+            "observed_rate": 0.391304
+          },
+          {
+            "lower": 0.5,
+            "upper": 0.6,
+            "count": 26,
+            "mean_probability": 0.549839,
+            "observed_rate": 0.5
+          },
+          {
+            "lower": 0.6,
+            "upper": 0.7,
+            "count": 4,
+            "mean_probability": 0.625274,
+            "observed_rate": 0.5
+          },
+          {
+            "lower": 0.7,
+            "upper": 0.8,
+            "count": 1,
+            "mean_probability": 0.700066,
+            "observed_rate": 1.0
+          },
+          {
+            "lower": 0.8,
+            "upper": 0.9,
+            "count": 0,
+            "mean_probability": 0.0,
+            "observed_rate": 0.0
+          },
+          {
+            "lower": 0.9,
+            "upper": 1.0,
+            "count": 0,
+            "mean_probability": 0.0,
+            "observed_rate": 0.0
+          }
+        ]
+      }
+    },
+    "2026": {
+      "equal": {
+        "matches": 59,
+        "log_loss": 1.098612,
+        "brier_score": 0.666667,
+        "ranked_probability_score": 0.23823,
+        "accuracy": 0.474576,
+        "expected_calibration_error": 0.0,
+        "calibration_bins": [
+          {
+            "lower": 0.0,
+            "upper": 0.1,
+            "count": 0,
+            "mean_probability": 0.0,
+            "observed_rate": 0.0
+          },
+          {
+            "lower": 0.1,
+            "upper": 0.2,
+            "count": 0,
+            "mean_probability": 0.0,
+            "observed_rate": 0.0
+          },
+          {
+            "lower": 0.2,
+            "upper": 0.3,
+            "count": 0,
+            "mean_probability": 0.0,
+            "observed_rate": 0.0
+          },
+          {
+            "lower": 0.3,
+            "upper": 0.4,
+            "count": 177,
+            "mean_probability": 0.333333,
+            "observed_rate": 0.333333
+          },
+          {
+            "lower": 0.4,
+            "upper": 0.5,
+            "count": 0,
+            "mean_probability": 0.0,
+            "observed_rate": 0.0
+          },
+          {
+            "lower": 0.5,
+            "upper": 0.6,
+            "count": 0,
+            "mean_probability": 0.0,
+            "observed_rate": 0.0
+          },
+          {
+            "lower": 0.6,
+            "upper": 0.7,
+            "count": 0,
+            "mean_probability": 0.0,
+            "observed_rate": 0.0
+          },
+          {
+            "lower": 0.7,
+            "upper": 0.8,
+            "count": 0,
+            "mean_probability": 0.0,
+            "observed_rate": 0.0
+          },
+          {
+            "lower": 0.8,
+            "upper": 0.9,
+            "count": 0,
+            "mean_probability": 0.0,
+            "observed_rate": 0.0
+          },
+          {
+            "lower": 0.9,
+            "upper": 1.0,
+            "count": 0,
+            "mean_probability": 0.0,
+            "observed_rate": 0.0
+          }
+        ]
+      },
+      "elo": {
+        "matches": 59,
+        "log_loss": 0.979619,
+        "brier_score": 0.582974,
+        "ranked_probability_score": 0.20032,
+        "accuracy": 0.610169,
+        "expected_calibration_error": 0.087382,
+        "calibration_bins": [
+          {
+            "lower": 0.0,
+            "upper": 0.1,
+            "count": 1,
+            "mean_probability": 0.093763,
+            "observed_rate": 0.0
+          },
+          {
+            "lower": 0.1,
+            "upper": 0.2,
+            "count": 11,
+            "mean_probability": 0.167571,
+            "observed_rate": 0.181818
+          },
+          {
+            "lower": 0.2,
+            "upper": 0.3,
+            "count": 81,
+            "mean_probability": 0.260735,
+            "observed_rate": 0.197531
+          },
+          {
+            "lower": 0.3,
+            "upper": 0.4,
+            "count": 38,
+            "mean_probability": 0.346419,
+            "observed_rate": 0.315789
+          },
+          {
+            "lower": 0.4,
+            "upper": 0.5,
+            "count": 29,
+            "mean_probability": 0.442532,
+            "observed_rate": 0.517241
+          },
+          {
+            "lower": 0.5,
+            "upper": 0.6,
+            "count": 12,
+            "mean_probability": 0.549164,
+            "observed_rate": 1.0
+          },
+          {
+            "lower": 0.6,
+            "upper": 0.7,
+            "count": 4,
+            "mean_probability": 0.655776,
+            "observed_rate": 0.5
+          },
+          {
+            "lower": 0.7,
+            "upper": 0.8,
+            "count": 1,
+            "mean_probability": 0.73298,
+            "observed_rate": 0.0
+          },
+          {
+            "lower": 0.8,
+            "upper": 0.9,
+            "count": 0,
+            "mean_probability": 0.0,
+            "observed_rate": 0.0
+          },
+          {
+            "lower": 0.9,
+            "upper": 1.0,
+            "count": 0,
+            "mean_probability": 0.0,
+            "observed_rate": 0.0
+          }
+        ]
+      },
+      "context": {
+        "matches": 59,
+        "log_loss": 0.968284,
+        "brier_score": 0.574768,
+        "ranked_probability_score": 0.19621,
+        "accuracy": 0.59322,
+        "expected_calibration_error": 0.092447,
+        "calibration_bins": [
+          {
+            "lower": 0.0,
+            "upper": 0.1,
+            "count": 1,
+            "mean_probability": 0.072871,
+            "observed_rate": 0.0
+          },
+          {
+            "lower": 0.1,
+            "upper": 0.2,
+            "count": 17,
+            "mean_probability": 0.167027,
+            "observed_rate": 0.176471
+          },
+          {
+            "lower": 0.2,
+            "upper": 0.3,
+            "count": 79,
+            "mean_probability": 0.261607,
+            "observed_rate": 0.202532
+          },
+          {
+            "lower": 0.3,
+            "upper": 0.4,
+            "count": 31,
+            "mean_probability": 0.345148,
+            "observed_rate": 0.258065
+          },
+          {
+            "lower": 0.4,
+            "upper": 0.5,
+            "count": 26,
+            "mean_probability": 0.434845,
+            "observed_rate": 0.538462
+          },
+          {
+            "lower": 0.5,
+            "upper": 0.6,
+            "count": 16,
+            "mean_probability": 0.542062,
+            "observed_rate": 0.875
+          },
+          {
+            "lower": 0.6,
+            "upper": 0.7,
+            "count": 5,
+            "mean_probability": 0.650388,
+            "observed_rate": 0.6
+          },
+          {
+            "lower": 0.7,
+            "upper": 0.8,
+            "count": 2,
+            "mean_probability": 0.745129,
+            "observed_rate": 0.5
+          },
+          {
+            "lower": 0.8,
+            "upper": 0.9,
+            "count": 0,
+            "mean_probability": 0.0,
+            "observed_rate": 0.0
+          },
+          {
+            "lower": 0.9,
+            "upper": 1.0,
+            "count": 0,
+            "mean_probability": 0.0,
+            "observed_rate": 0.0
+          }
+        ]
+      }
+    }
+  },
+  "promotion_gate": {
+    "context_beats_elo_on_log_loss_and_brier": false,
+    "status": "fail"
+  },
+  "generated_at": "2026-06-10T00:20:44.408600+00:00"
+}

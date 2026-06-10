@@ -1,0 +1,2 @@
+"""World Cup modeling package."""
+

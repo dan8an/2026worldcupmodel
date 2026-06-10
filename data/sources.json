@@ -1,0 +1,26 @@
+[
+  {
+    "id": "international-results-cc0",
+    "kind": "historical_results",
+    "url": "https://github.com/martj42/international_results",
+    "license": "CC0-1.0",
+    "refresh": "daily during the tournament",
+    "production_role": "form and head-to-head features"
+  },
+  {
+    "id": "official-federation-reports",
+    "kind": "squads_and_availability",
+    "url": null,
+    "license": "source-specific",
+    "refresh": "daily and pre-match",
+    "production_role": "manual sourced reports until a licensed API is configured"
+  },
+  {
+    "id": "world-cup-squad-snapshot",
+    "kind": "player_squads",
+    "url": "https://en.wikipedia.org/wiki/2026_FIFA_World_Cup_squads",
+    "license": "CC BY-SA",
+    "refresh": "daily through each team's opening match",
+    "production_role": "team profile players, caps, goals, clubs, and positions"
+  }
+]
