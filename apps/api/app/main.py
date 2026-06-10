@@ -15,11 +15,22 @@ app = FastAPI(
     version="0.1.0",
     description="Educational match and tournament probabilities. Not betting advice.",
 )
+
+# Local development frontends and the production Vercel frontend.
+allowed_origins = [
+    "http://localhost:5173",
+    "http://127.0.0.1:5173",
+    "https://footballoracle.vercel.app",
+]
+if web_origin := os.getenv("WEB_ORIGIN"):
+    if web_origin not in allowed_origins:
+        allowed_origins.append(web_origin)
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=[os.getenv("WEB_ORIGIN", "http://localhost:5173")],
+    allow_origins=allowed_origins,
     allow_credentials=False,
-    allow_methods=["GET", "POST"],
+    allow_methods=["GET", "POST", "OPTIONS"],
     allow_headers=["*"],
 )
 

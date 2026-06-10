@@ -5,6 +5,42 @@ from apps.api.app.main import app
 client = TestClient(app)
 
 
+def test_production_cors_preflight_for_v1_endpoint():
+    response = client.options(
+        "/v1/simulations/custom",
+        headers={
+            "Origin": "https://footballoracle.vercel.app",
+            "Access-Control-Request-Method": "POST",
+            "Access-Control-Request-Headers": "Authorization, Content-Type",
+        },
+    )
+
+    assert response.status_code == 200
+    assert (
+        response.headers["access-control-allow-origin"]
+        == "https://footballoracle.vercel.app"
+    )
+    assert "POST" in response.headers["access-control-allow-methods"]
+    assert "authorization" in response.headers["access-control-allow-headers"].lower()
+    assert "content-type" in response.headers["access-control-allow-headers"].lower()
+
+
+def test_production_cors_preflight_for_api_endpoint():
+    response = client.options(
+        "/api/predictions",
+        headers={
+            "Origin": "https://footballoracle.vercel.app",
+            "Access-Control-Request-Method": "GET",
+        },
+    )
+
+    assert response.status_code == 200
+    assert (
+        response.headers["access-control-allow-origin"]
+        == "https://footballoracle.vercel.app"
+    )
+
+
 def test_health():
     response = client.get("/health")
     assert response.status_code == 200
