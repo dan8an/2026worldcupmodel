@@ -5,6 +5,7 @@ import pg from "pg";
 import {
   buildPlaceholderMatches,
   mergeDatabaseMatches,
+  mergeCanonicalPredictions,
   mergeTeams,
   normalizeDatabaseMatches,
   normalizeDatabaseSimulation,
@@ -78,7 +79,10 @@ const loadMatches = async () => {
     teams,
     databaseTeamRows,
   );
-  return mergeDatabaseMatches(canonicalMatches, databaseMatches);
+  return mergeCanonicalPredictions(
+    mergeDatabaseMatches(canonicalMatches, databaseMatches),
+    predictionRows,
+  );
 };
 
 app.get("/api/matches", async (req, res) => {

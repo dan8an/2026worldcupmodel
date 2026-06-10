@@ -165,7 +165,9 @@ export const normalizeDatabaseMatches = (
 ) => {
   const predictionsByMatchId = new Map();
   predictionRows.forEach((prediction) => {
-    const matchId = String(prediction.match_id);
+    const matchId = String(
+      prediction.canonical_match_id ?? prediction.match_id,
+    );
     if (!predictionsByMatchId.has(matchId)) {
       predictionsByMatchId.set(matchId, prediction);
     }
@@ -199,18 +201,21 @@ export const normalizeDatabaseMatches = (
           probabilities: {
             home_win: Number(
               databasePrediction.home_win ??
+                databasePrediction.home_win_probability ??
                 databasePrediction.home_win_prob ??
                 snapshotPrediction?.probabilities.home_win ??
                 0,
             ),
             draw: Number(
               databasePrediction.draw ??
+                databasePrediction.draw_probability ??
                 databasePrediction.draw_prob ??
                 snapshotPrediction?.probabilities.draw ??
                 0,
             ),
             away_win: Number(
               databasePrediction.away_win ??
+                databasePrediction.away_win_probability ??
                 databasePrediction.away_win_prob ??
                 snapshotPrediction?.probabilities.away_win ??
                 0,
@@ -225,7 +230,9 @@ export const normalizeDatabaseMatches = (
             [],
           context: snapshotPrediction?.context ?? emptyPredictionContext(),
           model_version: databasePrediction.model_version ?? "supabase",
-          generated_at: databasePrediction.created_at ?? new Date().toISOString(),
+          generated_at: databasePrediction.prediction_timestamp ??
+            databasePrediction.created_at ??
+            new Date().toISOString(),
           data_cutoff: databasePrediction.data_cutoff ??
             databasePrediction.created_at ??
             new Date().toISOString(),
@@ -301,6 +308,44 @@ export const mergeDatabaseMatches = (canonicalMatches, databaseMatches) =>
       prediction,
     };
   });
+
+export const mergeCanonicalPredictions = (matches, predictionRows = []) => {
+  const latestByCanonicalId = new Map();
+  predictionRows.forEach((prediction) => {
+    const canonicalId = prediction.canonical_match_id;
+    if (canonicalId && !latestByCanonicalId.has(String(canonicalId))) {
+      latestByCanonicalId.set(String(canonicalId), prediction);
+    }
+  });
+
+  return matches.map((match) => {
+    const prediction = latestByCanonicalId.get(match.id);
+    if (!prediction) return match;
+    return {
+      ...match,
+      prediction: {
+        ...match.prediction,
+        match_id: match.id,
+        home_team_id: match.home_team?.id ?? "",
+        away_team_id: match.away_team?.id ?? "",
+        home_xg: Number(prediction.home_xg ?? match.prediction?.home_xg ?? 0),
+        away_xg: Number(prediction.away_xg ?? match.prediction?.away_xg ?? 0),
+        probabilities: {
+          home_win: Number(prediction.home_win_probability ?? 0),
+          draw: Number(prediction.draw_probability ?? 0),
+          away_win: Number(prediction.away_win_probability ?? 0),
+        },
+        model_version: prediction.model_version ?? "supabase",
+        generated_at: prediction.prediction_timestamp ??
+          prediction.created_at ??
+          new Date().toISOString(),
+        data_cutoff: prediction.data_cutoff ??
+          prediction.prediction_timestamp ??
+          new Date().toISOString(),
+      },
+    };
+  });
+};
 
 const emptyPredictionContext = () => ({
   home_form_elo: 0,

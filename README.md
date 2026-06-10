@@ -105,6 +105,20 @@ rating row per team and player while preserving model-run-specific rating rows
 for future prediction snapshots. An empty raw-statistics database exits
 successfully so the command can run immediately after ingestion in a cron job.
 
+After applying `supabase/migrations/202606100003_prediction_generation.sql`,
+generate current predictions for future matches:
+
+```bash
+python scripts/generate_predictions.py
+```
+
+The command creates a model run when at least one match can be predicted and
+updates the existing prediction for each match. It uses current team ratings,
+optional player ratings, and a normalized Poisson score grid from 0-0 through
+6-6. The canonical fixture catalog from `modeling/src/data.py` is authoritative;
+database match rows only enrich it. Predictions retain IDs such as `WC26-001`
+even before provider match rows exist.
+
 The script imports completed fixtures, team match statistics, player match
 statistics, and lineups. Provider fixture/team/player IDs and unique database
 indexes make repeated runs update existing records instead of duplicating

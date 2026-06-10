@@ -3,6 +3,7 @@ import assert from "node:assert/strict";
 import {
   buildPlaceholderMatches,
   mergeDatabaseMatches,
+  mergeCanonicalPredictions,
   mergeTeams,
   normalizeDatabaseMatches,
   snapshotSimulation,
@@ -99,10 +100,11 @@ test("matching database predictions enrich canonical fixtures without losing det
         match_id: "provider-match-uuid",
         home_xg: 2.1,
         away_xg: 0.7,
-        home_win_prob: 0.65,
-        draw_prob: 0.22,
-        away_win_prob: 0.13,
+        home_win_probability: 0.65,
+        draw_probability: 0.22,
+        away_win_probability: 0.13,
         confidence_tier: "Medium",
+        prediction_timestamp: "2026-06-10T18:00:00Z",
       },
       {
         match_id: "provider-match-uuid",
@@ -125,6 +127,27 @@ test("matching database predictions enrich canonical fixtures without losing det
   assert.equal(match.prediction.match_id, "WC26-001");
   assert.equal(match.prediction.home_xg, 2.1);
   assert.equal(match.prediction.probabilities.home_win, 0.65);
+  assert.equal(match.prediction.generated_at, "2026-06-10T18:00:00Z");
   assert.ok(match.prediction.top_scores.length > 0);
   assert.ok(match.prediction.key_factors.length > 0);
+});
+
+test("canonical predictions attach without database match rows", () => {
+  const [match] = mergeCanonicalPredictions(buildPlaceholderMatches(), [
+    {
+      canonical_match_id: "WC26-001",
+      home_xg: 1.8,
+      away_xg: 0.9,
+      home_win_probability: 0.58,
+      draw_probability: 0.25,
+      away_win_probability: 0.17,
+      model_version: "poisson-ratings-v1",
+      prediction_timestamp: "2026-06-10T19:00:00Z",
+    },
+  ]);
+
+  assert.equal(match.id, "WC26-001");
+  assert.equal(match.prediction.home_xg, 1.8);
+  assert.equal(match.prediction.probabilities.home_win, 0.58);
+  assert.equal(match.prediction.model_version, "poisson-ratings-v1");
 });
