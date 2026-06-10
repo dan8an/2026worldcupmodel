@@ -22,8 +22,8 @@ export default function App() {
         <NavLink to="/" className="brand">
           <span className="brand-mark">26</span>
           <span>
-            <strong>World Cup Forecast</strong>
-            <small>Prediction and analytics</small>
+            <strong>Football Oracle</strong>
+            <small>Data-Driven Analysis and Prediction</small>
           </span>
         </NavLink>
         <nav>
