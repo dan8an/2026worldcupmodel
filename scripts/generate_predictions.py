@@ -23,8 +23,13 @@ if str(ROOT) not in sys.path:
 from scripts.database import create_database_engine
 from modeling.src.data import build_fixtures, load_teams, validate_tournament
 
-MODEL_VERSION = "poisson-ratings-v1"
+MODEL_VERSION = "elo-context-v3"
+LEGACY_MODEL_VERSION = "poisson-ratings-v1"
 MAX_GOALS = 6
+V3_ATTACK_WEIGHT = 0.15
+V3_DEFENSE_WEIGHT = 0.30
+V3_REST_WEIGHT = -0.15
+V3_DRAW_MULTIPLIER = 1.15
 PREDICTION_REQUIRED_COLUMNS = {
     "canonical_match_id",
     "model_run_id",
@@ -181,7 +186,7 @@ def build_score_probabilities(
     return scores
 
 
-def calculate_prediction(
+def calculate_poisson_ratings_v1(
     home_rating: dict[str, Any],
     away_rating: dict[str, Any],
     home_player_rating: float | None = None,
@@ -274,6 +279,162 @@ def calculate_prediction(
             f"{most_likely['home_goals']}-{most_likely['away_goals']}"
         ),
         "expected_total_goals": round(home_xg + away_xg, 4),
+        "over_2_5_probability": over_2_5,
+        "both_teams_to_score_probability": both_score,
+        "confidence_score": round(_clamp(confidence_score, 0.0, 1.0), 6),
+        "score_probabilities": [
+            {**score, "probability": round(float(score["probability"]), 12)}
+            for score in scores
+        ],
+    }
+
+
+def _normalize_probabilities(values: tuple[float, float, float]) -> tuple[float, float, float]:
+    total = sum(values)
+    if total <= 0:
+        raise ValueError("Probabilities must have a positive sum")
+    return tuple(value / total for value in values)
+
+
+def _rating_difference(home: Any, away: Any, scale: float) -> float:
+    if home is None or away is None:
+        return 0.0
+    return _clamp((_number(home) - _number(away)) / scale, -1.0, 1.0)
+
+
+def _calibrate_score_probabilities(
+    scores: list[dict[str, float | int]],
+    target: tuple[float, float, float],
+) -> list[dict[str, float | int]]:
+    current = (
+        sum(
+            float(score["probability"])
+            for score in scores
+            if score["home_goals"] > score["away_goals"]
+        ),
+        sum(
+            float(score["probability"])
+            for score in scores
+            if score["home_goals"] == score["away_goals"]
+        ),
+        sum(
+            float(score["probability"])
+            for score in scores
+            if score["home_goals"] < score["away_goals"]
+        ),
+    )
+    calibrated = []
+    for score in scores:
+        if score["home_goals"] > score["away_goals"]:
+            outcome = 0
+        elif score["home_goals"] == score["away_goals"]:
+            outcome = 1
+        else:
+            outcome = 2
+        calibrated.append(
+            {
+                **score,
+                "probability": float(score["probability"])
+                * target[outcome]
+                / current[outcome],
+            }
+        )
+    return calibrated
+
+
+def calculate_prediction(
+    home_rating: dict[str, Any],
+    away_rating: dict[str, Any],
+    home_player_rating: float | None = None,
+    away_player_rating: float | None = None,
+    home_rest_days: int | None = None,
+    away_rest_days: int | None = None,
+) -> dict[str, Any]:
+    """Calculate promoted Elo-first probabilities with validated v3 context."""
+    del home_player_rating, away_player_rating
+    home_elo = _number(home_rating.get("elo_rating"), 1500.0)
+    away_elo = _number(away_rating.get("elo_rating"), 1500.0)
+    elo_gap = home_elo - away_elo
+    home_xg = _clamp(1.35 * math.exp(elo_gap / 800.0), 0.2, 4.5)
+    away_xg = _clamp(1.35 * math.exp(-elo_gap / 800.0), 0.2, 4.5)
+    base_scores = build_score_probabilities(home_xg, away_xg)
+    elo_probabilities = (
+        sum(
+            float(score["probability"])
+            for score in base_scores
+            if score["home_goals"] > score["away_goals"]
+        ),
+        sum(
+            float(score["probability"])
+            for score in base_scores
+            if score["home_goals"] == score["away_goals"]
+        ),
+        sum(
+            float(score["probability"])
+            for score in base_scores
+            if score["home_goals"] < score["away_goals"]
+        ),
+    )
+
+    attack_signal = _rating_difference(
+        home_rating.get("attack_rating"),
+        away_rating.get("attack_rating"),
+        100.0,
+    )
+    defense_signal = _rating_difference(
+        home_rating.get("defense_rating"),
+        away_rating.get("defense_rating"),
+        100.0,
+    )
+    rest_signal = _rating_difference(home_rest_days, away_rest_days, 14.0)
+    context_tilt = (
+        V3_ATTACK_WEIGHT * attack_signal
+        + V3_DEFENSE_WEIGHT * defense_signal
+        + V3_REST_WEIGHT * rest_signal
+    )
+    probabilities = _normalize_probabilities(
+        (
+            elo_probabilities[0] * math.exp(context_tilt),
+            elo_probabilities[1] * V3_DRAW_MULTIPLIER,
+            elo_probabilities[2] * math.exp(-context_tilt),
+        )
+    )
+    scores = _calibrate_score_probabilities(base_scores, probabilities)
+    most_likely = max(scores, key=lambda score: float(score["probability"]))
+    expected_total = sum(
+        (int(score["home_goals"]) + int(score["away_goals"]))
+        * float(score["probability"])
+        for score in scores
+    )
+    over_2_5 = sum(
+        float(score["probability"])
+        for score in scores
+        if int(score["home_goals"]) + int(score["away_goals"]) >= 3
+    )
+    both_score = sum(
+        float(score["probability"])
+        for score in scores
+        if int(score["home_goals"]) > 0 and int(score["away_goals"]) > 0
+    )
+    sample_size = min(
+        _number(home_rating.get("matches_played")),
+        _number(away_rating.get("matches_played")),
+    )
+    confidence_score = (
+        0.55 * min(1.0, sample_size / 10.0)
+        + 0.45 * max(probabilities)
+    )
+
+    return {
+        "home_xg": round(home_xg, 4),
+        "away_xg": round(away_xg, 4),
+        "home_win_probability": probabilities[0],
+        "draw_probability": probabilities[1],
+        "away_win_probability": probabilities[2],
+        "most_likely_scoreline": (
+            f"{most_likely['home_goals']}-{most_likely['away_goals']}"
+        ),
+        "expected_total_goals": round(expected_total, 4),
         "over_2_5_probability": over_2_5,
         "both_teams_to_score_probability": both_score,
         "confidence_score": round(_clamp(confidence_score, 0.0, 1.0), 6),
@@ -409,6 +570,42 @@ class PredictionRepository:
             if database_id in database_averages
         }
 
+    def load_latest_team_match_dates(
+        self,
+        database_team_ids: dict[str, Any],
+    ) -> dict[str, date]:
+        inspector = inspect(self.engine)
+        existing = set(inspector.get_table_names(schema=self.schema))
+        if not {"matches", "team_match_stats"}.issubset(existing):
+            return {}
+        matches = self._table("matches")
+        stats = self._table("team_match_stats")
+        date_column = next(
+            (matches.c[name] for name in ("match_date", "kickoff") if name in matches.c),
+            None,
+        )
+        if date_column is None or not {"match_id", "team_id"}.issubset(stats.c.keys()):
+            return {}
+        with self.engine.connect() as connection:
+            rows = connection.execute(
+                select(stats.c.team_id, date_column).join(
+                    matches, matches.c.id == stats.c.match_id
+                )
+            ).tuples()
+            latest: dict[Any, date] = {}
+            for team_id, played_at in rows:
+                timestamp = _parse_timestamp(played_at)
+                if timestamp is None:
+                    continue
+                played_on = timestamp.date()
+                if team_id not in latest or played_on > latest[team_id]:
+                    latest[team_id] = played_on
+        return {
+            canonical_id: latest[database_id]
+            for canonical_id, database_id in database_team_ids.items()
+            if database_id in latest
+        }
+
     def store_predictions(
         self,
         predictions: list[dict[str, Any]],
@@ -422,7 +619,7 @@ class PredictionRepository:
             "id": run_id,
             "run_date": generated_at.date().isoformat(),
             "model_version": MODEL_VERSION,
-            "notes": "Deterministic Step 4 Poisson rating predictions",
+            "notes": "Promoted Elo-first context v3 predictions",
             "data_cutoff": timestamp,
             "status": "completed",
             "random_seed": 0,
@@ -430,6 +627,15 @@ class PredictionRepository:
             "metadata": {
                 "matches_predicted": len(predictions),
                 "score_grid": f"0-{MAX_GOALS}",
+                "base_model": "walk-forward Elo probabilities",
+                "attack_weight": V3_ATTACK_WEIGHT,
+                "defense_weight": V3_DEFENSE_WEIGHT,
+                "rest_weight": V3_REST_WEIGHT,
+                "draw_multiplier": V3_DRAW_MULTIPLIER,
+                "recent_form_weight": 0.0,
+                "player_weight": 0.0,
+                "travel_weight": 0.0,
+                "availability_weight": 0.0,
             },
         }
         run_values = self._compatible_values(runs, run_values)
@@ -477,10 +683,10 @@ class PredictionRepository:
             "away_win_prob": prediction["away_win_probability"],
             "confidence_tier": self._confidence_tier(prediction["confidence_score"]),
             "explanation_factors": [
-                "Team attack, defense, form, and Elo ratings",
-                "Home advantage",
-                "Current player ratings when available",
-                "Independent Poisson score model",
+                "Elo result probabilities",
+                "Validated attack and defense rating adjustments",
+                "Validated rest adjustment when match history is available",
+                "Validated draw calibration",
             ],
         }
         values = self._compatible_values(table, values)
@@ -552,7 +758,7 @@ def main() -> int:
             return 0
 
         team_ratings = repository.load_current_team_ratings(database_team_ids)
-        player_ratings = repository.load_player_team_averages(database_team_ids)
+        latest_match_dates = repository.load_latest_team_match_dates(database_team_ids)
         predictions = []
         for match in matches:
             home_rating = team_ratings.get(match["home_team_id"])
@@ -570,8 +776,18 @@ def main() -> int:
                     **calculate_prediction(
                         home_rating,
                         away_rating,
-                        player_ratings.get(match["home_team_id"]),
-                        player_ratings.get(match["away_team_id"]),
+                        home_rest_days=(
+                            (match["kickoff"].date() - latest_match_dates[
+                                match["home_team_id"]
+                            ]).days
+                            if match["home_team_id"] in latest_match_dates else None
+                        ),
+                        away_rest_days=(
+                            (match["kickoff"].date() - latest_match_dates[
+                                match["away_team_id"]
+                            ]).days
+                            if match["away_team_id"] in latest_match_dates else None
+                        ),
                     ),
                 }
             )

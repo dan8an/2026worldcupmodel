@@ -1,0 +1,674 @@
+{
+  "generated_at": "2026-06-10T21:18:41.801615+00:00",
+  "model_version": "poisson-ratings-v1",
+  "dataset": {
+    "matches": 557,
+    "start_date": "2022-01-05",
+    "end_date": "2026-06-08",
+    "protocol": "same leak-free walk-forward replay as evaluate_model.py"
+  },
+  "top_5_error_patterns": [
+    {
+      "pattern": "Favorite/underdog failure",
+      "finding": "underdog_wins: model minus Elo Brier +0.0870 across 30 matches."
+    },
+    {
+      "pattern": "Largest annual regression",
+      "finding": "2025: model minus Elo Brier +0.0166."
+    },
+    {
+      "pattern": "Worst calibration bucket",
+      "finding": "0.5-0.6: predicted 0.542, observed 0.481."
+    },
+    {
+      "pattern": "Largest outcome-class error",
+      "finding": "away_win outcomes add +0.0759 Brier vs Elo."
+    },
+    {
+      "pattern": "Team and confederation concentration",
+      "finding": "Sweden is worst by team (+0.0869); CONMEBOL is worst by confederation (+0.0169)."
+    }
+  ],
+  "years": [
+    {
+      "year": 2025,
+      "matches": 106,
+      "brier_score_delta": 0.016552,
+      "log_loss_delta": 0.021156,
+      "accuracy_delta": -0.075472,
+      "model_brier_score": 0.659614,
+      "elo_brier_score": 0.643062
+    },
+    {
+      "year": 2026,
+      "matches": 59,
+      "brier_score_delta": 0.014341,
+      "log_loss_delta": 0.017921,
+      "accuracy_delta": -0.033898,
+      "model_brier_score": 0.585278,
+      "elo_brier_score": 0.570937
+    },
+    {
+      "year": 2023,
+      "matches": 98,
+      "brier_score_delta": 0.012686,
+      "log_loss_delta": 0.016093,
+      "accuracy_delta": -0.040816,
+      "model_brier_score": 0.611948,
+      "elo_brier_score": 0.599262
+    },
+    {
+      "year": 2022,
+      "matches": 155,
+      "brier_score_delta": 0.008651,
+      "log_loss_delta": 0.011164,
+      "accuracy_delta": 0.019354,
+      "model_brier_score": 0.597107,
+      "elo_brier_score": 0.588456
+    },
+    {
+      "year": 2024,
+      "matches": 139,
+      "brier_score_delta": -0.007561,
+      "log_loss_delta": -0.01497,
+      "accuracy_delta": 0.0,
+      "model_brier_score": 0.632211,
+      "elo_brier_score": 0.639772
+    }
+  ],
+  "confidence_and_calibration": {
+    "top_choice": {
+      "mean_top_probability": 0.474986,
+      "accuracy": 0.482944,
+      "gap": -0.007958,
+      "assessment": "underconfident",
+      "buckets": [
+        {
+          "lower": 0.3,
+          "upper": 0.4,
+          "matches": 115,
+          "mean_top_probability": 0.38141,
+          "accuracy": 0.391304,
+          "gap": -0.009894
+        },
+        {
+          "lower": 0.4,
+          "upper": 0.5,
+          "matches": 258,
+          "mean_top_probability": 0.448046,
+          "accuracy": 0.476744,
+          "gap": -0.028698
+        },
+        {
+          "lower": 0.5,
+          "upper": 0.6,
+          "matches": 131,
+          "mean_top_probability": 0.541705,
+          "accuracy": 0.480916,
+          "gap": 0.060789
+        },
+        {
+          "lower": 0.6,
+          "upper": 0.7,
+          "matches": 49,
+          "mean_top_probability": 0.637475,
+          "accuracy": 0.693878,
+          "gap": -0.056402
+        },
+        {
+          "lower": 0.7,
+          "upper": 1.0,
+          "matches": 4,
+          "mean_top_probability": 0.727388,
+          "accuracy": 1.0,
+          "gap": -0.272612
+        }
+      ]
+    },
+    "all_probability_buckets": [
+      {
+        "lower": 0.0,
+        "upper": 0.1,
+        "count": 1,
+        "mean_probability": 0.09647,
+        "observed_rate": 0.0,
+        "calibration_gap": 0.09647,
+        "direction": "overconfident"
+      },
+      {
+        "lower": 0.1,
+        "upper": 0.2,
+        "count": 105,
+        "mean_probability": 0.168253,
+        "observed_rate": 0.114286,
+        "calibration_gap": 0.053967,
+        "direction": "overconfident"
+      },
+      {
+        "lower": 0.2,
+        "upper": 0.3,
+        "count": 796,
+        "mean_probability": 0.257295,
+        "observed_rate": 0.262563,
+        "calibration_gap": -0.005268,
+        "direction": "underconfident"
+      },
+      {
+        "lower": 0.3,
+        "upper": 0.4,
+        "count": 327,
+        "mean_probability": 0.347784,
+        "observed_rate": 0.342508,
+        "calibration_gap": 0.005277,
+        "direction": "overconfident"
+      },
+      {
+        "lower": 0.4,
+        "upper": 0.5,
+        "count": 258,
+        "mean_probability": 0.448046,
+        "observed_rate": 0.476744,
+        "calibration_gap": -0.028698,
+        "direction": "underconfident"
+      },
+      {
+        "lower": 0.5,
+        "upper": 0.6,
+        "count": 131,
+        "mean_probability": 0.541705,
+        "observed_rate": 0.480916,
+        "calibration_gap": 0.060789,
+        "direction": "overconfident"
+      },
+      {
+        "lower": 0.6,
+        "upper": 0.7,
+        "count": 49,
+        "mean_probability": 0.637475,
+        "observed_rate": 0.693878,
+        "calibration_gap": -0.056402,
+        "direction": "underconfident"
+      },
+      {
+        "lower": 0.7,
+        "upper": 0.8,
+        "count": 4,
+        "mean_probability": 0.727388,
+        "observed_rate": 1.0,
+        "calibration_gap": -0.272612,
+        "direction": "underconfident"
+      },
+      {
+        "lower": 0.8,
+        "upper": 0.9,
+        "count": 0,
+        "mean_probability": null,
+        "observed_rate": null,
+        "calibration_gap": null,
+        "direction": null
+      },
+      {
+        "lower": 0.9,
+        "upper": 1.0,
+        "count": 0,
+        "mean_probability": null,
+        "observed_rate": null,
+        "calibration_gap": null,
+        "direction": null
+      }
+    ]
+  },
+  "outcome_errors": {
+    "by_actual_outcome": {
+      "home_win": {
+        "matches": 242,
+        "rate": 0.43447,
+        "model_mean_probability": 0.415781,
+        "model_brier_score": 0.473989,
+        "elo_brier_score": 0.493166,
+        "model_minus_elo_brier": -0.019177
+      },
+      "draw": {
+        "matches": 151,
+        "rate": 0.271095,
+        "model_mean_probability": 0.25806,
+        "model_brier_score": 0.851295,
+        "elo_brier_score": 0.87561,
+        "model_minus_elo_brier": -0.024315
+      },
+      "away_win": {
+        "matches": 164,
+        "rate": 0.294434,
+        "model_mean_probability": 0.326159,
+        "model_brier_score": 0.619508,
+        "elo_brier_score": 0.543617,
+        "model_minus_elo_brier": 0.075891
+      }
+    },
+    "class_error_components": {
+      "home_win": {
+        "model_mean_squared_error": 0.227769,
+        "elo_mean_squared_error": 0.220772
+      },
+      "draw": {
+        "model_mean_squared_error": 0.197374,
+        "elo_mean_squared_error": 0.197225
+      },
+      "away_win": {
+        "model_mean_squared_error": 0.193979,
+        "elo_mean_squared_error": 0.193703
+      }
+    },
+    "favorite_underdog_draw_segments": {
+      "balanced_decisive_matches": {
+        "matches": 275,
+        "brier_score_delta": 0.027895,
+        "log_loss_delta": 0.040133,
+        "accuracy_delta": -0.032727,
+        "model_brier_score": 0.581331
+      },
+      "draws": {
+        "matches": 151,
+        "brier_score_delta": -0.024315,
+        "log_loss_delta": -0.048662,
+        "accuracy_delta": 0.0,
+        "model_brier_score": 0.851295
+      },
+      "favorite_wins": {
+        "matches": 101,
+        "brier_score_delta": -0.024503,
+        "log_loss_delta": -0.034391,
+        "accuracy_delta": 0.0,
+        "model_brier_score": 0.264245
+      },
+      "underdog_wins": {
+        "matches": 30,
+        "brier_score_delta": 0.086969,
+        "log_loss_delta": 0.143712,
+        "accuracy_delta": -0.066667,
+        "model_brier_score": 0.991666
+      }
+    }
+  },
+  "draw_probability": {
+    "model_mean_draw_probability": 0.25806,
+    "elo_mean_draw_probability": 0.244623,
+    "observed_draw_rate": 0.271095,
+    "model_bias": -0.013036,
+    "elo_bias": -0.026472,
+    "assessment": "too_low"
+  },
+  "expected_goals": {
+    "mean_predicted_total_xg": 2.534415,
+    "mean_actual_total_goals": 2.633752,
+    "mean_error": -0.099337,
+    "mean_absolute_error": 1.3676,
+    "root_mean_squared_error": 1.714896,
+    "assessment": "too_conservative",
+    "home_xg_bias": -0.140502,
+    "away_xg_bias": 0.041166
+  },
+  "teams": {
+    "minimum_matches": 8,
+    "worst_model_minus_elo": [
+      {
+        "id": "SWE",
+        "name": "Sweden",
+        "matches": 15,
+        "brier_score_delta": 0.086942,
+        "log_loss_delta": 0.120994,
+        "accuracy_delta": -0.066667,
+        "model_brier_score": 0.667809,
+        "model_log_loss": 1.09028
+      },
+      {
+        "id": "COL",
+        "name": "Colombia",
+        "matches": 34,
+        "brier_score_delta": 0.051876,
+        "log_loss_delta": 0.07131,
+        "accuracy_delta": -0.147059,
+        "model_brier_score": 0.622783,
+        "model_log_loss": 1.035664
+      },
+      {
+        "id": "JOR",
+        "name": "Jordan",
+        "matches": 25,
+        "brier_score_delta": 0.038508,
+        "log_loss_delta": 0.056915,
+        "accuracy_delta": 0.04,
+        "model_brier_score": 0.600326,
+        "model_log_loss": 1.005488
+      },
+      {
+        "id": "MEX",
+        "name": "Mexico",
+        "matches": 46,
+        "brier_score_delta": 0.033255,
+        "log_loss_delta": 0.043943,
+        "accuracy_delta": -0.130434,
+        "model_brier_score": 0.617349,
+        "model_log_loss": 1.031582
+      },
+      {
+        "id": "ENG",
+        "name": "England",
+        "matches": 20,
+        "brier_score_delta": 0.031827,
+        "log_loss_delta": 0.038989,
+        "accuracy_delta": -0.1,
+        "model_brier_score": 0.600407,
+        "model_log_loss": 1.004275
+      },
+      {
+        "id": "TUR",
+        "name": "Turkey",
+        "matches": 16,
+        "brier_score_delta": 0.030079,
+        "log_loss_delta": 0.041334,
+        "accuracy_delta": 0.0,
+        "model_brier_score": 0.591833,
+        "model_log_loss": 0.98411
+      },
+      {
+        "id": "KSA",
+        "name": "Saudi Arabia",
+        "matches": 31,
+        "brier_score_delta": 0.026694,
+        "log_loss_delta": 0.035049,
+        "accuracy_delta": -0.032258,
+        "model_brier_score": 0.639114,
+        "model_log_loss": 1.060352
+      },
+      {
+        "id": "NOR",
+        "name": "Norway",
+        "matches": 15,
+        "brier_score_delta": 0.02502,
+        "log_loss_delta": 0.033583,
+        "accuracy_delta": 0.133334,
+        "model_brier_score": 0.644179,
+        "model_log_loss": 1.062818
+      },
+      {
+        "id": "CZE",
+        "name": "Czechia",
+        "matches": 14,
+        "brier_score_delta": 0.024764,
+        "log_loss_delta": 0.034719,
+        "accuracy_delta": 0.0,
+        "model_brier_score": 0.573705,
+        "model_log_loss": 0.966061
+      },
+      {
+        "id": "SUI",
+        "name": "Switzerland",
+        "matches": 24,
+        "brier_score_delta": 0.024302,
+        "log_loss_delta": 0.034319,
+        "accuracy_delta": -0.166666,
+        "model_brier_score": 0.619448,
+        "model_log_loss": 1.034876
+      },
+      {
+        "id": "AUT",
+        "name": "Austria",
+        "matches": 22,
+        "brier_score_delta": 0.02204,
+        "log_loss_delta": 0.031052,
+        "accuracy_delta": 0.0,
+        "model_brier_score": 0.667721,
+        "model_log_loss": 1.09395
+      },
+      {
+        "id": "GHA",
+        "name": "Ghana",
+        "matches": 17,
+        "brier_score_delta": 0.021625,
+        "log_loss_delta": 0.033724,
+        "accuracy_delta": 0.0,
+        "model_brier_score": 0.527985,
+        "model_log_loss": 0.905562
+      },
+      {
+        "id": "BEL",
+        "name": "Belgium",
+        "matches": 19,
+        "brier_score_delta": 0.021131,
+        "log_loss_delta": 0.028979,
+        "accuracy_delta": -0.052632,
+        "model_brier_score": 0.645116,
+        "model_log_loss": 1.067394
+      },
+      {
+        "id": "ECU",
+        "name": "Ecuador",
+        "matches": 33,
+        "brier_score_delta": 0.020909,
+        "log_loss_delta": 0.016462,
+        "accuracy_delta": 0.030303,
+        "model_brier_score": 0.74938,
+        "model_log_loss": 1.205666
+      },
+      {
+        "id": "IRQ",
+        "name": "Iraq",
+        "matches": 19,
+        "brier_score_delta": 0.017722,
+        "log_loss_delta": 0.023082,
+        "accuracy_delta": 0.0,
+        "model_brier_score": 0.638257,
+        "model_log_loss": 1.055299
+      }
+    ]
+  },
+  "confederations": [
+    {
+      "id": "CONMEBOL",
+      "name": "CONMEBOL",
+      "matches": 188,
+      "brier_score_delta": 0.01695,
+      "log_loss_delta": 0.019107,
+      "accuracy_delta": -0.047872,
+      "model_brier_score": 0.638738,
+      "model_log_loss": 1.057959
+    },
+    {
+      "id": "CONCACAF",
+      "name": "CONCACAF",
+      "matches": 164,
+      "brier_score_delta": 0.014387,
+      "log_loss_delta": 0.019438,
+      "accuracy_delta": -0.060976,
+      "model_brier_score": 0.592557,
+      "model_log_loss": 0.994262
+    },
+    {
+      "id": "UEFA",
+      "name": "UEFA",
+      "matches": 348,
+      "brier_score_delta": 0.010596,
+      "log_loss_delta": 0.014215,
+      "accuracy_delta": -0.017241,
+      "model_brier_score": 0.616403,
+      "model_log_loss": 1.026662
+    },
+    {
+      "id": "AFC",
+      "name": "AFC",
+      "matches": 219,
+      "brier_score_delta": 0.010552,
+      "log_loss_delta": 0.012799,
+      "accuracy_delta": -0.009133,
+      "model_brier_score": 0.623373,
+      "model_log_loss": 1.035578
+    },
+    {
+      "id": "CAF",
+      "name": "CAF",
+      "matches": 177,
+      "brier_score_delta": -0.014128,
+      "log_loss_delta": -0.025182,
+      "accuracy_delta": 0.028249,
+      "model_brier_score": 0.64062,
+      "model_log_loss": 1.058024
+    },
+    {
+      "id": "OFC",
+      "name": "OFC",
+      "matches": 18,
+      "brier_score_delta": -0.043148,
+      "log_loss_delta": -0.056635,
+      "accuracy_delta": 0.0,
+      "model_brier_score": 0.445647,
+      "model_log_loss": 0.79007
+    }
+  ],
+  "neutral_site": {
+    "neutral": {
+      "matches": 222,
+      "brier_score_delta": 0.011943,
+      "log_loss_delta": 0.013464,
+      "accuracy_delta": -0.022523
+    },
+    "non_neutral": {
+      "matches": 335,
+      "brier_score_delta": 0.004425,
+      "log_loss_delta": 0.00459,
+      "accuracy_delta": -0.017911
+    }
+  },
+  "recent_form": {
+    "matches": 557,
+    "brier_score_delta": 0.000805,
+    "log_loss_delta": 0.00073,
+    "accuracy_delta": -0.014363,
+    "assessment": "hurts",
+    "by_year": [
+      {
+        "year": 2022,
+        "matches": 155,
+        "brier_score_delta": 0.000779,
+        "log_loss_delta": 0.0014,
+        "accuracy_delta": -0.019355
+      },
+      {
+        "year": 2023,
+        "matches": 98,
+        "brier_score_delta": -0.001095,
+        "log_loss_delta": -0.002024,
+        "accuracy_delta": 0.010204
+      },
+      {
+        "year": 2024,
+        "matches": 139,
+        "brier_score_delta": 0.000154,
+        "log_loss_delta": -0.001047,
+        "accuracy_delta": -0.021583
+      },
+      {
+        "year": 2025,
+        "matches": 106,
+        "brier_score_delta": 0.003146,
+        "log_loss_delta": 0.004626,
+        "accuracy_delta": -0.018868
+      },
+      {
+        "year": 2026,
+        "matches": 59,
+        "brier_score_delta": 0.00136,
+        "log_loss_delta": 0.000729,
+        "accuracy_delta": -0.016949
+      }
+    ]
+  },
+  "counterfactual_estimates": {
+    "remove_recent_form": {
+      "description": "Set both recent-form ratings to neutral while retaining other inputs.",
+      "brier_score": 0.618316,
+      "log_loss": 1.029357,
+      "estimated_brier_improvement": 0.000805,
+      "estimated_log_loss_improvement": 0.00073,
+      "validation_note": "in-sample diagnostic estimate; validate out of sample"
+    },
+    "blend_with_elo": {
+      "description": "Linear probability blend with the walk-forward Elo baseline.",
+      "model_probability_weight": 0.05,
+      "elo_probability_weight": 0.95,
+      "brier_score": 0.611685,
+      "log_loss": 1.02186,
+      "estimated_brier_improvement": 0.007436,
+      "estimated_log_loss_improvement": 0.008227,
+      "validation_note": "in-sample diagnostic estimate; validate out of sample"
+    },
+    "draw_probability_scale": {
+      "description": "Multiply draw probability then renormalize all three outcomes.",
+      "draw_multiplier": 1.05,
+      "brier_score": 0.618998,
+      "log_loss": 1.02968,
+      "estimated_brier_improvement": 0.000123,
+      "estimated_log_loss_improvement": 0.000407,
+      "validation_note": "in-sample diagnostic estimate; validate out of sample"
+    },
+    "total_xg_scale": {
+      "description": "Scale home and away xG equally before deriving outcome probabilities.",
+      "xg_multiplier": 1.0,
+      "brier_score": 0.619121,
+      "log_loss": 1.030087,
+      "estimated_brier_improvement": 0.0,
+      "estimated_log_loss_improvement": 0.0,
+      "validation_note": "in-sample diagnostic estimate; validate out of sample"
+    },
+    "remove_neutral_home_advantage": {
+      "description": "Remove the fixed 8% home xG boost on neutral-site matches.",
+      "matches": 222,
+      "brier_score": 0.626103,
+      "log_loss": 1.040738,
+      "estimated_brier_improvement": -0.00138,
+      "estimated_log_loss_improvement": -0.001548,
+      "validation_note": "in-sample diagnostic estimate; validate out of sample"
+    }
+  },
+  "recommended_model_changes": [
+    {
+      "change": "Shrink current probabilities toward Elo",
+      "reason": "The rating components add error relative to the Elo baseline.",
+      "description": "Linear probability blend with the walk-forward Elo baseline.",
+      "model_probability_weight": 0.05,
+      "elo_probability_weight": 0.95,
+      "brier_score": 0.611685,
+      "log_loss": 1.02186,
+      "estimated_brier_improvement": 0.007436,
+      "estimated_log_loss_improvement": 0.008227,
+      "validation_note": "in-sample diagnostic estimate; validate out of sample"
+    },
+    {
+      "change": "Dampen or remove recent-form weighting",
+      "reason": "The form-neutral ablation improves performance.",
+      "description": "Set both recent-form ratings to neutral while retaining other inputs.",
+      "brier_score": 0.618316,
+      "log_loss": 1.029357,
+      "estimated_brier_improvement": 0.000805,
+      "estimated_log_loss_improvement": 0.00073,
+      "validation_note": "in-sample diagnostic estimate; validate out of sample"
+    },
+    {
+      "change": "Recalibrate draw probability",
+      "reason": "Mean draw probability bias is -0.0130.",
+      "description": "Multiply draw probability then renormalize all three outcomes.",
+      "draw_multiplier": 1.05,
+      "brier_score": 0.618998,
+      "log_loss": 1.02968,
+      "estimated_brier_improvement": 0.000123,
+      "estimated_log_loss_improvement": 0.000407,
+      "validation_note": "in-sample diagnostic estimate; validate out of sample"
+    }
+  ],
+  "limitations": [
+    "Counterfactual impacts are in-sample diagnostic estimates, not promotion evidence.",
+    "Only the 48 mapped 2026 tournament teams are represented.",
+    "Historical player availability and point-in-time player ratings are unavailable.",
+    "Team and confederation errors count each match for both participating teams."
+  ]
+}

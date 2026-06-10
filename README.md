@@ -114,10 +114,11 @@ python scripts/generate_predictions.py
 
 The command creates a model run when at least one match can be predicted and
 updates the existing prediction for each match. It uses current team ratings,
-optional player ratings, and a normalized Poisson score grid from 0-0 through
-6-6. The canonical fixture catalog from `modeling/src/data.py` is authoritative;
-database match rows only enrich it. Predictions retain IDs such as `WC26-001`
-even before provider match rows exist.
+an Elo probability base, validated attack/defense/rest context, draw
+calibration, and a normalized score grid from 0-0 through 6-6. The production
+model version is `elo-context-v3`. The canonical fixture catalog from
+`modeling/src/data.py` is authoritative; database match rows only enrich it.
+Predictions retain IDs such as `WC26-001` even before provider match rows exist.
 
 After applying `supabase/migrations/202606100005_tournament_simulation.sql`,
 run the persisted tournament simulation:
@@ -198,7 +199,56 @@ runs.
 
 ## Evaluate the model
 
-The chronological backtest writes `data/evaluation/latest.json`:
+After applying `supabase/migrations/202606100006_model_evaluation.sql`, replay
+the current `poisson-ratings-v1` generator against historical results:
+
+```bash
+python scripts/evaluate_model.py
+```
+
+This writes an immutable row to `evaluation_results` and a detailed local
+report to `data/evaluation/current_model_latest.json`. It reports Brier score,
+log loss, probability-bucket calibration, accuracy by confidence tier, and
+comparisons with walk-forward Elo. When complete pre-match 1X2 odds snapshots
+can be matched to a result, it also compares de-vigged market probabilities.
+
+Generate match-level error diagnostics without changing production predictions:
+
+```bash
+python scripts/diagnose_model.py
+```
+
+This writes `data/evaluation/diagnostics_latest.json` and prints the highest
+impact error patterns plus diagnostic counterfactuals.
+
+Evaluate the frozen experimental calibrated model without changing production:
+
+```bash
+python scripts/evaluate_calibrated_v2.py
+```
+
+This writes `data/evaluation/calibrated_v2_report.json` with comparisons
+against the current model and Elo baseline.
+
+Run independent chronological tuning and validation for v2:
+
+```bash
+python scripts/validate_calibrated_v2.py
+```
+
+This writes `data/evaluation/calibrated_v2_validation.json`. The newest
+matchdays are held out completely and are not used for parameter selection.
+
+Evaluate the experimental Elo-first context model on the same holdout:
+
+```bash
+python scripts/validate_elo_context_v3.py
+```
+
+This writes `data/evaluation/elo_context_v3_validation.json` with context
+feature coverage, tuning-only weights, and validation ablations.
+
+The older context-model experiment writes `data/evaluation/latest.json`:
 
 ```bash
 python3 -m modeling.src.evaluation.backtest

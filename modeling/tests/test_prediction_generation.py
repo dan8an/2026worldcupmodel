@@ -9,6 +9,7 @@ from pathlib import Path
 from datetime import datetime, timezone
 
 from scripts.generate_predictions import (
+    MODEL_VERSION,
     calculate_prediction,
     load_canonical_future_matches,
 )
@@ -115,6 +116,50 @@ class PredictionCalculationTests(unittest.TestCase):
             1.0,
             places=9,
         )
+        self.assertAlmostEqual(
+            sum(
+                score["probability"]
+                for score in first["score_probabilities"]
+                if score["home_goals"] > score["away_goals"]
+            ),
+            first["home_win_probability"],
+            places=9,
+        )
+        self.assertAlmostEqual(
+            sum(
+                score["probability"]
+                for score in first["score_probabilities"]
+                if score["home_goals"] == score["away_goals"]
+            ),
+            first["draw_probability"],
+            places=9,
+        )
+
+    def test_recent_form_and_player_inputs_are_disabled_in_v3(self):
+        home = {
+            "elo_rating": 1560,
+            "attack_rating": 72,
+            "defense_rating": 65,
+            "form_rating": 100,
+            "matches_played": 12,
+        }
+        away = {
+            "elo_rating": 1490,
+            "attack_rating": 60,
+            "defense_rating": 55,
+            "form_rating": 0,
+            "matches_played": 10,
+        }
+
+        with_context = calculate_prediction(home, away, 100, 0)
+        without_form_or_players = calculate_prediction(
+            {**home, "form_rating": 0},
+            {**away, "form_rating": 100},
+            None,
+            None,
+        )
+
+        self.assertEqual(with_context, without_form_or_players)
 
 
 class PredictionScriptTests(unittest.TestCase):
@@ -180,11 +225,13 @@ class PredictionScriptTests(unittest.TestCase):
                 """
                 select
                   canonical_match_id, home_win_probability, draw_probability,
-                  away_win_probability, score_probabilities
+                  away_win_probability, score_probabilities, model_version
                 from predictions
                 """
             ).fetchall()
-            run_count = connection.execute("select count(*) from model_runs").fetchone()[0]
+            runs = connection.execute(
+                "select model_version from model_runs"
+            ).fetchall()
 
         self.assertEqual(len(prediction_rows), 72)
         self.assertEqual({row[0] for row in prediction_rows}, {
@@ -192,7 +239,8 @@ class PredictionScriptTests(unittest.TestCase):
         })
         self.assertAlmostEqual(sum(prediction_rows[0][1:4]), 1.0, places=12)
         self.assertEqual(len(json.loads(prediction_rows[0][4])), 49)
-        self.assertEqual(run_count, 2)
+        self.assertTrue(all(row[5] == MODEL_VERSION for row in prediction_rows))
+        self.assertEqual(runs, [(MODEL_VERSION,), (MODEL_VERSION,)])
 
     def test_no_future_matches_exits_successfully_without_a_run(self):
         env = {

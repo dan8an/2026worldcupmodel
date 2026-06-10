@@ -8,7 +8,7 @@ import unittest
 from pathlib import Path
 
 from modeling.src.data import build_fixtures, load_teams
-from scripts.generate_predictions import calculate_prediction
+from scripts.generate_predictions import MODEL_VERSION, calculate_prediction
 from scripts.run_simulations import rank_group, simulate_tournaments
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -152,7 +152,7 @@ class SimulationScriptTests(unittest.TestCase):
         with sqlite3.connect(self.database_path) as connection:
             connection.execute(
                 "insert into model_runs (id, model_version) values (?, ?)",
-                ("run-1", "poisson-ratings-v1"),
+                ("run-1", MODEL_VERSION),
             )
             rows = []
             for fixture_id, prediction in canonical_predictions().items():
@@ -161,7 +161,7 @@ class SimulationScriptTests(unittest.TestCase):
                         fixture_id,
                         fixture_id,
                         "run-1",
-                        "poisson-ratings-v1",
+                        MODEL_VERSION,
                         "2026-06-10T12:00:00+00:00",
                         prediction["home_xg"],
                         prediction["away_xg"],
@@ -197,7 +197,7 @@ class SimulationScriptTests(unittest.TestCase):
             result_count = connection.execute(
                 "select count(*) from team_simulation_results"
             ).fetchone()[0]
-        self.assertEqual(run, ("poisson-ratings-v1", 10))
+        self.assertEqual(run, (MODEL_VERSION, 10))
         self.assertEqual(result_count, 48)
 
     def test_no_predictions_exits_successfully(self):

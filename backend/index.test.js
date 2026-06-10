@@ -32,7 +32,7 @@ db.query = async (sql) => {
         id: "simulation-run",
         num_simulations: 50000,
         random_seed: 2026,
-        model_version: "poisson-ratings-v1",
+        model_version: "elo-context-v3",
         created_at: "2026-06-10T20:00:00Z",
       }],
     };
@@ -63,6 +63,9 @@ test("GET /api/matches?stage=group returns chronological match objects", async (
   assert.equal(matches[0].stage, "group");
   assert.equal(typeof matches[0].home_team.name, "string");
   assert.equal(typeof matches[0].prediction.probabilities.home_win, "number");
+  const probabilities = Object.values(matches[0].prediction.probabilities);
+  assert.ok(probabilities.every((value) => value >= 0 && value <= 1));
+  assert.ok(Math.abs(probabilities.reduce((sum, value) => sum + value, 0) - 1) < 1e-6);
 });
 
 test("GET /api/matches/:id returns a single match", async () => {
@@ -80,8 +83,10 @@ test("GET /api/simulations/latest returns the frontend simulation shape", async 
 
   assert.equal(response.status, 200);
   assert.equal(simulation.iterations, 50000);
+  assert.equal(simulation.model_version, "elo-context-v3");
   assert.equal(simulation.teams.length, 48);
   assert.equal(typeof simulation.teams[0].champion, "number");
+  assert.ok(simulation.teams.every((team) => team.champion >= 0 && team.champion <= 1));
   assert.ok(simulation.teams.every((team) => team.team_name.trim()));
   assert.ok(simulation.teams.every((team) => team.team_id.length === 3));
 });

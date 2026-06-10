@@ -142,7 +142,7 @@ test("canonical predictions attach without database match rows", () => {
       home_win_probability: 0.58,
       draw_probability: 0.25,
       away_win_probability: 0.17,
-      model_version: "poisson-ratings-v1",
+      model_version: "elo-context-v3",
       prediction_timestamp: "2026-06-10T19:00:00Z",
     },
   ]);
@@ -150,7 +150,7 @@ test("canonical predictions attach without database match rows", () => {
   assert.equal(match.id, "WC26-001");
   assert.equal(match.prediction.home_xg, 1.8);
   assert.equal(match.prediction.probabilities.home_win, 0.58);
-  assert.equal(match.prediction.model_version, "poisson-ratings-v1");
+  assert.equal(match.prediction.model_version, "elo-context-v3");
 });
 
 test("persisted Step 5 simulation rows retain the frontend shape", () => {
@@ -158,7 +158,7 @@ test("persisted Step 5 simulation rows retain the frontend shape", () => {
     {
       num_simulations: 50000,
       random_seed: 2026,
-      model_version: "poisson-ratings-v1",
+      model_version: "elo-context-v3",
       created_at: "2026-06-10T20:00:00Z",
     },
     [
