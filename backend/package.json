@@ -6,7 +6,8 @@
   "scripts": {
     "dev": "node index.js",
     "start": "node index.js",
-    "test": "NODE_ENV=test node --test"
+    "test": "NODE_ENV=test node --test",
+    "ingest:daily": "node ingestion/run-daily.js"
   },
   "keywords": [],
   "author": "",

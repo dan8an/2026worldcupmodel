@@ -12,9 +12,16 @@
 
 create extension if not exists "pgcrypto";
 
+alter table public.teams
+  add column if not exists api_football_team_id bigint;
+
 alter table public.matches
   add column if not exists home_team_id uuid,
-  add column if not exists away_team_id uuid;
+  add column if not exists away_team_id uuid,
+  add column if not exists api_football_fixture_id bigint,
+  add column if not exists provider_name text,
+  add column if not exists provider_payload jsonb not null default '{}'::jsonb,
+  add column if not exists updated_at timestamptz not null default now();
 
 alter table public.model_runs
   add column if not exists data_cutoff timestamptz,
@@ -430,6 +437,14 @@ $$;
 create unique index if not exists players_provider_key_uidx
   on public.players (provider_key)
   where provider_key is not null;
+
+create unique index if not exists teams_api_football_team_id_uidx
+  on public.teams (api_football_team_id)
+  where api_football_team_id is not null;
+
+create unique index if not exists matches_api_football_fixture_id_uidx
+  on public.matches (api_football_fixture_id)
+  where api_football_fixture_id is not null;
 
 create unique index if not exists team_match_stats_match_team_uidx
   on public.team_match_stats (match_id, team_id);

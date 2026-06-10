@@ -78,6 +78,87 @@ Every record requires a source URL, publication timestamp, confidence, and
 player-importance estimate. Use the adjacent `.example.json` files as schemas.
 Do not add unsourced social-media claims.
 
+## Daily API-Football ingestion
+
+API-Football is used only by server-side ingestion scripts. Configure
+`backend/.env` from `backend/.env.example`; never add its API key to a Vite
+environment variable or frontend code. Activate the project virtual
+environment before running the Python command:
+
+Apply `supabase/migrations/202606100001_daily_prediction_pipeline.sql`, then
+run:
+
+```bash
+source .venv/bin/activate
+python scripts/update_data.py
+```
+
+The script imports completed fixtures, team match statistics, player match
+statistics, and lineups. Provider fixture/team/player IDs and unique database
+indexes make repeated runs update existing records instead of duplicating
+them. If `API_FOOTBALL_KEY` is absent, the command clearly reports sample mode
+and reads `backend/ingestion/sample-data/api-football.json`.
+
+It defaults to yesterday's date. For a specific date:
+
+```bash
+python scripts/update_data.py --date 2026-06-09
+python scripts/update_data.py --date 2026-06-09 --max-fixtures 3
+python scripts/update_data.py --sample
+```
+
+`--sample` always uses every fixture in the checked-in local sample dataset,
+even when an API key is configured or the sample fixture date is not today.
+It makes no API-Football requests and exercises the same Supabase upserts as a
+real ingestion run.
+
+The Python provider interface lives in `scripts/data_ingestion/providers.py`,
+so a future data source can implement the same four fixture methods without
+changing the database writer or orchestration script.
+
+API-Football requests are filtered before download using
+`API_FOOTBALL_LEAGUE_ID` and `API_FOOTBALL_SEASON`. League ID `1` is the
+default World Cup filter. `API_FOOTBALL_REQUEST_DELAY_SECONDS` defaults to
+`1.0`, and `--max-fixtures` defaults to `5` to limit detail requests. HTTP 429
+responses stop further detail fetching cleanly while preserving rows already
+committed.
+
+### Render Cron
+
+Create a Render Cron Job with the repository root as its working directory.
+Use this build command:
+
+```bash
+pip install -r apps/api/requirements.txt
+```
+
+Use this cron command:
+
+```bash
+python scripts/update_data.py --max-fixtures 5
+```
+
+Required Render environment variables:
+
+```text
+DATABASE_URL
+SPORTS_PROVIDER=api_football
+API_FOOTBALL_KEY
+API_FOOTBALL_BASE_URL=https://v3.football.api-sports.io
+API_FOOTBALL_LEAGUE_ID=1
+API_FOOTBALL_SEASON=2026
+API_FOOTBALL_REQUEST_DELAY_SECONDS=1.0
+```
+
+Render sets `RENDER=true`; in that environment a missing API key is a
+configuration failure, not an automatic sample run. Set
+`INGESTION_USE_SAMPLE=true` only when intentionally testing sample ingestion.
+Leave it unset or set it to `false` for the production cron. The default
+ingestion date is yesterday in UTC. Normal empty-match days and HTTP 429
+responses exit successfully so the next scheduled run can continue. Database,
+schema, or fixture-processing errors exit nonzero and appear as failed cron
+runs.
+
 ## Evaluate the model
 
 The chronological backtest writes `data/evaluation/latest.json`:

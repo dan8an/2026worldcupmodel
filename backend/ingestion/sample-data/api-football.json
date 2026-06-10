@@ -1,0 +1,123 @@
+{
+  "matches": [
+    {
+      "providerFixtureId": 990001,
+      "date": "2026-06-09T19:00:00+00:00",
+      "status": "FT",
+      "competition": "International Friendly",
+      "season": 2026,
+      "round": "Friendlies 1",
+      "homeTeam": {"providerId": 26, "name": "Argentina"},
+      "awayTeam": {"providerId": 2, "name": "France"},
+      "homeScore": 2,
+      "awayScore": 1,
+      "raw": {"sample": true}
+    }
+  ],
+  "statistics": {
+    "990001": [
+      {
+        "team": {"providerId": 26, "name": "Argentina"},
+        "statistics": {
+          "Ball Possession": "54%",
+          "Total Shots": 13,
+          "Shots on Goal": 6,
+          "Corner Kicks": 5,
+          "Fouls": 11,
+          "Yellow Cards": 2,
+          "Red Cards": 0,
+          "Goalkeeper Saves": 3,
+          "Total passes": 512,
+          "Passes accurate": 451
+        },
+        "raw": {"sample": true}
+      },
+      {
+        "team": {"providerId": 2, "name": "France"},
+        "statistics": {
+          "Ball Possession": "46%",
+          "Total Shots": 10,
+          "Shots on Goal": 4,
+          "Corner Kicks": 4,
+          "Fouls": 13,
+          "Yellow Cards": 3,
+          "Red Cards": 0,
+          "Goalkeeper Saves": 4,
+          "Total passes": 469,
+          "Passes accurate": 402
+        },
+        "raw": {"sample": true}
+      }
+    ]
+  },
+  "players": {
+    "990001": [
+      {
+        "team": {"providerId": 26, "name": "Argentina"},
+        "player": {"providerId": 1001, "name": "Sample Argentina Forward", "photo": null},
+        "appearance": {
+          "minutes": 90,
+          "position": "F",
+          "rating": 8.1,
+          "captain": false,
+          "substitute": false,
+          "shots": 4,
+          "shotsOnTarget": 2,
+          "goals": 1,
+          "assists": 0,
+          "saves": 0,
+          "keyPasses": 1,
+          "tackles": 0,
+          "interceptions": 0,
+          "yellowCards": 0,
+          "redCards": 0
+        },
+        "raw": {"sample": true}
+      },
+      {
+        "team": {"providerId": 2, "name": "France"},
+        "player": {"providerId": 2001, "name": "Sample France Forward", "photo": null},
+        "appearance": {
+          "minutes": 90,
+          "position": "F",
+          "rating": 7.4,
+          "captain": false,
+          "substitute": false,
+          "shots": 3,
+          "shotsOnTarget": 2,
+          "goals": 1,
+          "assists": 0,
+          "saves": 0,
+          "keyPasses": 2,
+          "tackles": 1,
+          "interceptions": 0,
+          "yellowCards": 0,
+          "redCards": 0
+        },
+        "raw": {"sample": true}
+      }
+    ]
+  },
+  "lineups": {
+    "990001": [
+      {
+        "team": {"providerId": 26, "name": "Argentina"},
+        "formation": "4-3-3",
+        "starters": [
+          {"providerId": 1001, "name": "Sample Argentina Forward", "position": "F", "grid": "1:1"}
+        ],
+        "substitutes": [],
+        "raw": {"sample": true}
+      },
+      {
+        "team": {"providerId": 2, "name": "France"},
+        "formation": "4-3-3",
+        "starters": [
+          {"providerId": 2001, "name": "Sample France Forward", "position": "F", "grid": "1:1"}
+        ],
+        "substitutes": [],
+        "raw": {"sample": true}
+      }
+    ]
+  }
+}

@@ -21,6 +21,10 @@ The migration does not recreate these tables:
 - `matches.home_team_id` and `matches.away_team_id` provide canonical UUID
   foreign keys while preserving the existing text columns used by current
   routes.
+- `teams.api_football_team_id` and `matches.api_football_fixture_id` are
+  nullable, unique provider identifiers used for repeat-safe ingestion.
+- Matches retain the normalized provider name, raw payload, and update time
+  without exposing provider credentials.
 - `predictions.model_run_id` links predictions to the existing `model_runs`
   table. A partial unique index allows only one prediction per match and model
   run while leaving legacy rows with no model run unaffected.
