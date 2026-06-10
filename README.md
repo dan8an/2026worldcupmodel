@@ -93,6 +93,18 @@ source .venv/bin/activate
 python scripts/update_data.py
 ```
 
+After applying `supabase/migrations/202606100002_rating_updates.sql`, calculate
+the current team and player ratings from the ingested raw statistics:
+
+```bash
+python scripts/update_ratings.py
+```
+
+The rating update is deterministic and repeat-safe. It maintains one current
+rating row per team and player while preserving model-run-specific rating rows
+for future prediction snapshots. An empty raw-statistics database exits
+successfully so the command can run immediately after ingestion in a cron job.
+
 The script imports completed fixtures, team match statistics, player match
 statistics, and lineups. Provider fixture/team/player IDs and unique database
 indexes make repeated runs update existing records instead of duplicating
