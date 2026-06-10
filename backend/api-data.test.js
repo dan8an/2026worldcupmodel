@@ -6,6 +6,7 @@ import {
   mergeCanonicalPredictions,
   mergeTeams,
   normalizeDatabaseMatches,
+  normalizeDatabaseSimulation,
   snapshotSimulation,
 } from "./api-data.js";
 
@@ -150,4 +151,32 @@ test("canonical predictions attach without database match rows", () => {
   assert.equal(match.prediction.home_xg, 1.8);
   assert.equal(match.prediction.probabilities.home_win, 0.58);
   assert.equal(match.prediction.model_version, "poisson-ratings-v1");
+});
+
+test("persisted Step 5 simulation rows retain the frontend shape", () => {
+  const [row] = normalizeDatabaseSimulation(
+    {
+      num_simulations: 50000,
+      random_seed: 2026,
+      model_version: "poisson-ratings-v1",
+      created_at: "2026-06-10T20:00:00Z",
+    },
+    [
+      {
+        team_id: "ARG",
+        group_stage_exit_probability: 0.05,
+        round_of_32_probability: 0.95,
+        round_of_16_probability: 0.7,
+        quarterfinal_probability: 0.5,
+        semifinal_probability: 0.3,
+        final_probability: 0.18,
+        champion_probability: 0.1,
+      },
+    ],
+    mergeTeams(),
+  ).teams;
+
+  assert.equal(row.team_id, "ARG");
+  assert.equal(row.round_of_32, 0.95);
+  assert.equal(row.champion, 0.1);
 });

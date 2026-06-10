@@ -119,6 +119,17 @@ optional player ratings, and a normalized Poisson score grid from 0-0 through
 database match rows only enrich it. Predictions retain IDs such as `WC26-001`
 even before provider match rows exist.
 
+After applying `supabase/migrations/202606100005_tournament_simulation.sql`,
+run the persisted tournament simulation:
+
+```bash
+python scripts/run_simulations.py
+```
+
+The command reads the latest canonical prediction run and simulates 50,000
+tournaments by default. For a smaller manual check, use
+`python scripts/run_simulations.py --simulations 1000 --seed 2026`.
+
 The script imports completed fixtures, team match statistics, player match
 statistics, and lineups. Provider fixture/team/player IDs and unique database
 indexes make repeated runs update existing records instead of duplicating

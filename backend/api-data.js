@@ -372,14 +372,18 @@ export const snapshotSimulation = () => {
 };
 
 export const normalizeDatabaseSimulation = (run, probabilities, teams) => ({
-  iterations: Number(run.iterations),
+  iterations: Number(run.num_simulations ?? run.iterations),
   seed: Number(run.random_seed ?? run.seed ?? 2026),
   model_version: run.model_version ?? run.semantic_version ?? "supabase",
   generated_at: run.generated_at ?? run.created_at,
   data_cutoff: run.data_cutoff ?? run.generated_at ?? run.created_at,
   monte_carlo_precision: {
-    worst_case_standard_error: Math.sqrt(0.25 / Number(run.iterations)),
-    worst_case_95_margin: 1.96 * Math.sqrt(0.25 / Number(run.iterations)),
+    worst_case_standard_error: Math.sqrt(
+      0.25 / Number(run.num_simulations ?? run.iterations),
+    ),
+    worst_case_95_margin: 1.96 * Math.sqrt(
+      0.25 / Number(run.num_simulations ?? run.iterations),
+    ),
   },
   teams: probabilities.map((row) => {
     const team = resolveTeam(
@@ -390,12 +394,21 @@ export const normalizeDatabaseSimulation = (run, probabilities, teams) => ({
     return {
       team_id: team?.id ?? String(row.team_id),
       team_name: team?.name ?? row.team_name ?? "Unknown team",
-      round_of_32: Number(row.round_of_32),
-      round_of_16: Number(row.round_of_16),
-      quarterfinal: Number(row.quarterfinal),
-      semifinal: Number(row.semifinal),
-      final: Number(row.final),
-      champion: Number(row.champion),
+      group_stage_exit: Number(
+        row.group_stage_exit_probability ?? row.group_stage_exit ?? 0,
+      ),
+      round_of_32: Number(
+        row.round_of_32_probability ?? row.round_of_32,
+      ),
+      round_of_16: Number(
+        row.round_of_16_probability ?? row.round_of_16,
+      ),
+      quarterfinal: Number(
+        row.quarterfinal_probability ?? row.quarterfinal,
+      ),
+      semifinal: Number(row.semifinal_probability ?? row.semifinal),
+      final: Number(row.final_probability ?? row.final),
+      champion: Number(row.champion_probability ?? row.champion),
     };
   }),
 });

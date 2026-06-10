@@ -113,15 +113,9 @@ app.get("/api/matches/:id", async (req, res) => {
 const loadLatestSimulation = async () => {
   try {
     const runResult = await db.query(`
-      select
-        sr.*,
-        pr.generated_at,
-        pr.data_cutoff,
-        mv.semantic_version as model_version
-      from simulation_runs sr
-      left join prediction_runs pr on pr.id = sr.prediction_run_id
-      left join model_versions mv on mv.id = pr.model_version_id
-      order by sr.created_at desc
+      select *
+      from simulation_runs
+      order by created_at desc
       limit 1
     `);
 
@@ -129,7 +123,7 @@ const loadLatestSimulation = async () => {
       const run = runResult.rows[0];
       const [probabilitiesResult, teamsResult] = await Promise.all([
         db.query(
-          "select * from team_tournament_probabilities where simulation_run_id = $1",
+          "select * from team_simulation_results where simulation_run_id = $1",
           [run.id],
         ),
         db.query("select * from teams"),
