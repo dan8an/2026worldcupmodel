@@ -4,8 +4,9 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-  "dev": "node index.js",
-  "start": "node index.js"
+    "dev": "node index.js",
+    "start": "node index.js",
+    "test": "NODE_ENV=test node --test"
   },
   "keywords": [],
   "author": "",
