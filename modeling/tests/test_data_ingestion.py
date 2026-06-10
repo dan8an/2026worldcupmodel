@@ -10,7 +10,8 @@ from scripts.data_ingestion.providers import (
     SampleSportsProvider,
     create_sports_provider,
 )
-from scripts.update_data import main, parse_args, sqlalchemy_database_url
+from scripts.database import create_database_engine, sqlalchemy_database_url
+from scripts.update_data import main, parse_args
 
 
 class DataIngestionTests(unittest.TestCase):
@@ -182,6 +183,25 @@ class DataIngestionTests(unittest.TestCase):
             "postgresql+psycopg://host/database",
         )
 
+    def test_postgres_engine_disables_prepared_statement_cache(self):
+        with patch("scripts.database.create_engine") as create_engine:
+            create_database_engine("postgresql://host/database")
+
+        create_engine.assert_called_once_with(
+            "postgresql+psycopg://host/database",
+            pool_pre_ping=True,
+            connect_args={"prepare_threshold": None},
+        )
+
+    def test_sqlite_engine_does_not_receive_psycopg_connect_args(self):
+        with patch("scripts.database.create_engine") as create_engine:
+            create_database_engine("sqlite:///test.sqlite3")
+
+        create_engine.assert_called_once_with(
+            "sqlite:///test.sqlite3",
+            pool_pre_ping=True,
+        )
+
     def test_main_exits_zero_when_no_completed_matches_exist(self):
         class Provider:
             name = "api_football"
@@ -206,7 +226,7 @@ class DataIngestionTests(unittest.TestCase):
                 return_value={"DATABASE_URL": "postgresql://example/database"},
             ),
             patch("scripts.update_data.create_sports_provider", return_value=Provider()),
-            patch("scripts.update_data.create_engine", return_value=Engine()),
+            patch("scripts.update_data.create_database_engine", return_value=Engine()),
             patch("scripts.update_data.DataIngestionRepository", Repository),
             patch("sys.argv", ["update_data.py"]),
         ):
@@ -236,7 +256,7 @@ class DataIngestionTests(unittest.TestCase):
                 return_value={"DATABASE_URL": "postgresql://example/database"},
             ),
             patch("scripts.update_data.create_sports_provider", return_value=Provider()),
-            patch("scripts.update_data.create_engine", return_value=Engine()),
+            patch("scripts.update_data.create_database_engine", return_value=Engine()),
             patch("scripts.update_data.DataIngestionRepository", Repository),
             patch("sys.argv", ["update_data.py"]),
         ):

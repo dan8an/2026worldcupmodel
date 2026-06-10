@@ -13,14 +13,14 @@ from typing import Any
 from uuid import uuid4
 
 from dotenv import load_dotenv
-from sqlalchemy import JSON, MetaData, Table, create_engine, inspect, select, text, update
+from sqlalchemy import JSON, MetaData, Table, inspect, select, text, update
 from sqlalchemy.engine import Connection, Engine
 
 ROOT = Path(__file__).resolve().parents[1]
 if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
-from scripts.update_data import sqlalchemy_database_url
+from scripts.database import create_database_engine
 from modeling.src.data import build_fixtures, load_teams, validate_tournament
 
 MODEL_VERSION = "poisson-ratings-v1"
@@ -529,7 +529,7 @@ def main() -> int:
         return 2
 
     try:
-        engine = create_engine(sqlalchemy_database_url(database_url), pool_pre_ping=True)
+        engine = create_database_engine(database_url)
     except Exception:
         logger.exception("[prediction-generation] FAILED: could not initialize database")
         return 1

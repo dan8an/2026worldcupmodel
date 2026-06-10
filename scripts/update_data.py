@@ -9,8 +9,6 @@ from datetime import date, datetime, timedelta, timezone
 from pathlib import Path
 
 from dotenv import load_dotenv
-from sqlalchemy import create_engine
-
 ROOT = Path(__file__).resolve().parents[1]
 if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
@@ -20,6 +18,7 @@ from scripts.data_ingestion import (
     RateLimitError,
     create_sports_provider,
 )
+from scripts.database import create_database_engine, sqlalchemy_database_url
 
 
 def load_environment() -> dict[str, str]:
@@ -27,16 +26,6 @@ def load_environment() -> dict[str, str]:
     load_dotenv(ROOT / ".env", override=False)
     load_dotenv(ROOT / "backend" / ".env", override=False)
     return dict(os.environ)
-
-
-def sqlalchemy_database_url(database_url: str) -> str:
-    if database_url.startswith("postgresql+psycopg://"):
-        return database_url
-    if database_url.startswith("postgresql://"):
-        return database_url.replace("postgresql://", "postgresql+psycopg://", 1)
-    if database_url.startswith("postgres://"):
-        return database_url.replace("postgres://", "postgresql+psycopg://", 1)
-    return database_url
 
 
 def parse_args() -> argparse.Namespace:
@@ -96,10 +85,7 @@ def main() -> int:
 
     try:
         provider = create_sports_provider(env, logger, force_sample=args.sample)
-        engine = create_engine(
-            sqlalchemy_database_url(database_url),
-            pool_pre_ping=True,
-        )
+        engine = create_database_engine(database_url)
     except (TypeError, ValueError) as error:
         logger.error("[daily-ingestion] FAILED: %s", error)
         return 2

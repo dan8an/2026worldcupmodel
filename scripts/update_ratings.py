@@ -17,7 +17,6 @@ from sqlalchemy import (
     MetaData,
     Table,
     and_,
-    create_engine,
     delete,
     inspect,
     select,
@@ -30,7 +29,7 @@ ROOT = Path(__file__).resolve().parents[1]
 if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
-from scripts.update_data import sqlalchemy_database_url
+from scripts.database import create_database_engine
 
 TEAM_REQUIRED_COLUMNS = {
     "team_id",
@@ -400,7 +399,7 @@ def main() -> int:
         return 2
 
     try:
-        engine = create_engine(sqlalchemy_database_url(database_url), pool_pre_ping=True)
+        engine = create_database_engine(database_url)
     except Exception:
         logger.exception("[rating-update] FAILED: could not initialize database")
         return 1
