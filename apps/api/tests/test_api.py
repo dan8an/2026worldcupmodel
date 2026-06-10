@@ -25,19 +25,40 @@ def test_production_cors_preflight_for_v1_endpoint():
     assert "content-type" in response.headers["access-control-allow-headers"].lower()
 
 
-def test_production_cors_preflight_for_teams_endpoint():
+def test_production_cors_preflight_for_api_compatibility_endpoints():
+    for path in (
+        "/api/teams",
+        "/api/matches?stage=group",
+        "/api/simulations/latest",
+    ):
+        response = client.options(
+            path,
+            headers={
+                "Origin": "https://footballoracle.vercel.app",
+                "Access-Control-Request-Method": "GET",
+            },
+        )
+
+        assert response.status_code in (200, 204)
+        assert (
+            response.headers["access-control-allow-origin"]
+            == "https://footballoracle.vercel.app"
+        )
+
+
+def test_vercel_preview_cors_preflight():
     response = client.options(
-        "/v1/teams",
+        "/api/teams",
         headers={
-            "Origin": "https://footballoracle.vercel.app",
+            "Origin": "https://footballoracle-git-preview.vercel.app",
             "Access-Control-Request-Method": "GET",
         },
     )
 
-    assert response.status_code == 200
+    assert response.status_code in (200, 204)
     assert (
         response.headers["access-control-allow-origin"]
-        == "https://footballoracle.vercel.app"
+        == "https://footballoracle-git-preview.vercel.app"
     )
 
 
@@ -53,6 +74,19 @@ def test_v1_teams_get_allows_production_origin():
         response.headers["access-control-allow-origin"]
         == "https://footballoracle.vercel.app"
     )
+
+
+def test_api_compatibility_get_routes():
+    teams_response = client.get("/api/teams")
+    matches_response = client.get("/api/matches?stage=group")
+    simulation_response = client.get("/api/simulations/latest")
+
+    assert teams_response.status_code == 200
+    assert teams_response.json()
+    assert matches_response.status_code == 200
+    assert matches_response.json()
+    assert simulation_response.status_code == 200
+    assert len(simulation_response.json()["teams"]) == 48
 
 
 def test_health():

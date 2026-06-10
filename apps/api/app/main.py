@@ -10,27 +10,27 @@ from .schemas import MatchResponse, SimulationRequest, TeamResponse
 from .service import MODEL_VERSION, service
 from modeling.src.simulation import simulate_tournament
 
-app = FastAPI(
-    title="2026 World Cup Prediction API",
-    version="0.1.0",
-    description="Educational match and tournament probabilities. Not betting advice.",
-)
-
-# Local development frontends and the production Vercel frontend.
+# Local development, production, and optional deployment-specific frontend origins.
 allowed_origins = [
+    "https://footballoracle.vercel.app",
     "http://localhost:5173",
     "http://127.0.0.1:5173",
-    "https://footballoracle.vercel.app",
 ]
 if web_origin := os.getenv("WEB_ORIGIN"):
     if web_origin not in allowed_origins:
         allowed_origins.append(web_origin)
 
+app = FastAPI(
+    title="2026 World Cup Prediction API",
+    version="0.1.0",
+    description="Educational match and tournament probabilities. Not betting advice.",
+)
 app.add_middleware(
     CORSMiddleware,
     allow_origins=allowed_origins,
+    allow_origin_regex=r"https://.*\.vercel\.app",
     allow_credentials=False,
-    allow_methods=["GET", "POST", "OPTIONS"],
+    allow_methods=["*"],
     allow_headers=["*"],
 )
 
@@ -54,6 +54,7 @@ def tournament() -> dict:
     }
 
 
+@app.get("/api/teams", response_model=list[TeamResponse], include_in_schema=False)
 @app.get("/v1/teams", response_model=list[TeamResponse])
 def teams() -> list[dict]:
     return [service.team_payload(team.id) for team in service.teams]
@@ -66,6 +67,7 @@ def team(team_id: str) -> dict:
     return service.team_profile_payload(team_id)
 
 
+@app.get("/api/matches", response_model=list[MatchResponse], include_in_schema=False)
 @app.get("/v1/matches", response_model=list[MatchResponse])
 def matches(
     stage: str | None = Query(default=None),
@@ -107,6 +109,7 @@ def predictions() -> dict:
     }
 
 
+@app.get("/api/simulations/latest", include_in_schema=False)
 @app.get("/v1/simulations/latest")
 def latest_simulation() -> dict:
     return service.latest_simulation()
