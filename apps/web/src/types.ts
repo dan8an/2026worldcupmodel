@@ -7,6 +7,7 @@ export type Team = {
   host: boolean;
   elo: number;
   flag: string;
+  confederation?: string;
 };
 
 export type TeamProfile = Team & {
@@ -125,6 +126,9 @@ export type Match = {
 export type SimulationTeam = {
   team_id: string;
   team_name: string;
+  flag?: string;
+  group?: string;
+  confederation?: string;
   round_of_32: number;
   round_of_16: number;
   quarterfinal: number;

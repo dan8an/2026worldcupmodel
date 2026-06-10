@@ -9,7 +9,6 @@ import {
   mergeTeams,
   normalizeDatabaseMatches,
   normalizeDatabaseSimulation,
-  normalizeTeam,
   snapshotSimulation,
 } from "./api-data.js";
 
@@ -71,7 +70,9 @@ const loadMatches = async () => {
     : mergeTeams();
 
   const canonicalMatches = buildPlaceholderMatches(teams);
-  if (!matchRows.length) return canonicalMatches;
+  if (!matchRows.length) {
+    return mergeCanonicalPredictions(canonicalMatches, predictionRows);
+  }
 
   const databaseMatches = normalizeDatabaseMatches(
     matchRows,
@@ -130,7 +131,7 @@ const loadLatestSimulation = async () => {
       ]);
 
       if (probabilitiesResult.rows.length) {
-        const teams = teamsResult.rows.map(normalizeTeam);
+        const teams = mergeTeams(teamsResult.rows);
         return normalizeDatabaseSimulation(run, probabilitiesResult.rows, teams);
       }
     }

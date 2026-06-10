@@ -2,18 +2,23 @@ import { useQuery } from "@tanstack/react-query";
 import { Link } from "react-router-dom";
 import { api } from "../api";
 import { ErrorState, Loading, MatchCard, percent } from "../components";
+import { championshipOutlookTeams } from "../simulation-display";
 
 export function Dashboard() {
   const matches = useQuery({ queryKey: ["matches"], queryFn: api.matches });
   const simulation = useQuery({ queryKey: ["simulation"], queryFn: api.simulation });
+  const teams = useQuery({ queryKey: ["teams"], queryFn: api.teams });
 
-  if (matches.isLoading || simulation.isLoading) return <Loading />;
-  if (matches.isError || simulation.isError) return <ErrorState />;
+  if (matches.isLoading || simulation.isLoading || teams.isLoading) return <Loading />;
+  if (matches.isError || simulation.isError || teams.isError) return <ErrorState />;
 
   const matchData = matches.data ?? [];
   const simulationData = simulation.data;
   if (!simulationData) return <ErrorState />;
-  const favorites = simulationData.teams.slice(0, 8);
+  const favorites = championshipOutlookTeams(
+    simulationData.teams,
+    teams.data ?? [],
+  );
   return (
     <>
       <section className="hero">

@@ -177,6 +177,35 @@ test("persisted Step 5 simulation rows retain the frontend shape", () => {
   ).teams;
 
   assert.equal(row.team_id, "ARG");
+  assert.equal(row.team_name, "Argentina");
+  assert.equal(row.group, "J");
+  assert.equal(row.confederation, "CONMEBOL");
   assert.equal(row.round_of_32, 0.95);
   assert.equal(row.champion, 0.1);
+});
+
+test("all canonical simulation rows resolve non-empty team labels", () => {
+  const teams = mergeTeams([
+    {
+      id: "argentina-database-uuid",
+      name: "Argentina",
+      confederation: "CONMEBOL",
+    },
+  ]);
+  const simulation = normalizeDatabaseSimulation(
+    { num_simulations: 50000 },
+    teams.map((team) => ({
+      team_id: team.id,
+      round_of_32_probability: 0.5,
+      round_of_16_probability: 0.25,
+      quarterfinal_probability: 0.125,
+      semifinal_probability: 0.06,
+      final_probability: 0.03,
+      champion_probability: 0.015,
+    })),
+    teams,
+  );
+
+  assert.equal(simulation.teams.length, 48);
+  assert.ok(simulation.teams.every((team) => team.team_name.trim().length > 0));
 });

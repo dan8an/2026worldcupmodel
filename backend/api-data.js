@@ -31,6 +31,21 @@ const SUBDIVISION_FLAGS = {
   "GB-SCT": "\u{1F3F4}\u{E0067}\u{E0062}\u{E0073}\u{E0063}\u{E0074}\u{E007F}",
 };
 
+const CONFEDERATIONS = {
+  MEX: "CONCACAF", RSA: "CAF", KOR: "AFC", CZE: "UEFA",
+  CAN: "CONCACAF", BIH: "UEFA", QAT: "AFC", SUI: "UEFA",
+  BRA: "CONMEBOL", MAR: "CAF", HAI: "CONCACAF", SCO: "UEFA",
+  USA: "CONCACAF", PAR: "CONMEBOL", AUS: "AFC", TUR: "UEFA",
+  GER: "UEFA", CUW: "CONCACAF", CIV: "CAF", ECU: "CONMEBOL",
+  NED: "UEFA", JPN: "AFC", SWE: "UEFA", TUN: "CAF",
+  BEL: "UEFA", EGY: "CAF", IRN: "AFC", NZL: "OFC",
+  ESP: "UEFA", CPV: "CAF", KSA: "AFC", URU: "CONMEBOL",
+  FRA: "UEFA", SEN: "CAF", IRQ: "AFC", NOR: "UEFA",
+  ARG: "CONMEBOL", ALG: "CAF", AUT: "UEFA", JOR: "AFC",
+  POR: "UEFA", COD: "CAF", UZB: "AFC", COL: "CONMEBOL",
+  ENG: "UEFA", CRO: "UEFA", GHA: "CAF", PAN: "CONCACAF",
+};
+
 const GROUP_MATCH_DATES = {
   A: [11, 18, 24], B: [12, 18, 24], C: [13, 19, 24],
   D: [12, 19, 25], E: [14, 20, 25], F: [14, 20, 25],
@@ -80,6 +95,9 @@ export const normalizeTeam = (row = {}) => {
     host: Boolean(row.is_host ?? row.host ?? seed.host ?? false),
     elo: Number(row.elo_rating ?? row.elo ?? 2100 - rank * 10),
     flag: flagForTeam(seed.id ?? row.id),
+    confederation: row.confederation ??
+      CONFEDERATIONS[seed.id ?? row.id] ??
+      "",
   };
 };
 
@@ -394,6 +412,9 @@ export const normalizeDatabaseSimulation = (run, probabilities, teams) => ({
     return {
       team_id: team?.id ?? String(row.team_id),
       team_name: team?.name ?? row.team_name ?? "Unknown team",
+      flag: team?.flag ?? "",
+      group: team?.group ?? "",
+      confederation: team?.confederation ?? "",
       group_stage_exit: Number(
         row.group_stage_exit_probability ?? row.group_stage_exit ?? 0,
       ),

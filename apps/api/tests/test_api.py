@@ -18,6 +18,24 @@ def test_tournament_shape():
     assert response.json()["match_count"] == 104
 
 
+def test_teams_return_non_empty_names():
+    response = client.get("/v1/teams")
+    teams = response.json()
+
+    assert response.status_code == 200
+    assert teams
+    assert all(team["id"] and team["name"] for team in teams)
+
+
+def test_latest_simulation_returns_team_names():
+    response = client.get("/v1/simulations/latest")
+    teams = response.json()["teams"]
+
+    assert response.status_code == 200
+    assert len(teams) == 48
+    assert all(team["team_id"] and team["team_name"] for team in teams)
+
+
 def test_match_prediction_probabilities():
     response = client.get("/v1/matches/WC26-001")
     payload = response.json()
