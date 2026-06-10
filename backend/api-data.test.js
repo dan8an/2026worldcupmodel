@@ -2,7 +2,9 @@ import test from "node:test";
 import assert from "node:assert/strict";
 import {
   buildPlaceholderMatches,
+  mergeDatabaseMatches,
   mergeTeams,
+  normalizeDatabaseMatches,
   snapshotSimulation,
 } from "./api-data.js";
 
@@ -42,4 +44,87 @@ test("simulation snapshot satisfies the expected response shape", () => {
   assert.equal(simulation.teams.length, 48);
   assert.equal(typeof simulation.model_version, "string");
   assert.equal(typeof simulation.monte_carlo_precision.worst_case_95_margin, "number");
+});
+
+test("provider matches do not replace the World Cup forecast catalog", () => {
+  const teams = mergeTeams();
+  const canonicalMatches = buildPlaceholderMatches(teams);
+  const databaseTeams = [
+    { id: "mexico-uuid", name: "Mexico" },
+    { id: "south-africa-uuid", name: "South Africa" },
+  ];
+  const databaseMatches = normalizeDatabaseMatches(
+    [
+      {
+        id: "provider-match-uuid",
+        home_team_id: "mexico-uuid",
+        away_team_id: "south-africa-uuid",
+        match_date: "2025-06-11T17:00:00Z",
+        tournament_stage: "Friendlies",
+      },
+    ],
+    [],
+    teams,
+    databaseTeams,
+  );
+
+  const matches = mergeDatabaseMatches(canonicalMatches, databaseMatches);
+
+  assert.equal(matches.length, 72);
+  assert.ok(matches.every((match) => match.stage === "group"));
+  assert.equal(matches[0].id, "WC26-001");
+  assert.equal(typeof matches[0].prediction.home_xg, "number");
+  assert.equal(typeof matches[0].prediction.probabilities.home_win, "number");
+});
+
+test("matching database predictions enrich canonical fixtures without losing details", () => {
+  const teams = mergeTeams();
+  const canonicalMatches = buildPlaceholderMatches(teams);
+  const databaseTeams = [
+    { id: "mexico-uuid", name: "Mexico" },
+    { id: "south-africa-uuid", name: "South Africa" },
+  ];
+  const databaseMatches = normalizeDatabaseMatches(
+    [
+      {
+        id: "provider-match-uuid",
+        home_team_id: "mexico-uuid",
+        away_team_id: "south-africa-uuid",
+        match_date: canonicalMatches[0].kickoff,
+        tournament_stage: "Group Stage - 1",
+      },
+    ],
+    [
+      {
+        match_id: "provider-match-uuid",
+        home_xg: 2.1,
+        away_xg: 0.7,
+        home_win_prob: 0.65,
+        draw_prob: 0.22,
+        away_win_prob: 0.13,
+        confidence_tier: "Medium",
+      },
+      {
+        match_id: "provider-match-uuid",
+        home_xg: 0.1,
+        away_xg: 3.4,
+        home_win_prob: 0.05,
+        draw_prob: 0.1,
+        away_win_prob: 0.85,
+        confidence_tier: "Older prediction",
+      },
+    ],
+    teams,
+    databaseTeams,
+  );
+
+  const [match] = mergeDatabaseMatches(canonicalMatches, databaseMatches);
+
+  assert.equal(match.id, "WC26-001");
+  assert.equal(match.stage, "group");
+  assert.equal(match.prediction.match_id, "WC26-001");
+  assert.equal(match.prediction.home_xg, 2.1);
+  assert.equal(match.prediction.probabilities.home_win, 0.65);
+  assert.ok(match.prediction.top_scores.length > 0);
+  assert.ok(match.prediction.key_factors.length > 0);
 });

@@ -163,9 +163,13 @@ export const normalizeDatabaseMatches = (
   teams,
   databaseTeamRows,
 ) => {
-  const predictionsByMatchId = new Map(
-    predictionRows.map((prediction) => [String(prediction.match_id), prediction]),
-  );
+  const predictionsByMatchId = new Map();
+  predictionRows.forEach((prediction) => {
+    const matchId = String(prediction.match_id);
+    if (!predictionsByMatchId.has(matchId)) {
+      predictionsByMatchId.set(matchId, prediction);
+    }
+  });
 
   return matchRows.map((row, index) => {
     const id = String(row.id);
@@ -186,22 +190,39 @@ export const normalizeDatabaseMatches = (
           match_id: id,
           home_team_id: homeTeam?.id ?? "",
           away_team_id: awayTeam?.id ?? "",
-          home_xg: Number(databasePrediction.home_xg ?? 0),
-          away_xg: Number(databasePrediction.away_xg ?? 0),
+          home_xg: Number(
+            databasePrediction.home_xg ?? snapshotPrediction?.home_xg ?? 0,
+          ),
+          away_xg: Number(
+            databasePrediction.away_xg ?? snapshotPrediction?.away_xg ?? 0,
+          ),
           probabilities: {
             home_win: Number(
-              databasePrediction.home_win ?? databasePrediction.home_win_prob ?? 0,
+              databasePrediction.home_win ??
+                databasePrediction.home_win_prob ??
+                snapshotPrediction?.probabilities.home_win ??
+                0,
             ),
             draw: Number(
-              databasePrediction.draw ?? databasePrediction.draw_prob ?? 0,
+              databasePrediction.draw ??
+                databasePrediction.draw_prob ??
+                snapshotPrediction?.probabilities.draw ??
+                0,
             ),
             away_win: Number(
-              databasePrediction.away_win ?? databasePrediction.away_win_prob ?? 0,
+              databasePrediction.away_win ??
+                databasePrediction.away_win_prob ??
+                snapshotPrediction?.probabilities.away_win ??
+                0,
             ),
           },
-          top_scores: [],
-          confidence: databasePrediction.confidence_tier ?? "High uncertainty",
-          key_factors: databasePrediction.explanation_factors ?? [],
+          top_scores: snapshotPrediction?.top_scores ?? [],
+          confidence: databasePrediction.confidence_tier ??
+            snapshotPrediction?.confidence ??
+            "High uncertainty",
+          key_factors: databasePrediction.explanation_factors ??
+            snapshotPrediction?.key_factors ??
+            [],
           context: snapshotPrediction?.context ?? emptyPredictionContext(),
           model_version: databasePrediction.model_version ?? "supabase",
           generated_at: databasePrediction.created_at ?? new Date().toISOString(),
@@ -230,6 +251,56 @@ export const normalizeDatabaseMatches = (
     a.kickoff.localeCompare(b.kickoff) || a.number - b.number
   );
 };
+
+const sameUtcDate = (left, right) =>
+  left.slice(0, 10) === right.slice(0, 10);
+
+const matchesCanonicalFixture = (canonical, databaseMatch) => {
+  if (canonical.id === databaseMatch.id) return true;
+  if (!canonical.home_team || !canonical.away_team) return false;
+  return databaseMatch.home_team?.id === canonical.home_team.id &&
+    databaseMatch.away_team?.id === canonical.away_team.id &&
+    sameUtcDate(databaseMatch.kickoff, canonical.kickoff);
+};
+
+export const mergeDatabaseMatches = (canonicalMatches, databaseMatches) =>
+  canonicalMatches.map((canonical) => {
+    const databaseMatch = databaseMatches.find((candidate) =>
+      matchesCanonicalFixture(canonical, candidate)
+    );
+    if (!databaseMatch) return canonical;
+
+    const prediction = databaseMatch.prediction
+      ? {
+          ...canonical.prediction,
+          ...databaseMatch.prediction,
+          match_id: canonical.id,
+          home_team_id: canonical.home_team?.id ?? "",
+          away_team_id: canonical.away_team?.id ?? "",
+          top_scores: databaseMatch.prediction.top_scores.length
+            ? databaseMatch.prediction.top_scores
+            : canonical.prediction?.top_scores ?? [],
+          key_factors: databaseMatch.prediction.key_factors.length
+            ? databaseMatch.prediction.key_factors
+            : canonical.prediction?.key_factors ?? [],
+          context: {
+            ...canonical.prediction?.context,
+            ...databaseMatch.prediction.context,
+          },
+        }
+      : canonical.prediction;
+
+    return {
+      ...canonical,
+      kickoff: databaseMatch.kickoff,
+      venue_id: databaseMatch.venue_id === "TBD"
+        ? canonical.venue_id
+        : databaseMatch.venue_id || canonical.venue_id,
+      home_team: databaseMatch.home_team ?? canonical.home_team,
+      away_team: databaseMatch.away_team ?? canonical.away_team,
+      prediction,
+    };
+  });
 
 const emptyPredictionContext = () => ({
   home_form_elo: 0,

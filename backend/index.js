@@ -4,6 +4,7 @@ import dotenv from "dotenv";
 import pg from "pg";
 import {
   buildPlaceholderMatches,
+  mergeDatabaseMatches,
   mergeTeams,
   normalizeDatabaseMatches,
   normalizeDatabaseSimulation,
@@ -68,16 +69,16 @@ const loadMatches = async () => {
     ? mergeTeams(databaseTeamRows)
     : mergeTeams();
 
-  if (!matchRows.length) {
-    return buildPlaceholderMatches(teams);
-  }
+  const canonicalMatches = buildPlaceholderMatches(teams);
+  if (!matchRows.length) return canonicalMatches;
 
-  return normalizeDatabaseMatches(
+  const databaseMatches = normalizeDatabaseMatches(
     matchRows,
     predictionRows,
     teams,
     databaseTeamRows,
   );
+  return mergeDatabaseMatches(canonicalMatches, databaseMatches);
 };
 
 app.get("/api/matches", async (req, res) => {
