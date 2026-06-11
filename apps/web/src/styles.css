@@ -83,11 +83,21 @@ p { color: var(--muted); line-height: 1.65; }
 .card-factor strong { font: 700 12px "Manrope"; white-space: nowrap; }
 .positive { color: var(--green) !important; }
 .negative { color: #ff9c9c !important; }
+.model-notes { display: flex; gap: 14px; align-items: baseline; margin-bottom: 12px; padding: 13px 16px;
+  border: 1px solid var(--line); border-radius: 10px; background: rgba(255,255,255,.025); }
+.model-notes strong { flex: 0 0 auto; font: 700 12px "Manrope"; color: var(--ink); }
+.model-notes span { color: var(--muted); font-size: 12px; line-height: 1.5; }
 .ranking-card { overflow: hidden; }
-.ranking-row { display: grid; grid-template-columns: 42px minmax(140px, 1fr) 2fr 55px; gap: 16px;
+.ranking-row { display: grid; grid-template-columns: 42px minmax(310px, 1.5fr) minmax(120px, 1fr) 55px; gap: 16px;
   align-items: center; padding: 16px 20px; border-bottom: 1px solid var(--line); }
 .ranking-row:last-child { border: 0; }
 .rank { color: var(--muted); font-family: monospace; }
+.ranking-team { min-width: 0; }
+.ranking-team > strong, .model-drivers { display: block; }
+.model-drivers { margin-top: 5px; color: var(--muted); font-size: 10px; line-height: 1.45; }
+.model-badges { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 7px; }
+.model-badge { width: fit-content; padding: 3px 7px; border: 1px solid rgba(229,198,107,.22);
+  border-radius: 99px; color: #d8c88f; background: rgba(229,198,107,.055); font-size: 9px; white-space: nowrap; }
 .mini-track { height: 5px; background: rgba(255,255,255,.07); border-radius: 10px; overflow: hidden; }
 .mini-track span { height: 100%; display: block; background: var(--green); border-radius: inherit; }
 .page-heading { padding-top: 20px; max-width: 760px; }
@@ -251,6 +261,9 @@ th:first-child, td:first-child { text-align: left; }
   .filters input { min-width: 0; }
   .outcome-card { padding: 18px 20px; }
   .outcome-card strong { font-size: 28px; }
+  .ranking-row { grid-template-columns: 34px minmax(0, 1fr) 55px; }
+  .ranking-row .mini-track { display: none; }
+  .model-notes { align-items: flex-start; flex-direction: column; gap: 5px; }
 }
 
 @media (max-width: 520px) {

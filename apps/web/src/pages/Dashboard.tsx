@@ -2,7 +2,11 @@ import { useQuery } from "@tanstack/react-query";
 import { Link } from "react-router-dom";
 import { api } from "../api";
 import { ErrorState, Loading, MatchCard, percent } from "../components";
-import { championshipOutlookTeams } from "../simulation-display";
+import {
+  championshipOutlookTeams,
+  simulationDriverLabels,
+  simulationSignalBadges,
+} from "../simulation-display";
 
 export function Dashboard() {
   const matches = useQuery({ queryKey: ["matches"], queryFn: api.matches });
@@ -59,17 +63,41 @@ export function Dashboard() {
           <div><span className="eyebrow">Tournament model</span><h2>Championship outlook</h2></div>
           <Link to="/simulator">Open simulator</Link>
         </div>
+        <aside className="model-notes" aria-label="Championship outlook model notes">
+          <strong>Model notes</strong>
+          <span>
+            Tournament odds are simulated from match probabilities. Shot-volume
+            v4 can boost teams with strong recent attacking volume, so read
+            title odds alongside model confidence and the input notes below.
+          </span>
+        </aside>
         <div className="ranking-card">
-          {favorites.map((team, index) => (
-            <Link to={`/teams/${team.team_id}`} className="ranking-row" key={team.team_id}>
-              <span className="rank">{String(index + 1).padStart(2, "0")}</span>
-              <strong>{team.team_name}</strong>
-              <div className="mini-track">
-                <span style={{ width: `${team.champion * 100}%` }} />
-              </div>
-              <b>{percent(team.champion)}</b>
-            </Link>
-          ))}
+          {favorites.map((team, index) => {
+            const drivers = simulationDriverLabels(team);
+            const badges = simulationSignalBadges(team);
+            return (
+              <Link to={`/teams/${team.team_id}`} className="ranking-row" key={team.team_id}>
+                <span className="rank">{String(index + 1).padStart(2, "0")}</span>
+                <div className="ranking-team">
+                  <strong>{team.team_name}</strong>
+                  {drivers.length > 0 && (
+                    <small className="model-drivers">{drivers.join(" · ")}</small>
+                  )}
+                  {badges.length > 0 && (
+                    <span className="model-badges">
+                      {badges.map((badge) => (
+                        <small className="model-badge" key={badge}>{badge}</small>
+                      ))}
+                    </span>
+                  )}
+                </div>
+                <div className="mini-track">
+                  <span style={{ width: `${team.champion * 100}%` }} />
+                </div>
+                <b>{percent(team.champion)}</b>
+              </Link>
+            );
+          })}
         </div>
       </section>
     </>

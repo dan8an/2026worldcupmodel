@@ -836,12 +836,26 @@ class PredictionRepository:
         self,
         database_team_ids: dict[str, Any],
     ) -> dict[str, float]:
+        return {
+            canonical_id: details["shot_volume_rating"]
+            for canonical_id, details in self.load_current_shot_volume_details(
+                database_team_ids
+            ).items()
+        }
+
+    def load_current_shot_volume_details(
+        self,
+        database_team_ids: dict[str, Any],
+    ) -> dict[str, dict[str, Any]]:
         ratings = self._table("team_chance_quality_ratings")
-        statement = select(
+        selected_columns = [
             ratings.c.team_id,
             ratings.c.shot_volume_rating,
             ratings.c.rated_at,
-        )
+        ]
+        if "sample_matches" in ratings.c:
+            selected_columns.append(ratings.c.sample_matches)
+        statement = select(*selected_columns)
         if "model_version" in ratings.c:
             statement = statement.where(
                 ratings.c.model_version == CHANCE_QUALITY_MODEL_VERSION
@@ -850,7 +864,14 @@ class PredictionRepository:
             rows = [dict(row) for row in connection.execute(statement).mappings()]
         rows.sort(key=lambda row: str(row.get("rated_at") or ""), reverse=True)
         by_database_id = {
-            row["team_id"]: _number(row["shot_volume_rating"])
+            row["team_id"]: {
+                "shot_volume_rating": _number(row["shot_volume_rating"]),
+                "sample_matches": (
+                    int(row["sample_matches"])
+                    if row.get("sample_matches") is not None
+                    else None
+                ),
+            }
             for row in rows
             if row.get("team_id") is not None
             and row.get("shot_volume_rating") is not None

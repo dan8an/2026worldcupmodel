@@ -28,6 +28,7 @@ from modeling.src.team_profiles import (
     team_analysis,
 )
 from scripts.database import create_database_engine
+from scripts.generate_predictions import PredictionRepository
 
 STATIC_MODEL_VERSION = "context-0.2.0"
 MODEL_VERSION = STATIC_MODEL_VERSION
@@ -160,7 +161,55 @@ class DatabaseSimulationSource:
                     {"simulation_run_id": latest["id"]},
                 ).mappings()
             ]
-        return {"run": dict(latest), "results": rows}
+        return {
+            "run": dict(latest),
+            "results": rows,
+            "model_inputs": self._load_model_inputs(),
+        }
+
+    def _load_model_inputs(self) -> dict[str, dict[str, Any]]:
+        try:
+            repository = PredictionRepository(self.engine)
+            database_team_ids = repository.load_database_team_ids()
+            ratings = repository.load_current_team_ratings(database_team_ids)
+            shot_volume = repository.load_current_shot_volume_details(
+                database_team_ids
+            )
+        except Exception:
+            LOGGER.warning(
+                "Simulation rating transparency metadata is unavailable",
+                exc_info=True,
+            )
+            return {}
+
+        ranked_team_ids = sorted(
+            ratings,
+            key=lambda team_id: float(ratings[team_id]["elo_rating"]),
+            reverse=True,
+        )
+        elo_ranks = {
+            team_id: rank
+            for rank, team_id in enumerate(ranked_team_ids, start=1)
+        }
+        return {
+            team_id: {
+                "elo_rating": float(rating["elo_rating"]),
+                "elo_rank": elo_ranks[team_id],
+                "attack_rating": float(rating["attack_rating"]),
+                "defense_rating": float(rating["defense_rating"]),
+                "shot_volume_rating": (
+                    float(shot_volume[team_id]["shot_volume_rating"])
+                    if team_id in shot_volume
+                    else None
+                ),
+                "rating_source": rating["_rating_source"],
+                "rating_matches": int(rating.get("matches_played") or 0),
+                "shot_volume_sample_matches": (
+                    shot_volume.get(team_id, {}).get("sample_matches")
+                ),
+            }
+            for team_id, rating in ratings.items()
+        }
 
 
 class PredictionService:
@@ -434,6 +483,7 @@ class PredictionService:
             else:
                 if database_simulation is not None:
                     run = database_simulation["run"]
+                    model_inputs = database_simulation.get("model_inputs", {})
                     generated_at = run.get("generated_at") or run.get("created_at")
                     iterations = int(
                         run.get("num_simulations") or run.get("iterations") or 0
@@ -489,6 +539,7 @@ class PredictionService:
                                     or row.get("champion")
                                     or 0
                                 ),
+                                "model_inputs": model_inputs.get(team_id),
                             }
                         )
                     return {

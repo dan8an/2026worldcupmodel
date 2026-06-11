@@ -1,5 +1,50 @@
 import type { SimulationTeam, Team } from "./types";
 
+export function simulationSignalBadges(team: SimulationTeam): string[] {
+  const inputs = team.model_inputs;
+  if (!inputs) return [];
+
+  const badges = [];
+  if (
+    inputs.shot_volume_rating != null &&
+    inputs.shot_volume_rating >= 95
+  ) {
+    badges.push("High shot-volume signal");
+  }
+  if (inputs.rating_source === "canonical_rank_prior") {
+    badges.push("Limited rating history");
+  } else if (
+    inputs.rating_matches < 5 ||
+    (
+      inputs.shot_volume_sample_matches != null &&
+      inputs.shot_volume_sample_matches < 5
+    )
+  ) {
+    badges.push("Limited data");
+  }
+  return badges;
+}
+
+export function simulationDriverLabels(team: SimulationTeam): string[] {
+  const inputs = team.model_inputs;
+  if (!inputs) return [];
+
+  const labels = [
+    `Elo #${inputs.elo_rank}`,
+    `Attack ${inputs.attack_rating.toFixed(1)}`,
+    `Defense ${inputs.defense_rating.toFixed(1)}`,
+  ];
+  if (inputs.shot_volume_rating != null) {
+    labels.push(`Shot volume ${inputs.shot_volume_rating.toFixed(1)}`);
+  }
+  labels.push(
+    inputs.rating_source === "canonical_rank_prior"
+      ? "Source: conservative prior"
+      : "Source: current ratings",
+  );
+  return labels;
+}
+
 export function championshipOutlookTeams(
   simulationTeams: SimulationTeam[],
   teams: Team[],

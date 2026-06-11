@@ -152,6 +152,16 @@ export type SimulationTeam = {
   semifinal: number;
   final: number;
   champion: number;
+  model_inputs?: {
+    elo_rating: number;
+    elo_rank: number;
+    attack_rating: number;
+    defense_rating: number;
+    shot_volume_rating: number | null;
+    rating_source: "database_current" | "canonical_rank_prior" | string;
+    rating_matches: number;
+    shot_volume_sample_matches: number | null;
+  } | null;
 };
 
 export type Simulation = {

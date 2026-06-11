@@ -65,6 +65,19 @@ def use_v4_database_service(monkeypatch):
 
 class LatestV4SimulationSource:
     def load_latest(self):
+        model_inputs = {
+            team.id: {
+                "elo_rating": 2100.0 if team.id == "ARG" else 1500.0,
+                "elo_rank": 1 if team.id == "ARG" else 20,
+                "attack_rating": 82.5,
+                "defense_rating": 79.25,
+                "shot_volume_rating": 96.0 if team.id == "ARG" else 50.0,
+                "rating_source": "database_current",
+                "rating_matches": 12,
+                "shot_volume_sample_matches": 10,
+            }
+            for team in load_teams()
+        }
         return {
             "run": {
                 "id": "v4-simulation",
@@ -87,6 +100,7 @@ class LatestV4SimulationSource:
                 }
                 for team in load_teams()
             ],
+            "model_inputs": model_inputs,
         }
 
 
@@ -318,6 +332,16 @@ def test_latest_database_simulation_wins_over_static(monkeypatch):
         )
         assert argentina["team_name"] == "Argentina"
         assert argentina["champion"] == 0.314
+        assert argentina["model_inputs"] == {
+            "elo_rating": 2100.0,
+            "elo_rank": 1,
+            "attack_rating": 82.5,
+            "defense_rating": 79.25,
+            "shot_volume_rating": 96.0,
+            "rating_source": "database_current",
+            "rating_matches": 12,
+            "shot_volume_sample_matches": 10,
+        }
 
 
 def test_database_simulation_failure_uses_labeled_static_fallback():
