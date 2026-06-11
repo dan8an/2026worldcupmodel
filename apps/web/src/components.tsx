@@ -1,7 +1,13 @@
 import { Link } from "react-router-dom";
+import {
+  confidenceLevel,
+  displayFactors,
+  finalProbabilities,
+} from "./prediction-display";
 import type { Match } from "./types";
 
 export const percent = (value: number) => `${Math.round(value * 100)}%`;
+export const precisePercent = (value: number) => `${(value * 100).toFixed(1)}%`;
 
 export function Loading({ label = "Loading forecast" }: { label?: string }) {
   return <div className="state-card">{label}...</div>;
@@ -18,24 +24,28 @@ export function ErrorState() {
 export function ProbabilityBar({ match }: { match: Match }) {
   const prediction = match.prediction;
   if (!prediction) return <p className="muted">Prediction available after teams qualify.</p>;
-  const { home_win, draw, away_win } = prediction.probabilities;
+  const probabilities = finalProbabilities(prediction);
   return (
-    <div>
+    <div className="probability-visual">
       <div className="probability-labels">
-        <span>{percent(home_win)} home</span>
-        <span>{percent(draw)} draw</span>
-        <span>{percent(away_win)} away</span>
+        <span><b>{percent(probabilities.home)}</b> Win</span>
+        <span><b>{percent(probabilities.draw)}</b> Draw</span>
+        <span><b>{percent(probabilities.away)}</b> Loss</span>
       </div>
       <div className="probability-bar" aria-label="Result probabilities">
-        <span className="home" style={{ width: `${home_win * 100}%` }} />
-        <span className="draw" style={{ width: `${draw * 100}%` }} />
-        <span className="away" style={{ width: `${away_win * 100}%` }} />
+        <span className="home" style={{ width: `${probabilities.home * 100}%` }} />
+        <span className="draw" style={{ width: `${probabilities.draw * 100}%` }} />
+        <span className="away" style={{ width: `${probabilities.away * 100}%` }} />
       </div>
     </div>
   );
 }
 
 export function MatchCard({ match }: { match: Match }) {
+  const confidence = match.prediction
+    ? confidenceLevel(match.prediction.confidence_score)
+    : null;
+  const leadFactor = match.prediction ? displayFactors(match.prediction)[0] : null;
   return (
     <Link className="match-card" to={`/match/${match.id}`}>
       <div className="eyebrow">
@@ -59,8 +69,18 @@ export function MatchCard({ match }: { match: Match }) {
             <span>
               xG {match.prediction.home_xg.toFixed(2)} - {match.prediction.away_xg.toFixed(2)}
             </span>
-            <span>{match.prediction.confidence}</span>
+            <span className={`confidence-pill ${confidence?.toLowerCase()}`}>
+              {confidence} confidence
+            </span>
           </div>
+          {leadFactor && (
+            <div className="card-factor">
+              <span>{leadFactor.factor}</span>
+              <strong className={leadFactor.direction}>
+                {leadFactor.direction === "negative" ? "↓" : "↑"} {leadFactor.impact}
+              </strong>
+            </div>
+          )}
         </>
       )}
     </Link>

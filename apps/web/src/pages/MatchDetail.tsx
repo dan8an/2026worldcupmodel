@@ -1,7 +1,20 @@
 import { useQuery } from "@tanstack/react-query";
 import { Link, useParams } from "react-router-dom";
 import { api } from "../api";
-import { ErrorState, Loading, percent, ProbabilityBar } from "../components";
+import {
+  ErrorState,
+  Loading,
+  percent,
+  precisePercent,
+  ProbabilityBar,
+} from "../components";
+import {
+  confidenceLevel,
+  displayFactors,
+  eloBaseProbabilities,
+  finalProbabilities,
+  predictionSummary,
+} from "../prediction-display";
 
 export function MatchDetail() {
   const { id = "" } = useParams();
@@ -11,6 +24,10 @@ export function MatchDetail() {
   const match = query.data;
   const prediction = match.prediction;
   if (!prediction) return <ErrorState />;
+  const final = finalProbabilities(prediction);
+  const eloBase = eloBaseProbabilities(prediction);
+  const confidence = confidenceLevel(prediction.confidence_score);
+  const factors = displayFactors(prediction);
   return (
     <section>
       <div className="match-hero">
@@ -32,11 +49,84 @@ export function MatchDetail() {
         <ProbabilityBar match={match} />
         <div className="match-meta">
           <span>{new Date(match.kickoff).toLocaleString()}</span>
-          <span>{prediction.confidence}</span>
+          <span className={`confidence-pill ${confidence.toLowerCase()}`}>
+            {confidence} confidence
+            {prediction.confidence_score != null &&
+              ` · ${Math.round(prediction.confidence_score * 100)}/100`}
+          </span>
           <span>{prediction.model_version}</span>
         </div>
       </div>
+      <div className="outcome-grid" aria-label="Final result probabilities">
+        {[
+          ["Win", match.home_team?.name, final.home, "home"],
+          ["Draw", "Stalemate", final.draw, "draw"],
+          ["Loss", match.away_team?.name, final.away, "away"],
+        ].map(([label, team, probability, className]) => (
+          <article className={`outcome-card ${className}`} key={label}>
+            <span>{label}</span>
+            <strong>{precisePercent(probability as number)}</strong>
+            <small>{team}</small>
+          </article>
+        ))}
+      </div>
       <div className="detail-grid">
+        <article className="panel explanation-panel">
+          <span className="eyebrow">Model interpretation</span>
+          <h2>How the forecast moved</h2>
+          <p className="explanation-summary">{predictionSummary(match)}</p>
+          <div className="probability-comparison">
+            <div className="comparison-heading">
+              <span>Outcome</span>
+              <span>Elo base</span>
+              <span>Final</span>
+              <span>Change</span>
+            </div>
+            {[
+              ["Win", eloBase?.home, final.home],
+              ["Draw", eloBase?.draw, final.draw],
+              ["Loss", eloBase?.away, final.away],
+            ].map(([label, base, finalValue]) => {
+              const change =
+                typeof base === "number" ? (finalValue as number) - base : null;
+              return (
+                <div className="comparison-row" key={label}>
+                  <strong>{label}</strong>
+                  <span>{typeof base === "number" ? precisePercent(base) : "—"}</span>
+                  <span>{precisePercent(finalValue as number)}</span>
+                  <b className={change == null ? "" : change >= 0 ? "positive" : "negative"}>
+                    {change == null ? "—" : `${change >= 0 ? "↑" : "↓"} ${precisePercent(Math.abs(change))}`}
+                  </b>
+                </div>
+              );
+            })}
+          </div>
+        </article>
+        <article className="panel factor-panel">
+          <span className="eyebrow">Top model factors</span>
+          <h2>Why the probabilities changed</h2>
+          {factors.length ? (
+            <ol className="factor-list">
+              {factors.map((factor) => (
+                <li key={`${factor.factor}-${factor.team}`}>
+                  <div>
+                    <strong>{factor.factor}</strong>
+                    <span>{factor.team}</span>
+                  </div>
+                  <b className={`factor-impact ${factor.direction}`}>
+                    {factor.direction === "negative" ? "↓" : "↑"} {factor.impact}
+                  </b>
+                </li>
+              ))}
+            </ol>
+          ) : (
+            <ol className="factor-list legacy">
+              {prediction.key_factors.slice(0, 3).map((factor) => (
+                <li key={factor}>{factor}</li>
+              ))}
+            </ol>
+          )}
+        </article>
         <article className="panel">
           <span className="eyebrow">Score distribution</span>
           <h2>Most likely scorelines</h2>
@@ -48,22 +138,9 @@ export function MatchDetail() {
             </div>
           ))}
         </article>
-        <article className="panel">
+        <article className="panel methodology-panel">
           <span className="eyebrow">Structured explanation</span>
-          <h2>What drives the forecast</h2>
-          {prediction.top_factors?.length ? (
-            <ol className="factor-list">
-              {prediction.top_factors.map((factor) => (
-                <li key={`${factor.factor}-${factor.team}`}>
-                  {factor.factor}: {factor.team} ({factor.impact})
-                </li>
-              ))}
-            </ol>
-          ) : (
-            <ol className="factor-list">
-              {prediction.key_factors.map((factor) => <li key={factor}>{factor}</li>)}
-            </ol>
-          )}
+          <h2>Data and model context</h2>
           <p className="disclosure">
             Generated from model inputs, not news inference. Data cutoff:{" "}
             {new Date(prediction.data_cutoff).toLocaleString()}.

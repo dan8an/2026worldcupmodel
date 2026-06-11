@@ -1,0 +1,117 @@
+import type { Match, Prediction } from "./types";
+
+export type OutcomeProbabilities = {
+  home: number;
+  draw: number;
+  away: number;
+};
+
+export type ConfidenceLevel = "High" | "Medium" | "Low";
+
+export type DisplayFactor = {
+  factor: string;
+  team: string;
+  impact: string;
+  value: number;
+  direction: "positive" | "negative" | "neutral";
+};
+
+export const finalProbabilities = (
+  prediction: Prediction,
+): OutcomeProbabilities => ({
+  home: prediction.final_home_probability ?? prediction.probabilities.home_win,
+  draw: prediction.final_draw_probability ?? prediction.probabilities.draw,
+  away: prediction.final_away_probability ?? prediction.probabilities.away_win,
+});
+
+export const eloBaseProbabilities = (
+  prediction: Prediction,
+): OutcomeProbabilities | null => {
+  const { elo_base_home_probability, elo_base_draw_probability, elo_base_away_probability } =
+    prediction;
+  if (
+    elo_base_home_probability == null ||
+    elo_base_draw_probability == null ||
+    elo_base_away_probability == null
+  ) {
+    return null;
+  }
+  return {
+    home: elo_base_home_probability,
+    draw: elo_base_draw_probability,
+    away: elo_base_away_probability,
+  };
+};
+
+export const confidenceLevel = (score: number | null | undefined): ConfidenceLevel => {
+  if (score == null) return "Low";
+  if (score >= 0.7) return "High";
+  if (score >= 0.5) return "Medium";
+  return "Low";
+};
+
+const impactValue = (impact: string) => {
+  const parsed = Number.parseFloat(impact.replace("%", ""));
+  return Number.isFinite(parsed) ? parsed : 0;
+};
+
+export const displayFactors = (prediction: Prediction): DisplayFactor[] =>
+  (prediction.top_factors ?? []).slice(0, 3).map((factor) => {
+    const value = impactValue(factor.impact);
+    return {
+      ...factor,
+      value,
+      direction: value > 0 ? "positive" : value < 0 ? "negative" : "neutral",
+    };
+  });
+
+const factorPhrase = (factor: DisplayFactor) => {
+  const label = factor.factor.toLowerCase();
+  if (label.includes("attack") || label.includes("defense")) {
+    return `stronger attack and defense ratings favor ${factor.team}`;
+  }
+  if (label.includes("draw")) {
+    return `${factor.direction === "negative" ? "draw calibration reduces" : "draw calibration increases"} the likelihood of a stalemate`;
+  }
+  if (label.includes("rest")) {
+    return `rest context favors ${factor.team}`;
+  }
+  if (label.includes("elo")) {
+    return `the Elo baseline favors ${factor.team}`;
+  }
+  return `${factor.factor.toLowerCase()} favors ${factor.team}`;
+};
+
+export const predictionSummary = (match: Match): string => {
+  const prediction = match.prediction;
+  if (!prediction) return "A model explanation is not available for this match.";
+  const final = finalProbabilities(prediction);
+  const base = eloBaseProbabilities(prediction);
+  const factors = displayFactors(prediction);
+  const homeName = match.home_team?.name ?? "The home team";
+  const awayName = match.away_team?.name ?? "The away team";
+  const finalFavorite = final.home >= final.away ? homeName : awayName;
+  const favoriteFinal = Math.max(final.home, final.away);
+  const favoriteBase = base
+    ? finalFavorite === homeName
+      ? base.home
+      : base.away
+    : null;
+  const movement =
+    favoriteBase == null
+      ? "leads the model forecast"
+      : favoriteFinal >= favoriteBase
+        ? "rises above the Elo baseline"
+        : "finishes below the Elo baseline";
+  const contextFactors = factors.filter(
+    (factor) => !factor.factor.toLowerCase().includes("elo"),
+  );
+  if (!contextFactors.length) {
+    return `${finalFavorite}'s win probability ${movement}, with no additional context factor large enough to highlight.`;
+  }
+  const phrases = contextFactors.slice(0, 2).map(factorPhrase);
+  const explanation =
+    phrases.length === 1 ? phrases[0] : `${phrases[0]}, while ${phrases[1]}`;
+  return `${finalFavorite}'s win probability ${movement} because ${explanation}.`;
+};
+
