@@ -152,6 +152,8 @@ test("canonical predictions attach without database match rows", () => {
         final_draw_probability: 0.25,
         final_away_probability: 0.17,
         confidence_score: 0.63,
+        confidence_tier: "Medium",
+        confidence_explanation: "Medium confidence because model inputs are incomplete.",
         top_factors: [
           { factor: "Elo advantage", team: "Mexico", impact: "+4.0%" },
         ],
@@ -166,6 +168,8 @@ test("canonical predictions attach without database match rows", () => {
   assert.equal(match.prediction.model_version, "elo-context-v3");
   assert.equal(match.prediction.final_home_probability, 0.58);
   assert.equal(match.prediction.top_factors[0].factor, "Elo advantage");
+  assert.equal(match.prediction.confidence_tier, "Medium");
+  assert.match(match.prediction.confidence_explanation, /inputs are incomplete/);
 });
 
 test("persisted Step 5 simulation rows retain the frontend shape", () => {

@@ -39,6 +39,8 @@ const predictionRows = [{
   final_draw_probability: 0.27,
   final_away_probability: 0.18,
   confidence_score: 0.61,
+  confidence_tier: "Medium",
+  confidence_explanation: "Medium confidence because the outcomes remain close.",
   top_factors: [
     { factor: "Elo advantage", team: "Mexico", impact: "+3.0%" },
   ],
@@ -89,6 +91,8 @@ test("GET /api/matches?stage=group returns chronological match objects", async (
   assert.ok(Math.abs(probabilities.reduce((sum, value) => sum + value, 0) - 1) < 1e-6);
   assert.equal(matches[0].prediction.final_home_probability, 0.55);
   assert.equal(matches[0].prediction.top_factors[0].factor, "Elo advantage");
+  assert.equal(matches[0].prediction.confidence_tier, "Medium");
+  assert.match(matches[0].prediction.confidence_explanation, /outcomes remain close/);
 });
 
 test("GET /api/matches/:id returns a single match", async () => {

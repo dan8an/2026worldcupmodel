@@ -20,8 +20,15 @@ ROOT = Path(__file__).resolve().parents[1]
 if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
-from scripts.database import create_database_engine
 from modeling.src.data import build_fixtures, load_teams, validate_tournament
+from scripts.confidence_v1 import (
+    CONFIDENCE_VERSION,
+    HIGH_THRESHOLD,
+    MEDIUM_THRESHOLD,
+    DataCompleteness,
+    calculate_confidence,
+)
+from scripts.database import create_database_engine
 
 MODEL_VERSION = "elo-context-v3"
 LEGACY_MODEL_VERSION = "poisson-ratings-v1"
@@ -47,6 +54,8 @@ PREDICTION_REQUIRED_COLUMNS = {
     "prediction_timestamp",
     "model_version",
     "confidence_score",
+    "confidence_tier",
+    "confidence_explanation",
     "top_factors",
     "home_win_probability",
     "draw_probability",
@@ -424,7 +433,6 @@ def calculate_prediction(
     away_team_name: str = "Away",
 ) -> dict[str, Any]:
     """Calculate promoted Elo-first probabilities with validated v3 context."""
-    del home_player_rating, away_player_rating
     home_elo = _number(home_rating.get("elo_rating"), 1500.0)
     away_elo = _number(away_rating.get("elo_rating"), 1500.0)
     elo_gap = home_elo - away_elo
@@ -507,13 +515,31 @@ def calculate_prediction(
         for score in scores
         if int(score["home_goals"]) > 0 and int(score["away_goals"]) > 0
     )
-    sample_size = min(
-        _number(home_rating.get("matches_played")),
-        _number(away_rating.get("matches_played")),
-    )
-    confidence_score = (
-        0.55 * min(1.0, sample_size / 10.0)
-        + 0.45 * max(probabilities)
+    confidence = calculate_confidence(
+        elo_probabilities,
+        probabilities,
+        DataCompleteness(
+            team_ratings=bool(
+                home_rating.get("_team_rating_available", "elo_rating" in home_rating)
+                and away_rating.get("_team_rating_available", "elo_rating" in away_rating)
+            ),
+            attack_defense_ratings=bool(
+                home_rating.get(
+                    "_attack_defense_available",
+                    home_rating.get("attack_rating") is not None
+                    and home_rating.get("defense_rating") is not None,
+                )
+                and away_rating.get(
+                    "_attack_defense_available",
+                    away_rating.get("attack_rating") is not None
+                    and away_rating.get("defense_rating") is not None,
+                )
+            ),
+            player_ratings=(
+                home_player_rating is not None and away_player_rating is not None
+            ),
+            context=home_rest_days is not None and away_rest_days is not None,
+        ),
     )
     top_factors = _top_factors(
         elo_probabilities,
@@ -551,7 +577,7 @@ def calculate_prediction(
         "expected_total_goals": round(expected_total, 4),
         "over_2_5_probability": over_2_5,
         "both_teams_to_score_probability": both_score,
-        "confidence_score": round(_clamp(confidence_score, 0.0, 1.0), 6),
+        **confidence,
         "top_factors": top_factors,
         "score_probabilities": [
             {**score, "probability": round(float(score["probability"]), 12)}
@@ -601,7 +627,8 @@ class PredictionRepository:
             raise RuntimeError(
                 f"predictions is missing columns {sorted(missing_columns)}. Apply "
                 "supabase/migrations/202606100003_prediction_generation.sql and "
-                "supabase/migrations/202606110001_prediction_explanations.sql first."
+                "supabase/migrations/202606110001_prediction_explanations.sql and "
+                "supabase/migrations/202606110002_confidence_v1.sql first."
             )
 
     def load_database_matches(self) -> list[dict[str, Any]]:
@@ -657,6 +684,12 @@ class PredictionRepository:
                 "form_rating": 50.0,
                 "matches_played": 0,
                 **(database_rating or {}),
+                "_team_rating_available": True,
+                "_attack_defense_available": bool(
+                    database_rating
+                    and database_rating.get("attack_rating") is not None
+                    and database_rating.get("defense_rating") is not None
+                ),
             }
         return canonical_ratings
 
@@ -751,6 +784,9 @@ class PredictionRepository:
                 "player_weight": 0.0,
                 "travel_weight": 0.0,
                 "availability_weight": 0.0,
+                "confidence_version": CONFIDENCE_VERSION,
+                "confidence_medium_threshold": MEDIUM_THRESHOLD,
+                "confidence_high_threshold": HIGH_THRESHOLD,
             },
         }
         run_values = self._compatible_values(runs, run_values)
@@ -796,7 +832,6 @@ class PredictionRepository:
             "home_win_prob": prediction["home_win_probability"],
             "draw_prob": prediction["draw_probability"],
             "away_win_prob": prediction["away_win_probability"],
-            "confidence_tier": self._confidence_tier(prediction["confidence_score"]),
             "explanation_factors": [
                 "Elo result probabilities",
                 "Validated attack and defense rating adjustments",
@@ -821,14 +856,6 @@ class PredictionRepository:
                 )
         else:
             connection.execute(table.insert().values(**values))
-
-    @staticmethod
-    def _confidence_tier(score: float) -> str:
-        if score >= 0.7:
-            return "High"
-        if score >= 0.5:
-            return "Medium"
-        return "Low"
 
     @staticmethod
     def _compatible_values(table: Table, values: dict[str, Any]) -> dict[str, Any]:
@@ -873,6 +900,7 @@ def main() -> int:
             return 0
 
         team_ratings = repository.load_current_team_ratings(database_team_ids)
+        player_ratings = repository.load_player_team_averages(database_team_ids)
         latest_match_dates = repository.load_latest_team_match_dates(database_team_ids)
         predictions = []
         team_names = {team.id: team.name for team in load_teams()}
@@ -892,6 +920,8 @@ def main() -> int:
                     **calculate_prediction(
                         home_rating,
                         away_rating,
+                        home_player_rating=player_ratings.get(match["home_team_id"]),
+                        away_player_rating=player_ratings.get(match["away_team_id"]),
                         home_rest_days=(
                             (match["kickoff"].date() - latest_match_dates[
                                 match["home_team_id"]

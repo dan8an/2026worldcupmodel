@@ -115,6 +115,8 @@ const explanationFields = (prediction = {}) => ({
       0,
   ),
   confidence_score: numberOrNull(prediction.confidence_score),
+  confidence_tier: prediction.confidence_tier ?? null,
+  confidence_explanation: prediction.confidence_explanation ?? null,
   top_factors: jsonValue(prediction.top_factors, []),
 });
 

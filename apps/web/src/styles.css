@@ -121,6 +121,8 @@ input, select { background: var(--panel); color: var(--ink); border: 1px solid v
 .outcome-card small { font-size: 12px; }
 .explanation-panel { background: linear-gradient(145deg, rgba(20,43,35,.98), rgba(10,23,20,.98)); }
 .explanation-summary { margin: -4px 0 24px; color: var(--ink); font-size: 16px; line-height: 1.6; }
+.confidence-explanation { margin: -10px 0 24px; padding: 12px 14px; border-left: 2px solid var(--green); background: rgba(85,230,159,.055); font-size: 12px; }
+.confidence-explanation strong { color: var(--ink); }
 .probability-comparison { border: 1px solid var(--line); border-radius: 10px; overflow: hidden; }
 .comparison-heading, .comparison-row { display: grid; grid-template-columns: 1fr repeat(3, 72px); gap: 12px; align-items: center; padding: 11px 14px; }
 .comparison-heading { color: var(--muted); background: rgba(255,255,255,.025); font-size: 9px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; }

@@ -45,8 +45,8 @@ export const eloBaseProbabilities = (
 
 export const confidenceLevel = (score: number | null | undefined): ConfidenceLevel => {
   if (score == null) return "Low";
-  if (score >= 0.7) return "High";
-  if (score >= 0.5) return "Medium";
+  if (score >= 71) return "High";
+  if (score >= 55) return "Medium";
   return "Low";
 };
 
@@ -114,4 +114,3 @@ export const predictionSummary = (match: Match): string => {
     phrases.length === 1 ? phrases[0] : `${phrases[0]}, while ${phrases[1]}`;
   return `${finalFavorite}'s win probability ${movement} because ${explanation}.`;
 };
-

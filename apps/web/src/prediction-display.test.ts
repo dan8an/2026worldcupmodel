@@ -15,7 +15,7 @@ const prediction = {
   elo_base_home_probability: 0.52,
   elo_base_draw_probability: 0.27,
   elo_base_away_probability: 0.21,
-  confidence_score: 0.72,
+  confidence_score: 72,
   top_factors: [
     { factor: "Elo advantage", team: "Brazil", impact: "+4.2%" },
     { factor: "Attack/defense edge", team: "Brazil", impact: "+1.6%" },
@@ -37,9 +37,9 @@ describe("prediction display helpers", () => {
       draw: 0.28,
       away: 0.16,
     });
-    expect(confidenceLevel(0.7)).toBe("High");
-    expect(confidenceLevel(0.5)).toBe("Medium");
-    expect(confidenceLevel(0.49)).toBe("Low");
+    expect(confidenceLevel(71)).toBe("High");
+    expect(confidenceLevel(55)).toBe("Medium");
+    expect(confidenceLevel(54.9)).toBe("Low");
   });
 
   it("limits factors, preserves impact direction, and builds summary copy", () => {

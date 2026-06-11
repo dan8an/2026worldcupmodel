@@ -26,7 +26,8 @@ export function MatchDetail() {
   if (!prediction) return <ErrorState />;
   const final = finalProbabilities(prediction);
   const eloBase = eloBaseProbabilities(prediction);
-  const confidence = confidenceLevel(prediction.confidence_score);
+  const confidence =
+    prediction.confidence_tier ?? confidenceLevel(prediction.confidence_score);
   const factors = displayFactors(prediction);
   return (
     <section>
@@ -52,7 +53,7 @@ export function MatchDetail() {
           <span className={`confidence-pill ${confidence.toLowerCase()}`}>
             {confidence} confidence
             {prediction.confidence_score != null &&
-              ` · ${Math.round(prediction.confidence_score * 100)}/100`}
+              ` · ${Math.round(prediction.confidence_score)}/100`}
           </span>
           <span>{prediction.model_version}</span>
         </div>
@@ -75,6 +76,11 @@ export function MatchDetail() {
           <span className="eyebrow">Model interpretation</span>
           <h2>How the forecast moved</h2>
           <p className="explanation-summary">{predictionSummary(match)}</p>
+          {prediction.confidence_explanation && (
+            <p className="confidence-explanation">
+              <strong>Confidence:</strong> {prediction.confidence_explanation}
+            </p>
+          )}
           <div className="probability-comparison">
             <div className="comparison-heading">
               <span>Outcome</span>

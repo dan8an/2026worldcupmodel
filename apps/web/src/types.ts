@@ -98,6 +98,8 @@ export type Prediction = {
   final_draw_probability?: number;
   final_away_probability?: number;
   confidence_score?: number | null;
+  confidence_tier?: "High" | "Medium" | "Low" | null;
+  confidence_explanation?: string | null;
   top_factors?: {
     factor: string;
     team: string;

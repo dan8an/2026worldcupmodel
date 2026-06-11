@@ -43,7 +43,8 @@ export function ProbabilityBar({ match }: { match: Match }) {
 
 export function MatchCard({ match }: { match: Match }) {
   const confidence = match.prediction
-    ? confidenceLevel(match.prediction.confidence_score)
+    ? match.prediction.confidence_tier ??
+      confidenceLevel(match.prediction.confidence_score)
     : null;
   const leadFactor = match.prediction ? displayFactors(match.prediction)[0] : null;
   return (

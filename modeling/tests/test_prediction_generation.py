@@ -69,6 +69,8 @@ create table predictions (
   prediction_timestamp text,
   model_version text,
   confidence_score real,
+  confidence_tier text,
+  confidence_explanation text,
   elo_base_home_probability real,
   elo_base_draw_probability real,
   elo_base_away_probability real,
@@ -122,6 +124,10 @@ class PredictionCalculationTests(unittest.TestCase):
         )
         self.assertEqual(len(first["score_probabilities"]), 49)
         self.assertTrue(first["top_factors"])
+        self.assertGreaterEqual(first["confidence_score"], 0)
+        self.assertLessEqual(first["confidence_score"], 100)
+        self.assertIn(first["confidence_tier"], {"High", "Medium", "Low"})
+        self.assertTrue(first["confidence_explanation"])
         self.assertTrue(
             all(
                 set(factor) == {"factor", "team", "impact"}
@@ -188,7 +194,13 @@ class PredictionCalculationTests(unittest.TestCase):
             None,
         )
 
-        self.assertEqual(with_context, without_form_or_players)
+        for field in (
+            "home_win_probability",
+            "draw_probability",
+            "away_win_probability",
+            "score_probabilities",
+        ):
+            self.assertEqual(with_context[field], without_form_or_players[field])
 
 
 class PredictionScriptTests(unittest.TestCase):
@@ -255,7 +267,8 @@ class PredictionScriptTests(unittest.TestCase):
                 select
                   canonical_match_id, home_win_probability, draw_probability,
                   away_win_probability, score_probabilities, model_version,
-                  top_factors
+                  top_factors, confidence_score, confidence_tier,
+                  confidence_explanation
                 from predictions
                 """
             ).fetchall()
@@ -271,6 +284,9 @@ class PredictionScriptTests(unittest.TestCase):
         self.assertEqual(len(json.loads(prediction_rows[0][4])), 49)
         self.assertTrue(all(row[5] == MODEL_VERSION for row in prediction_rows))
         self.assertTrue(all(json.loads(row[6]) for row in prediction_rows))
+        self.assertTrue(all(0 <= row[7] <= 100 for row in prediction_rows))
+        self.assertGreater(len({row[8] for row in prediction_rows}), 1)
+        self.assertTrue(all(row[9] for row in prediction_rows))
         self.assertEqual(runs, [(MODEL_VERSION,), (MODEL_VERSION,)])
 
     def test_no_future_matches_exits_successfully_without_a_run(self):
