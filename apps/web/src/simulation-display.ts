@@ -1,5 +1,13 @@
 import type { SimulationTeam, Team } from "./types";
 
+export function rankSimulationTeams(
+  simulationTeams: SimulationTeam[],
+): SimulationTeam[] {
+  return [...simulationTeams].sort(
+    (left, right) => right.champion - left.champion,
+  );
+}
+
 export function simulationSignalBadges(team: SimulationTeam): string[] {
   const inputs = team.model_inputs;
   if (!inputs) return [];
@@ -52,8 +60,7 @@ export function championshipOutlookTeams(
 ): SimulationTeam[] {
   const teamsById = new Map(teams.map((team) => [team.id, team]));
 
-  return [...simulationTeams]
-    .sort((left, right) => right.champion - left.champion)
+  return rankSimulationTeams(simulationTeams)
     .slice(0, limit)
     .map((result) => {
       const team = teamsById.get(result.team_id);

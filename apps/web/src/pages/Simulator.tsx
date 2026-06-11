@@ -2,6 +2,7 @@ import { useMutation, useQuery } from "@tanstack/react-query";
 import { useState } from "react";
 import { api } from "../api";
 import { ErrorState, Loading, percent } from "../components";
+import { rankSimulationTeams } from "../simulation-display";
 
 export function Simulator() {
   const baseline = useQuery({ queryKey: ["simulation"], queryFn: api.simulation });
@@ -12,6 +13,7 @@ export function Simulator() {
   if (baseline.isLoading) return <Loading label="Simulating tournament" />;
   if (baseline.isError || !baseline.data) return <ErrorState />;
   const data = custom.data ?? baseline.data;
+  const rankedTeams = rankSimulationTeams(data.teams);
   return (
     <section>
       <div className="page-heading">
@@ -38,7 +40,7 @@ export function Simulator() {
         <table>
           <thead><tr><th>Team</th><th>R32</th><th>Quarterfinal</th><th>Semifinal</th><th>Final</th><th>Champion</th></tr></thead>
           <tbody>
-            {data.teams.map((team) => (
+            {rankedTeams.map((team) => (
               <tr key={team.team_id}>
                 <td><strong>{team.team_name}</strong></td>
                 <td>{percent(team.round_of_32)}</td>

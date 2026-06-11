@@ -1,12 +1,31 @@
 import { describe, expect, it } from "vitest";
 import {
   championshipOutlookTeams,
+  rankSimulationTeams,
   simulationDriverLabels,
   simulationSignalBadges,
 } from "./simulation-display";
 import type { SimulationTeam, Team } from "./types";
 
 describe("championshipOutlookTeams", () => {
+  it("ranks the highest championship probability first", () => {
+    const results = [
+      { team_id: "ENG", team_name: "England", champion: 0.0661 },
+      { team_id: "ESP", team_name: "Spain", champion: 0.1131 },
+      { team_id: "NOR", team_name: "Norway", champion: 0.0739 },
+    ] as SimulationTeam[];
+
+    const ranked = rankSimulationTeams(results);
+
+    expect(ranked.map((team) => team.team_name)).toEqual([
+      "Spain",
+      "Norway",
+      "England",
+    ]);
+    expect(ranked[0].champion).toBe(0.1131);
+    expect(results[0].team_name).toBe("England");
+  });
+
   it("fills every Championship outlook label from canonical teams", () => {
     const teams: Team[] = [
       {
