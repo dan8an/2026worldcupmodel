@@ -62,6 +62,33 @@ class SportsProvider(ABC):
     def get_lineups(self, fixture_id: int) -> list[dict[str, Any]]:
         raise NotImplementedError
 
+    @abstractmethod
+    def get_injuries(
+        self,
+        *,
+        fixture_id: int | None = None,
+        team_id: int | None = None,
+        league_id: int | None = None,
+        season: int | None = None,
+        date: str | None = None,
+    ) -> list[dict[str, Any]]:
+        raise NotImplementedError
+
+    @abstractmethod
+    def get_squad(self, team_id: int) -> list[dict[str, Any]]:
+        raise NotImplementedError
+
+    @abstractmethod
+    def get_player_statistics(
+        self,
+        *,
+        season: int,
+        league_id: int | None = None,
+        team_id: int | None = None,
+        player_id: int | None = None,
+    ) -> list[dict[str, Any]]:
+        raise NotImplementedError
+
 
 def _team(payload: dict[str, Any] | None) -> dict[str, Any]:
     payload = payload or {}
@@ -269,6 +296,8 @@ class ApiFootballProvider(SportsProvider):
                         "appearance": {
                             "minutes": stats.get("games", {}).get("minutes"),
                             "position": stats.get("games", {}).get("position"),
+                            "rating": stats.get("games", {}).get("rating"),
+                            "captain": bool(stats.get("games", {}).get("captain")),
                             "substitute": bool(stats.get("games", {}).get("substitute")),
                             "shots": stats.get("shots", {}).get("total"),
                             "shots_on_target": stats.get("shots", {}).get("on"),
@@ -281,6 +310,138 @@ class ApiFootballProvider(SportsProvider):
                             "yellow_cards": stats.get("cards", {}).get("yellow"),
                             "red_cards": stats.get("cards", {}).get("red"),
                         },
+                        "raw": item,
+                    }
+                )
+        return rows
+
+    def get_injuries(
+        self,
+        *,
+        fixture_id: int | None = None,
+        team_id: int | None = None,
+        league_id: int | None = None,
+        season: int | None = None,
+        date: str | None = None,
+    ) -> list[dict[str, Any]]:
+        if fixture_id is None and team_id is None and date is None:
+            raise ValueError("get_injuries requires fixture_id, team_id, or date")
+        response = self._request(
+            "/injuries",
+            fixture=fixture_id,
+            team=team_id,
+            league=league_id,
+            season=season,
+            date=date,
+        )
+        rows = []
+        for item in response:
+            player = item.get("player") or {}
+            team = item.get("team") or {}
+            fixture = item.get("fixture") or {}
+            injury_type = str(player.get("type") or "").strip()
+            reason = str(player.get("reason") or "").strip()
+            combined = f"{injury_type} {reason}".casefold()
+            status = (
+                "suspended"
+                if "suspend" in combined or "suspens" in combined
+                else "injured"
+            )
+            if player.get("id") is None or team.get("id") is None:
+                continue
+            rows.append(
+                {
+                    "fixture_id": (
+                        int(fixture["id"]) if fixture.get("id") is not None else None
+                    ),
+                    "team": _team(team),
+                    "player": {
+                        "provider_id": int(player["id"]),
+                        "name": player.get("name") or "Unknown player",
+                    },
+                    "position": None,
+                    "status": status,
+                    "reason": reason or injury_type or None,
+                    "injury_type": injury_type or None,
+                    "expected_return": None,
+                    "raw": item,
+                }
+            )
+        return rows
+
+    def get_squad(self, team_id: int) -> list[dict[str, Any]]:
+        rows = []
+        for item in self._request("/players/squads", team=team_id):
+            team = _team(item.get("team"))
+            for player in item.get("players", []):
+                if player.get("id") is None:
+                    continue
+                rows.append(
+                    {
+                        "team": team,
+                        "player": {
+                            "provider_id": int(player["id"]),
+                            "name": player.get("name") or "Unknown player",
+                        },
+                        "position": player.get("position"),
+                        "age": player.get("age"),
+                        "number": player.get("number"),
+                        "raw": player,
+                    }
+                )
+        return rows
+
+    def get_player_statistics(
+        self,
+        *,
+        season: int,
+        league_id: int | None = None,
+        team_id: int | None = None,
+        player_id: int | None = None,
+    ) -> list[dict[str, Any]]:
+        if team_id is None and player_id is None:
+            raise ValueError("get_player_statistics requires team_id or player_id")
+        response = []
+        page = 1
+        while True:
+            page_rows = self._request(
+                "/players",
+                season=season,
+                league=league_id or self.league_id,
+                team=team_id,
+                id=player_id,
+                page=page,
+            )
+            response.extend(page_rows)
+            if len(page_rows) < 20:
+                break
+            page += 1
+        rows = []
+        for item in response:
+            player = item.get("player") or {}
+            if player.get("id") is None:
+                continue
+            for stats in item.get("statistics", []):
+                team = stats.get("team") or {}
+                games = stats.get("games") or {}
+                if team.get("id") is None:
+                    continue
+                rows.append(
+                    {
+                        "team": _team(team),
+                        "player": {
+                            "provider_id": int(player["id"]),
+                            "name": player.get("name") or "Unknown player",
+                        },
+                        "position": games.get("position"),
+                        "appearances": games.get("appearences"),
+                        "starts": games.get("lineups"),
+                        "minutes": games.get("minutes"),
+                        "rating": games.get("rating"),
+                        "goals": (stats.get("goals") or {}).get("total"),
+                        "assists": (stats.get("goals") or {}).get("assists"),
+                        "shots": (stats.get("shots") or {}).get("total"),
+                        "shots_on_target": (stats.get("shots") or {}).get("on"),
                         "raw": item,
                     }
                 )
@@ -383,6 +544,36 @@ class SampleSportsProvider(SportsProvider):
 
     def get_lineups(self, fixture_id: int) -> list[dict[str, Any]]:
         return self._convert(self.payload["lineups"].get(str(fixture_id), []))
+
+    def get_injuries(
+        self,
+        *,
+        fixture_id: int | None = None,
+        team_id: int | None = None,
+        league_id: int | None = None,
+        season: int | None = None,
+        date: str | None = None,
+    ) -> list[dict[str, Any]]:
+        del team_id, league_id, season, date
+        return self._convert(
+            self.payload.get("injuries", {}).get(str(fixture_id), [])
+        )
+
+    def get_squad(self, team_id: int) -> list[dict[str, Any]]:
+        return self._convert(self.payload.get("squads", {}).get(str(team_id), []))
+
+    def get_player_statistics(
+        self,
+        *,
+        season: int,
+        league_id: int | None = None,
+        team_id: int | None = None,
+        player_id: int | None = None,
+    ) -> list[dict[str, Any]]:
+        del season, league_id, player_id
+        return self._convert(
+            self.payload.get("player_statistics", {}).get(str(team_id), [])
+        )
 
 
 def create_sports_provider(

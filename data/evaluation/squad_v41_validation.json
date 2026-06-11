@@ -1,0 +1,428 @@
+{
+  "generated_at": "2026-06-11T15:56:38.063468+00:00",
+  "model_version": "squad-v4.1-research",
+  "baseline_model": "elo-context-v4",
+  "status": "insufficient_squad_coverage",
+  "production_predictions_changed": false,
+  "production_simulation_changed": false,
+  "provider_capability_audit": {
+    "injuries": {
+      "api_football": "supported via /injuries",
+      "code": "get_injuries",
+      "expected_return": "not supplied by the endpoint; stored as null"
+    },
+    "suspensions": {
+      "api_football": "no separate endpoint; suspension reasons/types can appear in /injuries",
+      "code": "normalized by get_injuries when the payload identifies suspension"
+    },
+    "lineups": {
+      "api_football": "supported via /fixtures/lineups",
+      "code": "get_lineups"
+    },
+    "squads": {
+      "api_football": "supported via /players/squads",
+      "code": "get_squad"
+    },
+    "player_statistics": {
+      "api_football": "supported via paginated /players",
+      "code": "get_player_statistics"
+    },
+    "player_ratings_and_minutes": {
+      "api_football": "fixture ratings/minutes are available in /fixtures/players; season totals and average rating are available in /players",
+      "code": "preserved by get_fixture_players and get_player_statistics"
+    }
+  },
+  "coverage": {
+    "eligible_v4_matches": 1057,
+    "matches_with_injury_data": {
+      "matches": 0,
+      "coverage_level": 0.0
+    },
+    "matches_with_squad_data": {
+      "matches": 0,
+      "coverage_level": 0.0
+    },
+    "matches_with_lineup_data": {
+      "matches": 0,
+      "coverage_level": 0.0
+    },
+    "matches_with_all_squad_features": {
+      "matches": 0,
+      "coverage_level": 0.0
+    }
+  },
+  "protocol": {
+    "validation": "chronological holdout",
+    "same_date_rows_kept_together": true,
+    "point_in_time_rule": "availability collected_at and strength rated_at must be before kickoff",
+    "selection_objective": "minimum tuning Brier score, then log loss",
+    "promotion_gate": "lower holdout Brier score and log loss than v4 on identical matches"
+  },
+  "split": {
+    "tuning_matches": 824,
+    "validation_matches": 233,
+    "validation_start": "2025-06-08",
+    "validation_end": "2026-06-09"
+  },
+  "ablations": {
+    "v4_only": {
+      "status": "evaluated",
+      "selected_weights": {
+        "squad_strength": 0.0,
+        "unavailable_player_penalty": 0.0,
+        "projected_lineup_strength": 0.0
+      },
+      "tuning_matches": 824,
+      "validation_matches": 233,
+      "tuning_metrics": {
+        "matches": 824,
+        "log_loss": 1.033281,
+        "brier_score": 0.620743,
+        "ranked_probability_score": 0.215556,
+        "accuracy": 0.501214,
+        "expected_calibration_error": 0.039024,
+        "calibration_bins": [
+          {
+            "lower": 0.0,
+            "upper": 0.1,
+            "count": 1,
+            "mean_probability": 0.095222,
+            "observed_rate": 0.0
+          },
+          {
+            "lower": 0.1,
+            "upper": 0.2,
+            "count": 45,
+            "mean_probability": 0.178914,
+            "observed_rate": 0.088889
+          },
+          {
+            "lower": 0.2,
+            "upper": 0.3,
+            "count": 1210,
+            "mean_probability": 0.272351,
+            "observed_rate": 0.239669
+          },
+          {
+            "lower": 0.3,
+            "upper": 0.4,
+            "count": 677,
+            "mean_probability": 0.349399,
+            "observed_rate": 0.342688
+          },
+          {
+            "lower": 0.4,
+            "upper": 0.5,
+            "count": 417,
+            "mean_probability": 0.44162,
+            "observed_rate": 0.515588
+          },
+          {
+            "lower": 0.5,
+            "upper": 0.6,
+            "count": 115,
+            "mean_probability": 0.532483,
+            "observed_rate": 0.678261
+          },
+          {
+            "lower": 0.6,
+            "upper": 0.7,
+            "count": 6,
+            "mean_probability": 0.611958,
+            "observed_rate": 0.666667
+          },
+          {
+            "lower": 0.7,
+            "upper": 0.8,
+            "count": 1,
+            "mean_probability": 0.702971,
+            "observed_rate": 1.0
+          },
+          {
+            "lower": 0.8,
+            "upper": 0.9,
+            "count": 0,
+            "mean_probability": 0.0,
+            "observed_rate": 0.0
+          },
+          {
+            "lower": 0.9,
+            "upper": 1.0,
+            "count": 0,
+            "mean_probability": 0.0,
+            "observed_rate": 0.0
+          }
+        ]
+      },
+      "validation_metrics": {
+        "matches": 233,
+        "log_loss": 0.945067,
+        "brier_score": 0.557889,
+        "ranked_probability_score": 0.19377,
+        "accuracy": 0.600858,
+        "expected_calibration_error": 0.088281,
+        "calibration_bins": [
+          {
+            "lower": 0.0,
+            "upper": 0.1,
+            "count": 1,
+            "mean_probability": 0.085709,
+            "observed_rate": 0.0
+          },
+          {
+            "lower": 0.1,
+            "upper": 0.2,
+            "count": 40,
+            "mean_probability": 0.166949,
+            "observed_rate": 0.05
+          },
+          {
+            "lower": 0.2,
+            "upper": 0.3,
+            "count": 337,
+            "mean_probability": 0.266394,
+            "observed_rate": 0.195846
+          },
+          {
+            "lower": 0.3,
+            "upper": 0.4,
+            "count": 150,
+            "mean_probability": 0.348772,
+            "observed_rate": 0.333333
+          },
+          {
+            "lower": 0.4,
+            "upper": 0.5,
+            "count": 102,
+            "mean_probability": 0.443983,
+            "observed_rate": 0.598039
+          },
+          {
+            "lower": 0.5,
+            "upper": 0.6,
+            "count": 52,
+            "mean_probability": 0.538351,
+            "observed_rate": 0.75
+          },
+          {
+            "lower": 0.6,
+            "upper": 0.7,
+            "count": 16,
+            "mean_probability": 0.633652,
+            "observed_rate": 0.875
+          },
+          {
+            "lower": 0.7,
+            "upper": 0.8,
+            "count": 1,
+            "mean_probability": 0.726895,
+            "observed_rate": 1.0
+          },
+          {
+            "lower": 0.8,
+            "upper": 0.9,
+            "count": 0,
+            "mean_probability": 0.0,
+            "observed_rate": 0.0
+          },
+          {
+            "lower": 0.9,
+            "upper": 1.0,
+            "count": 0,
+            "mean_probability": 0.0,
+            "observed_rate": 0.0
+          }
+        ]
+      },
+      "v4_same_match_metrics": {
+        "matches": 233,
+        "log_loss": 0.945067,
+        "brier_score": 0.557889,
+        "ranked_probability_score": 0.19377,
+        "accuracy": 0.600858,
+        "expected_calibration_error": 0.088281,
+        "calibration_bins": [
+          {
+            "lower": 0.0,
+            "upper": 0.1,
+            "count": 1,
+            "mean_probability": 0.085709,
+            "observed_rate": 0.0
+          },
+          {
+            "lower": 0.1,
+            "upper": 0.2,
+            "count": 40,
+            "mean_probability": 0.166949,
+            "observed_rate": 0.05
+          },
+          {
+            "lower": 0.2,
+            "upper": 0.3,
+            "count": 337,
+            "mean_probability": 0.266394,
+            "observed_rate": 0.195846
+          },
+          {
+            "lower": 0.3,
+            "upper": 0.4,
+            "count": 150,
+            "mean_probability": 0.348772,
+            "observed_rate": 0.333333
+          },
+          {
+            "lower": 0.4,
+            "upper": 0.5,
+            "count": 102,
+            "mean_probability": 0.443983,
+            "observed_rate": 0.598039
+          },
+          {
+            "lower": 0.5,
+            "upper": 0.6,
+            "count": 52,
+            "mean_probability": 0.538351,
+            "observed_rate": 0.75
+          },
+          {
+            "lower": 0.6,
+            "upper": 0.7,
+            "count": 16,
+            "mean_probability": 0.633652,
+            "observed_rate": 0.875
+          },
+          {
+            "lower": 0.7,
+            "upper": 0.8,
+            "count": 1,
+            "mean_probability": 0.726895,
+            "observed_rate": 1.0
+          },
+          {
+            "lower": 0.8,
+            "upper": 0.9,
+            "count": 0,
+            "mean_probability": 0.0,
+            "observed_rate": 0.0
+          },
+          {
+            "lower": 0.9,
+            "upper": 1.0,
+            "count": 0,
+            "mean_probability": 0.0,
+            "observed_rate": 0.0
+          }
+        ]
+      },
+      "comparison_vs_v4": {
+        "brier_score_delta": 0.0,
+        "log_loss_delta": 0.0,
+        "beats_v4_on_brier": false,
+        "beats_v4_on_log_loss": false,
+        "beats_v4": false
+      },
+      "calibration": [
+        {
+          "lower": 0.0,
+          "upper": 0.1,
+          "count": 1,
+          "mean_probability": 0.085709,
+          "observed_rate": 0.0
+        },
+        {
+          "lower": 0.1,
+          "upper": 0.2,
+          "count": 40,
+          "mean_probability": 0.166949,
+          "observed_rate": 0.05
+        },
+        {
+          "lower": 0.2,
+          "upper": 0.3,
+          "count": 337,
+          "mean_probability": 0.266394,
+          "observed_rate": 0.195846
+        },
+        {
+          "lower": 0.3,
+          "upper": 0.4,
+          "count": 150,
+          "mean_probability": 0.348772,
+          "observed_rate": 0.333333
+        },
+        {
+          "lower": 0.4,
+          "upper": 0.5,
+          "count": 102,
+          "mean_probability": 0.443983,
+          "observed_rate": 0.598039
+        },
+        {
+          "lower": 0.5,
+          "upper": 0.6,
+          "count": 52,
+          "mean_probability": 0.538351,
+          "observed_rate": 0.75
+        },
+        {
+          "lower": 0.6,
+          "upper": 0.7,
+          "count": 16,
+          "mean_probability": 0.633652,
+          "observed_rate": 0.875
+        },
+        {
+          "lower": 0.7,
+          "upper": 0.8,
+          "count": 1,
+          "mean_probability": 0.726895,
+          "observed_rate": 1.0
+        },
+        {
+          "lower": 0.8,
+          "upper": 0.9,
+          "count": 0,
+          "mean_probability": 0.0,
+          "observed_rate": 0.0
+        },
+        {
+          "lower": 0.9,
+          "upper": 1.0,
+          "count": 0,
+          "mean_probability": 0.0,
+          "observed_rate": 0.0
+        }
+      ]
+    },
+    "v4_plus_squad_strength": {
+      "status": "not_evaluated",
+      "tuning_matches": 0,
+      "validation_matches": 0,
+      "reason": "insufficient point-in-time feature coverage"
+    },
+    "v4_plus_unavailable_player_penalty": {
+      "status": "not_evaluated",
+      "tuning_matches": 0,
+      "validation_matches": 0,
+      "reason": "insufficient point-in-time feature coverage"
+    },
+    "v4_plus_projected_lineup_strength": {
+      "status": "not_evaluated",
+      "tuning_matches": 0,
+      "validation_matches": 0,
+      "reason": "insufficient point-in-time feature coverage"
+    },
+    "v4_plus_all_squad_features": {
+      "status": "not_evaluated",
+      "tuning_matches": 0,
+      "validation_matches": 0,
+      "reason": "insufficient point-in-time feature coverage"
+    }
+  },
+  "promotion": {
+    "recommend_promotion": false,
+    "decision": "do not promote",
+    "selected_ablation": null,
+    "reason": "insufficient point-in-time squad coverage"
+  }
+}

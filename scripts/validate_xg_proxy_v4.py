@@ -131,6 +131,9 @@ class XgProxyValidationRow:
     shot_quality_signal: float
     defensive_suppression_signal: float
     all_features_signal: float
+    match_id: Any | None = None
+    home_team_id: Any | None = None
+    away_team_id: Any | None = None
 
 
 def _number(value: Any) -> float | None:
@@ -310,6 +313,9 @@ def build_validation_rows(
                     shot_quality_signal=quality,
                     defensive_suppression_signal=defense,
                     all_features_signal=all_features,
+                    match_id=match.get("match_id"),
+                    home_team_id=home_id,
+                    away_team_id=away_id,
                 )
             )
 
