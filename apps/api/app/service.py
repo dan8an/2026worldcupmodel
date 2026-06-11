@@ -1,6 +1,13 @@
 import json
+import logging
+import os
+import time
 from dataclasses import asdict
 from datetime import datetime, timezone
+from typing import Any
+
+from dotenv import load_dotenv
+from sqlalchemy import Engine, text
 
 from modeling.src.data import ROOT, build_fixtures, load_teams, load_venues, validate_tournament
 from modeling.src.features.context import ContextRepository
@@ -20,12 +27,98 @@ from modeling.src.team_profiles import (
     recent_results,
     team_analysis,
 )
+from scripts.database import create_database_engine
 
-MODEL_VERSION = "context-0.2.0"
+STATIC_MODEL_VERSION = "context-0.2.0"
+MODEL_VERSION = STATIC_MODEL_VERSION
+LOGGER = logging.getLogger(__name__)
+
+
+def _json_value(value: Any, default: Any) -> Any:
+    if value is None:
+        return default
+    if not isinstance(value, str):
+        return value
+    try:
+        return json.loads(value)
+    except (TypeError, ValueError):
+        return default
+
+
+class DatabasePredictionSource:
+    def __init__(self, engine: Engine) -> None:
+        self.engine = engine
+
+    @classmethod
+    def from_environment(cls) -> "DatabasePredictionSource | None":
+        load_dotenv(ROOT / ".env", override=False)
+        load_dotenv(ROOT / "backend" / ".env", override=False)
+        database_url = os.getenv("DATABASE_URL")
+        if not database_url:
+            LOGGER.warning(
+                "DATABASE_URL is unavailable; serving static prediction fallback"
+            )
+            return None
+        try:
+            return cls(create_database_engine(database_url))
+        except Exception:
+            LOGGER.warning(
+                "DATABASE_URL could not initialize; serving static prediction "
+                "fallback",
+                exc_info=True,
+            )
+            return None
+
+    def load_latest(self) -> dict[str, Any] | None:
+        with self.engine.connect() as connection:
+            latest = connection.execute(
+                text(
+                    """
+                    select model_run_id, model_version, prediction_timestamp,
+                           data_cutoff
+                    from predictions
+                    where model_run_id is not null
+                    order by prediction_timestamp desc nulls last
+                    limit 1
+                    """
+                )
+            ).mappings().one_or_none()
+            if latest is None:
+                return None
+            rows = [
+                dict(row)
+                for row in connection.execute(
+                    text(
+                        """
+                        select *
+                        from predictions
+                        where model_run_id = :model_run_id
+                          and canonical_match_id is not null
+                        """
+                    ),
+                    {"model_run_id": latest["model_run_id"]},
+                ).mappings()
+            ]
+        return {
+            "model_run_id": latest["model_run_id"],
+            "model_version": latest["model_version"],
+            "generated_at": latest["prediction_timestamp"],
+            "data_cutoff": latest.get("data_cutoff")
+            or latest["prediction_timestamp"],
+            "predictions": {
+                str(row["canonical_match_id"]): row
+                for row in rows
+                if row.get("canonical_match_id")
+            },
+        }
 
 
 class PredictionService:
-    def __init__(self) -> None:
+    def __init__(
+        self,
+        prediction_source: DatabasePredictionSource | None = None,
+        prediction_cache_seconds: float | None = None,
+    ) -> None:
         self.generated_at = datetime.now(timezone.utc).isoformat()
         self.data_cutoff = self.generated_at
         self.teams = load_teams()
@@ -36,7 +129,7 @@ class PredictionService:
         self.venues = load_venues()
         self.squad_players = load_squad_players()
         self.squad_metadata = load_squad_metadata()
-        self.predictions = {
+        self.static_predictions = {
             match.id: predict_match(
                 self.teams_by_id[match.home_team_id or ""],
                 self.teams_by_id[match.away_team_id or ""],
@@ -50,6 +143,29 @@ class PredictionService:
             for match in self.fixtures
             if match.stage == "group"
         }
+        self.predictions = self.static_predictions
+        self.prediction_source = (
+            prediction_source
+            if prediction_source is not None
+            else DatabasePredictionSource.from_environment()
+        )
+        try:
+            configured_cache_seconds = float(
+                os.getenv("PREDICTION_READ_CACHE_SECONDS", "30")
+            )
+        except ValueError:
+            configured_cache_seconds = 30.0
+            LOGGER.warning(
+                "PREDICTION_READ_CACHE_SECONDS is invalid; using 30 seconds"
+            )
+        self.prediction_cache_seconds = max(
+            0.0,
+            prediction_cache_seconds
+            if prediction_cache_seconds is not None
+            else configured_cache_seconds,
+        )
+        self._database_prediction_run: dict[str, Any] | None = None
+        self._database_prediction_checked_at = 0.0
         self._simulation: dict | None = None
         self._simulation_generated_at = self.generated_at
         self._simulation_data_cutoff = self.data_cutoff
@@ -62,18 +178,142 @@ class PredictionService:
             "flag": flag_for_team(team_id),
         }
 
-    def prediction_payload(self, match_id: str) -> dict | None:
-        prediction = self.predictions.get(match_id)
+    def _latest_database_prediction_run(
+        self,
+        force: bool = False,
+    ) -> dict[str, Any] | None:
+        if self.prediction_source is None:
+            return None
+        now = time.monotonic()
+        if (
+            not force
+            and now - self._database_prediction_checked_at
+            < self.prediction_cache_seconds
+        ):
+            return self._database_prediction_run
+        self._database_prediction_checked_at = now
+        try:
+            run = self.prediction_source.load_latest()
+        except Exception:
+            self._database_prediction_run = None
+            LOGGER.warning(
+                "Latest database predictions are unavailable; serving static "
+                "prediction fallback",
+                exc_info=True,
+            )
+            return None
+        if run is None or not run["predictions"]:
+            self._database_prediction_run = None
+            LOGGER.warning(
+                "No database prediction run is available; serving static "
+                "prediction fallback"
+            )
+            return None
+        self._database_prediction_run = run
+        return run
+
+    def current_prediction_run(self, force: bool = False) -> dict[str, Any]:
+        database_run = self._latest_database_prediction_run(force=force)
+        if database_run is not None:
+            return database_run
+        return {
+            "model_run_id": None,
+            "model_version": STATIC_MODEL_VERSION,
+            "generated_at": self.generated_at,
+            "data_cutoff": self.data_cutoff,
+            "predictions": self.static_predictions,
+        }
+
+    def prediction_payload(
+        self,
+        match_id: str,
+        prediction_run: dict[str, Any] | None = None,
+    ) -> dict | None:
+        prediction_run = prediction_run or self.current_prediction_run()
+        database_prediction = (
+            prediction_run["predictions"].get(match_id)
+            if prediction_run["model_run_id"] is not None
+            else None
+        )
+        prediction = self.static_predictions.get(match_id)
         if not prediction:
             return None
-        return {
+        payload = {
             **prediction_dict(prediction),
-            "model_version": MODEL_VERSION,
+            "model_version": STATIC_MODEL_VERSION,
             "generated_at": self.generated_at,
             "data_cutoff": self.data_cutoff,
         }
+        if database_prediction is None:
+            return payload
 
-    def match_payload(self, match_id: str) -> dict:
+        home = float(
+            database_prediction.get("final_home_probability")
+            if database_prediction.get("final_home_probability") is not None
+            else database_prediction["home_win_probability"]
+        )
+        draw = float(
+            database_prediction.get("final_draw_probability")
+            if database_prediction.get("final_draw_probability") is not None
+            else database_prediction["draw_probability"]
+        )
+        away = float(
+            database_prediction.get("final_away_probability")
+            if database_prediction.get("final_away_probability") is not None
+            else database_prediction["away_win_probability"]
+        )
+        payload.update(
+            {
+                "probabilities": {
+                    "home_win": home,
+                    "draw": draw,
+                    "away_win": away,
+                },
+                "elo_base_home_probability": database_prediction.get(
+                    "elo_base_home_probability"
+                ),
+                "elo_base_draw_probability": database_prediction.get(
+                    "elo_base_draw_probability"
+                ),
+                "elo_base_away_probability": database_prediction.get(
+                    "elo_base_away_probability"
+                ),
+                "attack_defense_adjustment": database_prediction.get(
+                    "attack_defense_adjustment"
+                ),
+                "draw_calibration_adjustment": database_prediction.get(
+                    "draw_calibration_adjustment"
+                ),
+                "context_adjustment_total": database_prediction.get(
+                    "context_adjustment_total"
+                ),
+                "final_home_probability": home,
+                "final_draw_probability": draw,
+                "final_away_probability": away,
+                "confidence_score": database_prediction.get("confidence_score"),
+                "confidence_tier": database_prediction.get("confidence_tier"),
+                "confidence_explanation": database_prediction.get(
+                    "confidence_explanation"
+                ),
+                "confidence": database_prediction.get("confidence_tier")
+                or payload["confidence"],
+                "top_factors": _json_value(
+                    database_prediction.get("top_factors"),
+                    [],
+                ),
+                "model_version": database_prediction.get("model_version")
+                or prediction_run["model_version"],
+                "generated_at": str(prediction_run["generated_at"]),
+                "data_cutoff": str(prediction_run["data_cutoff"]),
+            }
+        )
+        return payload
+
+    def match_payload(
+        self,
+        match_id: str,
+        prediction_run: dict[str, Any] | None = None,
+    ) -> dict:
         match = next(match for match in self.fixtures if match.id == match_id)
         return {
             "id": match.id,
@@ -90,7 +330,25 @@ class PredictionService:
             ),
             "home_slot": match.home_slot,
             "away_slot": match.away_slot,
-            "prediction": self.prediction_payload(match.id),
+            "prediction": self.prediction_payload(match.id, prediction_run),
+        }
+
+    def latest_predictions_payload(self, force: bool = False) -> dict[str, Any]:
+        prediction_run = self.current_prediction_run(force=force)
+        prediction_ids = (
+            prediction_run["predictions"]
+            if prediction_run["model_run_id"] is not None
+            else self.static_predictions
+        )
+        return {
+            "model_version": prediction_run["model_version"],
+            "generated_at": str(prediction_run["generated_at"]),
+            "data_cutoff": str(prediction_run["data_cutoff"]),
+            "predictions": [
+                self.prediction_payload(match.id, prediction_run)
+                for match in self.fixtures
+                if match.id in prediction_ids
+            ],
         }
 
     def latest_simulation(self) -> dict:
@@ -137,7 +395,7 @@ class PredictionService:
             if row["team_id"] == team_id
         )
         matches = [
-            self.match_payload(match.id)
+            self.match_payload(match.id, self.current_prediction_run())
             for match in self.fixtures
             if team_id in (match.home_team_id, match.away_team_id)
         ]

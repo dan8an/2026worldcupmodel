@@ -45,6 +45,19 @@ class PredictionResponse(BaseModel):
     home_xg: float
     away_xg: float
     probabilities: ProbabilityResponse
+    elo_base_home_probability: float | None = None
+    elo_base_draw_probability: float | None = None
+    elo_base_away_probability: float | None = None
+    attack_defense_adjustment: float | None = None
+    draw_calibration_adjustment: float | None = None
+    context_adjustment_total: float | None = None
+    final_home_probability: float | None = None
+    final_draw_probability: float | None = None
+    final_away_probability: float | None = None
+    confidence_score: float | None = None
+    confidence_tier: str | None = None
+    confidence_explanation: str | None = None
+    top_factors: list[dict[str, str]] = Field(default_factory=list)
     top_scores: list[ScoreProbabilityResponse]
     confidence: str
     key_factors: list[str]

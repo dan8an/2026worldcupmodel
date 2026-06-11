@@ -7,7 +7,7 @@ from fastapi import FastAPI, HTTPException, Query
 from fastapi.middleware.cors import CORSMiddleware
 
 from .schemas import MatchResponse, SimulationRequest, TeamResponse
-from .service import MODEL_VERSION, service
+from .service import STATIC_MODEL_VERSION, service
 from modeling.src.simulation import simulate_tournament
 
 # Local development, production, and optional deployment-specific frontend origins.
@@ -37,7 +37,10 @@ app.add_middleware(
 
 @app.get("/health")
 def health() -> dict:
-    return {"status": "ok", "model_version": MODEL_VERSION}
+    return {
+        "status": "ok",
+        "model_version": service.current_prediction_run()["model_version"],
+    }
 
 
 @app.get("/v1/tournament")
@@ -85,9 +88,18 @@ def matches(
             for match in fixtures
             if team_id in (match.home_team_id, match.away_team_id)
         ]
-    return [service.match_payload(match.id) for match in fixtures]
+    prediction_run = service.current_prediction_run()
+    return [
+        service.match_payload(match.id, prediction_run)
+        for match in fixtures
+    ]
 
 
+@app.get(
+    "/api/matches/{match_id}",
+    response_model=MatchResponse,
+    include_in_schema=False,
+)
 @app.get("/v1/matches/{match_id}", response_model=MatchResponse)
 def match(match_id: str) -> dict:
     if not any(fixture.id == match_id for fixture in service.fixtures):
@@ -97,16 +109,7 @@ def match(match_id: str) -> dict:
 
 @app.get("/v1/predictions/latest")
 def predictions() -> dict:
-    return {
-        "model_version": MODEL_VERSION,
-        "generated_at": service.generated_at,
-        "data_cutoff": service.data_cutoff,
-        "predictions": [
-            service.prediction_payload(match.id)
-            for match in service.fixtures
-            if match.id in service.predictions
-        ],
-    }
+    return service.latest_predictions_payload()
 
 
 @app.get("/api/simulations/latest", include_in_schema=False)
@@ -124,7 +127,7 @@ def custom_simulation(request: SimulationRequest) -> dict:
             context_repository=service.contexts,
             cutoff=datetime.fromisoformat(service.data_cutoff),
         ),
-        "model_version": MODEL_VERSION,
+        "model_version": STATIC_MODEL_VERSION,
         "generated_at": service.generated_at,
         "data_cutoff": service.data_cutoff,
     }
@@ -132,9 +135,10 @@ def custom_simulation(request: SimulationRequest) -> dict:
 
 @app.get("/v1/model/versions/current")
 def model_version() -> dict:
+    current_version = service.current_prediction_run()["model_version"]
     return {
         "name": "Context-adjusted Poisson model",
-        "semantic_version": MODEL_VERSION,
+        "semantic_version": current_version,
         "feature_schema_version": "1",
         "training_cutoff": None,
         "status": "experimental",
