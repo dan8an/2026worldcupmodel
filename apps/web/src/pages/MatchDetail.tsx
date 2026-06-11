@@ -51,9 +51,19 @@ export function MatchDetail() {
         <article className="panel">
           <span className="eyebrow">Structured explanation</span>
           <h2>What drives the forecast</h2>
-          <ol className="factor-list">
-            {prediction.key_factors.map((factor) => <li key={factor}>{factor}</li>)}
-          </ol>
+          {prediction.top_factors?.length ? (
+            <ol className="factor-list">
+              {prediction.top_factors.map((factor) => (
+                <li key={`${factor.factor}-${factor.team}`}>
+                  {factor.factor}: {factor.team} ({factor.impact})
+                </li>
+              ))}
+            </ol>
+          ) : (
+            <ol className="factor-list">
+              {prediction.key_factors.map((factor) => <li key={factor}>{factor}</li>)}
+            </ol>
+          )}
           <p className="disclosure">
             Generated from model inputs, not news inference. Data cutoff:{" "}
             {new Date(prediction.data_cutoff).toLocaleString()}.

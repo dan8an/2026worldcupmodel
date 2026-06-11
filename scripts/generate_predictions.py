@@ -33,11 +33,21 @@ V3_DRAW_MULTIPLIER = 1.15
 PREDICTION_REQUIRED_COLUMNS = {
     "canonical_match_id",
     "model_run_id",
+    "elo_base_home_probability",
+    "elo_base_draw_probability",
+    "elo_base_away_probability",
+    "attack_defense_adjustment",
+    "draw_calibration_adjustment",
+    "context_adjustment_total",
+    "final_home_probability",
+    "final_draw_probability",
+    "final_away_probability",
     "home_xg",
     "away_xg",
     "prediction_timestamp",
     "model_version",
     "confidence_score",
+    "top_factors",
     "home_win_probability",
     "draw_probability",
     "away_win_probability",
@@ -342,6 +352,67 @@ def _calibrate_score_probabilities(
     return calibrated
 
 
+def _format_impact(value: float) -> str:
+    return f"{value * 100:+.1f}%"
+
+
+def _top_factors(
+    elo_probabilities: tuple[float, float, float],
+    attack_defense_probabilities: tuple[float, float, float],
+    context_probabilities: tuple[float, float, float],
+    final_probabilities: tuple[float, float, float],
+    home_team_name: str,
+    away_team_name: str,
+) -> list[dict[str, str]]:
+    elo_home_impact = (elo_probabilities[0] - elo_probabilities[2]) / 2.0
+    attack_defense_impact = (
+        attack_defense_probabilities[0] - elo_probabilities[0]
+    )
+    rest_impact = context_probabilities[0] - attack_defense_probabilities[0]
+    draw_impact = final_probabilities[1] - context_probabilities[1]
+
+    factors = [
+        (
+            abs(elo_home_impact),
+            {
+                "factor": "Elo advantage",
+                "team": home_team_name if elo_home_impact >= 0 else away_team_name,
+                "impact": _format_impact(abs(elo_home_impact)),
+            },
+        ),
+        (
+            abs(attack_defense_impact),
+            {
+                "factor": "Attack/defense edge",
+                "team": (
+                    home_team_name
+                    if attack_defense_impact >= 0
+                    else away_team_name
+                ),
+                "impact": _format_impact(abs(attack_defense_impact)),
+            },
+        ),
+        (
+            abs(rest_impact),
+            {
+                "factor": "Rest context",
+                "team": home_team_name if rest_impact >= 0 else away_team_name,
+                "impact": _format_impact(abs(rest_impact)),
+            },
+        ),
+        (
+            abs(draw_impact),
+            {
+                "factor": "Draw calibration",
+                "team": "Draw",
+                "impact": _format_impact(draw_impact),
+            },
+        ),
+    ]
+    factors.sort(key=lambda factor: factor[0], reverse=True)
+    return [factor for magnitude, factor in factors if magnitude > 1e-12]
+
+
 def calculate_prediction(
     home_rating: dict[str, Any],
     away_rating: dict[str, Any],
@@ -349,6 +420,8 @@ def calculate_prediction(
     away_player_rating: float | None = None,
     home_rest_days: int | None = None,
     away_rest_days: int | None = None,
+    home_team_name: str = "Home",
+    away_team_name: str = "Away",
 ) -> dict[str, Any]:
     """Calculate promoted Elo-first probabilities with validated v3 context."""
     del home_player_rating, away_player_rating
@@ -392,6 +465,24 @@ def calculate_prediction(
         + V3_DEFENSE_WEIGHT * defense_signal
         + V3_REST_WEIGHT * rest_signal
     )
+    attack_defense_tilt = (
+        V3_ATTACK_WEIGHT * attack_signal
+        + V3_DEFENSE_WEIGHT * defense_signal
+    )
+    attack_defense_probabilities = _normalize_probabilities(
+        (
+            elo_probabilities[0] * math.exp(attack_defense_tilt),
+            elo_probabilities[1],
+            elo_probabilities[2] * math.exp(-attack_defense_tilt),
+        )
+    )
+    context_probabilities = _normalize_probabilities(
+        (
+            elo_probabilities[0] * math.exp(context_tilt),
+            elo_probabilities[1],
+            elo_probabilities[2] * math.exp(-context_tilt),
+        )
+    )
     probabilities = _normalize_probabilities(
         (
             elo_probabilities[0] * math.exp(context_tilt),
@@ -424,10 +515,33 @@ def calculate_prediction(
         0.55 * min(1.0, sample_size / 10.0)
         + 0.45 * max(probabilities)
     )
+    top_factors = _top_factors(
+        elo_probabilities,
+        attack_defense_probabilities,
+        context_probabilities,
+        probabilities,
+        home_team_name,
+        away_team_name,
+    )
 
     return {
         "home_xg": round(home_xg, 4),
         "away_xg": round(away_xg, 4),
+        "elo_base_home_probability": elo_probabilities[0],
+        "elo_base_draw_probability": elo_probabilities[1],
+        "elo_base_away_probability": elo_probabilities[2],
+        "attack_defense_adjustment": (
+            attack_defense_probabilities[0] - elo_probabilities[0]
+        ),
+        "draw_calibration_adjustment": (
+            probabilities[1] - context_probabilities[1]
+        ),
+        "context_adjustment_total": (
+            context_probabilities[0] - elo_probabilities[0]
+        ),
+        "final_home_probability": probabilities[0],
+        "final_draw_probability": probabilities[1],
+        "final_away_probability": probabilities[2],
         "home_win_probability": probabilities[0],
         "draw_probability": probabilities[1],
         "away_win_probability": probabilities[2],
@@ -438,6 +552,7 @@ def calculate_prediction(
         "over_2_5_probability": over_2_5,
         "both_teams_to_score_probability": both_score,
         "confidence_score": round(_clamp(confidence_score, 0.0, 1.0), 6),
+        "top_factors": top_factors,
         "score_probabilities": [
             {**score, "probability": round(float(score["probability"]), 12)}
             for score in scores
@@ -486,7 +601,7 @@ class PredictionRepository:
             raise RuntimeError(
                 f"predictions is missing columns {sorted(missing_columns)}. Apply "
                 "supabase/migrations/202606100003_prediction_generation.sql and "
-                "supabase/migrations/202606100004_canonical_predictions.sql first."
+                "supabase/migrations/202606110001_prediction_explanations.sql first."
             )
 
     def load_database_matches(self) -> list[dict[str, Any]]:
@@ -760,6 +875,7 @@ def main() -> int:
         team_ratings = repository.load_current_team_ratings(database_team_ids)
         latest_match_dates = repository.load_latest_team_match_dates(database_team_ids)
         predictions = []
+        team_names = {team.id: team.name for team in load_teams()}
         for match in matches:
             home_rating = team_ratings.get(match["home_team_id"])
             away_rating = team_ratings.get(match["away_team_id"])
@@ -788,6 +904,8 @@ def main() -> int:
                             ]).days
                             if match["away_team_id"] in latest_match_dates else None
                         ),
+                        home_team_name=team_names[match["home_team_id"]],
+                        away_team_name=team_names[match["away_team_id"]],
                     ),
                 }
             )

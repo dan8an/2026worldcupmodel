@@ -135,14 +135,27 @@ test("matching database predictions enrich canonical fixtures without losing det
 
 test("canonical predictions attach without database match rows", () => {
   const [match] = mergeCanonicalPredictions(buildPlaceholderMatches(), [
-    {
-      canonical_match_id: "WC26-001",
+      {
+        canonical_match_id: "WC26-001",
       home_xg: 1.8,
       away_xg: 0.9,
       home_win_probability: 0.58,
       draw_probability: 0.25,
-      away_win_probability: 0.17,
-      model_version: "elo-context-v3",
+        away_win_probability: 0.17,
+        elo_base_home_probability: 0.55,
+        elo_base_draw_probability: 0.27,
+        elo_base_away_probability: 0.18,
+        attack_defense_adjustment: 0.02,
+        draw_calibration_adjustment: 0.01,
+        context_adjustment_total: 0.03,
+        final_home_probability: 0.58,
+        final_draw_probability: 0.25,
+        final_away_probability: 0.17,
+        confidence_score: 0.63,
+        top_factors: [
+          { factor: "Elo advantage", team: "Mexico", impact: "+4.0%" },
+        ],
+        model_version: "elo-context-v3",
       prediction_timestamp: "2026-06-10T19:00:00Z",
     },
   ]);
@@ -151,6 +164,8 @@ test("canonical predictions attach without database match rows", () => {
   assert.equal(match.prediction.home_xg, 1.8);
   assert.equal(match.prediction.probabilities.home_win, 0.58);
   assert.equal(match.prediction.model_version, "elo-context-v3");
+  assert.equal(match.prediction.final_home_probability, 0.58);
+  assert.equal(match.prediction.top_factors[0].factor, "Elo advantage");
 });
 
 test("persisted Step 5 simulation rows retain the frontend shape", () => {

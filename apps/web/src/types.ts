@@ -88,6 +88,21 @@ export type Prediction = {
     draw: number;
     away_win: number;
   };
+  elo_base_home_probability?: number | null;
+  elo_base_draw_probability?: number | null;
+  elo_base_away_probability?: number | null;
+  attack_defense_adjustment?: number | null;
+  draw_calibration_adjustment?: number | null;
+  context_adjustment_total?: number | null;
+  final_home_probability?: number;
+  final_draw_probability?: number;
+  final_away_probability?: number;
+  confidence_score?: number | null;
+  top_factors?: {
+    factor: string;
+    team: string;
+    impact: string;
+  }[];
   top_scores: ScoreProbability[];
   confidence: string;
   key_factors: string[];

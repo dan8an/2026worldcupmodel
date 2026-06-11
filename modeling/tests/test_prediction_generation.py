@@ -69,6 +69,16 @@ create table predictions (
   prediction_timestamp text,
   model_version text,
   confidence_score real,
+  elo_base_home_probability real,
+  elo_base_draw_probability real,
+  elo_base_away_probability real,
+  attack_defense_adjustment real,
+  draw_calibration_adjustment real,
+  context_adjustment_total real,
+  final_home_probability real,
+  final_draw_probability real,
+  final_away_probability real,
+  top_factors text,
   home_win_probability real,
   draw_probability real,
   away_win_probability real,
@@ -111,6 +121,25 @@ class PredictionCalculationTests(unittest.TestCase):
             places=12,
         )
         self.assertEqual(len(first["score_probabilities"]), 49)
+        self.assertTrue(first["top_factors"])
+        self.assertTrue(
+            all(
+                set(factor) == {"factor", "team", "impact"}
+                for factor in first["top_factors"]
+            )
+        )
+        self.assertEqual(
+            (
+                first["final_home_probability"],
+                first["final_draw_probability"],
+                first["final_away_probability"],
+            ),
+            (
+                first["home_win_probability"],
+                first["draw_probability"],
+                first["away_win_probability"],
+            ),
+        )
         self.assertAlmostEqual(
             sum(score["probability"] for score in first["score_probabilities"]),
             1.0,
@@ -225,7 +254,8 @@ class PredictionScriptTests(unittest.TestCase):
                 """
                 select
                   canonical_match_id, home_win_probability, draw_probability,
-                  away_win_probability, score_probabilities, model_version
+                  away_win_probability, score_probabilities, model_version,
+                  top_factors
                 from predictions
                 """
             ).fetchall()
@@ -240,6 +270,7 @@ class PredictionScriptTests(unittest.TestCase):
         self.assertAlmostEqual(sum(prediction_rows[0][1:4]), 1.0, places=12)
         self.assertEqual(len(json.loads(prediction_rows[0][4])), 49)
         self.assertTrue(all(row[5] == MODEL_VERSION for row in prediction_rows))
+        self.assertTrue(all(json.loads(row[6]) for row in prediction_rows))
         self.assertEqual(runs, [(MODEL_VERSION,), (MODEL_VERSION,)])
 
     def test_no_future_matches_exits_successfully_without_a_run(self):

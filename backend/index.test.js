@@ -24,6 +24,27 @@ const simulationRows = mergeTeams().map((team, index) => ({
   final_probability: 0.05,
   champion_probability: index === 0 ? 0.1 : 0.9 / 47,
 }));
+const predictionRows = [{
+  canonical_match_id: "WC26-001",
+  home_win_probability: 0.55,
+  draw_probability: 0.27,
+  away_win_probability: 0.18,
+  elo_base_home_probability: 0.52,
+  elo_base_draw_probability: 0.28,
+  elo_base_away_probability: 0.2,
+  attack_defense_adjustment: 0.02,
+  draw_calibration_adjustment: 0.01,
+  context_adjustment_total: 0.03,
+  final_home_probability: 0.55,
+  final_draw_probability: 0.27,
+  final_away_probability: 0.18,
+  confidence_score: 0.61,
+  top_factors: [
+    { factor: "Elo advantage", team: "Mexico", impact: "+3.0%" },
+  ],
+  model_version: "elo-context-v3",
+  prediction_timestamp: "2026-06-10T20:00:00Z",
+}];
 
 db.query = async (sql) => {
   if (sql.includes("from simulation_runs")) {
@@ -40,7 +61,7 @@ db.query = async (sql) => {
   if (sql.includes("from team_simulation_results")) return { rows: simulationRows };
   if (sql.includes("from teams")) return { rows: databaseTeams };
   if (sql.includes("from matches")) return { rows: [] };
-  if (sql.includes("from predictions")) return { rows: [] };
+  if (sql.includes("from predictions")) return { rows: predictionRows };
   throw new Error(`Unexpected test query: ${sql}`);
 };
 
@@ -66,6 +87,8 @@ test("GET /api/matches?stage=group returns chronological match objects", async (
   const probabilities = Object.values(matches[0].prediction.probabilities);
   assert.ok(probabilities.every((value) => value >= 0 && value <= 1));
   assert.ok(Math.abs(probabilities.reduce((sum, value) => sum + value, 0) - 1) < 1e-6);
+  assert.equal(matches[0].prediction.final_home_probability, 0.55);
+  assert.equal(matches[0].prediction.top_factors[0].factor, "Elo advantage");
 });
 
 test("GET /api/matches/:id returns a single match", async () => {

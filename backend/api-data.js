@@ -67,6 +67,57 @@ const VENUE_IDS = [
 const normalizeName = (value = "") =>
   value.toLowerCase().replace(/[^a-z0-9]/g, "");
 
+const jsonValue = (value, fallback) => {
+  if (value == null) return fallback;
+  if (typeof value !== "string") return value;
+  try {
+    return JSON.parse(value);
+  } catch {
+    return fallback;
+  }
+};
+
+const numberOrNull = (value) =>
+  value == null || value === "" ? null : Number(value);
+
+const explanationFields = (prediction = {}) => ({
+  elo_base_home_probability: numberOrNull(
+    prediction.elo_base_home_probability,
+  ),
+  elo_base_draw_probability: numberOrNull(
+    prediction.elo_base_draw_probability,
+  ),
+  elo_base_away_probability: numberOrNull(
+    prediction.elo_base_away_probability,
+  ),
+  attack_defense_adjustment: numberOrNull(
+    prediction.attack_defense_adjustment,
+  ),
+  draw_calibration_adjustment: numberOrNull(
+    prediction.draw_calibration_adjustment,
+  ),
+  context_adjustment_total: numberOrNull(
+    prediction.context_adjustment_total,
+  ),
+  final_home_probability: Number(
+    prediction.final_home_probability ??
+      prediction.home_win_probability ??
+      0,
+  ),
+  final_draw_probability: Number(
+    prediction.final_draw_probability ??
+      prediction.draw_probability ??
+      0,
+  ),
+  final_away_probability: Number(
+    prediction.final_away_probability ??
+      prediction.away_win_probability ??
+      0,
+  ),
+  confidence_score: numberOrNull(prediction.confidence_score),
+  top_factors: jsonValue(prediction.top_factors, []),
+});
+
 const seedByName = new Map(
   seedTeams.map((team) => [normalizeName(team.name), team]),
 );
@@ -239,6 +290,7 @@ export const normalizeDatabaseMatches = (
                 0,
             ),
           },
+          ...explanationFields(databasePrediction),
           top_scores: snapshotPrediction?.top_scores ?? [],
           confidence: databasePrediction.confidence_tier ??
             snapshotPrediction?.confidence ??
@@ -353,6 +405,7 @@ export const mergeCanonicalPredictions = (matches, predictionRows = []) => {
           draw: Number(prediction.draw_probability ?? 0),
           away_win: Number(prediction.away_win_probability ?? 0),
         },
+        ...explanationFields(prediction),
         model_version: prediction.model_version ?? "supabase",
         generated_at: prediction.prediction_timestamp ??
           prediction.created_at ??
