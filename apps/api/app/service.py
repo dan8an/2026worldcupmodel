@@ -70,15 +70,25 @@ class DatabasePredictionSource:
             return None
 
     def load_latest(self) -> dict[str, Any] | None:
+        table_prefix = "public." if self.engine.dialect.name == "postgresql" else ""
         with self.engine.connect() as connection:
             latest = connection.execute(
                 text(
-                    """
-                    select model_run_id, model_version, prediction_timestamp,
-                           data_cutoff
-                    from predictions
-                    where model_run_id is not null
-                    order by prediction_timestamp desc nulls last
+                    f"""
+                    select
+                      mr.id as model_run_id,
+                      mr.model_version,
+                      mr.generated_at,
+                      mr.data_cutoff
+                    from {table_prefix}model_runs mr
+                    where coalesce(mr.status, 'completed') = 'completed'
+                      and exists (
+                        select 1
+                        from {table_prefix}predictions p
+                        where p.model_run_id = mr.id
+                          and p.canonical_match_id is not null
+                      )
+                    order by mr.generated_at desc nulls last, mr.id desc
                     limit 1
                     """
                 )
@@ -89,9 +99,9 @@ class DatabasePredictionSource:
                 dict(row)
                 for row in connection.execute(
                     text(
-                        """
+                        f"""
                         select *
-                        from predictions
+                        from {table_prefix}predictions
                         where model_run_id = :model_run_id
                           and canonical_match_id is not null
                         """
@@ -102,9 +112,9 @@ class DatabasePredictionSource:
         return {
             "model_run_id": latest["model_run_id"],
             "model_version": latest["model_version"],
-            "generated_at": latest["prediction_timestamp"],
+            "generated_at": latest["generated_at"],
             "data_cutoff": latest.get("data_cutoff")
-            or latest["prediction_timestamp"],
+            or latest["generated_at"],
             "predictions": {
                 str(row["canonical_match_id"]): row
                 for row in rows
@@ -210,6 +220,12 @@ class PredictionService:
             )
             return None
         self._database_prediction_run = run
+        LOGGER.info(
+            "Serving latest database predictions: run=%s model=%s rows=%d",
+            run["model_run_id"],
+            run["model_version"],
+            len(run["predictions"]),
+        )
         return run
 
     def current_prediction_run(self, force: bool = False) -> dict[str, Any]:
@@ -222,6 +238,7 @@ class PredictionService:
             "generated_at": self.generated_at,
             "data_cutoff": self.data_cutoff,
             "predictions": self.static_predictions,
+            "source": "fallback_static",
         }
 
     def prediction_payload(
@@ -243,6 +260,7 @@ class PredictionService:
             "model_version": STATIC_MODEL_VERSION,
             "generated_at": self.generated_at,
             "data_cutoff": self.data_cutoff,
+            "source": "fallback_static",
         }
         if database_prediction is None:
             return payload
@@ -305,6 +323,7 @@ class PredictionService:
                 or prediction_run["model_version"],
                 "generated_at": str(prediction_run["generated_at"]),
                 "data_cutoff": str(prediction_run["data_cutoff"]),
+                "source": "database_latest",
             }
         )
         return payload
@@ -344,6 +363,11 @@ class PredictionService:
             "model_version": prediction_run["model_version"],
             "generated_at": str(prediction_run["generated_at"]),
             "data_cutoff": str(prediction_run["data_cutoff"]),
+            "source": (
+                "database_latest"
+                if prediction_run["model_run_id"] is not None
+                else "fallback_static"
+            ),
             "predictions": [
                 self.prediction_payload(match.id, prediction_run)
                 for match in self.fixtures

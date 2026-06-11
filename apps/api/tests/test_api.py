@@ -15,6 +15,7 @@ class LatestV4PredictionSource:
             "model_version": "elo-context-v4",
             "generated_at": "2026-06-11T06:00:00+00:00",
             "data_cutoff": "2026-06-11T05:59:00+00:00",
+            "source": "database_latest",
             "predictions": {
                 "WC26-001": {
                     "canonical_match_id": "WC26-001",
@@ -244,6 +245,7 @@ def test_latest_database_prediction_run_wins_over_static(monkeypatch):
 
     assert response.status_code == 200
     assert payload["model_version"] == "elo-context-v4"
+    assert payload["source"] == "database_latest"
     assert len(payload["predictions"]) == 1
     prediction = payload["predictions"][0]
     assert prediction["match_id"] == "WC26-001"
@@ -254,6 +256,7 @@ def test_latest_database_prediction_run_wins_over_static(monkeypatch):
     }
     assert prediction["probabilities"] != static["probabilities"]
     assert prediction["model_version"] == "elo-context-v4"
+    assert prediction["source"] == "database_latest"
 
 
 def test_api_matches_use_v4_probabilities_and_canonical_fixture(monkeypatch):
@@ -270,6 +273,7 @@ def test_api_matches_use_v4_probabilities_and_canonical_fixture(monkeypatch):
     assert match["home_team"]["id"] == "MEX"
     assert match["away_team"]["id"] == "RSA"
     assert match["prediction"]["model_version"] == "elo-context-v4"
+    assert match["prediction"]["source"] == "database_latest"
     assert match["prediction"]["final_home_probability"] == 0.61
     assert match["prediction"]["top_factors"][0]["factor"] == "Shot volume"
 
@@ -292,7 +296,12 @@ def test_database_failure_falls_back_to_static_with_warning(caplog):
         payload = service.latest_predictions_payload(force=True)
 
     assert payload["model_version"] == "context-0.2.0"
+    assert payload["source"] == "fallback_static"
     assert len(payload["predictions"]) == 72
+    assert all(
+        prediction["source"] == "fallback_static"
+        for prediction in payload["predictions"]
+    )
     assert "serving static prediction fallback" in caplog.text
 
 
@@ -312,6 +321,35 @@ def test_database_source_selects_newest_prediction_run():
                   draw_probability real,
                   away_win_probability real
                 )
+                """
+            )
+        )
+        connection.execute(
+            text(
+                """
+                create table model_runs (
+                  id text primary key,
+                  model_version text,
+                  status text,
+                  generated_at text,
+                  data_cutoff text
+                )
+                """
+            )
+        )
+        connection.execute(
+            text(
+                """
+                insert into model_runs values
+                  ('old-run', 'context-0.2.0', 'completed',
+                   '2026-06-10T00:00:00+00:00',
+                   '2026-06-10T00:00:00+00:00'),
+                  ('v4-run', 'elo-context-v4', 'completed',
+                   '2026-06-11T00:00:00+00:00',
+                   '2026-06-11T00:00:00+00:00'),
+                  ('failed-run', 'elo-context-v5', 'failed',
+                   '2026-06-12T00:00:00+00:00',
+                   '2026-06-12T00:00:00+00:00')
                 """
             )
         )

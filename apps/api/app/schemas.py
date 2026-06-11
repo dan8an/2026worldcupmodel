@@ -63,6 +63,7 @@ class PredictionResponse(BaseModel):
     key_factors: list[str]
     context: ContextResponse
     model_version: str
+    source: str
     generated_at: str
     data_cutoff: str
 
