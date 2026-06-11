@@ -3,6 +3,7 @@ import assert from "node:assert/strict";
 import { ApiFootballProvider } from "./api-football.js";
 import { SampleSportsProvider } from "./sample-provider.js";
 import { createSportsProvider } from "./index.js";
+import { SportsIngestionRepository } from "../repository.js";
 
 const silentLogger = {
   info() {},
@@ -109,4 +110,40 @@ test("sample provider exposes all requested ingestion methods", async () => {
   assert.equal((await provider.get_fixture_statistics(fixtureId)).length, 2);
   assert.equal((await provider.get_fixture_players(fixtureId)).length, 2);
   assert.equal((await provider.get_lineups(fixtureId)).length, 2);
+});
+
+test("team shot-quality fields are persisted from fixture statistics", async () => {
+  let captured;
+  const repository = new SportsIngestionRepository({});
+  const client = {
+    async query(sql, values) {
+      captured = { sql, values };
+      return { rows: [] };
+    },
+  };
+
+  await repository.upsertTeamStats(client, {
+    fixture: { homeScore: 2, awayScore: 1, providerFixtureId: 123 },
+    matchId: "match-id",
+    teamId: "team-id",
+    opponentTeamId: "opponent-id",
+    isHome: true,
+    statistics: {
+      statistics: {
+        "Total Shots": 13,
+        "Shots on Goal": 6,
+        "Shots insidebox": 9,
+        "Shots outsidebox": 4,
+        "Blocked Shots": 3,
+        "Goalkeeper Saves": 4,
+        "Passes %": "88%",
+      },
+      raw: {},
+    },
+  });
+
+  assert.match(captured.sql, /shots_inside_box/);
+  assert.match(captured.sql, /goalkeeper_saves/);
+  assert.deepEqual(captured.values.slice(7, 13), [13, 6, 9, 4, 3, 4]);
+  assert.equal(captured.values[19], 88);
 });

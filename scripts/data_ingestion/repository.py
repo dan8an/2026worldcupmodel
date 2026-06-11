@@ -46,14 +46,28 @@ class DataIngestionRepository:
                         where table_schema = 'public'
                           and table_name = 'matches'
                           and column_name = 'api_football_fixture_id'
-                      ) as provider_fixture_id
+                      ) as provider_fixture_id,
+                      (
+                        select count(*) = 5
+                        from information_schema.columns
+                        where table_schema = 'public'
+                          and table_name = 'team_match_stats'
+                          and column_name in (
+                            'shots_inside_box',
+                            'shots_outside_box',
+                            'blocked_shots',
+                            'goalkeeper_saves',
+                            'pass_accuracy'
+                          )
+                      ) as xg_proxy_fields
                     """
                 )
             ).mappings().one()
         if not all(schema.values()):
             raise RuntimeError(
                 "Daily pipeline schema is missing. Apply "
-                "supabase/migrations/202606100001_daily_prediction_pipeline.sql first."
+                "supabase/migrations/202606100001_daily_prediction_pipeline.sql and "
+                "supabase/migrations/202606110003_xg_proxy_v4.sql first."
             )
 
     def upsert_provider_matches(
@@ -113,6 +127,31 @@ class DataIngestionRepository:
                     ),
                     {"fixture_ids": provider_fixture_ids},
                 ).mappings()
+            )
+
+    def find_provider_fixtures_with_complete_team_stats(
+        self,
+        provider_fixture_ids: list[int],
+        connection: Connection | None = None,
+    ) -> set[int]:
+        if not provider_fixture_ids:
+            return set()
+        context = nullcontext(connection) if connection is not None else self.engine.connect()
+        with context as active_connection:
+            return set(
+                active_connection.execute(
+                    text(
+                        """
+                        select m.api_football_fixture_id
+                        from public.matches m
+                        join public.team_match_stats tms on tms.match_id = m.id
+                        where m.api_football_fixture_id = any(:fixture_ids)
+                        group by m.id, m.api_football_fixture_id
+                        having count(distinct tms.team_id) >= 2
+                        """
+                    ),
+                    {"fixture_ids": provider_fixture_ids},
+                ).scalars()
             )
 
     def ingest_fixture(
@@ -190,6 +229,78 @@ class DataIngestionRepository:
                     player["player"]["provider_id"] in starters,
                 )
         return {"team_stats": len(statistics), "player_stats": len(appearances)}
+
+    def ingest_historical_team_fixture(
+        self,
+        fixture: dict[str, Any],
+        statistics: list[dict[str, Any]],
+        connection: Connection | None = None,
+    ) -> dict[str, int]:
+        """Upsert one completed fixture and only its team-level statistics."""
+        context = nullcontext(connection) if connection is not None else self.engine.begin()
+        with context as active_connection:
+            existing_match_id = active_connection.execute(
+                text(
+                    """
+                    select id from public.matches
+                    where api_football_fixture_id = :fixture_id
+                    """
+                ),
+                {"fixture_id": fixture["provider_fixture_id"]},
+            ).scalar_one_or_none()
+
+            self.upsert_provider_matches([fixture], connection=active_connection)
+            match = active_connection.execute(
+                text(
+                    """
+                    select id, home_team_id, away_team_id
+                    from public.matches
+                    where api_football_fixture_id = :fixture_id
+                    """
+                ),
+                {"fixture_id": fixture["provider_fixture_id"]},
+            ).mappings().one()
+            team_ids = {
+                fixture["home_team"]["provider_id"]: match["home_team_id"],
+                fixture["away_team"]["provider_id"]: match["away_team_id"],
+            }
+            existing_team_ids = set(
+                active_connection.execute(
+                    text(
+                        """
+                        select team_id from public.team_match_stats
+                        where match_id = :match_id
+                        """
+                    ),
+                    {"match_id": match["id"]},
+                ).scalars()
+            )
+
+            stored_team_ids: set[Any] = set()
+            for item in statistics:
+                provider_team_id = item["team"]["provider_id"]
+                team_id = team_ids.get(provider_team_id)
+                if team_id is None:
+                    continue
+                is_home = provider_team_id == fixture["home_team"]["provider_id"]
+                self._upsert_team_stats(
+                    active_connection,
+                    match,
+                    fixture,
+                    item,
+                    team_id,
+                    match["away_team_id"] if is_home else match["home_team_id"],
+                    is_home,
+                )
+                stored_team_ids.add(team_id)
+
+        inserted_team_ids = stored_team_ids - existing_team_ids
+        return {
+            "fixtures_inserted": int(existing_match_id is None),
+            "fixtures_updated": int(existing_match_id is not None),
+            "team_stats_inserted": len(inserted_team_ids),
+            "team_stats_updated": len(stored_team_ids - inserted_team_ids),
+        }
 
     @staticmethod
     def _upsert_team(connection: Connection, team: dict[str, Any]) -> Any:
@@ -329,15 +440,19 @@ class DataIngestionRepository:
                 """
                 insert into public.team_match_stats (
                   match_id, team_id, opponent_team_id, is_home, goals,
-                  expected_goals, possession, shots, shots_on_target, corners,
-                  fouls, yellow_cards, red_cards, passes_attempted, passes_completed,
+                  expected_goals, possession, shots, shots_on_target,
+                  shots_inside_box, shots_outside_box, blocked_shots,
+                  goalkeeper_saves, corners, fouls, yellow_cards, red_cards,
+                  passes_attempted, passes_completed, pass_accuracy,
                   source_name, source_match_key, captured_at, raw_payload
                 )
                 values (
                   :match_id, :team_id, :opponent_team_id, :is_home, :goals,
-                  :expected_goals, :possession, :shots, :shots_on_target, :corners,
-                  :fouls, :yellow_cards, :red_cards, :passes_attempted,
-                  :passes_completed, 'api_football', :source_match_key, now(),
+                  :expected_goals, :possession, :shots, :shots_on_target,
+                  :shots_inside_box, :shots_outside_box, :blocked_shots,
+                  :goalkeeper_saves, :corners, :fouls, :yellow_cards, :red_cards,
+                  :passes_attempted, :passes_completed, :pass_accuracy,
+                  'api_football', :source_match_key, now(),
                   cast(:raw as jsonb)
                 )
                 on conflict (match_id, team_id)
@@ -349,12 +464,17 @@ class DataIngestionRepository:
                   possession = excluded.possession,
                   shots = excluded.shots,
                   shots_on_target = excluded.shots_on_target,
+                  shots_inside_box = excluded.shots_inside_box,
+                  shots_outside_box = excluded.shots_outside_box,
+                  blocked_shots = excluded.blocked_shots,
+                  goalkeeper_saves = excluded.goalkeeper_saves,
                   corners = excluded.corners,
                   fouls = excluded.fouls,
                   yellow_cards = excluded.yellow_cards,
                   red_cards = excluded.red_cards,
                   passes_attempted = excluded.passes_attempted,
                   passes_completed = excluded.passes_completed,
+                  pass_accuracy = excluded.pass_accuracy,
                   captured_at = excluded.captured_at,
                   raw_payload = excluded.raw_payload
                 """
@@ -369,12 +489,17 @@ class DataIngestionRepository:
                 "possession": _number(_stat(stats, "Ball Possession")),
                 "shots": _integer(_stat(stats, "Total Shots")),
                 "shots_on_target": _integer(_stat(stats, "Shots on Goal")),
+                "shots_inside_box": _integer(_stat(stats, "Shots insidebox")),
+                "shots_outside_box": _integer(_stat(stats, "Shots outsidebox")),
+                "blocked_shots": _integer(_stat(stats, "Blocked Shots")),
+                "goalkeeper_saves": _integer(_stat(stats, "Goalkeeper Saves")),
                 "corners": _integer(_stat(stats, "Corner Kicks")),
                 "fouls": _integer(_stat(stats, "Fouls")),
                 "yellow_cards": _integer(_stat(stats, "Yellow Cards")),
                 "red_cards": _integer(_stat(stats, "Red Cards")),
                 "passes_attempted": _integer(_stat(stats, "Total passes")),
                 "passes_completed": _integer(_stat(stats, "Passes accurate")),
+                "pass_accuracy": _number(_stat(stats, "Passes %")),
                 "source_match_key": str(fixture["provider_fixture_id"]),
                 "raw": json.dumps(item.get("raw", item)),
             },

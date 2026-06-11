@@ -43,8 +43,9 @@ const predictionRows = [{
   confidence_explanation: "Medium confidence because the outcomes remain close.",
   top_factors: [
     { factor: "Elo advantage", team: "Mexico", impact: "+3.0%" },
+    { factor: "Shot volume", team: "Mexico", impact: "+1.2%" },
   ],
-  model_version: "elo-context-v3",
+  model_version: "elo-context-v4",
   prediction_timestamp: "2026-06-10T20:00:00Z",
 }];
 
@@ -55,7 +56,7 @@ db.query = async (sql) => {
         id: "simulation-run",
         num_simulations: 50000,
         random_seed: 2026,
-        model_version: "elo-context-v3",
+        model_version: "elo-context-v4",
         created_at: "2026-06-10T20:00:00Z",
       }],
     };
@@ -91,6 +92,7 @@ test("GET /api/matches?stage=group returns chronological match objects", async (
   assert.ok(Math.abs(probabilities.reduce((sum, value) => sum + value, 0) - 1) < 1e-6);
   assert.equal(matches[0].prediction.final_home_probability, 0.55);
   assert.equal(matches[0].prediction.top_factors[0].factor, "Elo advantage");
+  assert.equal(matches[0].prediction.top_factors[1].factor, "Shot volume");
   assert.equal(matches[0].prediction.confidence_tier, "Medium");
   assert.match(matches[0].prediction.confidence_explanation, /outcomes remain close/);
 });
@@ -110,7 +112,7 @@ test("GET /api/simulations/latest returns the frontend simulation shape", async 
 
   assert.equal(response.status, 200);
   assert.equal(simulation.iterations, 50000);
-  assert.equal(simulation.model_version, "elo-context-v3");
+  assert.equal(simulation.model_version, "elo-context-v4");
   assert.equal(simulation.teams.length, 48);
   assert.equal(typeof simulation.teams[0].champion, "number");
   assert.ok(simulation.teams.every((team) => team.champion >= 0 && team.champion <= 1));

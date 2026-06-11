@@ -156,8 +156,9 @@ test("canonical predictions attach without database match rows", () => {
         confidence_explanation: "Medium confidence because model inputs are incomplete.",
         top_factors: [
           { factor: "Elo advantage", team: "Mexico", impact: "+4.0%" },
+          { factor: "Shot volume", team: "Mexico", impact: "+1.1%" },
         ],
-        model_version: "elo-context-v3",
+        model_version: "elo-context-v4",
       prediction_timestamp: "2026-06-10T19:00:00Z",
     },
   ]);
@@ -165,9 +166,10 @@ test("canonical predictions attach without database match rows", () => {
   assert.equal(match.id, "WC26-001");
   assert.equal(match.prediction.home_xg, 1.8);
   assert.equal(match.prediction.probabilities.home_win, 0.58);
-  assert.equal(match.prediction.model_version, "elo-context-v3");
+  assert.equal(match.prediction.model_version, "elo-context-v4");
   assert.equal(match.prediction.final_home_probability, 0.58);
   assert.equal(match.prediction.top_factors[0].factor, "Elo advantage");
+  assert.equal(match.prediction.top_factors[1].factor, "Shot volume");
   assert.equal(match.prediction.confidence_tier, "Medium");
   assert.match(match.prediction.confidence_explanation, /inputs are incomplete/);
 });
@@ -177,7 +179,7 @@ test("persisted Step 5 simulation rows retain the frontend shape", () => {
     {
       num_simulations: 50000,
       random_seed: 2026,
-      model_version: "elo-context-v3",
+      model_version: "elo-context-v4",
       created_at: "2026-06-10T20:00:00Z",
     },
     [

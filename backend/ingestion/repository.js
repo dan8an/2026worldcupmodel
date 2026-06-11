@@ -34,18 +34,33 @@ export class SportsIngestionRepository {
           where table_schema = 'public'
             and table_name = 'matches'
             and column_name = 'api_football_fixture_id'
-        ) as has_fixture_provider_id
+        ) as has_fixture_provider_id,
+        (
+          select count(*) = 5
+          from information_schema.columns
+          where table_schema = 'public'
+            and table_name = 'team_match_stats'
+            and column_name in (
+              'shots_inside_box',
+              'shots_outside_box',
+              'blocked_shots',
+              'goalkeeper_saves',
+              'pass_accuracy'
+            )
+        ) as has_xg_proxy_fields
     `);
     const schema = result.rows[0];
     if (
       !schema.players ||
       !schema.team_match_stats ||
       !schema.player_match_stats ||
-      !schema.has_fixture_provider_id
+      !schema.has_fixture_provider_id ||
+      !schema.has_xg_proxy_fields
     ) {
       throw new Error(
         "Daily pipeline schema is missing. Apply " +
-        "supabase/migrations/202606100001_daily_prediction_pipeline.sql first.",
+        "supabase/migrations/202606100001_daily_prediction_pipeline.sql and " +
+        "supabase/migrations/202606110003_xg_proxy_v4.sql first.",
       );
     }
   }
@@ -179,12 +194,17 @@ export class SportsIngestionRepository {
           possession,
           shots,
           shots_on_target,
+          shots_inside_box,
+          shots_outside_box,
+          blocked_shots,
+          goalkeeper_saves,
           corners,
           fouls,
           yellow_cards,
           red_cards,
           passes_attempted,
           passes_completed,
+          pass_accuracy,
           source_name,
           source_match_key,
           captured_at,
@@ -192,7 +212,8 @@ export class SportsIngestionRepository {
         )
         values (
           $1, $2, $3, $4, $5, $6, $7, $8, $9, $10,
-          $11, $12, $13, $14, $15, 'api_football', $16, now(), $17
+          $11, $12, $13, $14, $15, $16, $17, $18, $19, $20,
+          'api_football', $21, now(), $22
         )
         on conflict (match_id, team_id)
         do update set
@@ -203,12 +224,17 @@ export class SportsIngestionRepository {
           possession = excluded.possession,
           shots = excluded.shots,
           shots_on_target = excluded.shots_on_target,
+          shots_inside_box = excluded.shots_inside_box,
+          shots_outside_box = excluded.shots_outside_box,
+          blocked_shots = excluded.blocked_shots,
+          goalkeeper_saves = excluded.goalkeeper_saves,
           corners = excluded.corners,
           fouls = excluded.fouls,
           yellow_cards = excluded.yellow_cards,
           red_cards = excluded.red_cards,
           passes_attempted = excluded.passes_attempted,
           passes_completed = excluded.passes_completed,
+          pass_accuracy = excluded.pass_accuracy,
           captured_at = excluded.captured_at,
           raw_payload = excluded.raw_payload
       `,
@@ -222,12 +248,17 @@ export class SportsIngestionRepository {
         numberOrNull(statistic(statistics.statistics, "Ball Possession")),
         integerOrNull(statistic(statistics.statistics, "Total Shots")),
         integerOrNull(statistic(statistics.statistics, "Shots on Goal")),
+        integerOrNull(statistic(statistics.statistics, "Shots insidebox")),
+        integerOrNull(statistic(statistics.statistics, "Shots outsidebox")),
+        integerOrNull(statistic(statistics.statistics, "Blocked Shots")),
+        integerOrNull(statistic(statistics.statistics, "Goalkeeper Saves")),
         integerOrNull(statistic(statistics.statistics, "Corner Kicks")),
         integerOrNull(statistic(statistics.statistics, "Fouls")),
         integerOrNull(statistic(statistics.statistics, "Yellow Cards")),
         integerOrNull(statistic(statistics.statistics, "Red Cards")),
         integerOrNull(statistic(statistics.statistics, "Total passes")),
         integerOrNull(statistic(statistics.statistics, "Passes accurate")),
+        numberOrNull(statistic(statistics.statistics, "Passes %")),
         String(fixture.providerFixtureId),
         JSON.stringify(statistics.raw ?? statistics),
       ],

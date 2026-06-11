@@ -99,6 +99,79 @@ class DataIngestionTests(unittest.TestCase):
         self.assertEqual(captured["league"], 1)
         self.assertEqual(captured["season"], 2026)
 
+    def test_api_provider_loads_completed_matches_for_range(self):
+        provider = ApiFootballProvider("test-key")
+        captured = {}
+
+        def response(path, **params):
+            captured["path"] = path
+            captured.update(params)
+            return [
+                {
+                    "fixture": {
+                        "id": 123,
+                        "date": "2022-11-20T16:00:00+00:00",
+                        "status": {"short": "FT"},
+                    },
+                    "league": {"id": 1, "name": "World Cup", "season": 2022},
+                    "teams": {
+                        "home": {"id": 1, "name": "Qatar"},
+                        "away": {"id": 2, "name": "Ecuador"},
+                    },
+                    "goals": {"home": 0, "away": 2},
+                },
+                {
+                    "fixture": {
+                        "id": 124,
+                        "date": "2022-11-21T13:00:00+00:00",
+                        "status": {"short": "NS"},
+                    },
+                    "league": {"id": 1},
+                },
+            ]
+
+        provider._request = response
+
+        matches = provider.get_completed_matches_range(
+            "2022-11-20", "2022-12-18", 1, 2022
+        )
+
+        self.assertEqual([match["provider_fixture_id"] for match in matches], [123])
+        self.assertEqual(
+            captured,
+            {
+                "path": "/fixtures",
+                "league": 1,
+                "season": 2022,
+                "from": "2022-11-20",
+                "to": "2022-12-18",
+            },
+        )
+
+    def test_api_provider_normalizes_competitions_and_seasons(self):
+        provider = ApiFootballProvider("test-key")
+        provider._request = lambda path: [
+            {
+                "league": {"id": 4, "name": "Euro Championship"},
+                "country": {"name": "World"},
+                "seasons": [{"year": 2024}, {"year": 2020}, {"year": 2024}],
+            }
+        ]
+
+        competitions = provider.get_competitions()
+
+        self.assertEqual(
+            competitions,
+            [
+                {
+                    "league_id": 4,
+                    "name": "Euro Championship",
+                    "country": "World",
+                    "seasons": [2020, 2024],
+                }
+            ],
+        )
+
     def test_provider_factory_reads_filter_and_delay_settings(self):
         provider = create_sports_provider(
             {

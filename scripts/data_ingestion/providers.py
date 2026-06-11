@@ -41,6 +41,16 @@ class SportsProvider(ABC):
         raise NotImplementedError
 
     @abstractmethod
+    def get_completed_matches_range(
+        self,
+        date_from: str,
+        date_to: str,
+        league_id: int,
+        season: int,
+    ) -> list[dict[str, Any]]:
+        raise NotImplementedError
+
+    @abstractmethod
     def get_fixture_statistics(self, fixture_id: int) -> list[dict[str, Any]]:
         raise NotImplementedError
 
@@ -142,22 +152,20 @@ class ApiFootballProvider(SportsProvider):
                 raise RuntimeError(f"API-Football error: {message}")
         return payload.get("response", [])
 
-    def get_completed_matches(self, date: str) -> list[dict[str, Any]]:
+    @staticmethod
+    def _normalize_completed_matches(
+        response: list[dict[str, Any]],
+        league_id: int,
+    ) -> list[dict[str, Any]]:
         matches = []
-        season = self.season or int(date[:4])
-        for item in self._request(
-            "/fixtures",
-            date=date,
-            league=self.league_id,
-            season=season,
-        ):
+        for item in response:
             status = item.get("fixture", {}).get("status", {}).get("short")
             if status not in COMPLETED_STATUSES:
                 continue
             response_league_id = item.get("league", {}).get("id")
             if (
                 response_league_id is not None
-                and int(response_league_id) != self.league_id
+                and int(response_league_id) != league_id
             ):
                 continue
             matches.append(
@@ -177,6 +185,58 @@ class ApiFootballProvider(SportsProvider):
                 }
             )
         return matches
+
+    def get_completed_matches(self, date: str) -> list[dict[str, Any]]:
+        season = self.season or int(date[:4])
+        response = self._request(
+            "/fixtures",
+            date=date,
+            league=self.league_id,
+            season=season,
+        )
+        return self._normalize_completed_matches(response, self.league_id)
+
+    def get_completed_matches_range(
+        self,
+        date_from: str,
+        date_to: str,
+        league_id: int,
+        season: int,
+    ) -> list[dict[str, Any]]:
+        response = self._request(
+            "/fixtures",
+            **{
+                "league": league_id,
+                "season": season,
+                "from": date_from,
+                "to": date_to,
+            },
+        )
+        return self._normalize_completed_matches(response, league_id)
+
+    def get_competitions(self) -> list[dict[str, Any]]:
+        competitions = []
+        for item in self._request("/leagues"):
+            league = item.get("league") or {}
+            country = item.get("country") or {}
+            seasons = sorted(
+                {
+                    int(season["year"])
+                    for season in item.get("seasons", [])
+                    if season.get("year") is not None
+                }
+            )
+            if league.get("id") is None:
+                continue
+            competitions.append(
+                {
+                    "league_id": int(league["id"]),
+                    "name": league.get("name") or "Unknown competition",
+                    "country": country.get("name") or "World",
+                    "seasons": seasons,
+                }
+            )
+        return competitions
 
     def get_fixture_statistics(self, fixture_id: int) -> list[dict[str, Any]]:
         rows = []
@@ -299,6 +359,20 @@ class SampleSportsProvider(SportsProvider):
             self._convert(match)
             for match in self.payload["matches"]
             if self.ignore_date or match["date"].startswith(date)
+        ]
+
+    def get_completed_matches_range(
+        self,
+        date_from: str,
+        date_to: str,
+        league_id: int,
+        season: int,
+    ) -> list[dict[str, Any]]:
+        del league_id, season
+        return [
+            self._convert(match)
+            for match in self.payload["matches"]
+            if date_from <= match["date"][:10] <= date_to
         ]
 
     def get_fixture_statistics(self, fixture_id: int) -> list[dict[str, Any]]:

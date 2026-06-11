@@ -22,13 +22,17 @@
           "Ball Possession": "54%",
           "Total Shots": 13,
           "Shots on Goal": 6,
+          "Shots insidebox": 9,
+          "Shots outsidebox": 4,
+          "Blocked Shots": 3,
           "Corner Kicks": 5,
           "Fouls": 11,
           "Yellow Cards": 2,
           "Red Cards": 0,
           "Goalkeeper Saves": 3,
           "Total passes": 512,
-          "Passes accurate": 451
+          "Passes accurate": 451,
+          "Passes %": "88%"
         },
         "raw": {"sample": true}
       },
@@ -38,13 +42,17 @@
           "Ball Possession": "46%",
           "Total Shots": 10,
           "Shots on Goal": 4,
+          "Shots insidebox": 6,
+          "Shots outsidebox": 4,
+          "Blocked Shots": 2,
           "Corner Kicks": 4,
           "Fouls": 13,
           "Yellow Cards": 3,
           "Red Cards": 0,
           "Goalkeeper Saves": 4,
           "Total passes": 469,
-          "Passes accurate": 402
+          "Passes accurate": 402,
+          "Passes %": "86%"
         },
         "raw": {"sample": true}
       }

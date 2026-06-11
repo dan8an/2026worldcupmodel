@@ -116,9 +116,12 @@ The command creates a model run when at least one match can be predicted and
 updates the existing prediction for each match. It uses current team ratings,
 an Elo probability base, validated attack/defense/rest context, draw
 calibration, and a normalized score grid from 0-0 through 6-6. The production
-model version is `elo-context-v3`. The canonical fixture catalog from
+model version is `elo-context-v4`. The canonical fixture catalog from
 `modeling/src/data.py` is authoritative; database match rows only enrich it.
 Predictions retain IDs such as `WC26-001` even before provider match rows exist.
+V4 preserves the complete v3 pipeline and adds only the validated
+`shot_volume_rating` ablation at weight `0.2`. Shot quality, defensive
+suppression, and the combined all-feature xG-proxy model remain research-only.
 
 After applying `supabase/migrations/202606100005_tournament_simulation.sql`,
 run the persisted tournament simulation:
@@ -151,8 +154,8 @@ It makes no API-Football requests and exercises the same Supabase upserts as a
 real ingestion run.
 
 The Python provider interface lives in `scripts/data_ingestion/providers.py`,
-so a future data source can implement the same four fixture methods without
-changing the database writer or orchestration script.
+so a future data source can implement the same normalized fixture methods
+without changing the database writer or orchestration script.
 
 API-Football requests are filtered before download using
 `API_FOOTBALL_LEAGUE_ID` and `API_FOOTBALL_SEASON`. League ID `1` is the
@@ -160,6 +163,40 @@ default World Cup filter. `API_FOOTBALL_REQUEST_DELAY_SECONDS` defaults to
 `1.0`, and `--max-fixtures` defaults to `5` to limit detail requests. HTTP 429
 responses stop further detail fetching cleanly while preserving rows already
 committed.
+
+### Historical team-stat backfill
+
+For xG-proxy-v4 research, backfill completed fixtures and team-level match
+statistics without fetching player data or changing production predictions:
+
+```bash
+python scripts/backfill_historical_stats.py \
+  --league-id 1 \
+  --season 2022 \
+  --date-from 2022-11-20 \
+  --date-to 2022-12-18 \
+  --max-fixtures 10
+python scripts/build_xg_proxy_features.py
+python scripts/validate_xg_proxy_v4.py
+```
+
+The backfill requires `DATABASE_URL` and `API_FOOTBALL_KEY`, honors
+`API_FOOTBALL_REQUEST_DELAY_SECONDS`, and defaults to only five fixtures from
+yesterday. Repeated runs skip fixtures that already have both team-stat rows,
+then upsert the remaining provider fixture and team-stat keys. The final
+summary reports exact inserted and updated counts separately. A 429 stops new
+requests while preserving rows already committed.
+
+List available API-Football competition IDs and seasons without touching the
+database:
+
+```bash
+python scripts/list_competitions.py --filter euro
+python scripts/list_competitions.py --filter copa-america
+python scripts/list_competitions.py --filter nations-league
+python scripts/list_competitions.py --filter world-cup-qualification
+python scripts/list_competitions.py --search "Gold Cup"
+```
 
 ### Render Cron
 

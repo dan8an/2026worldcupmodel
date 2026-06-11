@@ -30,13 +30,18 @@ from scripts.confidence_v1 import (
 )
 from scripts.database import create_database_engine
 
-MODEL_VERSION = "elo-context-v3"
+MODEL_VERSION = "elo-context-v4"
 LEGACY_MODEL_VERSION = "poisson-ratings-v1"
+CHANCE_QUALITY_MODEL_VERSION = "xg-proxy-v4"
+PROMOTION_CONFIG_PATH = (
+    ROOT / "data" / "evaluation" / "xg_proxy_v4_promotion_config.json"
+)
 MAX_GOALS = 6
 V3_ATTACK_WEIGHT = 0.15
 V3_DEFENSE_WEIGHT = 0.30
 V3_REST_WEIGHT = -0.15
 V3_DRAW_MULTIPLIER = 1.15
+SHOT_VOLUME_FACTOR_MINIMUM_IMPACT = 0.0005
 PREDICTION_REQUIRED_COLUMNS = {
     "canonical_match_id",
     "model_run_id",
@@ -66,6 +71,29 @@ PREDICTION_REQUIRED_COLUMNS = {
     "both_teams_to_score_probability",
     "score_probabilities",
 }
+
+
+def load_promotion_config() -> dict[str, Any]:
+    config = json.loads(PROMOTION_CONFIG_PATH.read_text())
+    if config.get("selected_ablation") != "v3_plus_shot_volume":
+        raise ValueError(
+            "Production promotion config must select v3_plus_shot_volume"
+        )
+    if config.get("features_used") != ["shot_volume_rating"]:
+        raise ValueError(
+            "Production promotion config may only use shot_volume_rating"
+        )
+    try:
+        weight = float(config["selected_weight"])
+    except (KeyError, TypeError, ValueError):
+        weight = float("nan")
+    if not math.isfinite(weight):
+        raise ValueError("Production promotion config has an invalid selected_weight")
+    return {**config, "selected_weight": weight}
+
+
+PROMOTION_CONFIG = load_promotion_config()
+SHOT_VOLUME_WEIGHT = PROMOTION_CONFIG["selected_weight"]
 
 
 def load_environment() -> dict[str, str]:
@@ -372,6 +400,7 @@ def _top_factors(
     final_probabilities: tuple[float, float, float],
     home_team_name: str,
     away_team_name: str,
+    shot_volume_impact: float = 0.0,
 ) -> list[dict[str, str]]:
     elo_home_impact = (elo_probabilities[0] - elo_probabilities[2]) / 2.0
     attack_defense_impact = (
@@ -418,6 +447,21 @@ def _top_factors(
             },
         ),
     ]
+    if abs(shot_volume_impact) >= SHOT_VOLUME_FACTOR_MINIMUM_IMPACT:
+        factors.append(
+            (
+                abs(shot_volume_impact),
+                {
+                    "factor": "Shot volume",
+                    "team": (
+                        home_team_name
+                        if shot_volume_impact >= 0
+                        else away_team_name
+                    ),
+                    "impact": _format_impact(abs(shot_volume_impact)),
+                },
+            )
+        )
     factors.sort(key=lambda factor: factor[0], reverse=True)
     return [factor for magnitude, factor in factors if magnitude > 1e-12]
 
@@ -431,8 +475,10 @@ def calculate_prediction(
     away_rest_days: int | None = None,
     home_team_name: str = "Home",
     away_team_name: str = "Away",
+    home_shot_volume_rating: float | None = None,
+    away_shot_volume_rating: float | None = None,
 ) -> dict[str, Any]:
-    """Calculate promoted Elo-first probabilities with validated v3 context."""
+    """Calculate Elo context v4 with the validated shot-volume ablation."""
     home_elo = _number(home_rating.get("elo_rating"), 1500.0)
     away_elo = _number(away_rating.get("elo_rating"), 1500.0)
     elo_gap = home_elo - away_elo
@@ -491,13 +537,27 @@ def calculate_prediction(
             elo_probabilities[2] * math.exp(-context_tilt),
         )
     )
-    probabilities = _normalize_probabilities(
+    v3_probabilities = _normalize_probabilities(
         (
             elo_probabilities[0] * math.exp(context_tilt),
             elo_probabilities[1] * V3_DRAW_MULTIPLIER,
             elo_probabilities[2] * math.exp(-context_tilt),
         )
     )
+    shot_volume_signal = _rating_difference(
+        home_shot_volume_rating,
+        away_shot_volume_rating,
+        100.0,
+    )
+    shot_volume_tilt = shot_volume_signal * SHOT_VOLUME_WEIGHT
+    probabilities = _normalize_probabilities(
+        (
+            v3_probabilities[0] * math.exp(shot_volume_tilt),
+            v3_probabilities[1],
+            v3_probabilities[2] * math.exp(-shot_volume_tilt),
+        )
+    )
+    shot_volume_impact = probabilities[0] - v3_probabilities[0]
     scores = _calibrate_score_probabilities(base_scores, probabilities)
     most_likely = max(scores, key=lambda score: float(score["probability"]))
     expected_total = sum(
@@ -545,9 +605,10 @@ def calculate_prediction(
         elo_probabilities,
         attack_defense_probabilities,
         context_probabilities,
-        probabilities,
+        v3_probabilities,
         home_team_name,
         away_team_name,
+        shot_volume_impact,
     )
 
     return {
@@ -560,7 +621,7 @@ def calculate_prediction(
             attack_defense_probabilities[0] - elo_probabilities[0]
         ),
         "draw_calibration_adjustment": (
-            probabilities[1] - context_probabilities[1]
+            v3_probabilities[1] - context_probabilities[1]
         ),
         "context_adjustment_total": (
             context_probabilities[0] - elo_probabilities[0]
@@ -612,6 +673,7 @@ class PredictionRepository:
             "player_ratings",
             "predictions",
             "model_runs",
+            "team_chance_quality_ratings",
         }
         existing = set(inspector.get_table_names(schema=self.schema))
         missing_tables = required_tables - existing
@@ -628,7 +690,8 @@ class PredictionRepository:
                 f"predictions is missing columns {sorted(missing_columns)}. Apply "
                 "supabase/migrations/202606100003_prediction_generation.sql and "
                 "supabase/migrations/202606110001_prediction_explanations.sql and "
-                "supabase/migrations/202606110002_confidence_v1.sql first."
+                "supabase/migrations/202606110002_confidence_v1.sql and "
+                "supabase/migrations/202606110003_xg_proxy_v4.sql first."
             )
 
     def load_database_matches(self) -> list[dict[str, Any]]:
@@ -718,6 +781,35 @@ class PredictionRepository:
             if database_id in database_averages
         }
 
+    def load_current_shot_volume_ratings(
+        self,
+        database_team_ids: dict[str, Any],
+    ) -> dict[str, float]:
+        ratings = self._table("team_chance_quality_ratings")
+        statement = select(
+            ratings.c.team_id,
+            ratings.c.shot_volume_rating,
+            ratings.c.rated_at,
+        )
+        if "model_version" in ratings.c:
+            statement = statement.where(
+                ratings.c.model_version == CHANCE_QUALITY_MODEL_VERSION
+            )
+        with self.engine.connect() as connection:
+            rows = [dict(row) for row in connection.execute(statement).mappings()]
+        rows.sort(key=lambda row: str(row.get("rated_at") or ""), reverse=True)
+        by_database_id = {
+            row["team_id"]: _number(row["shot_volume_rating"])
+            for row in rows
+            if row.get("team_id") is not None
+            and row.get("shot_volume_rating") is not None
+        }
+        return {
+            canonical_id: by_database_id[database_id]
+            for canonical_id, database_id in database_team_ids.items()
+            if database_id in by_database_id
+        }
+
     def load_latest_team_match_dates(
         self,
         database_team_ids: dict[str, Any],
@@ -767,7 +859,7 @@ class PredictionRepository:
             "id": run_id,
             "run_date": generated_at.date().isoformat(),
             "model_version": MODEL_VERSION,
-            "notes": "Promoted Elo-first context v3 predictions",
+            "notes": "Promoted Elo context v4 with validated shot-volume adjustment",
             "data_cutoff": timestamp,
             "status": "completed",
             "random_seed": 0,
@@ -780,6 +872,15 @@ class PredictionRepository:
                 "defense_weight": V3_DEFENSE_WEIGHT,
                 "rest_weight": V3_REST_WEIGHT,
                 "draw_multiplier": V3_DRAW_MULTIPLIER,
+                "selected_ablation": PROMOTION_CONFIG["selected_ablation"],
+                "shot_volume_weight": SHOT_VOLUME_WEIGHT,
+                "xg_proxy_features_used": PROMOTION_CONFIG["features_used"],
+                "xg_proxy_validation_brier": PROMOTION_CONFIG[
+                    "validation_brier"
+                ],
+                "xg_proxy_validation_log_loss": PROMOTION_CONFIG[
+                    "validation_log_loss"
+                ],
                 "recent_form_weight": 0.0,
                 "player_weight": 0.0,
                 "travel_weight": 0.0,
@@ -837,6 +938,7 @@ class PredictionRepository:
                 "Validated attack and defense rating adjustments",
                 "Validated rest adjustment when match history is available",
                 "Validated draw calibration",
+                "Validated shot-volume adjustment when ratings are available",
             ],
         }
         values = self._compatible_values(table, values)
@@ -901,6 +1003,9 @@ def main() -> int:
 
         team_ratings = repository.load_current_team_ratings(database_team_ids)
         player_ratings = repository.load_player_team_averages(database_team_ids)
+        shot_volume_ratings = repository.load_current_shot_volume_ratings(
+            database_team_ids
+        )
         latest_match_dates = repository.load_latest_team_match_dates(database_team_ids)
         predictions = []
         team_names = {team.id: team.name for team in load_teams()}
@@ -936,6 +1041,12 @@ def main() -> int:
                         ),
                         home_team_name=team_names[match["home_team_id"]],
                         away_team_name=team_names[match["away_team_id"]],
+                        home_shot_volume_rating=shot_volume_ratings.get(
+                            match["home_team_id"]
+                        ),
+                        away_shot_volume_rating=shot_volume_ratings.get(
+                            match["away_team_id"]
+                        ),
                     ),
                 }
             )

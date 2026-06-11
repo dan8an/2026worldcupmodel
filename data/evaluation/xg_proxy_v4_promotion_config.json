@@ -1,0 +1,9 @@
+{
+  "selected_ablation": "v3_plus_shot_volume",
+  "selected_weight": 0.2,
+  "validation_brier": 0.557889,
+  "validation_log_loss": 0.945067,
+  "features_used": [
+    "shot_volume_rating"
+  ]
+}

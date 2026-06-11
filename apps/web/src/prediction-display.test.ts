@@ -21,6 +21,7 @@ const prediction = {
     { factor: "Attack/defense edge", team: "Brazil", impact: "+1.6%" },
     { factor: "Draw calibration", team: "Draw", impact: "+0.8%" },
     { factor: "Rest context", team: "Morocco", impact: "-0.2%" },
+    { factor: "Shot volume", team: "Brazil", impact: "+1.1%" },
   ],
 } as Prediction;
 

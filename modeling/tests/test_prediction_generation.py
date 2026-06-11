@@ -1,4 +1,5 @@
 import json
+import math
 import os
 import sqlite3
 import subprocess
@@ -8,8 +9,10 @@ import unittest
 from pathlib import Path
 from datetime import datetime, timezone
 
+from modeling.src.data import load_teams
 from scripts.generate_predictions import (
     MODEL_VERSION,
+    SHOT_VOLUME_WEIGHT,
     calculate_prediction,
     load_canonical_future_matches,
 )
@@ -47,6 +50,21 @@ create table player_ratings (
   model_run_id text,
   rated_at text,
   overall_rating real
+);
+create table team_chance_quality_ratings (
+  id integer primary key autoincrement,
+  team_id text not null,
+  rated_at text not null,
+  model_version text not null,
+  sample_matches integer not null,
+  shot_volume_rating real,
+  shot_quality_proxy real,
+  box_shot_rate real,
+  shots_on_target_rate real,
+  chance_creation_rating real,
+  defensive_shot_suppression real,
+  keeper_pressure_allowed real,
+  components text
 );
 create table model_runs (
   id text primary key,
@@ -95,6 +113,50 @@ create table predictions (
 
 
 class PredictionCalculationTests(unittest.TestCase):
+    def test_v4_applies_only_validated_shot_volume_tilt(self):
+        home = {
+            "elo_rating": 1560,
+            "attack_rating": 72,
+            "defense_rating": 65,
+        }
+        away = {
+            "elo_rating": 1490,
+            "attack_rating": 60,
+            "defense_rating": 55,
+        }
+        v3 = calculate_prediction(home, away)
+        v4 = calculate_prediction(
+            home,
+            away,
+            home_shot_volume_rating=90,
+            away_shot_volume_rating=40,
+            home_team_name="Brazil",
+            away_team_name="Morocco",
+        )
+        tilt = ((90 - 40) / 100) * SHOT_VOLUME_WEIGHT
+        expected_raw = (
+            v3["home_win_probability"] * math.exp(tilt),
+            v3["draw_probability"],
+            v3["away_win_probability"] * math.exp(-tilt),
+        )
+        expected_total = sum(expected_raw)
+
+        self.assertEqual(MODEL_VERSION, "elo-context-v4")
+        self.assertAlmostEqual(
+            v4["home_win_probability"],
+            expected_raw[0] / expected_total,
+            places=12,
+        )
+        self.assertTrue(
+            any(
+                factor["factor"] == "Shot volume"
+                and factor["team"] == "Brazil"
+                for factor in v4["top_factors"]
+            )
+        )
+        self.assertGreaterEqual(v4["confidence_score"], 0)
+        self.assertLessEqual(v4["confidence_score"], 100)
+
     def test_probabilities_sum_to_one_and_are_reproducible(self):
         home = {
             "elo_rating": 1560,
@@ -170,7 +232,7 @@ class PredictionCalculationTests(unittest.TestCase):
             places=9,
         )
 
-    def test_recent_form_and_player_inputs_are_disabled_in_v3(self):
+    def test_v4_preserves_disabled_form_and_player_inputs(self):
         home = {
             "elo_rating": 1560,
             "attack_rating": 72,
@@ -243,6 +305,40 @@ class PredictionScriptTests(unittest.TestCase):
                 """,
                 ("MEX", "2026-06-10", "2026-06-10", 1540, 70, 68, 65, 12),
             )
+            connection.executemany(
+                """
+                insert into team_chance_quality_ratings (
+                  team_id, rated_at, model_version, sample_matches,
+                  shot_volume_rating, shot_quality_proxy,
+                  defensive_shot_suppression, chance_creation_rating,
+                  components
+                ) values (?, ?, ?, ?, ?, ?, ?, ?, ?)
+                """,
+                [
+                    (
+                        "MEX",
+                        "2026-06-10",
+                        "xg-proxy-v4",
+                        10,
+                        90,
+                        0,
+                        0,
+                        0,
+                        "{}",
+                    ),
+                    (
+                        "RSA",
+                        "2026-06-10",
+                        "xg-proxy-v4",
+                        10,
+                        40,
+                        100,
+                        100,
+                        100,
+                        "{}",
+                    ),
+                ],
+            )
 
     def test_canonical_source_finds_72_group_matches_before_world_cup(self):
         matches = load_canonical_future_matches(
@@ -288,6 +384,43 @@ class PredictionScriptTests(unittest.TestCase):
         self.assertGreater(len({row[8] for row in prediction_rows}), 1)
         self.assertTrue(all(row[9] for row in prediction_rows))
         self.assertEqual(runs, [(MODEL_VERSION,), (MODEL_VERSION,)])
+        first_factors = json.loads(
+            next(row[6] for row in prediction_rows if row[0] == "WC26-001")
+        )
+        self.assertTrue(
+            any(factor["factor"] == "Shot volume" for factor in first_factors)
+        )
+        first_row = next(row for row in prediction_rows if row[0] == "WC26-001")
+        teams = {team.id: team for team in load_teams()}
+        expected = calculate_prediction(
+            {
+                "elo_rating": 1540,
+                "attack_rating": 70,
+                "defense_rating": 68,
+                "_team_rating_available": True,
+                "_attack_defense_available": True,
+            },
+            {
+                "elo_rating": teams["RSA"].elo,
+                "attack_rating": 50,
+                "defense_rating": 50,
+                "_team_rating_available": True,
+                "_attack_defense_available": False,
+            },
+            home_shot_volume_rating=90,
+            away_shot_volume_rating=40,
+            home_team_name="Mexico",
+            away_team_name="South Africa",
+        )
+        for actual, field in zip(
+            first_row[1:4],
+            (
+                "home_win_probability",
+                "draw_probability",
+                "away_win_probability",
+            ),
+        ):
+            self.assertAlmostEqual(actual, expected[field], places=12)
 
     def test_no_future_matches_exits_successfully_without_a_run(self):
         env = {
