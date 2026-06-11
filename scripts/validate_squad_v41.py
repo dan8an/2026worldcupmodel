@@ -198,7 +198,38 @@ def _coverage(rows: list[SquadValidationRow]) -> dict[str, Any]:
     }
 
 
-def build_report(rows: list[SquadValidationRow]) -> dict[str, Any]:
+def _feature_usability(
+    rows: list[SquadValidationRow],
+    research_coverage: dict[str, Any] | None,
+) -> dict[str, Any]:
+    all_feature_matches = len(_covered(rows, "v4_plus_all_squad_features"))
+    usable = all_feature_matches >= (
+        MINIMUM_TUNING_MATCHES + MINIMUM_VALIDATION_MATCHES
+    )
+    coverage = research_coverage or {}
+    return {
+        "teams_with_squad_strength": int(
+            coverage.get("teams_with_squad_strength", 0)
+        ),
+        "teams_with_injury_data": int(coverage.get("teams_with_injury_data", 0)),
+        "teams_with_lineup_data": int(coverage.get("teams_with_lineup_data", 0)),
+        "teams_with_unavailable_players": int(
+            coverage.get("teams_with_unavailable_players", 0)
+        ),
+        "chronological_matches_with_all_features": all_feature_matches,
+        "usable_for_validation": usable,
+        "reason": (
+            "sufficient point-in-time squad feature coverage"
+            if usable
+            else "insufficient chronological point-in-time squad feature coverage"
+        ),
+    }
+
+
+def build_report(
+    rows: list[SquadValidationRow],
+    research_coverage: dict[str, Any] | None = None,
+) -> dict[str, Any]:
     rows = sorted(rows, key=lambda row: (row.played_on, str(row.match_id or "")))
     base = {
         "generated_at": datetime.now(timezone.utc).isoformat(),
@@ -209,6 +240,7 @@ def build_report(rows: list[SquadValidationRow]) -> dict[str, Any]:
         "production_simulation_changed": False,
         "provider_capability_audit": PROVIDER_CAPABILITY_AUDIT,
         "coverage": _coverage(rows),
+        "squad_feature_usability": _feature_usability(rows, research_coverage),
         "protocol": {
             "validation": "chronological holdout",
             "same_date_rows_kept_together": True,
@@ -398,9 +430,12 @@ def load_validation_rows(engine: Engine) -> list[SquadValidationRow]:
     if date_column is None:
         return []
     with engine.connect() as connection:
-        kickoff_by_match = dict(
-            connection.execute(select(matches_table.c.id, date_column)).tuples()
-        )
+        kickoff_by_match = {
+            match_id: kickoff
+            for match_id, kickoff in connection.execute(
+                select(matches_table.c.id, date_column)
+            ).tuples()
+        }
         rating_rows = [
             dict(row) for row in connection.execute(select(ratings_table)).mappings()
         ]
@@ -495,8 +530,85 @@ def load_validation_rows(engine: Engine) -> list[SquadValidationRow]:
     return output
 
 
+def load_research_coverage(engine: Engine) -> dict[str, Any]:
+    schema = None if engine.dialect.name == "sqlite" else "public"
+    tables = set(inspect(engine).get_table_names(schema=schema))
+    required = {
+        "squad_strength_ratings",
+        "player_availability_reports",
+        "projected_lineups",
+    }
+    if not required.issubset(tables):
+        return {
+            "teams_with_squad_strength": 0,
+            "teams_with_injury_data": 0,
+            "teams_with_lineup_data": 0,
+            "teams_with_unavailable_players": 0,
+        }
+
+    metadata = MetaData()
+    ratings_table = Table(
+        "squad_strength_ratings", metadata, schema=schema, autoload_with=engine
+    )
+    availability_table = Table(
+        "player_availability_reports", metadata, schema=schema, autoload_with=engine
+    )
+    lineups_table = Table(
+        "projected_lineups", metadata, schema=schema, autoload_with=engine
+    )
+    with engine.connect() as connection:
+        ratings = [
+            dict(row) for row in connection.execute(select(ratings_table)).mappings()
+        ]
+        availability = [
+            dict(row)
+            for row in connection.execute(select(availability_table)).mappings()
+        ]
+        lineups = [
+            dict(row) for row in connection.execute(select(lineups_table)).mappings()
+        ]
+
+    def team_identity(row: dict[str, Any]) -> str | None:
+        value = row.get("team_code") or row.get("team_id")
+        return str(value) if value is not None else None
+
+    rating_teams = {
+        team_identity(row)
+        for row in ratings
+        if team_identity(row) is not None
+        and row.get("model_version") == MODEL_VERSION
+        and (
+            "squad_size" not in ratings_table.c
+            or int(row.get("squad_size") or 0) > 0
+        )
+    }
+    availability_teams = {
+        team_identity(row)
+        for row in availability
+        if team_identity(row) is not None
+    }
+    unavailable_teams = {
+        team_identity(row)
+        for row in availability
+        if team_identity(row) is not None
+        and str(row.get("status") or "").casefold() in {"injured", "suspended"}
+    }
+    lineup_teams = {
+        team_identity(row)
+        for row in lineups
+        if team_identity(row) is not None
+    }
+    return {
+        "teams_with_squad_strength": len(rating_teams),
+        "teams_with_injury_data": len(availability_teams),
+        "teams_with_lineup_data": len(lineup_teams),
+        "teams_with_unavailable_players": len(unavailable_teams),
+    }
+
+
 def print_summary(report: dict[str, Any]) -> None:
     coverage = report["coverage"]
+    usability = report["squad_feature_usability"]
     print("Squad v4.1 research validation")
     print(
         "Coverage: "
@@ -504,6 +616,13 @@ def print_summary(report: dict[str, Any]) -> None:
         f"injury={coverage['matches_with_injury_data']['matches']} "
         f"squad={coverage['matches_with_squad_data']['matches']} "
         f"lineup={coverage['matches_with_lineup_data']['matches']}"
+    )
+    print(
+        "Research teams: "
+        f"squad_strength={usability['teams_with_squad_strength']} "
+        f"injury_data={usability['teams_with_injury_data']} "
+        f"lineup_data={usability['teams_with_lineup_data']} "
+        f"usable_for_validation={usability['usable_for_validation']}"
     )
     for name, result in report["ablations"].items():
         if result["status"] != "evaluated":
@@ -529,7 +648,10 @@ def main() -> int:
     else:
         engine = create_database_engine(database_url)
         try:
-            report = build_report(load_validation_rows(engine))
+            report = build_report(
+                load_validation_rows(engine),
+                load_research_coverage(engine),
+            )
         finally:
             engine.dispose()
     REPORT_PATH.parent.mkdir(parents=True, exist_ok=True)

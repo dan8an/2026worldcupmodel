@@ -9,7 +9,10 @@ from unittest.mock import patch
 from sqlalchemy import create_engine, text
 
 from modeling.src.data import load_teams
-from scripts.build_squad_strength import calculate_squad_strength
+from scripts.build_squad_strength import (
+    build_coverage_report,
+    calculate_squad_strength,
+)
 from scripts.data_ingestion.providers import ApiFootballProvider, RequestLimitError
 from scripts.update_squad_availability import (
     DEFAULT_MAX_FIXTURES,
@@ -191,7 +194,104 @@ class SquadStrengthTests(unittest.TestCase):
             result["available_squad_strength"],
             sum(80 - index for index in range(11)) / 11,
         )
-        self.assertEqual(result["coverage_level"], 1.0)
+        self.assertEqual(result["rating_source"], "player_ratings")
+        self.assertGreater(result["coverage_level"], 0.0)
+
+    def test_unrated_squad_uses_depth_only_without_inventing_quality(self):
+        positions = (
+            ["Goalkeeper"] * 3
+            + ["Defender"] * 8
+            + ["Midfielder"] * 9
+            + ["Attacker"] * 6
+        )
+        players = [
+            {
+                "provider_player_id": index,
+                "player_name": f"Player {index}",
+                "position": position,
+                "status": "injured" if index == 25 else "available",
+            }
+            for index, position in enumerate(positions)
+        ]
+
+        result = calculate_squad_strength(players)
+
+        self.assertEqual(result["rating_source"], "squad_depth_only")
+        self.assertEqual(result["squad_size"], 26)
+        self.assertEqual(result["available_players"], 25)
+        self.assertEqual(result["unavailable_players"], 1)
+        self.assertEqual(result["known_position_counts"], 26)
+        self.assertEqual(result["goalkeeper_count"], 3)
+        self.assertEqual(result["defender_count"], 8)
+        self.assertEqual(result["midfielder_count"], 9)
+        self.assertEqual(result["attacker_count"], 6)
+        self.assertEqual(result["squad_depth_score"], 100.0)
+        self.assertAlmostEqual(result["availability_score"], 96.1538)
+        self.assertEqual(result["data_completeness_score"], 100.0)
+        self.assertIsNone(result["projected_lineup_strength"])
+        self.assertTrue(
+            all(
+                player["strength"] is None
+                for player in result["components"]["players"]
+            )
+        )
+
+    def test_coverage_report_summarizes_team_feature_availability(self):
+        ratings = [
+            {
+                "team_id": "mex-id",
+                "team_code": "MEX",
+                "provider_fixture_id": 100,
+                "rating_source": "squad_depth_only",
+                "squad_size": 26,
+                "available_players": 26,
+                "unavailable_players": 0,
+                "known_position_counts": 26,
+                "goalkeeper_count": 3,
+                "defender_count": 6,
+                "midfielder_count": 12,
+                "attacker_count": 5,
+                "squad_depth_score": 100.0,
+                "availability_score": 100.0,
+                "data_completeness_score": 100.0,
+                "squad_strength": 100.0,
+            },
+            {
+                "team_id": "rsa-id",
+                "team_code": "RSA",
+                "provider_fixture_id": 100,
+                "rating_source": "squad_depth_only",
+                "squad_size": 26,
+            },
+        ]
+        players = [
+            {
+                "team_code": "MEX",
+                "availability_source": "api_football_inferred_available",
+                "status": "available",
+                "in_lineup": False,
+            },
+            {
+                "team_code": "RSA",
+                "availability_source": "api_football",
+                "status": "injured",
+                "in_lineup": True,
+            },
+        ]
+
+        report = build_coverage_report(ratings, players)
+        serialized = json.loads(json.dumps(report))
+
+        self.assertEqual(serialized["status"], "research_only")
+        self.assertEqual(serialized["teams_with_squad_ratings"], 2)
+        self.assertEqual(serialized["teams_with_availability_data"], 2)
+        self.assertEqual(serialized["teams_with_injury_data"], 2)
+        self.assertEqual(serialized["teams_with_unavailable_players"], 1)
+        self.assertEqual(serialized["teams_with_lineup_data"], 1)
+        self.assertEqual(
+            serialized["rating_source_counts"], {"squad_depth_only": 2}
+        )
+        self.assertFalse(serialized["chronological_validation_usable"])
 
 
 class SquadValidationTests(unittest.TestCase):
@@ -215,7 +315,14 @@ class SquadValidationTests(unittest.TestCase):
                 )
             )
 
-        report = build_report(rows)
+        report = build_report(
+            rows,
+            {
+                "teams_with_squad_strength": 48,
+                "teams_with_injury_data": 40,
+                "teams_with_lineup_data": 32,
+            },
+        )
 
         self.assertEqual(report["status"], "chronological_holdout_complete")
         self.assertFalse(report["production_predictions_changed"])
@@ -228,6 +335,13 @@ class SquadValidationTests(unittest.TestCase):
             self.assertIn("log_loss", result["validation_metrics"])
             self.assertIn("calibration", result)
         self.assertTrue(report["promotion"]["recommend_promotion"])
+        self.assertTrue(
+            report["squad_feature_usability"]["usable_for_validation"]
+        )
+        self.assertEqual(
+            report["squad_feature_usability"]["teams_with_squad_strength"],
+            48,
+        )
 
     def test_empty_validation_is_valid_insufficient_data_report(self):
         report = build_report([])
@@ -235,6 +349,9 @@ class SquadValidationTests(unittest.TestCase):
 
         self.assertEqual(serialized["status"], "insufficient_data")
         self.assertFalse(serialized["promotion"]["recommend_promotion"])
+        self.assertFalse(
+            serialized["squad_feature_usability"]["usable_for_validation"]
+        )
 
 
 class SquadAvailabilityCommandTests(unittest.TestCase):
@@ -793,6 +910,27 @@ class SquadSchemaAndIsolationTests(unittest.TestCase):
             "add column if not exists canonical_home_team_code",
             provider_fixture_migration,
         )
+        strength_feature_migration = (
+            ROOT
+            / "supabase"
+            / "migrations"
+            / "202606110006_squad_v41_strength_features.sql"
+        ).read_text()
+        for field in (
+            "squad_size",
+            "available_players",
+            "unavailable_players",
+            "known_position_counts",
+            "goalkeeper_count",
+            "defender_count",
+            "midfielder_count",
+            "attacker_count",
+            "squad_depth_score",
+            "availability_score",
+            "data_completeness_score",
+            "rating_source",
+        ):
+            self.assertIn(f"add column if not exists {field}", strength_feature_migration)
 
     def test_production_prediction_and_simulation_do_not_use_squad_v41(self):
         prediction_source = (ROOT / "scripts" / "generate_predictions.py").read_text()

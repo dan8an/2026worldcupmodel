@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-06-11T15:56:38.063468+00:00",
+  "generated_at": "2026-06-11T18:30:06.456765+00:00",
   "model_version": "squad-v4.1-research",
   "baseline_model": "elo-context-v4",
   "status": "insufficient_squad_coverage",
@@ -50,6 +50,15 @@
       "matches": 0,
       "coverage_level": 0.0
     }
+  },
+  "squad_feature_usability": {
+    "teams_with_squad_strength": 20,
+    "teams_with_injury_data": 20,
+    "teams_with_lineup_data": 0,
+    "teams_with_unavailable_players": 0,
+    "chronological_matches_with_all_features": 0,
+    "usable_for_validation": false,
+    "reason": "insufficient chronological point-in-time squad feature coverage"
   },
   "protocol": {
     "validation": "chronological holdout",

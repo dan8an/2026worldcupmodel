@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-06-11T16:44:33.741287+00:00",
+  "generated_at": "2026-06-11T18:22:50.470390+00:00",
   "provider_fixture_count": 72,
   "first_five_provider_fixtures": [
     {
@@ -2747,16 +2747,79 @@
   ],
   "diagnosis": "API-Football returned 72 fixtures and 72 pass date/status checks, but 72 of those are absent from the database as rows with api_football_fixture_id. Provider-only research targets remain eligible and use canonical team codes.",
   "target_selection": {
-    "selected_fixtures": 1,
-    "selected_teams": 2,
-    "max_fixtures": 1,
-    "max_teams": 2,
+    "selected_fixtures": 10,
+    "selected_teams": 20,
+    "max_fixtures": 10,
+    "max_teams": 20,
     "fixtures": [
       {
         "provider_fixture_id": 1489369,
         "fixture_id": null,
         "canonical_home_team_code": "MEX",
         "canonical_away_team_code": "RSA",
+        "target_source": "provider_schedule"
+      },
+      {
+        "provider_fixture_id": 1538999,
+        "fixture_id": null,
+        "canonical_home_team_code": "KOR",
+        "canonical_away_team_code": "CZE",
+        "target_source": "provider_schedule"
+      },
+      {
+        "provider_fixture_id": 1539000,
+        "fixture_id": null,
+        "canonical_home_team_code": "CAN",
+        "canonical_away_team_code": "BIH",
+        "target_source": "provider_schedule"
+      },
+      {
+        "provider_fixture_id": 1489370,
+        "fixture_id": null,
+        "canonical_home_team_code": "USA",
+        "canonical_away_team_code": "PAR",
+        "target_source": "provider_schedule"
+      },
+      {
+        "provider_fixture_id": 1489373,
+        "fixture_id": null,
+        "canonical_home_team_code": "QAT",
+        "canonical_away_team_code": "SUI",
+        "target_source": "provider_schedule"
+      },
+      {
+        "provider_fixture_id": 1489371,
+        "fixture_id": null,
+        "canonical_home_team_code": "BRA",
+        "canonical_away_team_code": "MAR",
+        "target_source": "provider_schedule"
+      },
+      {
+        "provider_fixture_id": 1489372,
+        "fixture_id": null,
+        "canonical_home_team_code": "HAI",
+        "canonical_away_team_code": "SCO",
+        "target_source": "provider_schedule"
+      },
+      {
+        "provider_fixture_id": 1539001,
+        "fixture_id": null,
+        "canonical_home_team_code": "AUS",
+        "canonical_away_team_code": "TUR",
+        "target_source": "provider_schedule"
+      },
+      {
+        "provider_fixture_id": 1489374,
+        "fixture_id": null,
+        "canonical_home_team_code": "GER",
+        "canonical_away_team_code": "CUW",
+        "target_source": "provider_schedule"
+      },
+      {
+        "provider_fixture_id": 1489376,
+        "fixture_id": null,
+        "canonical_home_team_code": "NED",
+        "canonical_away_team_code": "JPN",
         "target_source": "provider_schedule"
       }
     ]
