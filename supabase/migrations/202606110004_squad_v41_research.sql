@@ -17,6 +17,8 @@ create table if not exists public.player_availability_reports (
   reason text,
   fixture_id uuid references public.matches(id) on delete cascade,
   provider_fixture_id bigint,
+  canonical_home_team_code text,
+  canonical_away_team_code text,
   expected_return timestamptz,
   source text not null,
   collected_at timestamptz not null default now(),
@@ -31,6 +33,8 @@ create table if not exists public.projected_lineups (
   team_code text,
   fixture_id uuid references public.matches(id) on delete cascade,
   provider_fixture_id bigint,
+  canonical_home_team_code text,
+  canonical_away_team_code text,
   player_id uuid references public.players(id) on delete set null,
   provider_player_id bigint,
   player_name text not null,
@@ -56,6 +60,8 @@ create table if not exists public.squad_strength_ratings (
   team_code text,
   fixture_id uuid references public.matches(id) on delete cascade,
   provider_fixture_id bigint,
+  canonical_home_team_code text,
+  canonical_away_team_code text,
   model_version text not null default 'squad-v4.1-research',
   squad_strength double precision,
   available_squad_strength double precision,
@@ -75,6 +81,18 @@ create table if not exists public.squad_strength_ratings (
   components jsonb not null default '{}'::jsonb,
   check (team_id is not null or team_code is not null)
 );
+
+alter table public.player_availability_reports
+  add column if not exists canonical_home_team_code text,
+  add column if not exists canonical_away_team_code text;
+
+alter table public.projected_lineups
+  add column if not exists canonical_home_team_code text,
+  add column if not exists canonical_away_team_code text;
+
+alter table public.squad_strength_ratings
+  add column if not exists canonical_home_team_code text,
+  add column if not exists canonical_away_team_code text;
 
 create index if not exists player_availability_fixture_team_idx
   on public.player_availability_reports (

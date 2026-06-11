@@ -1,0 +1,2765 @@
+{
+  "generated_at": "2026-06-11T16:44:33.741287+00:00",
+  "provider_fixture_count": 72,
+  "first_five_provider_fixtures": [
+    {
+      "provider_fixture_id": 1489369,
+      "home_team": "Mexico",
+      "away_team": "South Africa",
+      "date": "2026-06-11T19:00:00+00:00",
+      "status": "NS"
+    },
+    {
+      "provider_fixture_id": 1538999,
+      "home_team": "South Korea",
+      "away_team": "Czech Republic",
+      "date": "2026-06-12T02:00:00+00:00",
+      "status": "NS"
+    },
+    {
+      "provider_fixture_id": 1539000,
+      "home_team": "Canada",
+      "away_team": "Bosnia & Herzegovina",
+      "date": "2026-06-12T19:00:00+00:00",
+      "status": "NS"
+    },
+    {
+      "provider_fixture_id": 1489370,
+      "home_team": "USA",
+      "away_team": "Paraguay",
+      "date": "2026-06-13T01:00:00+00:00",
+      "status": "NS"
+    },
+    {
+      "provider_fixture_id": 1489373,
+      "home_team": "Qatar",
+      "away_team": "Switzerland",
+      "date": "2026-06-13T19:00:00+00:00",
+      "status": "NS"
+    }
+  ],
+  "exclusion_counts": {
+    "date_filtering": 0,
+    "fixture_status": 0,
+    "missing_team_mappings": 0,
+    "provider_backed_team_requirements": 3,
+    "duplicate_filtering": 0,
+    "database_fixture_missing": 72
+  },
+  "eligible_fixture_count": 72,
+  "canonical_mapping_summary": {
+    "provider_teams": 48,
+    "canonical_mappings_found": 48,
+    "database_mappings_found": 47,
+    "provider_backed_mappings": 47
+  },
+  "canonical_mapping_audit": [
+    {
+      "provider_team_id": 1532,
+      "provider_name": "Algeria",
+      "canonical_team_id": "ALG",
+      "database_team_id": "4242e3d6-20b5-4308-bc9c-515b488efbce",
+      "database_team_name": "Algeria",
+      "database_provider_team_id": 1532,
+      "canonical_mapping_found": true,
+      "database_mapping_found": true,
+      "provider_backed": true
+    },
+    {
+      "provider_team_id": 26,
+      "provider_name": "Argentina",
+      "canonical_team_id": "ARG",
+      "database_team_id": "943f2024-ae4a-485b-bc9d-a9c13efed90b",
+      "database_team_name": "Argentina",
+      "database_provider_team_id": 26,
+      "canonical_mapping_found": true,
+      "database_mapping_found": true,
+      "provider_backed": true
+    },
+    {
+      "provider_team_id": 20,
+      "provider_name": "Australia",
+      "canonical_team_id": "AUS",
+      "database_team_id": "695c4c43-7029-4ee3-b2b3-ec45439210c2",
+      "database_team_name": "Australia",
+      "database_provider_team_id": 20,
+      "canonical_mapping_found": true,
+      "database_mapping_found": true,
+      "provider_backed": true
+    },
+    {
+      "provider_team_id": 775,
+      "provider_name": "Austria",
+      "canonical_team_id": "AUT",
+      "database_team_id": "04a559d3-7e35-4178-a3b7-c79c31dd50e9",
+      "database_team_name": "Austria",
+      "database_provider_team_id": 775,
+      "canonical_mapping_found": true,
+      "database_mapping_found": true,
+      "provider_backed": true
+    },
+    {
+      "provider_team_id": 1,
+      "provider_name": "Belgium",
+      "canonical_team_id": "BEL",
+      "database_team_id": "d2316d87-ff2d-40ca-959f-ab09d47e5144",
+      "database_team_name": "Belgium",
+      "database_provider_team_id": 1,
+      "canonical_mapping_found": true,
+      "database_mapping_found": true,
+      "provider_backed": true
+    },
+    {
+      "provider_team_id": 1113,
+      "provider_name": "Bosnia & Herzegovina",
+      "canonical_team_id": "BIH",
+      "database_team_id": "2fb2233f-7aaf-4074-8103-16e27e43db41",
+      "database_team_name": "Bosnia & Herzegovina",
+      "database_provider_team_id": 1113,
+      "canonical_mapping_found": true,
+      "database_mapping_found": true,
+      "provider_backed": true
+    },
+    {
+      "provider_team_id": 6,
+      "provider_name": "Brazil",
+      "canonical_team_id": "BRA",
+      "database_team_id": "c1329187-e8cb-4bc1-87a9-b84b8eb2b89d",
+      "database_team_name": "Brazil",
+      "database_provider_team_id": 6,
+      "canonical_mapping_found": true,
+      "database_mapping_found": true,
+      "provider_backed": true
+    },
+    {
+      "provider_team_id": 5529,
+      "provider_name": "Canada",
+      "canonical_team_id": "CAN",
+      "database_team_id": "3323e185-0641-46a8-9d45-34f207ca4e4a",
+      "database_team_name": "Canada",
+      "database_provider_team_id": 5529,
+      "canonical_mapping_found": true,
+      "database_mapping_found": true,
+      "provider_backed": true
+    },
+    {
+      "provider_team_id": 1533,
+      "provider_name": "Cape Verde Islands",
+      "canonical_team_id": "CPV",
+      "database_team_id": "f53473ee-d795-43cd-a9bc-f3da4bc22577",
+      "database_team_name": "Cape Verde Islands",
+      "database_provider_team_id": 1533,
+      "canonical_mapping_found": true,
+      "database_mapping_found": true,
+      "provider_backed": true
+    },
+    {
+      "provider_team_id": 8,
+      "provider_name": "Colombia",
+      "canonical_team_id": "COL",
+      "database_team_id": "35cda032-cb47-447f-8a24-2a09f8287d41",
+      "database_team_name": "Colombia",
+      "database_provider_team_id": 8,
+      "canonical_mapping_found": true,
+      "database_mapping_found": true,
+      "provider_backed": true
+    },
+    {
+      "provider_team_id": 1508,
+      "provider_name": "Congo DR",
+      "canonical_team_id": "COD",
+      "database_team_id": "3b60f912-4bd5-4afe-a7c5-989814e5fe78",
+      "database_team_name": "Congo DR",
+      "database_provider_team_id": 1508,
+      "canonical_mapping_found": true,
+      "database_mapping_found": true,
+      "provider_backed": true
+    },
+    {
+      "provider_team_id": 3,
+      "provider_name": "Croatia",
+      "canonical_team_id": "CRO",
+      "database_team_id": "8ba2c08f-28fd-4e35-a70d-e4aa18da3881",
+      "database_team_name": "Croatia",
+      "database_provider_team_id": 3,
+      "canonical_mapping_found": true,
+      "database_mapping_found": true,
+      "provider_backed": true
+    },
+    {
+      "provider_team_id": 5530,
+      "provider_name": "Cura\u00e7ao",
+      "canonical_team_id": "CUW",
+      "database_team_id": "09b4fc0a-26de-40b8-a189-5b47622da360",
+      "database_team_name": "Cura\u00e7ao",
+      "database_provider_team_id": 5530,
+      "canonical_mapping_found": true,
+      "database_mapping_found": true,
+      "provider_backed": true
+    },
+    {
+      "provider_team_id": 770,
+      "provider_name": "Czech Republic",
+      "canonical_team_id": "CZE",
+      "database_team_id": "20f48b30-81bb-4609-a8a8-3fd1d138200d",
+      "database_team_name": "Czech Republic",
+      "database_provider_team_id": 770,
+      "canonical_mapping_found": true,
+      "database_mapping_found": true,
+      "provider_backed": true
+    },
+    {
+      "provider_team_id": 2382,
+      "provider_name": "Ecuador",
+      "canonical_team_id": "ECU",
+      "database_team_id": "a0418777-7781-48bf-bdbc-f15566ca133e",
+      "database_team_name": "Ecuador",
+      "database_provider_team_id": 2382,
+      "canonical_mapping_found": true,
+      "database_mapping_found": true,
+      "provider_backed": true
+    },
+    {
+      "provider_team_id": 32,
+      "provider_name": "Egypt",
+      "canonical_team_id": "EGY",
+      "database_team_id": "b7bdb201-ee1a-4792-a4d9-4b1f49bb383a",
+      "database_team_name": "Egypt",
+      "database_provider_team_id": 32,
+      "canonical_mapping_found": true,
+      "database_mapping_found": true,
+      "provider_backed": true
+    },
+    {
+      "provider_team_id": 10,
+      "provider_name": "England",
+      "canonical_team_id": "ENG",
+      "database_team_id": "81f505bd-d53f-4c62-bf8b-760d7856fefe",
+      "database_team_name": "England",
+      "database_provider_team_id": 10,
+      "canonical_mapping_found": true,
+      "database_mapping_found": true,
+      "provider_backed": true
+    },
+    {
+      "provider_team_id": 2,
+      "provider_name": "France",
+      "canonical_team_id": "FRA",
+      "database_team_id": "f4ca3ccb-1bbe-4de1-8d79-cc79e9ad260e",
+      "database_team_name": "France",
+      "database_provider_team_id": 2,
+      "canonical_mapping_found": true,
+      "database_mapping_found": true,
+      "provider_backed": true
+    },
+    {
+      "provider_team_id": 25,
+      "provider_name": "Germany",
+      "canonical_team_id": "GER",
+      "database_team_id": "970594ba-49c9-4f28-9650-be115d1a8504",
+      "database_team_name": "Germany",
+      "database_provider_team_id": 25,
+      "canonical_mapping_found": true,
+      "database_mapping_found": true,
+      "provider_backed": true
+    },
+    {
+      "provider_team_id": 1504,
+      "provider_name": "Ghana",
+      "canonical_team_id": "GHA",
+      "database_team_id": "76ede159-f82b-479c-8f82-af3c20f8c5d7",
+      "database_team_name": "Ghana",
+      "database_provider_team_id": 1504,
+      "canonical_mapping_found": true,
+      "database_mapping_found": true,
+      "provider_backed": true
+    },
+    {
+      "provider_team_id": 2386,
+      "provider_name": "Haiti",
+      "canonical_team_id": "HAI",
+      "database_team_id": "5a6fea27-ccd2-471d-a6fb-1b36714f5ef7",
+      "database_team_name": "Haiti",
+      "database_provider_team_id": 2386,
+      "canonical_mapping_found": true,
+      "database_mapping_found": true,
+      "provider_backed": true
+    },
+    {
+      "provider_team_id": 22,
+      "provider_name": "Iran",
+      "canonical_team_id": "IRN",
+      "database_team_id": "b07cf18a-805c-433c-a03a-88440a30c42a",
+      "database_team_name": "Iran",
+      "database_provider_team_id": 22,
+      "canonical_mapping_found": true,
+      "database_mapping_found": true,
+      "provider_backed": true
+    },
+    {
+      "provider_team_id": 1567,
+      "provider_name": "Iraq",
+      "canonical_team_id": "IRQ",
+      "database_team_id": "6ef8f346-d27a-4e02-9b75-7b1da75c085e",
+      "database_team_name": "Iraq",
+      "database_provider_team_id": 1567,
+      "canonical_mapping_found": true,
+      "database_mapping_found": true,
+      "provider_backed": true
+    },
+    {
+      "provider_team_id": 1501,
+      "provider_name": "Ivory Coast",
+      "canonical_team_id": "CIV",
+      "database_team_id": "cc18ee3c-65af-4842-9b26-35e2fd1756b8",
+      "database_team_name": "Ivory Coast",
+      "database_provider_team_id": 1501,
+      "canonical_mapping_found": true,
+      "database_mapping_found": true,
+      "provider_backed": true
+    },
+    {
+      "provider_team_id": 12,
+      "provider_name": "Japan",
+      "canonical_team_id": "JPN",
+      "database_team_id": "7f170561-e42c-45d0-a4fd-6b69dd4a225d",
+      "database_team_name": "Japan",
+      "database_provider_team_id": 12,
+      "canonical_mapping_found": true,
+      "database_mapping_found": true,
+      "provider_backed": true
+    },
+    {
+      "provider_team_id": 1548,
+      "provider_name": "Jordan",
+      "canonical_team_id": "JOR",
+      "database_team_id": "1be419c7-31d5-49f5-b575-0274da222676",
+      "database_team_name": "Jordan",
+      "database_provider_team_id": 1548,
+      "canonical_mapping_found": true,
+      "database_mapping_found": true,
+      "provider_backed": true
+    },
+    {
+      "provider_team_id": 16,
+      "provider_name": "Mexico",
+      "canonical_team_id": "MEX",
+      "database_team_id": "bf86fb9c-26ba-4f2b-aae9-d88977f12f41",
+      "database_team_name": "Mexico",
+      "database_provider_team_id": 16,
+      "canonical_mapping_found": true,
+      "database_mapping_found": true,
+      "provider_backed": true
+    },
+    {
+      "provider_team_id": 31,
+      "provider_name": "Morocco",
+      "canonical_team_id": "MAR",
+      "database_team_id": "cd5de51d-34e3-4a79-8fbe-f43328108d3c",
+      "database_team_name": "Morocco",
+      "database_provider_team_id": 31,
+      "canonical_mapping_found": true,
+      "database_mapping_found": true,
+      "provider_backed": true
+    },
+    {
+      "provider_team_id": 1118,
+      "provider_name": "Netherlands",
+      "canonical_team_id": "NED",
+      "database_team_id": "8f5326b5-dff9-4d8f-aa6c-ac47615ca3f9",
+      "database_team_name": "Netherlands",
+      "database_provider_team_id": 1118,
+      "canonical_mapping_found": true,
+      "database_mapping_found": true,
+      "provider_backed": true
+    },
+    {
+      "provider_team_id": 4673,
+      "provider_name": "New Zealand",
+      "canonical_team_id": "NZL",
+      "database_team_id": null,
+      "database_team_name": null,
+      "database_provider_team_id": null,
+      "canonical_mapping_found": true,
+      "database_mapping_found": false,
+      "provider_backed": false
+    },
+    {
+      "provider_team_id": 1090,
+      "provider_name": "Norway",
+      "canonical_team_id": "NOR",
+      "database_team_id": "c171c185-2d2c-4126-b6f3-028aa05c18cc",
+      "database_team_name": "Norway",
+      "database_provider_team_id": 1090,
+      "canonical_mapping_found": true,
+      "database_mapping_found": true,
+      "provider_backed": true
+    },
+    {
+      "provider_team_id": 11,
+      "provider_name": "Panama",
+      "canonical_team_id": "PAN",
+      "database_team_id": "b54b9bea-b2e3-4a85-803e-25e9b8a35407",
+      "database_team_name": "Panama",
+      "database_provider_team_id": 11,
+      "canonical_mapping_found": true,
+      "database_mapping_found": true,
+      "provider_backed": true
+    },
+    {
+      "provider_team_id": 2380,
+      "provider_name": "Paraguay",
+      "canonical_team_id": "PAR",
+      "database_team_id": "4271e9f0-9c49-43c6-8189-261132338c56",
+      "database_team_name": "Paraguay",
+      "database_provider_team_id": 2380,
+      "canonical_mapping_found": true,
+      "database_mapping_found": true,
+      "provider_backed": true
+    },
+    {
+      "provider_team_id": 27,
+      "provider_name": "Portugal",
+      "canonical_team_id": "POR",
+      "database_team_id": "bb76c0e7-44bb-433b-8382-fdcad36178ae",
+      "database_team_name": "Portugal",
+      "database_provider_team_id": 27,
+      "canonical_mapping_found": true,
+      "database_mapping_found": true,
+      "provider_backed": true
+    },
+    {
+      "provider_team_id": 1569,
+      "provider_name": "Qatar",
+      "canonical_team_id": "QAT",
+      "database_team_id": "9a4233d0-efa8-4145-a8a9-c6414af48ed2",
+      "database_team_name": "Qatar",
+      "database_provider_team_id": 1569,
+      "canonical_mapping_found": true,
+      "database_mapping_found": true,
+      "provider_backed": true
+    },
+    {
+      "provider_team_id": 23,
+      "provider_name": "Saudi Arabia",
+      "canonical_team_id": "KSA",
+      "database_team_id": "c550bc9d-084b-4920-8327-95bb1e5649d7",
+      "database_team_name": "Saudi Arabia",
+      "database_provider_team_id": 23,
+      "canonical_mapping_found": true,
+      "database_mapping_found": true,
+      "provider_backed": true
+    },
+    {
+      "provider_team_id": 1108,
+      "provider_name": "Scotland",
+      "canonical_team_id": "SCO",
+      "database_team_id": "72598a99-db55-48c8-9180-45102f9ec31a",
+      "database_team_name": "Scotland",
+      "database_provider_team_id": 1108,
+      "canonical_mapping_found": true,
+      "database_mapping_found": true,
+      "provider_backed": true
+    },
+    {
+      "provider_team_id": 13,
+      "provider_name": "Senegal",
+      "canonical_team_id": "SEN",
+      "database_team_id": "34c4738a-cde7-4a85-bb4c-5c4ba42b014a",
+      "database_team_name": "Senegal",
+      "database_provider_team_id": 13,
+      "canonical_mapping_found": true,
+      "database_mapping_found": true,
+      "provider_backed": true
+    },
+    {
+      "provider_team_id": 1531,
+      "provider_name": "South Africa",
+      "canonical_team_id": "RSA",
+      "database_team_id": "75c8ac60-13af-4b04-b8e5-bff8158f64d8",
+      "database_team_name": "South Africa",
+      "database_provider_team_id": 1531,
+      "canonical_mapping_found": true,
+      "database_mapping_found": true,
+      "provider_backed": true
+    },
+    {
+      "provider_team_id": 17,
+      "provider_name": "South Korea",
+      "canonical_team_id": "KOR",
+      "database_team_id": "e9cd8335-8a47-4629-8638-33fdca6beac8",
+      "database_team_name": "South Korea",
+      "database_provider_team_id": 17,
+      "canonical_mapping_found": true,
+      "database_mapping_found": true,
+      "provider_backed": true
+    },
+    {
+      "provider_team_id": 9,
+      "provider_name": "Spain",
+      "canonical_team_id": "ESP",
+      "database_team_id": "d31139a6-7e9f-48bf-8631-0a9cc0feef33",
+      "database_team_name": "Spain",
+      "database_provider_team_id": 9,
+      "canonical_mapping_found": true,
+      "database_mapping_found": true,
+      "provider_backed": true
+    },
+    {
+      "provider_team_id": 5,
+      "provider_name": "Sweden",
+      "canonical_team_id": "SWE",
+      "database_team_id": "e5200e21-35bc-49cb-9f1b-afce8c9244a4",
+      "database_team_name": "Sweden",
+      "database_provider_team_id": 5,
+      "canonical_mapping_found": true,
+      "database_mapping_found": true,
+      "provider_backed": true
+    },
+    {
+      "provider_team_id": 15,
+      "provider_name": "Switzerland",
+      "canonical_team_id": "SUI",
+      "database_team_id": "d1e96be1-2783-4de5-8d87-b11d3a4ea456",
+      "database_team_name": "Switzerland",
+      "database_provider_team_id": 15,
+      "canonical_mapping_found": true,
+      "database_mapping_found": true,
+      "provider_backed": true
+    },
+    {
+      "provider_team_id": 28,
+      "provider_name": "Tunisia",
+      "canonical_team_id": "TUN",
+      "database_team_id": "c7ff4dfa-c7b9-49de-8ef4-4dcdebd1d6de",
+      "database_team_name": "Tunisia",
+      "database_provider_team_id": 28,
+      "canonical_mapping_found": true,
+      "database_mapping_found": true,
+      "provider_backed": true
+    },
+    {
+      "provider_team_id": 777,
+      "provider_name": "T\u00fcrkiye",
+      "canonical_team_id": "TUR",
+      "database_team_id": "05e2cccc-da61-4986-940a-3c705af501ab",
+      "database_team_name": "T\u00fcrkiye",
+      "database_provider_team_id": 777,
+      "canonical_mapping_found": true,
+      "database_mapping_found": true,
+      "provider_backed": true
+    },
+    {
+      "provider_team_id": 2384,
+      "provider_name": "USA",
+      "canonical_team_id": "USA",
+      "database_team_id": "08fb05c5-03c5-4ab2-ae58-5267c81f5bd1",
+      "database_team_name": "USA",
+      "database_provider_team_id": 2384,
+      "canonical_mapping_found": true,
+      "database_mapping_found": true,
+      "provider_backed": true
+    },
+    {
+      "provider_team_id": 7,
+      "provider_name": "Uruguay",
+      "canonical_team_id": "URU",
+      "database_team_id": "8566e5db-5371-427e-bfbe-a40e15c08cb1",
+      "database_team_name": "Uruguay",
+      "database_provider_team_id": 7,
+      "canonical_mapping_found": true,
+      "database_mapping_found": true,
+      "provider_backed": true
+    },
+    {
+      "provider_team_id": 1568,
+      "provider_name": "Uzbekistan",
+      "canonical_team_id": "UZB",
+      "database_team_id": "83e5d072-c76a-40f6-b738-d8182d4126ce",
+      "database_team_name": "Uzbekistan",
+      "database_provider_team_id": 1568,
+      "canonical_mapping_found": true,
+      "database_mapping_found": true,
+      "provider_backed": true
+    }
+  ],
+  "fixtures": [
+    {
+      "provider_fixture_id": 1489369,
+      "date": "2026-06-11T19:00:00+00:00",
+      "status": "NS",
+      "home_team": {
+        "provider_team_id": 16,
+        "provider_name": "Mexico",
+        "canonical_team_id": "MEX",
+        "database_team_id": "bf86fb9c-26ba-4f2b-aae9-d88977f12f41",
+        "database_team_name": "Mexico",
+        "database_provider_team_id": 16,
+        "canonical_mapping_found": true,
+        "database_mapping_found": true,
+        "provider_backed": true
+      },
+      "away_team": {
+        "provider_team_id": 1531,
+        "provider_name": "South Africa",
+        "canonical_team_id": "RSA",
+        "database_team_id": "75c8ac60-13af-4b04-b8e5-bff8158f64d8",
+        "database_team_name": "South Africa",
+        "database_provider_team_id": 1531,
+        "canonical_mapping_found": true,
+        "database_mapping_found": true,
+        "provider_backed": true
+      },
+      "database_fixture_found": false,
+      "excluded": false,
+      "exclusion_reasons": []
+    },
+    {
+      "provider_fixture_id": 1538999,
+      "date": "2026-06-12T02:00:00+00:00",
+      "status": "NS",
+      "home_team": {
+        "provider_team_id": 17,
+        "provider_name": "South Korea",
+        "canonical_team_id": "KOR",
+        "database_team_id": "e9cd8335-8a47-4629-8638-33fdca6beac8",
+        "database_team_name": "South Korea",
+        "database_provider_team_id": 17,
+        "canonical_mapping_found": true,
+        "database_mapping_found": true,
+        "provider_backed": true
+      },
+      "away_team": {
+        "provider_team_id": 770,
+        "provider_name": "Czech Republic",
+        "canonical_team_id": "CZE",
+        "database_team_id": "20f48b30-81bb-4609-a8a8-3fd1d138200d",
+        "database_team_name": "Czech Republic",
+        "database_provider_team_id": 770,
+        "canonical_mapping_found": true,
+        "database_mapping_found": true,
+        "provider_backed": true
+      },
+      "database_fixture_found": false,
+      "excluded": false,
+      "exclusion_reasons": []
+    },
+    {
+      "provider_fixture_id": 1539000,
+      "date": "2026-06-12T19:00:00+00:00",
+      "status": "NS",
+      "home_team": {
+        "provider_team_id": 5529,
+        "provider_name": "Canada",
+        "canonical_team_id": "CAN",
+        "database_team_id": "3323e185-0641-46a8-9d45-34f207ca4e4a",
+        "database_team_name": "Canada",
+        "database_provider_team_id": 5529,
+        "canonical_mapping_found": true,
+        "database_mapping_found": true,
+        "provider_backed": true
+      },
+      "away_team": {
+        "provider_team_id": 1113,
+        "provider_name": "Bosnia & Herzegovina",
+        "canonical_team_id": "BIH",
+        "database_team_id": "2fb2233f-7aaf-4074-8103-16e27e43db41",
+        "database_team_name": "Bosnia & Herzegovina",
+        "database_provider_team_id": 1113,
+        "canonical_mapping_found": true,
+        "database_mapping_found": true,
+        "provider_backed": true
+      },
+      "database_fixture_found": false,
+      "excluded": false,
+      "exclusion_reasons": []
+    },
+    {
+      "provider_fixture_id": 1489370,
+      "date": "2026-06-13T01:00:00+00:00",
+      "status": "NS",
+      "home_team": {
+        "provider_team_id": 2384,
+        "provider_name": "USA",
+        "canonical_team_id": "USA",
+        "database_team_id": "08fb05c5-03c5-4ab2-ae58-5267c81f5bd1",
+        "database_team_name": "USA",
+        "database_provider_team_id": 2384,
+        "canonical_mapping_found": true,
+        "database_mapping_found": true,
+        "provider_backed": true
+      },
+      "away_team": {
+        "provider_team_id": 2380,
+        "provider_name": "Paraguay",
+        "canonical_team_id": "PAR",
+        "database_team_id": "4271e9f0-9c49-43c6-8189-261132338c56",
+        "database_team_name": "Paraguay",
+        "database_provider_team_id": 2380,
+        "canonical_mapping_found": true,
+        "database_mapping_found": true,
+        "provider_backed": true
+      },
+      "database_fixture_found": false,
+      "excluded": false,
+      "exclusion_reasons": []
+    },
+    {
+      "provider_fixture_id": 1489373,
+      "date": "2026-06-13T19:00:00+00:00",
+      "status": "NS",
+      "home_team": {
+        "provider_team_id": 1569,
+        "provider_name": "Qatar",
+        "canonical_team_id": "QAT",
+        "database_team_id": "9a4233d0-efa8-4145-a8a9-c6414af48ed2",
+        "database_team_name": "Qatar",
+        "database_provider_team_id": 1569,
+        "canonical_mapping_found": true,
+        "database_mapping_found": true,
+        "provider_backed": true
+      },
+      "away_team": {
+        "provider_team_id": 15,
+        "provider_name": "Switzerland",
+        "canonical_team_id": "SUI",
+        "database_team_id": "d1e96be1-2783-4de5-8d87-b11d3a4ea456",
+        "database_team_name": "Switzerland",
+        "database_provider_team_id": 15,
+        "canonical_mapping_found": true,
+        "database_mapping_found": true,
+        "provider_backed": true
+      },
+      "database_fixture_found": false,
+      "excluded": false,
+      "exclusion_reasons": []
+    },
+    {
+      "provider_fixture_id": 1489371,
+      "date": "2026-06-13T22:00:00+00:00",
+      "status": "NS",
+      "home_team": {
+        "provider_team_id": 6,
+        "provider_name": "Brazil",
+        "canonical_team_id": "BRA",
+        "database_team_id": "c1329187-e8cb-4bc1-87a9-b84b8eb2b89d",
+        "database_team_name": "Brazil",
+        "database_provider_team_id": 6,
+        "canonical_mapping_found": true,
+        "database_mapping_found": true,
+        "provider_backed": true
+      },
+      "away_team": {
+        "provider_team_id": 31,
+        "provider_name": "Morocco",
+        "canonical_team_id": "MAR",
+        "database_team_id": "cd5de51d-34e3-4a79-8fbe-f43328108d3c",
+        "database_team_name": "Morocco",
+        "database_provider_team_id": 31,
+        "canonical_mapping_found": true,
+        "database_mapping_found": true,
+        "provider_backed": true
+      },
+      "database_fixture_found": false,
+      "excluded": false,
+      "exclusion_reasons": []
+    },
+    {
+      "provider_fixture_id": 1489372,
+      "date": "2026-06-14T01:00:00+00:00",
+      "status": "NS",
+      "home_team": {
+        "provider_team_id": 2386,
+        "provider_name": "Haiti",
+        "canonical_team_id": "HAI",
+        "database_team_id": "5a6fea27-ccd2-471d-a6fb-1b36714f5ef7",
+        "database_team_name": "Haiti",
+        "database_provider_team_id": 2386,
+        "canonical_mapping_found": true,
+        "database_mapping_found": true,
+        "provider_backed": true
+      },
+      "away_team": {
+        "provider_team_id": 1108,
+        "provider_name": "Scotland",
+        "canonical_team_id": "SCO",
+        "database_team_id": "72598a99-db55-48c8-9180-45102f9ec31a",
+        "database_team_name": "Scotland",
+        "database_provider_team_id": 1108,
+        "canonical_mapping_found": true,
+        "database_mapping_found": true,
+        "provider_backed": true
+      },
+      "database_fixture_found": false,
+      "excluded": false,
+      "exclusion_reasons": []
+    },
+    {
+      "provider_fixture_id": 1539001,
+      "date": "2026-06-14T04:00:00+00:00",
+      "status": "NS",
+      "home_team": {
+        "provider_team_id": 20,
+        "provider_name": "Australia",
+        "canonical_team_id": "AUS",
+        "database_team_id": "695c4c43-7029-4ee3-b2b3-ec45439210c2",
+        "database_team_name": "Australia",
+        "database_provider_team_id": 20,
+        "canonical_mapping_found": true,
+        "database_mapping_found": true,
+        "provider_backed": true
+      },
+      "away_team": {
+        "provider_team_id": 777,
+        "provider_name": "T\u00fcrkiye",
+        "canonical_team_id": "TUR",
+        "database_team_id": "05e2cccc-da61-4986-940a-3c705af501ab",
+        "database_team_name": "T\u00fcrkiye",
+        "database_provider_team_id": 777,
+        "canonical_mapping_found": true,
+        "database_mapping_found": true,
+        "provider_backed": true
+      },
+      "database_fixture_found": false,
+      "excluded": false,
+      "exclusion_reasons": []
+    },
+    {
+      "provider_fixture_id": 1489374,
+      "date": "2026-06-14T17:00:00+00:00",
+      "status": "NS",
+      "home_team": {
+        "provider_team_id": 25,
+        "provider_name": "Germany",
+        "canonical_team_id": "GER",
+        "database_team_id": "970594ba-49c9-4f28-9650-be115d1a8504",
+        "database_team_name": "Germany",
+        "database_provider_team_id": 25,
+        "canonical_mapping_found": true,
+        "database_mapping_found": true,
+        "provider_backed": true
+      },
+      "away_team": {
+        "provider_team_id": 5530,
+        "provider_name": "Cura\u00e7ao",
+        "canonical_team_id": "CUW",
+        "database_team_id": "09b4fc0a-26de-40b8-a189-5b47622da360",
+        "database_team_name": "Cura\u00e7ao",
+        "database_provider_team_id": 5530,
+        "canonical_mapping_found": true,
+        "database_mapping_found": true,
+        "provider_backed": true
+      },
+      "database_fixture_found": false,
+      "excluded": false,
+      "exclusion_reasons": []
+    },
+    {
+      "provider_fixture_id": 1489376,
+      "date": "2026-06-14T20:00:00+00:00",
+      "status": "NS",
+      "home_team": {
+        "provider_team_id": 1118,
+        "provider_name": "Netherlands",
+        "canonical_team_id": "NED",
+        "database_team_id": "8f5326b5-dff9-4d8f-aa6c-ac47615ca3f9",
+        "database_team_name": "Netherlands",
+        "database_provider_team_id": 1118,
+        "canonical_mapping_found": true,
+        "database_mapping_found": true,
+        "provider_backed": true
+      },
+      "away_team": {
+        "provider_team_id": 12,
+        "provider_name": "Japan",
+        "canonical_team_id": "JPN",
+        "database_team_id": "7f170561-e42c-45d0-a4fd-6b69dd4a225d",
+        "database_team_name": "Japan",
+        "database_provider_team_id": 12,
+        "canonical_mapping_found": true,
+        "database_mapping_found": true,
+        "provider_backed": true
+      },
+      "database_fixture_found": false,
+      "excluded": false,
+      "exclusion_reasons": []
+    },
+    {
+      "provider_fixture_id": 1489375,
+      "date": "2026-06-14T23:00:00+00:00",
+      "status": "NS",
+      "home_team": {
+        "provider_team_id": 1501,
+        "provider_name": "Ivory Coast",
+        "canonical_team_id": "CIV",
+        "database_team_id": "cc18ee3c-65af-4842-9b26-35e2fd1756b8",
+        "database_team_name": "Ivory Coast",
+        "database_provider_team_id": 1501,
+        "canonical_mapping_found": true,
+        "database_mapping_found": true,
+        "provider_backed": true
+      },
+      "away_team": {
+        "provider_team_id": 2382,
+        "provider_name": "Ecuador",
+        "canonical_team_id": "ECU",
+        "database_team_id": "a0418777-7781-48bf-bdbc-f15566ca133e",
+        "database_team_name": "Ecuador",
+        "database_provider_team_id": 2382,
+        "canonical_mapping_found": true,
+        "database_mapping_found": true,
+        "provider_backed": true
+      },
+      "database_fixture_found": false,
+      "excluded": false,
+      "exclusion_reasons": []
+    },
+    {
+      "provider_fixture_id": 1539002,
+      "date": "2026-06-15T02:00:00+00:00",
+      "status": "NS",
+      "home_team": {
+        "provider_team_id": 5,
+        "provider_name": "Sweden",
+        "canonical_team_id": "SWE",
+        "database_team_id": "e5200e21-35bc-49cb-9f1b-afce8c9244a4",
+        "database_team_name": "Sweden",
+        "database_provider_team_id": 5,
+        "canonical_mapping_found": true,
+        "database_mapping_found": true,
+        "provider_backed": true
+      },
+      "away_team": {
+        "provider_team_id": 28,
+        "provider_name": "Tunisia",
+        "canonical_team_id": "TUN",
+        "database_team_id": "c7ff4dfa-c7b9-49de-8ef4-4dcdebd1d6de",
+        "database_team_name": "Tunisia",
+        "database_provider_team_id": 28,
+        "canonical_mapping_found": true,
+        "database_mapping_found": true,
+        "provider_backed": true
+      },
+      "database_fixture_found": false,
+      "excluded": false,
+      "exclusion_reasons": []
+    },
+    {
+      "provider_fixture_id": 1489380,
+      "date": "2026-06-15T16:00:00+00:00",
+      "status": "NS",
+      "home_team": {
+        "provider_team_id": 9,
+        "provider_name": "Spain",
+        "canonical_team_id": "ESP",
+        "database_team_id": "d31139a6-7e9f-48bf-8631-0a9cc0feef33",
+        "database_team_name": "Spain",
+        "database_provider_team_id": 9,
+        "canonical_mapping_found": true,
+        "database_mapping_found": true,
+        "provider_backed": true
+      },
+      "away_team": {
+        "provider_team_id": 1533,
+        "provider_name": "Cape Verde Islands",
+        "canonical_team_id": "CPV",
+        "database_team_id": "f53473ee-d795-43cd-a9bc-f3da4bc22577",
+        "database_team_name": "Cape Verde Islands",
+        "database_provider_team_id": 1533,
+        "canonical_mapping_found": true,
+        "database_mapping_found": true,
+        "provider_backed": true
+      },
+      "database_fixture_found": false,
+      "excluded": false,
+      "exclusion_reasons": []
+    },
+    {
+      "provider_fixture_id": 1489377,
+      "date": "2026-06-15T19:00:00+00:00",
+      "status": "NS",
+      "home_team": {
+        "provider_team_id": 1,
+        "provider_name": "Belgium",
+        "canonical_team_id": "BEL",
+        "database_team_id": "d2316d87-ff2d-40ca-959f-ab09d47e5144",
+        "database_team_name": "Belgium",
+        "database_provider_team_id": 1,
+        "canonical_mapping_found": true,
+        "database_mapping_found": true,
+        "provider_backed": true
+      },
+      "away_team": {
+        "provider_team_id": 32,
+        "provider_name": "Egypt",
+        "canonical_team_id": "EGY",
+        "database_team_id": "b7bdb201-ee1a-4792-a4d9-4b1f49bb383a",
+        "database_team_name": "Egypt",
+        "database_provider_team_id": 32,
+        "canonical_mapping_found": true,
+        "database_mapping_found": true,
+        "provider_backed": true
+      },
+      "database_fixture_found": false,
+      "excluded": false,
+      "exclusion_reasons": []
+    },
+    {
+      "provider_fixture_id": 1489379,
+      "date": "2026-06-15T22:00:00+00:00",
+      "status": "NS",
+      "home_team": {
+        "provider_team_id": 23,
+        "provider_name": "Saudi Arabia",
+        "canonical_team_id": "KSA",
+        "database_team_id": "c550bc9d-084b-4920-8327-95bb1e5649d7",
+        "database_team_name": "Saudi Arabia",
+        "database_provider_team_id": 23,
+        "canonical_mapping_found": true,
+        "database_mapping_found": true,
+        "provider_backed": true
+      },
+      "away_team": {
+        "provider_team_id": 7,
+        "provider_name": "Uruguay",
+        "canonical_team_id": "URU",
+        "database_team_id": "8566e5db-5371-427e-bfbe-a40e15c08cb1",
+        "database_team_name": "Uruguay",
+        "database_provider_team_id": 7,
+        "canonical_mapping_found": true,
+        "database_mapping_found": true,
+        "provider_backed": true
+      },
+      "database_fixture_found": false,
+      "excluded": false,
+      "exclusion_reasons": []
+    },
+    {
+      "provider_fixture_id": 1489378,
+      "date": "2026-06-16T01:00:00+00:00",
+      "status": "NS",
+      "home_team": {
+        "provider_team_id": 22,
+        "provider_name": "Iran",
+        "canonical_team_id": "IRN",
+        "database_team_id": "b07cf18a-805c-433c-a03a-88440a30c42a",
+        "database_team_name": "Iran",
+        "database_provider_team_id": 22,
+        "canonical_mapping_found": true,
+        "database_mapping_found": true,
+        "provider_backed": true
+      },
+      "away_team": {
+        "provider_team_id": 4673,
+        "provider_name": "New Zealand",
+        "canonical_team_id": "NZL",
+        "database_team_id": null,
+        "database_team_name": null,
+        "database_provider_team_id": null,
+        "canonical_mapping_found": true,
+        "database_mapping_found": false,
+        "provider_backed": false
+      },
+      "database_fixture_found": false,
+      "excluded": false,
+      "exclusion_reasons": []
+    },
+    {
+      "provider_fixture_id": 1489383,
+      "date": "2026-06-16T19:00:00+00:00",
+      "status": "NS",
+      "home_team": {
+        "provider_team_id": 2,
+        "provider_name": "France",
+        "canonical_team_id": "FRA",
+        "database_team_id": "f4ca3ccb-1bbe-4de1-8d79-cc79e9ad260e",
+        "database_team_name": "France",
+        "database_provider_team_id": 2,
+        "canonical_mapping_found": true,
+        "database_mapping_found": true,
+        "provider_backed": true
+      },
+      "away_team": {
+        "provider_team_id": 13,
+        "provider_name": "Senegal",
+        "canonical_team_id": "SEN",
+        "database_team_id": "34c4738a-cde7-4a85-bb4c-5c4ba42b014a",
+        "database_team_name": "Senegal",
+        "database_provider_team_id": 13,
+        "canonical_mapping_found": true,
+        "database_mapping_found": true,
+        "provider_backed": true
+      },
+      "database_fixture_found": false,
+      "excluded": false,
+      "exclusion_reasons": []
+    },
+    {
+      "provider_fixture_id": 1539016,
+      "date": "2026-06-16T22:00:00+00:00",
+      "status": "NS",
+      "home_team": {
+        "provider_team_id": 1567,
+        "provider_name": "Iraq",
+        "canonical_team_id": "IRQ",
+        "database_team_id": "6ef8f346-d27a-4e02-9b75-7b1da75c085e",
+        "database_team_name": "Iraq",
+        "database_provider_team_id": 1567,
+        "canonical_mapping_found": true,
+        "database_mapping_found": true,
+        "provider_backed": true
+      },
+      "away_team": {
+        "provider_team_id": 1090,
+        "provider_name": "Norway",
+        "canonical_team_id": "NOR",
+        "database_team_id": "c171c185-2d2c-4126-b6f3-028aa05c18cc",
+        "database_team_name": "Norway",
+        "database_provider_team_id": 1090,
+        "canonical_mapping_found": true,
+        "database_mapping_found": true,
+        "provider_backed": true
+      },
+      "database_fixture_found": false,
+      "excluded": false,
+      "exclusion_reasons": []
+    },
+    {
+      "provider_fixture_id": 1489381,
+      "date": "2026-06-17T01:00:00+00:00",
+      "status": "NS",
+      "home_team": {
+        "provider_team_id": 26,
+        "provider_name": "Argentina",
+        "canonical_team_id": "ARG",
+        "database_team_id": "943f2024-ae4a-485b-bc9d-a9c13efed90b",
+        "database_team_name": "Argentina",
+        "database_provider_team_id": 26,
+        "canonical_mapping_found": true,
+        "database_mapping_found": true,
+        "provider_backed": true
+      },
+      "away_team": {
+        "provider_team_id": 1532,
+        "provider_name": "Algeria",
+        "canonical_team_id": "ALG",
+        "database_team_id": "4242e3d6-20b5-4308-bc9c-515b488efbce",
+        "database_team_name": "Algeria",
+        "database_provider_team_id": 1532,
+        "canonical_mapping_found": true,
+        "database_mapping_found": true,
+        "provider_backed": true
+      },
+      "database_fixture_found": false,
+      "excluded": false,
+      "exclusion_reasons": []
+    },
+    {
+      "provider_fixture_id": 1489382,
+      "date": "2026-06-17T04:00:00+00:00",
+      "status": "NS",
+      "home_team": {
+        "provider_team_id": 775,
+        "provider_name": "Austria",
+        "canonical_team_id": "AUT",
+        "database_team_id": "04a559d3-7e35-4178-a3b7-c79c31dd50e9",
+        "database_team_name": "Austria",
+        "database_provider_team_id": 775,
+        "canonical_mapping_found": true,
+        "database_mapping_found": true,
+        "provider_backed": true
+      },
+      "away_team": {
+        "provider_team_id": 1548,
+        "provider_name": "Jordan",
+        "canonical_team_id": "JOR",
+        "database_team_id": "1be419c7-31d5-49f5-b575-0274da222676",
+        "database_team_name": "Jordan",
+        "database_provider_team_id": 1548,
+        "canonical_mapping_found": true,
+        "database_mapping_found": true,
+        "provider_backed": true
+      },
+      "database_fixture_found": false,
+      "excluded": false,
+      "exclusion_reasons": []
+    },
+    {
+      "provider_fixture_id": 1539003,
+      "date": "2026-06-17T17:00:00+00:00",
+      "status": "NS",
+      "home_team": {
+        "provider_team_id": 27,
+        "provider_name": "Portugal",
+        "canonical_team_id": "POR",
+        "database_team_id": "bb76c0e7-44bb-433b-8382-fdcad36178ae",
+        "database_team_name": "Portugal",
+        "database_provider_team_id": 27,
+        "canonical_mapping_found": true,
+        "database_mapping_found": true,
+        "provider_backed": true
+      },
+      "away_team": {
+        "provider_team_id": 1508,
+        "provider_name": "Congo DR",
+        "canonical_team_id": "COD",
+        "database_team_id": "3b60f912-4bd5-4afe-a7c5-989814e5fe78",
+        "database_team_name": "Congo DR",
+        "database_provider_team_id": 1508,
+        "canonical_mapping_found": true,
+        "database_mapping_found": true,
+        "provider_backed": true
+      },
+      "database_fixture_found": false,
+      "excluded": false,
+      "exclusion_reasons": []
+    },
+    {
+      "provider_fixture_id": 1489384,
+      "date": "2026-06-17T20:00:00+00:00",
+      "status": "NS",
+      "home_team": {
+        "provider_team_id": 10,
+        "provider_name": "England",
+        "canonical_team_id": "ENG",
+        "database_team_id": "81f505bd-d53f-4c62-bf8b-760d7856fefe",
+        "database_team_name": "England",
+        "database_provider_team_id": 10,
+        "canonical_mapping_found": true,
+        "database_mapping_found": true,
+        "provider_backed": true
+      },
+      "away_team": {
+        "provider_team_id": 3,
+        "provider_name": "Croatia",
+        "canonical_team_id": "CRO",
+        "database_team_id": "8ba2c08f-28fd-4e35-a70d-e4aa18da3881",
+        "database_team_name": "Croatia",
+        "database_provider_team_id": 3,
+        "canonical_mapping_found": true,
+        "database_mapping_found": true,
+        "provider_backed": true
+      },
+      "database_fixture_found": false,
+      "excluded": false,
+      "exclusion_reasons": []
+    },
+    {
+      "provider_fixture_id": 1489385,
+      "date": "2026-06-17T23:00:00+00:00",
+      "status": "NS",
+      "home_team": {
+        "provider_team_id": 1504,
+        "provider_name": "Ghana",
+        "canonical_team_id": "GHA",
+        "database_team_id": "76ede159-f82b-479c-8f82-af3c20f8c5d7",
+        "database_team_name": "Ghana",
+        "database_provider_team_id": 1504,
+        "canonical_mapping_found": true,
+        "database_mapping_found": true,
+        "provider_backed": true
+      },
+      "away_team": {
+        "provider_team_id": 11,
+        "provider_name": "Panama",
+        "canonical_team_id": "PAN",
+        "database_team_id": "b54b9bea-b2e3-4a85-803e-25e9b8a35407",
+        "database_team_name": "Panama",
+        "database_provider_team_id": 11,
+        "canonical_mapping_found": true,
+        "database_mapping_found": true,
+        "provider_backed": true
+      },
+      "database_fixture_found": false,
+      "excluded": false,
+      "exclusion_reasons": []
+    },
+    {
+      "provider_fixture_id": 1489386,
+      "date": "2026-06-18T02:00:00+00:00",
+      "status": "NS",
+      "home_team": {
+        "provider_team_id": 1568,
+        "provider_name": "Uzbekistan",
+        "canonical_team_id": "UZB",
+        "database_team_id": "83e5d072-c76a-40f6-b738-d8182d4126ce",
+        "database_team_name": "Uzbekistan",
+        "database_provider_team_id": 1568,
+        "canonical_mapping_found": true,
+        "database_mapping_found": true,
+        "provider_backed": true
+      },
+      "away_team": {
+        "provider_team_id": 8,
+        "provider_name": "Colombia",
+        "canonical_team_id": "COL",
+        "database_team_id": "35cda032-cb47-447f-8a24-2a09f8287d41",
+        "database_team_name": "Colombia",
+        "database_provider_team_id": 8,
+        "canonical_mapping_found": true,
+        "database_mapping_found": true,
+        "provider_backed": true
+      },
+      "database_fixture_found": false,
+      "excluded": false,
+      "exclusion_reasons": []
+    },
+    {
+      "provider_fixture_id": 1539004,
+      "date": "2026-06-18T16:00:00+00:00",
+      "status": "NS",
+      "home_team": {
+        "provider_team_id": 770,
+        "provider_name": "Czech Republic",
+        "canonical_team_id": "CZE",
+        "database_team_id": "20f48b30-81bb-4609-a8a8-3fd1d138200d",
+        "database_team_name": "Czech Republic",
+        "database_provider_team_id": 770,
+        "canonical_mapping_found": true,
+        "database_mapping_found": true,
+        "provider_backed": true
+      },
+      "away_team": {
+        "provider_team_id": 1531,
+        "provider_name": "South Africa",
+        "canonical_team_id": "RSA",
+        "database_team_id": "75c8ac60-13af-4b04-b8e5-bff8158f64d8",
+        "database_team_name": "South Africa",
+        "database_provider_team_id": 1531,
+        "canonical_mapping_found": true,
+        "database_mapping_found": true,
+        "provider_backed": true
+      },
+      "database_fixture_found": false,
+      "excluded": false,
+      "exclusion_reasons": []
+    },
+    {
+      "provider_fixture_id": 1539005,
+      "date": "2026-06-18T19:00:00+00:00",
+      "status": "NS",
+      "home_team": {
+        "provider_team_id": 15,
+        "provider_name": "Switzerland",
+        "canonical_team_id": "SUI",
+        "database_team_id": "d1e96be1-2783-4de5-8d87-b11d3a4ea456",
+        "database_team_name": "Switzerland",
+        "database_provider_team_id": 15,
+        "canonical_mapping_found": true,
+        "database_mapping_found": true,
+        "provider_backed": true
+      },
+      "away_team": {
+        "provider_team_id": 1113,
+        "provider_name": "Bosnia & Herzegovina",
+        "canonical_team_id": "BIH",
+        "database_team_id": "2fb2233f-7aaf-4074-8103-16e27e43db41",
+        "database_team_name": "Bosnia & Herzegovina",
+        "database_provider_team_id": 1113,
+        "canonical_mapping_found": true,
+        "database_mapping_found": true,
+        "provider_backed": true
+      },
+      "database_fixture_found": false,
+      "excluded": false,
+      "exclusion_reasons": []
+    },
+    {
+      "provider_fixture_id": 1489387,
+      "date": "2026-06-18T22:00:00+00:00",
+      "status": "NS",
+      "home_team": {
+        "provider_team_id": 5529,
+        "provider_name": "Canada",
+        "canonical_team_id": "CAN",
+        "database_team_id": "3323e185-0641-46a8-9d45-34f207ca4e4a",
+        "database_team_name": "Canada",
+        "database_provider_team_id": 5529,
+        "canonical_mapping_found": true,
+        "database_mapping_found": true,
+        "provider_backed": true
+      },
+      "away_team": {
+        "provider_team_id": 1569,
+        "provider_name": "Qatar",
+        "canonical_team_id": "QAT",
+        "database_team_id": "9a4233d0-efa8-4145-a8a9-c6414af48ed2",
+        "database_team_name": "Qatar",
+        "database_provider_team_id": 1569,
+        "canonical_mapping_found": true,
+        "database_mapping_found": true,
+        "provider_backed": true
+      },
+      "database_fixture_found": false,
+      "excluded": false,
+      "exclusion_reasons": []
+    },
+    {
+      "provider_fixture_id": 1489388,
+      "date": "2026-06-19T01:00:00+00:00",
+      "status": "NS",
+      "home_team": {
+        "provider_team_id": 16,
+        "provider_name": "Mexico",
+        "canonical_team_id": "MEX",
+        "database_team_id": "bf86fb9c-26ba-4f2b-aae9-d88977f12f41",
+        "database_team_name": "Mexico",
+        "database_provider_team_id": 16,
+        "canonical_mapping_found": true,
+        "database_mapping_found": true,
+        "provider_backed": true
+      },
+      "away_team": {
+        "provider_team_id": 17,
+        "provider_name": "South Korea",
+        "canonical_team_id": "KOR",
+        "database_team_id": "e9cd8335-8a47-4629-8638-33fdca6beac8",
+        "database_team_name": "South Korea",
+        "database_provider_team_id": 17,
+        "canonical_mapping_found": true,
+        "database_mapping_found": true,
+        "provider_backed": true
+      },
+      "database_fixture_found": false,
+      "excluded": false,
+      "exclusion_reasons": []
+    },
+    {
+      "provider_fixture_id": 1489391,
+      "date": "2026-06-19T19:00:00+00:00",
+      "status": "NS",
+      "home_team": {
+        "provider_team_id": 2384,
+        "provider_name": "USA",
+        "canonical_team_id": "USA",
+        "database_team_id": "08fb05c5-03c5-4ab2-ae58-5267c81f5bd1",
+        "database_team_name": "USA",
+        "database_provider_team_id": 2384,
+        "canonical_mapping_found": true,
+        "database_mapping_found": true,
+        "provider_backed": true
+      },
+      "away_team": {
+        "provider_team_id": 20,
+        "provider_name": "Australia",
+        "canonical_team_id": "AUS",
+        "database_team_id": "695c4c43-7029-4ee3-b2b3-ec45439210c2",
+        "database_team_name": "Australia",
+        "database_provider_team_id": 20,
+        "canonical_mapping_found": true,
+        "database_mapping_found": true,
+        "provider_backed": true
+      },
+      "database_fixture_found": false,
+      "excluded": false,
+      "exclusion_reasons": []
+    },
+    {
+      "provider_fixture_id": 1489390,
+      "date": "2026-06-19T22:00:00+00:00",
+      "status": "NS",
+      "home_team": {
+        "provider_team_id": 1108,
+        "provider_name": "Scotland",
+        "canonical_team_id": "SCO",
+        "database_team_id": "72598a99-db55-48c8-9180-45102f9ec31a",
+        "database_team_name": "Scotland",
+        "database_provider_team_id": 1108,
+        "canonical_mapping_found": true,
+        "database_mapping_found": true,
+        "provider_backed": true
+      },
+      "away_team": {
+        "provider_team_id": 31,
+        "provider_name": "Morocco",
+        "canonical_team_id": "MAR",
+        "database_team_id": "cd5de51d-34e3-4a79-8fbe-f43328108d3c",
+        "database_team_name": "Morocco",
+        "database_provider_team_id": 31,
+        "canonical_mapping_found": true,
+        "database_mapping_found": true,
+        "provider_backed": true
+      },
+      "database_fixture_found": false,
+      "excluded": false,
+      "exclusion_reasons": []
+    },
+    {
+      "provider_fixture_id": 1489389,
+      "date": "2026-06-20T00:30:00+00:00",
+      "status": "NS",
+      "home_team": {
+        "provider_team_id": 6,
+        "provider_name": "Brazil",
+        "canonical_team_id": "BRA",
+        "database_team_id": "c1329187-e8cb-4bc1-87a9-b84b8eb2b89d",
+        "database_team_name": "Brazil",
+        "database_provider_team_id": 6,
+        "canonical_mapping_found": true,
+        "database_mapping_found": true,
+        "provider_backed": true
+      },
+      "away_team": {
+        "provider_team_id": 2386,
+        "provider_name": "Haiti",
+        "canonical_team_id": "HAI",
+        "database_team_id": "5a6fea27-ccd2-471d-a6fb-1b36714f5ef7",
+        "database_team_name": "Haiti",
+        "database_provider_team_id": 2386,
+        "canonical_mapping_found": true,
+        "database_mapping_found": true,
+        "provider_backed": true
+      },
+      "database_fixture_found": false,
+      "excluded": false,
+      "exclusion_reasons": []
+    },
+    {
+      "provider_fixture_id": 1539006,
+      "date": "2026-06-20T03:00:00+00:00",
+      "status": "NS",
+      "home_team": {
+        "provider_team_id": 777,
+        "provider_name": "T\u00fcrkiye",
+        "canonical_team_id": "TUR",
+        "database_team_id": "05e2cccc-da61-4986-940a-3c705af501ab",
+        "database_team_name": "T\u00fcrkiye",
+        "database_provider_team_id": 777,
+        "canonical_mapping_found": true,
+        "database_mapping_found": true,
+        "provider_backed": true
+      },
+      "away_team": {
+        "provider_team_id": 2380,
+        "provider_name": "Paraguay",
+        "canonical_team_id": "PAR",
+        "database_team_id": "4271e9f0-9c49-43c6-8189-261132338c56",
+        "database_team_name": "Paraguay",
+        "database_provider_team_id": 2380,
+        "canonical_mapping_found": true,
+        "database_mapping_found": true,
+        "provider_backed": true
+      },
+      "database_fixture_found": false,
+      "excluded": false,
+      "exclusion_reasons": []
+    },
+    {
+      "provider_fixture_id": 1539007,
+      "date": "2026-06-20T17:00:00+00:00",
+      "status": "NS",
+      "home_team": {
+        "provider_team_id": 1118,
+        "provider_name": "Netherlands",
+        "canonical_team_id": "NED",
+        "database_team_id": "8f5326b5-dff9-4d8f-aa6c-ac47615ca3f9",
+        "database_team_name": "Netherlands",
+        "database_provider_team_id": 1118,
+        "canonical_mapping_found": true,
+        "database_mapping_found": true,
+        "provider_backed": true
+      },
+      "away_team": {
+        "provider_team_id": 5,
+        "provider_name": "Sweden",
+        "canonical_team_id": "SWE",
+        "database_team_id": "e5200e21-35bc-49cb-9f1b-afce8c9244a4",
+        "database_team_name": "Sweden",
+        "database_provider_team_id": 5,
+        "canonical_mapping_found": true,
+        "database_mapping_found": true,
+        "provider_backed": true
+      },
+      "database_fixture_found": false,
+      "excluded": false,
+      "exclusion_reasons": []
+    },
+    {
+      "provider_fixture_id": 1489393,
+      "date": "2026-06-20T20:00:00+00:00",
+      "status": "NS",
+      "home_team": {
+        "provider_team_id": 25,
+        "provider_name": "Germany",
+        "canonical_team_id": "GER",
+        "database_team_id": "970594ba-49c9-4f28-9650-be115d1a8504",
+        "database_team_name": "Germany",
+        "database_provider_team_id": 25,
+        "canonical_mapping_found": true,
+        "database_mapping_found": true,
+        "provider_backed": true
+      },
+      "away_team": {
+        "provider_team_id": 1501,
+        "provider_name": "Ivory Coast",
+        "canonical_team_id": "CIV",
+        "database_team_id": "cc18ee3c-65af-4842-9b26-35e2fd1756b8",
+        "database_team_name": "Ivory Coast",
+        "database_provider_team_id": 1501,
+        "canonical_mapping_found": true,
+        "database_mapping_found": true,
+        "provider_backed": true
+      },
+      "database_fixture_found": false,
+      "excluded": false,
+      "exclusion_reasons": []
+    },
+    {
+      "provider_fixture_id": 1489392,
+      "date": "2026-06-21T00:00:00+00:00",
+      "status": "NS",
+      "home_team": {
+        "provider_team_id": 2382,
+        "provider_name": "Ecuador",
+        "canonical_team_id": "ECU",
+        "database_team_id": "a0418777-7781-48bf-bdbc-f15566ca133e",
+        "database_team_name": "Ecuador",
+        "database_provider_team_id": 2382,
+        "canonical_mapping_found": true,
+        "database_mapping_found": true,
+        "provider_backed": true
+      },
+      "away_team": {
+        "provider_team_id": 5530,
+        "provider_name": "Cura\u00e7ao",
+        "canonical_team_id": "CUW",
+        "database_team_id": "09b4fc0a-26de-40b8-a189-5b47622da360",
+        "database_team_name": "Cura\u00e7ao",
+        "database_provider_team_id": 5530,
+        "canonical_mapping_found": true,
+        "database_mapping_found": true,
+        "provider_backed": true
+      },
+      "database_fixture_found": false,
+      "excluded": false,
+      "exclusion_reasons": []
+    },
+    {
+      "provider_fixture_id": 1489394,
+      "date": "2026-06-21T04:00:00+00:00",
+      "status": "NS",
+      "home_team": {
+        "provider_team_id": 28,
+        "provider_name": "Tunisia",
+        "canonical_team_id": "TUN",
+        "database_team_id": "c7ff4dfa-c7b9-49de-8ef4-4dcdebd1d6de",
+        "database_team_name": "Tunisia",
+        "database_provider_team_id": 28,
+        "canonical_mapping_found": true,
+        "database_mapping_found": true,
+        "provider_backed": true
+      },
+      "away_team": {
+        "provider_team_id": 12,
+        "provider_name": "Japan",
+        "canonical_team_id": "JPN",
+        "database_team_id": "7f170561-e42c-45d0-a4fd-6b69dd4a225d",
+        "database_team_name": "Japan",
+        "database_provider_team_id": 12,
+        "canonical_mapping_found": true,
+        "database_mapping_found": true,
+        "provider_backed": true
+      },
+      "database_fixture_found": false,
+      "excluded": false,
+      "exclusion_reasons": []
+    },
+    {
+      "provider_fixture_id": 1489397,
+      "date": "2026-06-21T16:00:00+00:00",
+      "status": "NS",
+      "home_team": {
+        "provider_team_id": 9,
+        "provider_name": "Spain",
+        "canonical_team_id": "ESP",
+        "database_team_id": "d31139a6-7e9f-48bf-8631-0a9cc0feef33",
+        "database_team_name": "Spain",
+        "database_provider_team_id": 9,
+        "canonical_mapping_found": true,
+        "database_mapping_found": true,
+        "provider_backed": true
+      },
+      "away_team": {
+        "provider_team_id": 23,
+        "provider_name": "Saudi Arabia",
+        "canonical_team_id": "KSA",
+        "database_team_id": "c550bc9d-084b-4920-8327-95bb1e5649d7",
+        "database_team_name": "Saudi Arabia",
+        "database_provider_team_id": 23,
+        "canonical_mapping_found": true,
+        "database_mapping_found": true,
+        "provider_backed": true
+      },
+      "database_fixture_found": false,
+      "excluded": false,
+      "exclusion_reasons": []
+    },
+    {
+      "provider_fixture_id": 1489395,
+      "date": "2026-06-21T19:00:00+00:00",
+      "status": "NS",
+      "home_team": {
+        "provider_team_id": 1,
+        "provider_name": "Belgium",
+        "canonical_team_id": "BEL",
+        "database_team_id": "d2316d87-ff2d-40ca-959f-ab09d47e5144",
+        "database_team_name": "Belgium",
+        "database_provider_team_id": 1,
+        "canonical_mapping_found": true,
+        "database_mapping_found": true,
+        "provider_backed": true
+      },
+      "away_team": {
+        "provider_team_id": 22,
+        "provider_name": "Iran",
+        "canonical_team_id": "IRN",
+        "database_team_id": "b07cf18a-805c-433c-a03a-88440a30c42a",
+        "database_team_name": "Iran",
+        "database_provider_team_id": 22,
+        "canonical_mapping_found": true,
+        "database_mapping_found": true,
+        "provider_backed": true
+      },
+      "database_fixture_found": false,
+      "excluded": false,
+      "exclusion_reasons": []
+    },
+    {
+      "provider_fixture_id": 1489398,
+      "date": "2026-06-21T22:00:00+00:00",
+      "status": "NS",
+      "home_team": {
+        "provider_team_id": 7,
+        "provider_name": "Uruguay",
+        "canonical_team_id": "URU",
+        "database_team_id": "8566e5db-5371-427e-bfbe-a40e15c08cb1",
+        "database_team_name": "Uruguay",
+        "database_provider_team_id": 7,
+        "canonical_mapping_found": true,
+        "database_mapping_found": true,
+        "provider_backed": true
+      },
+      "away_team": {
+        "provider_team_id": 1533,
+        "provider_name": "Cape Verde Islands",
+        "canonical_team_id": "CPV",
+        "database_team_id": "f53473ee-d795-43cd-a9bc-f3da4bc22577",
+        "database_team_name": "Cape Verde Islands",
+        "database_provider_team_id": 1533,
+        "canonical_mapping_found": true,
+        "database_mapping_found": true,
+        "provider_backed": true
+      },
+      "database_fixture_found": false,
+      "excluded": false,
+      "exclusion_reasons": []
+    },
+    {
+      "provider_fixture_id": 1489396,
+      "date": "2026-06-22T01:00:00+00:00",
+      "status": "NS",
+      "home_team": {
+        "provider_team_id": 4673,
+        "provider_name": "New Zealand",
+        "canonical_team_id": "NZL",
+        "database_team_id": null,
+        "database_team_name": null,
+        "database_provider_team_id": null,
+        "canonical_mapping_found": true,
+        "database_mapping_found": false,
+        "provider_backed": false
+      },
+      "away_team": {
+        "provider_team_id": 32,
+        "provider_name": "Egypt",
+        "canonical_team_id": "EGY",
+        "database_team_id": "b7bdb201-ee1a-4792-a4d9-4b1f49bb383a",
+        "database_team_name": "Egypt",
+        "database_provider_team_id": 32,
+        "canonical_mapping_found": true,
+        "database_mapping_found": true,
+        "provider_backed": true
+      },
+      "database_fixture_found": false,
+      "excluded": false,
+      "exclusion_reasons": []
+    },
+    {
+      "provider_fixture_id": 1489399,
+      "date": "2026-06-22T17:00:00+00:00",
+      "status": "NS",
+      "home_team": {
+        "provider_team_id": 26,
+        "provider_name": "Argentina",
+        "canonical_team_id": "ARG",
+        "database_team_id": "943f2024-ae4a-485b-bc9d-a9c13efed90b",
+        "database_team_name": "Argentina",
+        "database_provider_team_id": 26,
+        "canonical_mapping_found": true,
+        "database_mapping_found": true,
+        "provider_backed": true
+      },
+      "away_team": {
+        "provider_team_id": 775,
+        "provider_name": "Austria",
+        "canonical_team_id": "AUT",
+        "database_team_id": "04a559d3-7e35-4178-a3b7-c79c31dd50e9",
+        "database_team_name": "Austria",
+        "database_provider_team_id": 775,
+        "canonical_mapping_found": true,
+        "database_mapping_found": true,
+        "provider_backed": true
+      },
+      "database_fixture_found": false,
+      "excluded": false,
+      "exclusion_reasons": []
+    },
+    {
+      "provider_fixture_id": 1539017,
+      "date": "2026-06-22T21:00:00+00:00",
+      "status": "NS",
+      "home_team": {
+        "provider_team_id": 2,
+        "provider_name": "France",
+        "canonical_team_id": "FRA",
+        "database_team_id": "f4ca3ccb-1bbe-4de1-8d79-cc79e9ad260e",
+        "database_team_name": "France",
+        "database_provider_team_id": 2,
+        "canonical_mapping_found": true,
+        "database_mapping_found": true,
+        "provider_backed": true
+      },
+      "away_team": {
+        "provider_team_id": 1567,
+        "provider_name": "Iraq",
+        "canonical_team_id": "IRQ",
+        "database_team_id": "6ef8f346-d27a-4e02-9b75-7b1da75c085e",
+        "database_team_name": "Iraq",
+        "database_provider_team_id": 1567,
+        "canonical_mapping_found": true,
+        "database_mapping_found": true,
+        "provider_backed": true
+      },
+      "database_fixture_found": false,
+      "excluded": false,
+      "exclusion_reasons": []
+    },
+    {
+      "provider_fixture_id": 1489401,
+      "date": "2026-06-23T00:00:00+00:00",
+      "status": "NS",
+      "home_team": {
+        "provider_team_id": 1090,
+        "provider_name": "Norway",
+        "canonical_team_id": "NOR",
+        "database_team_id": "c171c185-2d2c-4126-b6f3-028aa05c18cc",
+        "database_team_name": "Norway",
+        "database_provider_team_id": 1090,
+        "canonical_mapping_found": true,
+        "database_mapping_found": true,
+        "provider_backed": true
+      },
+      "away_team": {
+        "provider_team_id": 13,
+        "provider_name": "Senegal",
+        "canonical_team_id": "SEN",
+        "database_team_id": "34c4738a-cde7-4a85-bb4c-5c4ba42b014a",
+        "database_team_name": "Senegal",
+        "database_provider_team_id": 13,
+        "canonical_mapping_found": true,
+        "database_mapping_found": true,
+        "provider_backed": true
+      },
+      "database_fixture_found": false,
+      "excluded": false,
+      "exclusion_reasons": []
+    },
+    {
+      "provider_fixture_id": 1489400,
+      "date": "2026-06-23T03:00:00+00:00",
+      "status": "NS",
+      "home_team": {
+        "provider_team_id": 1548,
+        "provider_name": "Jordan",
+        "canonical_team_id": "JOR",
+        "database_team_id": "1be419c7-31d5-49f5-b575-0274da222676",
+        "database_team_name": "Jordan",
+        "database_provider_team_id": 1548,
+        "canonical_mapping_found": true,
+        "database_mapping_found": true,
+        "provider_backed": true
+      },
+      "away_team": {
+        "provider_team_id": 1532,
+        "provider_name": "Algeria",
+        "canonical_team_id": "ALG",
+        "database_team_id": "4242e3d6-20b5-4308-bc9c-515b488efbce",
+        "database_team_name": "Algeria",
+        "database_provider_team_id": 1532,
+        "canonical_mapping_found": true,
+        "database_mapping_found": true,
+        "provider_backed": true
+      },
+      "database_fixture_found": false,
+      "excluded": false,
+      "exclusion_reasons": []
+    },
+    {
+      "provider_fixture_id": 1489404,
+      "date": "2026-06-23T17:00:00+00:00",
+      "status": "NS",
+      "home_team": {
+        "provider_team_id": 27,
+        "provider_name": "Portugal",
+        "canonical_team_id": "POR",
+        "database_team_id": "bb76c0e7-44bb-433b-8382-fdcad36178ae",
+        "database_team_name": "Portugal",
+        "database_provider_team_id": 27,
+        "canonical_mapping_found": true,
+        "database_mapping_found": true,
+        "provider_backed": true
+      },
+      "away_team": {
+        "provider_team_id": 1568,
+        "provider_name": "Uzbekistan",
+        "canonical_team_id": "UZB",
+        "database_team_id": "83e5d072-c76a-40f6-b738-d8182d4126ce",
+        "database_team_name": "Uzbekistan",
+        "database_provider_team_id": 1568,
+        "canonical_mapping_found": true,
+        "database_mapping_found": true,
+        "provider_backed": true
+      },
+      "database_fixture_found": false,
+      "excluded": false,
+      "exclusion_reasons": []
+    },
+    {
+      "provider_fixture_id": 1489402,
+      "date": "2026-06-23T20:00:00+00:00",
+      "status": "NS",
+      "home_team": {
+        "provider_team_id": 10,
+        "provider_name": "England",
+        "canonical_team_id": "ENG",
+        "database_team_id": "81f505bd-d53f-4c62-bf8b-760d7856fefe",
+        "database_team_name": "England",
+        "database_provider_team_id": 10,
+        "canonical_mapping_found": true,
+        "database_mapping_found": true,
+        "provider_backed": true
+      },
+      "away_team": {
+        "provider_team_id": 1504,
+        "provider_name": "Ghana",
+        "canonical_team_id": "GHA",
+        "database_team_id": "76ede159-f82b-479c-8f82-af3c20f8c5d7",
+        "database_team_name": "Ghana",
+        "database_provider_team_id": 1504,
+        "canonical_mapping_found": true,
+        "database_mapping_found": true,
+        "provider_backed": true
+      },
+      "database_fixture_found": false,
+      "excluded": false,
+      "exclusion_reasons": []
+    },
+    {
+      "provider_fixture_id": 1489403,
+      "date": "2026-06-23T23:00:00+00:00",
+      "status": "NS",
+      "home_team": {
+        "provider_team_id": 11,
+        "provider_name": "Panama",
+        "canonical_team_id": "PAN",
+        "database_team_id": "b54b9bea-b2e3-4a85-803e-25e9b8a35407",
+        "database_team_name": "Panama",
+        "database_provider_team_id": 11,
+        "canonical_mapping_found": true,
+        "database_mapping_found": true,
+        "provider_backed": true
+      },
+      "away_team": {
+        "provider_team_id": 3,
+        "provider_name": "Croatia",
+        "canonical_team_id": "CRO",
+        "database_team_id": "8ba2c08f-28fd-4e35-a70d-e4aa18da3881",
+        "database_team_name": "Croatia",
+        "database_provider_team_id": 3,
+        "canonical_mapping_found": true,
+        "database_mapping_found": true,
+        "provider_backed": true
+      },
+      "database_fixture_found": false,
+      "excluded": false,
+      "exclusion_reasons": []
+    },
+    {
+      "provider_fixture_id": 1539008,
+      "date": "2026-06-24T02:00:00+00:00",
+      "status": "NS",
+      "home_team": {
+        "provider_team_id": 8,
+        "provider_name": "Colombia",
+        "canonical_team_id": "COL",
+        "database_team_id": "35cda032-cb47-447f-8a24-2a09f8287d41",
+        "database_team_name": "Colombia",
+        "database_provider_team_id": 8,
+        "canonical_mapping_found": true,
+        "database_mapping_found": true,
+        "provider_backed": true
+      },
+      "away_team": {
+        "provider_team_id": 1508,
+        "provider_name": "Congo DR",
+        "canonical_team_id": "COD",
+        "database_team_id": "3b60f912-4bd5-4afe-a7c5-989814e5fe78",
+        "database_team_name": "Congo DR",
+        "database_provider_team_id": 1508,
+        "canonical_mapping_found": true,
+        "database_mapping_found": true,
+        "provider_backed": true
+      },
+      "database_fixture_found": false,
+      "excluded": false,
+      "exclusion_reasons": []
+    },
+    {
+      "provider_fixture_id": 1489408,
+      "date": "2026-06-24T19:00:00+00:00",
+      "status": "NS",
+      "home_team": {
+        "provider_team_id": 15,
+        "provider_name": "Switzerland",
+        "canonical_team_id": "SUI",
+        "database_team_id": "d1e96be1-2783-4de5-8d87-b11d3a4ea456",
+        "database_team_name": "Switzerland",
+        "database_provider_team_id": 15,
+        "canonical_mapping_found": true,
+        "database_mapping_found": true,
+        "provider_backed": true
+      },
+      "away_team": {
+        "provider_team_id": 5529,
+        "provider_name": "Canada",
+        "canonical_team_id": "CAN",
+        "database_team_id": "3323e185-0641-46a8-9d45-34f207ca4e4a",
+        "database_team_name": "Canada",
+        "database_provider_team_id": 5529,
+        "canonical_mapping_found": true,
+        "database_mapping_found": true,
+        "provider_backed": true
+      },
+      "database_fixture_found": false,
+      "excluded": false,
+      "exclusion_reasons": []
+    },
+    {
+      "provider_fixture_id": 1539009,
+      "date": "2026-06-24T19:00:00+00:00",
+      "status": "NS",
+      "home_team": {
+        "provider_team_id": 1113,
+        "provider_name": "Bosnia & Herzegovina",
+        "canonical_team_id": "BIH",
+        "database_team_id": "2fb2233f-7aaf-4074-8103-16e27e43db41",
+        "database_team_name": "Bosnia & Herzegovina",
+        "database_provider_team_id": 1113,
+        "canonical_mapping_found": true,
+        "database_mapping_found": true,
+        "provider_backed": true
+      },
+      "away_team": {
+        "provider_team_id": 1569,
+        "provider_name": "Qatar",
+        "canonical_team_id": "QAT",
+        "database_team_id": "9a4233d0-efa8-4145-a8a9-c6414af48ed2",
+        "database_team_name": "Qatar",
+        "database_provider_team_id": 1569,
+        "canonical_mapping_found": true,
+        "database_mapping_found": true,
+        "provider_backed": true
+      },
+      "database_fixture_found": false,
+      "excluded": false,
+      "exclusion_reasons": []
+    },
+    {
+      "provider_fixture_id": 1489405,
+      "date": "2026-06-24T22:00:00+00:00",
+      "status": "NS",
+      "home_team": {
+        "provider_team_id": 31,
+        "provider_name": "Morocco",
+        "canonical_team_id": "MAR",
+        "database_team_id": "cd5de51d-34e3-4a79-8fbe-f43328108d3c",
+        "database_team_name": "Morocco",
+        "database_provider_team_id": 31,
+        "canonical_mapping_found": true,
+        "database_mapping_found": true,
+        "provider_backed": true
+      },
+      "away_team": {
+        "provider_team_id": 2386,
+        "provider_name": "Haiti",
+        "canonical_team_id": "HAI",
+        "database_team_id": "5a6fea27-ccd2-471d-a6fb-1b36714f5ef7",
+        "database_team_name": "Haiti",
+        "database_provider_team_id": 2386,
+        "canonical_mapping_found": true,
+        "database_mapping_found": true,
+        "provider_backed": true
+      },
+      "database_fixture_found": false,
+      "excluded": false,
+      "exclusion_reasons": []
+    },
+    {
+      "provider_fixture_id": 1489406,
+      "date": "2026-06-24T22:00:00+00:00",
+      "status": "NS",
+      "home_team": {
+        "provider_team_id": 1108,
+        "provider_name": "Scotland",
+        "canonical_team_id": "SCO",
+        "database_team_id": "72598a99-db55-48c8-9180-45102f9ec31a",
+        "database_team_name": "Scotland",
+        "database_provider_team_id": 1108,
+        "canonical_mapping_found": true,
+        "database_mapping_found": true,
+        "provider_backed": true
+      },
+      "away_team": {
+        "provider_team_id": 6,
+        "provider_name": "Brazil",
+        "canonical_team_id": "BRA",
+        "database_team_id": "c1329187-e8cb-4bc1-87a9-b84b8eb2b89d",
+        "database_team_name": "Brazil",
+        "database_provider_team_id": 6,
+        "canonical_mapping_found": true,
+        "database_mapping_found": true,
+        "provider_backed": true
+      },
+      "database_fixture_found": false,
+      "excluded": false,
+      "exclusion_reasons": []
+    },
+    {
+      "provider_fixture_id": 1539010,
+      "date": "2026-06-25T01:00:00+00:00",
+      "status": "NS",
+      "home_team": {
+        "provider_team_id": 770,
+        "provider_name": "Czech Republic",
+        "canonical_team_id": "CZE",
+        "database_team_id": "20f48b30-81bb-4609-a8a8-3fd1d138200d",
+        "database_team_name": "Czech Republic",
+        "database_provider_team_id": 770,
+        "canonical_mapping_found": true,
+        "database_mapping_found": true,
+        "provider_backed": true
+      },
+      "away_team": {
+        "provider_team_id": 16,
+        "provider_name": "Mexico",
+        "canonical_team_id": "MEX",
+        "database_team_id": "bf86fb9c-26ba-4f2b-aae9-d88977f12f41",
+        "database_team_name": "Mexico",
+        "database_provider_team_id": 16,
+        "canonical_mapping_found": true,
+        "database_mapping_found": true,
+        "provider_backed": true
+      },
+      "database_fixture_found": false,
+      "excluded": false,
+      "exclusion_reasons": []
+    },
+    {
+      "provider_fixture_id": 1489407,
+      "date": "2026-06-25T01:00:00+00:00",
+      "status": "NS",
+      "home_team": {
+        "provider_team_id": 1531,
+        "provider_name": "South Africa",
+        "canonical_team_id": "RSA",
+        "database_team_id": "75c8ac60-13af-4b04-b8e5-bff8158f64d8",
+        "database_team_name": "South Africa",
+        "database_provider_team_id": 1531,
+        "canonical_mapping_found": true,
+        "database_mapping_found": true,
+        "provider_backed": true
+      },
+      "away_team": {
+        "provider_team_id": 17,
+        "provider_name": "South Korea",
+        "canonical_team_id": "KOR",
+        "database_team_id": "e9cd8335-8a47-4629-8638-33fdca6beac8",
+        "database_team_name": "South Korea",
+        "database_provider_team_id": 17,
+        "canonical_mapping_found": true,
+        "database_mapping_found": true,
+        "provider_backed": true
+      },
+      "database_fixture_found": false,
+      "excluded": false,
+      "exclusion_reasons": []
+    },
+    {
+      "provider_fixture_id": 1489410,
+      "date": "2026-06-25T20:00:00+00:00",
+      "status": "NS",
+      "home_team": {
+        "provider_team_id": 2382,
+        "provider_name": "Ecuador",
+        "canonical_team_id": "ECU",
+        "database_team_id": "a0418777-7781-48bf-bdbc-f15566ca133e",
+        "database_team_name": "Ecuador",
+        "database_provider_team_id": 2382,
+        "canonical_mapping_found": true,
+        "database_mapping_found": true,
+        "provider_backed": true
+      },
+      "away_team": {
+        "provider_team_id": 25,
+        "provider_name": "Germany",
+        "canonical_team_id": "GER",
+        "database_team_id": "970594ba-49c9-4f28-9650-be115d1a8504",
+        "database_team_name": "Germany",
+        "database_provider_team_id": 25,
+        "canonical_mapping_found": true,
+        "database_mapping_found": true,
+        "provider_backed": true
+      },
+      "database_fixture_found": false,
+      "excluded": false,
+      "exclusion_reasons": []
+    },
+    {
+      "provider_fixture_id": 1489409,
+      "date": "2026-06-25T20:00:00+00:00",
+      "status": "NS",
+      "home_team": {
+        "provider_team_id": 5530,
+        "provider_name": "Cura\u00e7ao",
+        "canonical_team_id": "CUW",
+        "database_team_id": "09b4fc0a-26de-40b8-a189-5b47622da360",
+        "database_team_name": "Cura\u00e7ao",
+        "database_provider_team_id": 5530,
+        "canonical_mapping_found": true,
+        "database_mapping_found": true,
+        "provider_backed": true
+      },
+      "away_team": {
+        "provider_team_id": 1501,
+        "provider_name": "Ivory Coast",
+        "canonical_team_id": "CIV",
+        "database_team_id": "cc18ee3c-65af-4842-9b26-35e2fd1756b8",
+        "database_team_name": "Ivory Coast",
+        "database_provider_team_id": 1501,
+        "canonical_mapping_found": true,
+        "database_mapping_found": true,
+        "provider_backed": true
+      },
+      "database_fixture_found": false,
+      "excluded": false,
+      "exclusion_reasons": []
+    },
+    {
+      "provider_fixture_id": 1539011,
+      "date": "2026-06-25T23:00:00+00:00",
+      "status": "NS",
+      "home_team": {
+        "provider_team_id": 12,
+        "provider_name": "Japan",
+        "canonical_team_id": "JPN",
+        "database_team_id": "7f170561-e42c-45d0-a4fd-6b69dd4a225d",
+        "database_team_name": "Japan",
+        "database_provider_team_id": 12,
+        "canonical_mapping_found": true,
+        "database_mapping_found": true,
+        "provider_backed": true
+      },
+      "away_team": {
+        "provider_team_id": 5,
+        "provider_name": "Sweden",
+        "canonical_team_id": "SWE",
+        "database_team_id": "e5200e21-35bc-49cb-9f1b-afce8c9244a4",
+        "database_team_name": "Sweden",
+        "database_provider_team_id": 5,
+        "canonical_mapping_found": true,
+        "database_mapping_found": true,
+        "provider_backed": true
+      },
+      "database_fixture_found": false,
+      "excluded": false,
+      "exclusion_reasons": []
+    },
+    {
+      "provider_fixture_id": 1489412,
+      "date": "2026-06-25T23:00:00+00:00",
+      "status": "NS",
+      "home_team": {
+        "provider_team_id": 28,
+        "provider_name": "Tunisia",
+        "canonical_team_id": "TUN",
+        "database_team_id": "c7ff4dfa-c7b9-49de-8ef4-4dcdebd1d6de",
+        "database_team_name": "Tunisia",
+        "database_provider_team_id": 28,
+        "canonical_mapping_found": true,
+        "database_mapping_found": true,
+        "provider_backed": true
+      },
+      "away_team": {
+        "provider_team_id": 1118,
+        "provider_name": "Netherlands",
+        "canonical_team_id": "NED",
+        "database_team_id": "8f5326b5-dff9-4d8f-aa6c-ac47615ca3f9",
+        "database_team_name": "Netherlands",
+        "database_provider_team_id": 1118,
+        "canonical_mapping_found": true,
+        "database_mapping_found": true,
+        "provider_backed": true
+      },
+      "database_fixture_found": false,
+      "excluded": false,
+      "exclusion_reasons": []
+    },
+    {
+      "provider_fixture_id": 1539012,
+      "date": "2026-06-26T02:00:00+00:00",
+      "status": "NS",
+      "home_team": {
+        "provider_team_id": 777,
+        "provider_name": "T\u00fcrkiye",
+        "canonical_team_id": "TUR",
+        "database_team_id": "05e2cccc-da61-4986-940a-3c705af501ab",
+        "database_team_name": "T\u00fcrkiye",
+        "database_provider_team_id": 777,
+        "canonical_mapping_found": true,
+        "database_mapping_found": true,
+        "provider_backed": true
+      },
+      "away_team": {
+        "provider_team_id": 2384,
+        "provider_name": "USA",
+        "canonical_team_id": "USA",
+        "database_team_id": "08fb05c5-03c5-4ab2-ae58-5267c81f5bd1",
+        "database_team_name": "USA",
+        "database_provider_team_id": 2384,
+        "canonical_mapping_found": true,
+        "database_mapping_found": true,
+        "provider_backed": true
+      },
+      "database_fixture_found": false,
+      "excluded": false,
+      "exclusion_reasons": []
+    },
+    {
+      "provider_fixture_id": 1489411,
+      "date": "2026-06-26T02:00:00+00:00",
+      "status": "NS",
+      "home_team": {
+        "provider_team_id": 2380,
+        "provider_name": "Paraguay",
+        "canonical_team_id": "PAR",
+        "database_team_id": "4271e9f0-9c49-43c6-8189-261132338c56",
+        "database_team_name": "Paraguay",
+        "database_provider_team_id": 2380,
+        "canonical_mapping_found": true,
+        "database_mapping_found": true,
+        "provider_backed": true
+      },
+      "away_team": {
+        "provider_team_id": 20,
+        "provider_name": "Australia",
+        "canonical_team_id": "AUS",
+        "database_team_id": "695c4c43-7029-4ee3-b2b3-ec45439210c2",
+        "database_team_name": "Australia",
+        "database_provider_team_id": 20,
+        "canonical_mapping_found": true,
+        "database_mapping_found": true,
+        "provider_backed": true
+      },
+      "database_fixture_found": false,
+      "excluded": false,
+      "exclusion_reasons": []
+    },
+    {
+      "provider_fixture_id": 1539074,
+      "date": "2026-06-26T19:00:00+00:00",
+      "status": "NS",
+      "home_team": {
+        "provider_team_id": 13,
+        "provider_name": "Senegal",
+        "canonical_team_id": "SEN",
+        "database_team_id": "34c4738a-cde7-4a85-bb4c-5c4ba42b014a",
+        "database_team_name": "Senegal",
+        "database_provider_team_id": 13,
+        "canonical_mapping_found": true,
+        "database_mapping_found": true,
+        "provider_backed": true
+      },
+      "away_team": {
+        "provider_team_id": 1567,
+        "provider_name": "Iraq",
+        "canonical_team_id": "IRQ",
+        "database_team_id": "6ef8f346-d27a-4e02-9b75-7b1da75c085e",
+        "database_team_name": "Iraq",
+        "database_provider_team_id": 1567,
+        "canonical_mapping_found": true,
+        "database_mapping_found": true,
+        "provider_backed": true
+      },
+      "database_fixture_found": false,
+      "excluded": false,
+      "exclusion_reasons": []
+    },
+    {
+      "provider_fixture_id": 1489416,
+      "date": "2026-06-26T19:00:00+00:00",
+      "status": "NS",
+      "home_team": {
+        "provider_team_id": 1090,
+        "provider_name": "Norway",
+        "canonical_team_id": "NOR",
+        "database_team_id": "c171c185-2d2c-4126-b6f3-028aa05c18cc",
+        "database_team_name": "Norway",
+        "database_provider_team_id": 1090,
+        "canonical_mapping_found": true,
+        "database_mapping_found": true,
+        "provider_backed": true
+      },
+      "away_team": {
+        "provider_team_id": 2,
+        "provider_name": "France",
+        "canonical_team_id": "FRA",
+        "database_team_id": "f4ca3ccb-1bbe-4de1-8d79-cc79e9ad260e",
+        "database_team_name": "France",
+        "database_provider_team_id": 2,
+        "canonical_mapping_found": true,
+        "database_mapping_found": true,
+        "provider_backed": true
+      },
+      "database_fixture_found": false,
+      "excluded": false,
+      "exclusion_reasons": []
+    },
+    {
+      "provider_fixture_id": 1489417,
+      "date": "2026-06-27T00:00:00+00:00",
+      "status": "NS",
+      "home_team": {
+        "provider_team_id": 7,
+        "provider_name": "Uruguay",
+        "canonical_team_id": "URU",
+        "database_team_id": "8566e5db-5371-427e-bfbe-a40e15c08cb1",
+        "database_team_name": "Uruguay",
+        "database_provider_team_id": 7,
+        "canonical_mapping_found": true,
+        "database_mapping_found": true,
+        "provider_backed": true
+      },
+      "away_team": {
+        "provider_team_id": 9,
+        "provider_name": "Spain",
+        "canonical_team_id": "ESP",
+        "database_team_id": "d31139a6-7e9f-48bf-8631-0a9cc0feef33",
+        "database_team_name": "Spain",
+        "database_provider_team_id": 9,
+        "canonical_mapping_found": true,
+        "database_mapping_found": true,
+        "provider_backed": true
+      },
+      "database_fixture_found": false,
+      "excluded": false,
+      "exclusion_reasons": []
+    },
+    {
+      "provider_fixture_id": 1489413,
+      "date": "2026-06-27T00:00:00+00:00",
+      "status": "NS",
+      "home_team": {
+        "provider_team_id": 1533,
+        "provider_name": "Cape Verde Islands",
+        "canonical_team_id": "CPV",
+        "database_team_id": "f53473ee-d795-43cd-a9bc-f3da4bc22577",
+        "database_team_name": "Cape Verde Islands",
+        "database_provider_team_id": 1533,
+        "canonical_mapping_found": true,
+        "database_mapping_found": true,
+        "provider_backed": true
+      },
+      "away_team": {
+        "provider_team_id": 23,
+        "provider_name": "Saudi Arabia",
+        "canonical_team_id": "KSA",
+        "database_team_id": "c550bc9d-084b-4920-8327-95bb1e5649d7",
+        "database_team_name": "Saudi Arabia",
+        "database_provider_team_id": 23,
+        "canonical_mapping_found": true,
+        "database_mapping_found": true,
+        "provider_backed": true
+      },
+      "database_fixture_found": false,
+      "excluded": false,
+      "exclusion_reasons": []
+    },
+    {
+      "provider_fixture_id": 1489414,
+      "date": "2026-06-27T03:00:00+00:00",
+      "status": "NS",
+      "home_team": {
+        "provider_team_id": 32,
+        "provider_name": "Egypt",
+        "canonical_team_id": "EGY",
+        "database_team_id": "b7bdb201-ee1a-4792-a4d9-4b1f49bb383a",
+        "database_team_name": "Egypt",
+        "database_provider_team_id": 32,
+        "canonical_mapping_found": true,
+        "database_mapping_found": true,
+        "provider_backed": true
+      },
+      "away_team": {
+        "provider_team_id": 22,
+        "provider_name": "Iran",
+        "canonical_team_id": "IRN",
+        "database_team_id": "b07cf18a-805c-433c-a03a-88440a30c42a",
+        "database_team_name": "Iran",
+        "database_provider_team_id": 22,
+        "canonical_mapping_found": true,
+        "database_mapping_found": true,
+        "provider_backed": true
+      },
+      "database_fixture_found": false,
+      "excluded": false,
+      "exclusion_reasons": []
+    },
+    {
+      "provider_fixture_id": 1489415,
+      "date": "2026-06-27T03:00:00+00:00",
+      "status": "NS",
+      "home_team": {
+        "provider_team_id": 4673,
+        "provider_name": "New Zealand",
+        "canonical_team_id": "NZL",
+        "database_team_id": null,
+        "database_team_name": null,
+        "database_provider_team_id": null,
+        "canonical_mapping_found": true,
+        "database_mapping_found": false,
+        "provider_backed": false
+      },
+      "away_team": {
+        "provider_team_id": 1,
+        "provider_name": "Belgium",
+        "canonical_team_id": "BEL",
+        "database_team_id": "d2316d87-ff2d-40ca-959f-ab09d47e5144",
+        "database_team_name": "Belgium",
+        "database_provider_team_id": 1,
+        "canonical_mapping_found": true,
+        "database_mapping_found": true,
+        "provider_backed": true
+      },
+      "database_fixture_found": false,
+      "excluded": false,
+      "exclusion_reasons": []
+    },
+    {
+      "provider_fixture_id": 1489420,
+      "date": "2026-06-27T21:00:00+00:00",
+      "status": "NS",
+      "home_team": {
+        "provider_team_id": 3,
+        "provider_name": "Croatia",
+        "canonical_team_id": "CRO",
+        "database_team_id": "8ba2c08f-28fd-4e35-a70d-e4aa18da3881",
+        "database_team_name": "Croatia",
+        "database_provider_team_id": 3,
+        "canonical_mapping_found": true,
+        "database_mapping_found": true,
+        "provider_backed": true
+      },
+      "away_team": {
+        "provider_team_id": 1504,
+        "provider_name": "Ghana",
+        "canonical_team_id": "GHA",
+        "database_team_id": "76ede159-f82b-479c-8f82-af3c20f8c5d7",
+        "database_team_name": "Ghana",
+        "database_provider_team_id": 1504,
+        "canonical_mapping_found": true,
+        "database_mapping_found": true,
+        "provider_backed": true
+      },
+      "database_fixture_found": false,
+      "excluded": false,
+      "exclusion_reasons": []
+    },
+    {
+      "provider_fixture_id": 1489422,
+      "date": "2026-06-27T21:00:00+00:00",
+      "status": "NS",
+      "home_team": {
+        "provider_team_id": 11,
+        "provider_name": "Panama",
+        "canonical_team_id": "PAN",
+        "database_team_id": "b54b9bea-b2e3-4a85-803e-25e9b8a35407",
+        "database_team_name": "Panama",
+        "database_provider_team_id": 11,
+        "canonical_mapping_found": true,
+        "database_mapping_found": true,
+        "provider_backed": true
+      },
+      "away_team": {
+        "provider_team_id": 10,
+        "provider_name": "England",
+        "canonical_team_id": "ENG",
+        "database_team_id": "81f505bd-d53f-4c62-bf8b-760d7856fefe",
+        "database_team_name": "England",
+        "database_provider_team_id": 10,
+        "canonical_mapping_found": true,
+        "database_mapping_found": true,
+        "provider_backed": true
+      },
+      "database_fixture_found": false,
+      "excluded": false,
+      "exclusion_reasons": []
+    },
+    {
+      "provider_fixture_id": 1489419,
+      "date": "2026-06-27T23:30:00+00:00",
+      "status": "NS",
+      "home_team": {
+        "provider_team_id": 8,
+        "provider_name": "Colombia",
+        "canonical_team_id": "COL",
+        "database_team_id": "35cda032-cb47-447f-8a24-2a09f8287d41",
+        "database_team_name": "Colombia",
+        "database_provider_team_id": 8,
+        "canonical_mapping_found": true,
+        "database_mapping_found": true,
+        "provider_backed": true
+      },
+      "away_team": {
+        "provider_team_id": 27,
+        "provider_name": "Portugal",
+        "canonical_team_id": "POR",
+        "database_team_id": "bb76c0e7-44bb-433b-8382-fdcad36178ae",
+        "database_team_name": "Portugal",
+        "database_provider_team_id": 27,
+        "canonical_mapping_found": true,
+        "database_mapping_found": true,
+        "provider_backed": true
+      },
+      "database_fixture_found": false,
+      "excluded": false,
+      "exclusion_reasons": []
+    },
+    {
+      "provider_fixture_id": 1539013,
+      "date": "2026-06-27T23:30:00+00:00",
+      "status": "NS",
+      "home_team": {
+        "provider_team_id": 1508,
+        "provider_name": "Congo DR",
+        "canonical_team_id": "COD",
+        "database_team_id": "3b60f912-4bd5-4afe-a7c5-989814e5fe78",
+        "database_team_name": "Congo DR",
+        "database_provider_team_id": 1508,
+        "canonical_mapping_found": true,
+        "database_mapping_found": true,
+        "provider_backed": true
+      },
+      "away_team": {
+        "provider_team_id": 1568,
+        "provider_name": "Uzbekistan",
+        "canonical_team_id": "UZB",
+        "database_team_id": "83e5d072-c76a-40f6-b738-d8182d4126ce",
+        "database_team_name": "Uzbekistan",
+        "database_provider_team_id": 1568,
+        "canonical_mapping_found": true,
+        "database_mapping_found": true,
+        "provider_backed": true
+      },
+      "database_fixture_found": false,
+      "excluded": false,
+      "exclusion_reasons": []
+    },
+    {
+      "provider_fixture_id": 1489418,
+      "date": "2026-06-28T02:00:00+00:00",
+      "status": "NS",
+      "home_team": {
+        "provider_team_id": 1532,
+        "provider_name": "Algeria",
+        "canonical_team_id": "ALG",
+        "database_team_id": "4242e3d6-20b5-4308-bc9c-515b488efbce",
+        "database_team_name": "Algeria",
+        "database_provider_team_id": 1532,
+        "canonical_mapping_found": true,
+        "database_mapping_found": true,
+        "provider_backed": true
+      },
+      "away_team": {
+        "provider_team_id": 775,
+        "provider_name": "Austria",
+        "canonical_team_id": "AUT",
+        "database_team_id": "04a559d3-7e35-4178-a3b7-c79c31dd50e9",
+        "database_team_name": "Austria",
+        "database_provider_team_id": 775,
+        "canonical_mapping_found": true,
+        "database_mapping_found": true,
+        "provider_backed": true
+      },
+      "database_fixture_found": false,
+      "excluded": false,
+      "exclusion_reasons": []
+    },
+    {
+      "provider_fixture_id": 1489421,
+      "date": "2026-06-28T02:00:00+00:00",
+      "status": "NS",
+      "home_team": {
+        "provider_team_id": 1548,
+        "provider_name": "Jordan",
+        "canonical_team_id": "JOR",
+        "database_team_id": "1be419c7-31d5-49f5-b575-0274da222676",
+        "database_team_name": "Jordan",
+        "database_provider_team_id": 1548,
+        "canonical_mapping_found": true,
+        "database_mapping_found": true,
+        "provider_backed": true
+      },
+      "away_team": {
+        "provider_team_id": 26,
+        "provider_name": "Argentina",
+        "canonical_team_id": "ARG",
+        "database_team_id": "943f2024-ae4a-485b-bc9d-a9c13efed90b",
+        "database_team_name": "Argentina",
+        "database_provider_team_id": 26,
+        "canonical_mapping_found": true,
+        "database_mapping_found": true,
+        "provider_backed": true
+      },
+      "database_fixture_found": false,
+      "excluded": false,
+      "exclusion_reasons": []
+    }
+  ],
+  "diagnosis": "API-Football returned 72 fixtures and 72 pass date/status checks, but 72 of those are absent from the database as rows with api_football_fixture_id. Provider-only research targets remain eligible and use canonical team codes.",
+  "target_selection": {
+    "selected_fixtures": 1,
+    "selected_teams": 2,
+    "max_fixtures": 1,
+    "max_teams": 2,
+    "fixtures": [
+      {
+        "provider_fixture_id": 1489369,
+        "fixture_id": null,
+        "canonical_home_team_code": "MEX",
+        "canonical_away_team_code": "RSA",
+        "target_source": "provider_schedule"
+      }
+    ]
+  },
+  "selection_explanation": "Research targets were selected from the merged provider schedule and database match set."
+}

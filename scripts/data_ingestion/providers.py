@@ -31,6 +31,12 @@ class RateLimitError(RuntimeError):
         self.retry_after = retry_after
 
 
+class RequestLimitError(RuntimeError):
+    def __init__(self, max_requests: int) -> None:
+        super().__init__(f"API-Football request limit reached ({max_requests})")
+        self.max_requests = max_requests
+
+
 class SportsProvider(ABC):
     """Normalized interface implemented by every sports data provider."""
 
@@ -45,6 +51,15 @@ class SportsProvider(ABC):
         self,
         date_from: str,
         date_to: str,
+        league_id: int,
+        season: int,
+    ) -> list[dict[str, Any]]:
+        raise NotImplementedError
+
+    @abstractmethod
+    def get_fixtures(
+        self,
+        *,
         league_id: int,
         season: int,
     ) -> list[dict[str, Any]]:
@@ -108,6 +123,8 @@ class ApiFootballProvider(SportsProvider):
         league_id: int = 1,
         season: int | None = None,
         request_delay_seconds: float = 1.0,
+        request_timeout_seconds: float = 30.0,
+        max_requests: int | None = None,
         logger: logging.Logger | None = None,
         opener: Any = urlopen,
         sleep: Any = time.sleep,
@@ -117,11 +134,18 @@ class ApiFootballProvider(SportsProvider):
             raise ValueError("API_FOOTBALL_KEY is required")
         if request_delay_seconds < 0:
             raise ValueError("API_FOOTBALL_REQUEST_DELAY_SECONDS cannot be negative")
+        if request_timeout_seconds <= 0:
+            raise ValueError("API_FOOTBALL_REQUEST_TIMEOUT_SECONDS must be positive")
+        if max_requests is not None and max_requests < 1:
+            raise ValueError("max_requests must be at least 1")
         self.api_key = api_key
         self.base_url = base_url.rstrip("/")
         self.league_id = league_id
         self.season = season
         self.request_delay_seconds = request_delay_seconds
+        self.request_timeout_seconds = request_timeout_seconds
+        self.max_requests = max_requests
+        self.request_count = 0
         self.logger = logger or logging.getLogger(__name__)
         self.tls_context = ssl.create_default_context(cafile=certifi.where())
         self.opener = opener
@@ -142,10 +166,20 @@ class ApiFootballProvider(SportsProvider):
             self.sleep(remaining)
 
     def _request(self, path: str, **params: object) -> list[dict[str, Any]]:
+        if self.max_requests is not None and self.request_count >= self.max_requests:
+            raise RequestLimitError(self.max_requests)
         query = urlencode({key: value for key, value in params.items() if value is not None})
         url = f"{self.base_url}{path}?{query}"
         self._wait_for_rate_limit()
-        self.logger.info("[provider:api_football] GET %s?%s", path, query)
+        self.request_count += 1
+        self.logger.info(
+            "[provider:api_football] REQUEST %d%s GET %s?%s timeout=%.1fs",
+            self.request_count,
+            f"/{self.max_requests}" if self.max_requests is not None else "",
+            path,
+            query,
+            self.request_timeout_seconds,
+        )
         request = Request(
             url,
             headers={
@@ -156,7 +190,7 @@ class ApiFootballProvider(SportsProvider):
         try:
             with self.opener(
                 request,
-                timeout=30,
+                timeout=self.request_timeout_seconds,
                 context=self.tls_context,
             ) as response:
                 payload = json.loads(response.read())
@@ -240,6 +274,44 @@ class ApiFootballProvider(SportsProvider):
             },
         )
         return self._normalize_completed_matches(response, league_id)
+
+    def get_fixtures(
+        self,
+        *,
+        league_id: int,
+        season: int,
+    ) -> list[dict[str, Any]]:
+        rows = []
+        for item in self._request(
+            "/fixtures",
+            league=league_id,
+            season=season,
+        ):
+            fixture = item.get("fixture") or {}
+            teams = item.get("teams") or {}
+            home = teams.get("home") or {}
+            away = teams.get("away") or {}
+            if (
+                fixture.get("id") is None
+                or home.get("id") is None
+                or away.get("id") is None
+            ):
+                continue
+            rows.append(
+                {
+                    "provider_fixture_id": int(fixture["id"]),
+                    "date": fixture.get("date"),
+                    "status": (fixture.get("status") or {}).get("short"),
+                    "competition": (item.get("league") or {}).get("name"),
+                    "league_id": (item.get("league") or {}).get("id"),
+                    "season": (item.get("league") or {}).get("season"),
+                    "round": (item.get("league") or {}).get("round"),
+                    "home_team": _team(home),
+                    "away_team": _team(away),
+                    "raw": item,
+                }
+            )
+        return rows
 
     def get_competitions(self) -> list[dict[str, Any]]:
         competitions = []
@@ -536,6 +608,15 @@ class SampleSportsProvider(SportsProvider):
             if date_from <= match["date"][:10] <= date_to
         ]
 
+    def get_fixtures(
+        self,
+        *,
+        league_id: int,
+        season: int,
+    ) -> list[dict[str, Any]]:
+        del league_id, season
+        return [self._convert(match) for match in self.payload["matches"]]
+
     def get_fixture_statistics(self, fixture_id: int) -> list[dict[str, Any]]:
         return self._convert(self.payload["statistics"].get(str(fixture_id), []))
 
@@ -610,11 +691,16 @@ def create_sports_provider(
     season_value = env.get("API_FOOTBALL_SEASON")
     season = int(season_value) if season_value else None
     request_delay = float(env.get("API_FOOTBALL_REQUEST_DELAY_SECONDS", "1.0"))
+    request_timeout = float(
+        env.get("API_FOOTBALL_REQUEST_TIMEOUT_SECONDS", "30.0")
+    )
     logger.info(
-        "[provider] Fixture filter: league=%s, season=%s, request delay=%.2fs",
+        "[provider] Fixture filter: league=%s, season=%s, request delay=%.2fs, "
+        "request timeout=%.2fs",
         league_id,
         season or "date year",
         request_delay,
+        request_timeout,
     )
     return ApiFootballProvider(
         api_key=api_key,
@@ -625,5 +711,6 @@ def create_sports_provider(
         league_id=league_id,
         season=season,
         request_delay_seconds=request_delay,
+        request_timeout_seconds=request_timeout,
         logger=logger,
     )
