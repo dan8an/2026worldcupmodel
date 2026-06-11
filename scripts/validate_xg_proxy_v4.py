@@ -131,9 +131,22 @@ class XgProxyValidationRow:
     shot_quality_signal: float
     defensive_suppression_signal: float
     all_features_signal: float
+    v4_no_rest: ProbabilityVector | None = None
     match_id: Any | None = None
     home_team_id: Any | None = None
     away_team_id: Any | None = None
+    home_elo: float = 1500.0
+    away_elo: float = 1500.0
+    home_attack_rating: float = 50.0
+    away_attack_rating: float = 50.0
+    home_defense_rating: float = 50.0
+    away_defense_rating: float = 50.0
+    home_rating_sample: int = 0
+    away_rating_sample: int = 0
+    home_rating_age_days: int | None = None
+    away_rating_age_days: int | None = None
+    home_shot_volume_age_days: int | None = None
+    away_shot_volume_age_days: int | None = None
 
 
 def _number(value: Any) -> float | None:
@@ -199,6 +212,31 @@ def _v3_probabilities(
     )
 
 
+def _v4_no_rest_probabilities(
+    home_history: TeamHistory,
+    away_history: TeamHistory,
+) -> ProbabilityVector:
+    home_rating = home_history.rating()
+    away_rating = away_history.rating()
+    elo = _elo_probabilities(home_history.elo, away_history.elo)
+    attack = _difference(
+        float(home_rating["attack_rating"]),
+        float(away_rating["attack_rating"]),
+    )
+    defense = _difference(
+        float(home_rating["defense_rating"]),
+        float(away_rating["defense_rating"]),
+    )
+    tilt = 0.15 * attack + 0.30 * defense
+    return normalize_probabilities(
+        (
+            elo[0] * math.exp(tilt),
+            elo[1] * 1.15,
+            elo[2] * math.exp(-tilt),
+        )
+    )
+
+
 def _apply_signal(
     probabilities: ProbabilityVector,
     signal: float,
@@ -249,6 +287,18 @@ def build_validation_rows(
                 continue
             home_features = calculate_chance_quality_rating(stat_history[home_id])
             away_features = calculate_chance_quality_rating(stat_history[away_id])
+            home_rating = home_history.rating()
+            away_rating = away_history.rating()
+            home_age = (
+                (played_on - home_history.last_played_on).days
+                if home_history.last_played_on
+                else None
+            )
+            away_age = (
+                (played_on - away_history.last_played_on).days
+                if away_history.last_played_on
+                else None
+            )
             volume = _difference(
                 home_features["shot_volume_rating"],
                 away_features["shot_volume_rating"],
@@ -299,6 +349,9 @@ def build_validation_rows(
                     played_on=played_on,
                     outcome=_outcome(match["home_goals"], match["away_goals"]),
                     v3=_v3_probabilities(home_history, away_history, played_on),
+                    v4_no_rest=_v4_no_rest_probabilities(
+                        home_history, away_history
+                    ),
                     shot_volume_signal=volume,
                     home_shot_volume_rating=home_features[
                         "shot_volume_rating"
@@ -316,6 +369,18 @@ def build_validation_rows(
                     match_id=match.get("match_id"),
                     home_team_id=home_id,
                     away_team_id=away_id,
+                    home_elo=home_history.elo,
+                    away_elo=away_history.elo,
+                    home_attack_rating=float(home_rating["attack_rating"]),
+                    away_attack_rating=float(away_rating["attack_rating"]),
+                    home_defense_rating=float(home_rating["defense_rating"]),
+                    away_defense_rating=float(away_rating["defense_rating"]),
+                    home_rating_sample=home_history.matches,
+                    away_rating_sample=away_history.matches,
+                    home_rating_age_days=home_age,
+                    away_rating_age_days=away_age,
+                    home_shot_volume_age_days=home_age,
+                    away_shot_volume_age_days=away_age,
                 )
             )
 
@@ -398,7 +463,11 @@ def _metrics(
 ) -> dict[str, Any]:
     return evaluate(
         [
-            _apply_signal(row.v3, _signal(row, ablation), weight)
+            _apply_signal(
+                row.v4_no_rest or row.v3,
+                _signal(row, ablation),
+                weight,
+            )
             for row in rows
         ],
         [row.outcome for row in rows],

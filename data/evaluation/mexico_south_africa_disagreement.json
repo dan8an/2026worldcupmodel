@@ -1,0 +1,1286 @@
+{
+  "generated_at": "2026-06-11T21:29:53.967719+00:00",
+  "fixture": {
+    "canonical_match_id": "WC26-001",
+    "home": "Mexico",
+    "away": "South Africa",
+    "kickoff_date": "2026-06-11"
+  },
+  "production_changed": false,
+  "market_used_for_training": false,
+  "executive_conclusion": "The disagreement is caused primarily by sparse and asymmetric database match coverage, unshrunk small-sample goal-rate features, and an uncapped rest feature. South Africa is represented by recent qualifiers while Mexico's database series stops in July 2024.",
+  "input_audit": {
+    "MEX": {
+      "database_team_id": "bf86fb9c-26ba-4f2b-aae9-d88977f12f41",
+      "team_rating": {
+        "source": "database_current",
+        "elo": 1491.03,
+        "attack_rating": 20.0,
+        "defense_rating": 66.67,
+        "form_rating": 46.67,
+        "matches_played": 10,
+        "goals_for": 6,
+        "goals_against": 10,
+        "rated_at": "2026-06-11T16:04:47.990774+00:00",
+        "formula_version": "transparent-v1"
+      },
+      "canonical_fifa_rank": 15,
+      "canonical_prior_elo": 1552.5,
+      "shot_volume": {
+        "shot_volume_rating": 99.375,
+        "sample_matches": 10
+      },
+      "latest_database_match_date": "2024-07-01",
+      "rest_days_to_fixture": 710,
+      "source_matches": [
+        {
+          "id": "4af54612-0782-4941-905d-fd88fc81eca0",
+          "match_date": "2018-06-17T15:00:00+00:00",
+          "home_team": "Germany",
+          "away_team": "Mexico",
+          "home_score": 0,
+          "away_score": 1,
+          "tournament_stage": "Group Stage - 1",
+          "provider_name": "api_football",
+          "is_home": false,
+          "goals": 1,
+          "shots": 13,
+          "shots_on_target": 4,
+          "source_name": "api_football",
+          "source_match_key": "135786",
+          "competition": "World Cup"
+        },
+        {
+          "id": "b7d18ba6-1001-4787-ba76-24b4c0dde0d2",
+          "match_date": "2018-06-23T15:00:00+00:00",
+          "home_team": "South Korea",
+          "away_team": "Mexico",
+          "home_score": 1,
+          "away_score": 2,
+          "tournament_stage": "Group Stage - 2",
+          "provider_name": "api_football",
+          "is_home": false,
+          "goals": 2,
+          "shots": 13,
+          "shots_on_target": 5,
+          "source_name": "api_football",
+          "source_match_key": "135804",
+          "competition": "World Cup"
+        },
+        {
+          "id": "bc0e9867-457f-4d89-bbd5-7faab8b91aa3",
+          "match_date": "2018-06-27T14:00:00+00:00",
+          "home_team": "Mexico",
+          "away_team": "Sweden",
+          "home_score": 0,
+          "away_score": 3,
+          "tournament_stage": "Group Stage - 3",
+          "provider_name": "api_football",
+          "is_home": true,
+          "goals": 0,
+          "shots": 20,
+          "shots_on_target": 3,
+          "source_name": "api_football",
+          "source_match_key": "135818",
+          "competition": "World Cup"
+        },
+        {
+          "id": "9cced9de-d305-4247-b805-6a33ddcb2080",
+          "match_date": "2018-07-02T14:00:00+00:00",
+          "home_team": "Brazil",
+          "away_team": "Mexico",
+          "home_score": 2,
+          "away_score": 0,
+          "tournament_stage": "8th Finals",
+          "provider_name": "api_football",
+          "is_home": false,
+          "goals": 0,
+          "shots": 14,
+          "shots_on_target": 1,
+          "source_name": "api_football",
+          "source_match_key": "135765",
+          "competition": "World Cup"
+        },
+        {
+          "id": "8a6cd4af-ec7b-43db-9c26-954c0e4ac4b5",
+          "match_date": "2022-11-22T16:00:00+00:00",
+          "home_team": "Mexico",
+          "away_team": "Poland",
+          "home_score": 0,
+          "away_score": 0,
+          "tournament_stage": "Group Stage - 1",
+          "provider_name": "api_football",
+          "is_home": true,
+          "goals": 0,
+          "shots": 11,
+          "shots_on_target": 4,
+          "source_name": "api_football",
+          "source_match_key": "855739",
+          "competition": "World Cup"
+        },
+        {
+          "id": "76c91f04-d986-40d8-9a15-9a45e5a861f6",
+          "match_date": "2022-11-26T19:00:00+00:00",
+          "home_team": "Argentina",
+          "away_team": "Mexico",
+          "home_score": 2,
+          "away_score": 0,
+          "tournament_stage": "Group Stage - 2",
+          "provider_name": "api_football",
+          "is_home": false,
+          "goals": 0,
+          "shots": 4,
+          "shots_on_target": 1,
+          "source_name": "api_football",
+          "source_match_key": "855752",
+          "competition": "World Cup"
+        },
+        {
+          "id": "0af1a7f9-6006-4736-b087-c0b5eebd5cd5",
+          "match_date": "2022-11-30T19:00:00+00:00",
+          "home_team": "Saudi Arabia",
+          "away_team": "Mexico",
+          "home_score": 1,
+          "away_score": 2,
+          "tournament_stage": "Group Stage - 3",
+          "provider_name": "api_football",
+          "is_home": false,
+          "goals": 2,
+          "shots": 26,
+          "shots_on_target": 11,
+          "source_name": "api_football",
+          "source_match_key": "855765",
+          "competition": "World Cup"
+        },
+        {
+          "id": "f0b425bb-0d11-4e39-b579-21edcfc82f08",
+          "match_date": "2024-06-23T01:00:00+00:00",
+          "home_team": "Mexico",
+          "away_team": "Jamaica",
+          "home_score": 1,
+          "away_score": 0,
+          "tournament_stage": "Group Stage - 1",
+          "provider_name": "api_football",
+          "is_home": true,
+          "goals": 1,
+          "shots": 20,
+          "shots_on_target": 9,
+          "source_name": "api_football",
+          "source_match_key": "1146303",
+          "competition": "Copa America"
+        },
+        {
+          "id": "bea950f7-66f6-4d18-81fc-6bf814b1a760",
+          "match_date": "2024-06-27T01:00:00+00:00",
+          "home_team": "Venezuela",
+          "away_team": "Mexico",
+          "home_score": 1,
+          "away_score": 0,
+          "tournament_stage": "Group Stage - 2",
+          "provider_name": "api_football",
+          "is_home": false,
+          "goals": 0,
+          "shots": 18,
+          "shots_on_target": 5,
+          "source_name": "api_football",
+          "source_match_key": "1146309",
+          "competition": "Copa America"
+        },
+        {
+          "id": "1d9fede0-09ed-4351-8e8b-c3566f1506cc",
+          "match_date": "2024-07-01T00:00:00+00:00",
+          "home_team": "Mexico",
+          "away_team": "Ecuador",
+          "home_score": 0,
+          "away_score": 0,
+          "tournament_stage": "Group Stage - 3",
+          "provider_name": "api_football",
+          "is_home": true,
+          "goals": 0,
+          "shots": 20,
+          "shots_on_target": 4,
+          "source_name": "api_football",
+          "source_match_key": "1146315",
+          "competition": "Copa America"
+        }
+      ]
+    },
+    "RSA": {
+      "database_team_id": "75c8ac60-13af-4b04-b8e5-bff8158f64d8",
+      "team_rating": {
+        "source": "database_current",
+        "elo": 1546.62,
+        "attack_rating": 55.56,
+        "defense_rating": 77.78,
+        "form_rating": 73.33,
+        "matches_played": 9,
+        "goals_for": 15,
+        "goals_against": 6,
+        "rated_at": "2026-06-11T16:04:47.990774+00:00",
+        "formula_version": "transparent-v1"
+      },
+      "canonical_fifa_rank": 61,
+      "canonical_prior_elo": 1483.5,
+      "shot_volume": {
+        "shot_volume_rating": 73.6111,
+        "sample_matches": 9
+      },
+      "latest_database_match_date": "2025-10-14",
+      "rest_days_to_fixture": 240,
+      "source_matches": [
+        {
+          "id": "421075c4-60cd-4844-876b-f699e9700f19",
+          "match_date": "2023-11-18T13:00:00+00:00",
+          "home_team": "South Africa",
+          "away_team": "Benin",
+          "home_score": 2,
+          "away_score": 1,
+          "tournament_stage": "Group Stage - 1",
+          "provider_name": "api_football",
+          "is_home": true,
+          "goals": 2,
+          "shots": 7,
+          "shots_on_target": 3,
+          "source_name": "api_football",
+          "source_match_key": "1125852",
+          "competition": "World Cup - Qualification Africa"
+        },
+        {
+          "id": "22a64cb1-4ba1-4001-8a4c-8768f7fc6b08",
+          "match_date": "2023-11-21T13:00:00+00:00",
+          "home_team": "Rwanda",
+          "away_team": "South Africa",
+          "home_score": 2,
+          "away_score": 0,
+          "tournament_stage": "Group Stage - 2",
+          "provider_name": "api_football",
+          "is_home": false,
+          "goals": 0,
+          "shots": 5,
+          "shots_on_target": 2,
+          "source_name": "api_football",
+          "source_match_key": "1125881",
+          "competition": "World Cup - Qualification Africa"
+        },
+        {
+          "id": "b5341461-7882-42ce-a704-92d7b6ab1cff",
+          "match_date": "2024-06-07T19:00:00+00:00",
+          "home_team": "Nigeria",
+          "away_team": "South Africa",
+          "home_score": 1,
+          "away_score": 1,
+          "tournament_stage": "Group Stage - 3",
+          "provider_name": "api_football",
+          "is_home": false,
+          "goals": 1,
+          "shots": 8,
+          "shots_on_target": 4,
+          "source_name": "api_football",
+          "source_match_key": "1125908",
+          "competition": "World Cup - Qualification Africa"
+        },
+        {
+          "id": "7432a830-f457-4db8-894d-b1f2a3691d7d",
+          "match_date": "2024-06-11T16:00:00+00:00",
+          "home_team": "South Africa",
+          "away_team": "Zimbabwe",
+          "home_score": 3,
+          "away_score": 1,
+          "tournament_stage": "Group Stage - 4",
+          "provider_name": "api_football",
+          "is_home": true,
+          "goals": 3,
+          "shots": 26,
+          "shots_on_target": 8,
+          "source_name": "api_football",
+          "source_match_key": "1125933",
+          "competition": "World Cup - Qualification Africa"
+        },
+        {
+          "id": "3a63a93b-1cb6-4ff3-a556-42f8c8dbdec3",
+          "match_date": "2025-03-25T16:00:00+00:00",
+          "home_team": "Benin",
+          "away_team": "South Africa",
+          "home_score": 0,
+          "away_score": 2,
+          "tournament_stage": "Group Stage - 6",
+          "provider_name": "api_football",
+          "is_home": false,
+          "goals": 2,
+          "shots": 11,
+          "shots_on_target": 4,
+          "source_name": "api_football",
+          "source_match_key": "1125987",
+          "competition": "World Cup - Qualification Africa"
+        },
+        {
+          "id": "cc129e7c-77ba-40e0-ab47-e24dcb570c8f",
+          "match_date": "2025-09-05T16:00:00+00:00",
+          "home_team": "Lesotho",
+          "away_team": "South Africa",
+          "home_score": 0,
+          "away_score": 3,
+          "tournament_stage": "Group Stage - 7",
+          "provider_name": "api_football",
+          "is_home": false,
+          "goals": 3,
+          "shots": 8,
+          "shots_on_target": 6,
+          "source_name": "api_football",
+          "source_match_key": "1126015",
+          "competition": "World Cup - Qualification Africa"
+        },
+        {
+          "id": "212cbcff-f630-40ad-a872-70e523d5279f",
+          "match_date": "2025-09-09T16:00:00+00:00",
+          "home_team": "South Africa",
+          "away_team": "Nigeria",
+          "home_score": 1,
+          "away_score": 1,
+          "tournament_stage": "Group Stage - 8",
+          "provider_name": "api_football",
+          "is_home": true,
+          "goals": 1,
+          "shots": 5,
+          "shots_on_target": 1,
+          "source_name": "api_football",
+          "source_match_key": "1126041",
+          "competition": "World Cup - Qualification Africa"
+        },
+        {
+          "id": "ab1e86aa-d08d-4ec8-9738-30c05ac52348",
+          "match_date": "2025-10-10T16:00:00+00:00",
+          "home_team": "Zimbabwe",
+          "away_team": "South Africa",
+          "home_score": 0,
+          "away_score": 0,
+          "tournament_stage": "Group Stage - 9",
+          "provider_name": "api_football",
+          "is_home": false,
+          "goals": 0,
+          "shots": 24,
+          "shots_on_target": 3,
+          "source_name": "api_football",
+          "source_match_key": "1126069",
+          "competition": "World Cup - Qualification Africa"
+        },
+        {
+          "id": "f5afa97a-2fd9-4309-9f2e-9d068ca7f747",
+          "match_date": "2025-10-14T16:00:00+00:00",
+          "home_team": "South Africa",
+          "away_team": "Rwanda",
+          "home_score": 3,
+          "away_score": 0,
+          "tournament_stage": "Group Stage - 10",
+          "provider_name": "api_football",
+          "is_home": true,
+          "goals": 3,
+          "shots": 12,
+          "shots_on_target": 5,
+          "source_name": "api_football",
+          "source_match_key": "1126095",
+          "competition": "World Cup - Qualification Africa"
+        }
+      ]
+    }
+  },
+  "rating_explanation": {
+    "database_elo_gap_mexico_minus_south_africa": -55.59,
+    "canonical_prior_gap_mexico_minus_south_africa": 69.0,
+    "why": [
+      "Every database team starts at 1500; current FIFA rank is not used when a database rating exists.",
+      "The updater processes only matches with complete two-team stat rows and applies K=20 Elo without competition, venue, or opponent-coverage correction.",
+      "Mexico has 10 included matches: the 2018 and 2022 World Cups plus the 2024 Copa America. Its later Gold Cup, Nations League, friendly, and 2026 results are absent.",
+      "South Africa has nine included matches, all 2023-2025 African World Cup qualifiers, including wins over Benin, Zimbabwe, Lesotho, and Rwanda.",
+      "Attack and defense are raw goals-per-match transforms over these tiny, unequal samples; Mexico's 6 goals in 10 matches becomes attack 20.0, while South Africa's 15 in nine becomes 55.56."
+    ]
+  },
+  "context_audit": {
+    "availability_reports": 0,
+    "squad_selection_adjustments": 0,
+    "player_ratings_used_in_v4_result_probability": false,
+    "rest_signal": {
+      "mexico_days": 710,
+      "south_africa_days": 240,
+      "normalized_signal": 1.0,
+      "weight": -0.15,
+      "effect": "The difference is capped at +1 and the negative fitted weight penalizes Mexico for having the older/staler last match date. This is data staleness masquerading as rest."
+    }
+  },
+  "historical_performance_in_repo": {
+    "MEX": {
+      "world_cup": {
+        "matches": 60,
+        "wins": 17,
+        "draws": 15,
+        "losses": 28,
+        "goals_for": 62,
+        "goals_against": 101,
+        "first_date": "1930-07-13",
+        "last_date": "2022-11-30"
+      },
+      "continental": {
+        "matches": 142,
+        "wins": 87,
+        "draws": 27,
+        "losses": 28,
+        "goals_for": 270,
+        "goals_against": 115,
+        "first_date": "1991-06-28",
+        "last_date": "2025-07-06"
+      }
+    },
+    "RSA": {
+      "world_cup": {
+        "matches": 9,
+        "wins": 2,
+        "draws": 4,
+        "losses": 3,
+        "goals_for": 11,
+        "goals_against": 16,
+        "first_date": "1998-06-12",
+        "last_date": "2010-06-22"
+      },
+      "continental": {
+        "matches": 54,
+        "wins": 20,
+        "draws": 17,
+        "losses": 17,
+        "goals_for": 61,
+        "goals_against": 54,
+        "first_date": "1996-01-13",
+        "last_date": "2026-01-04"
+      }
+    }
+  },
+  "fixture_rating_blends": {
+    "db_elo_only": {
+      "canonical_weight": 0.0,
+      "effective_elo": {
+        "MEX": 1491.03,
+        "RSA": 1546.62
+      },
+      "effective_elo_gap_mexico_minus_south_africa": -55.59,
+      "probability": {
+        "mexico": 0.3044770276716845,
+        "draw": 0.2833960657911412,
+        "south_africa": 0.4121269065371744
+      },
+      "components": {
+        "elo_base_home_probability": 0.328612299207715,
+        "elo_base_draw_probability": 0.2567811832312883,
+        "elo_base_away_probability": 0.414606517560997,
+        "attack_defense_adjustment": -0.030340469590657615,
+        "draw_calibration_adjustment": 0.0273911514461469,
+        "context_adjustment_total": -0.030340469590657615
+      }
+    },
+    "canonical_prior_only": {
+      "canonical_weight": 1.0,
+      "effective_elo": {
+        "MEX": 1552.5,
+        "RSA": 1483.5
+      },
+      "effective_elo_gap_mexico_minus_south_africa": 69.0,
+      "probability": {
+        "mexico": 0.3967611185846751,
+        "draw": 0.28429439334168016,
+        "south_africa": 0.31894448807364467
+      },
+      "components": {
+        "elo_base_home_probability": 0.4253742460445338,
+        "elo_base_draw_probability": 0.2558883284618543,
+        "elo_base_away_probability": 0.31873742549361195,
+        "attack_defense_adjustment": -0.032779629472399596,
+        "draw_calibration_adjustment": 0.027615923994621372,
+        "context_adjustment_total": -0.032779629472399596
+      }
+    },
+    "canonical_70_db_30": {
+      "canonical_weight": 0.7,
+      "effective_elo": {
+        "MEX": 1534.059,
+        "RSA": 1502.436
+      },
+      "effective_elo_gap_mexico_minus_south_africa": 31.623,
+      "probability": {
+        "mexico": 0.36810364419330616,
+        "draw": 0.2858890031066356,
+        "south_africa": 0.3460073527000581
+      },
+      "components": {
+        "elo_base_home_probability": 0.39553750887362144,
+        "elo_base_draw_probability": 0.2579022336018715,
+        "elo_base_away_probability": 0.34656025752450736,
+        "attack_defense_adjustment": -0.032306900893878665,
+        "draw_calibration_adjustment": 0.027663935340413393,
+        "context_adjustment_total": -0.032306900893878665
+      }
+    },
+    "canonical_50_db_50": {
+      "canonical_weight": 0.5,
+      "effective_elo": {
+        "MEX": 1521.765,
+        "RSA": 1515.06
+      },
+      "effective_elo_gap_mexico_minus_south_africa": 6.705,
+      "probability": {
+        "mexico": 0.3494265988736817,
+        "draw": 0.28606331011794256,
+        "south_africa": 0.3645100910083758
+      },
+      "components": {
+        "elo_base_home_probability": 0.3759871650972713,
+        "elo_base_draw_probability": 0.25841594930893236,
+        "elo_base_away_probability": 0.3655968855937962,
+        "attack_defense_adjustment": -0.03186338532560312,
+        "draw_calibration_adjustment": 0.027640881929968608,
+        "context_adjustment_total": -0.03186338532560312
+      }
+    }
+  },
+  "market_informed_diagnostic": {
+    "purpose": "diagnostic comparison only; not a training target",
+    "market_probability": {
+      "mexico": 0.6717002554906989,
+      "draw": 0.21600719791535955,
+      "south_africa": 0.1122925465939416
+    },
+    "elo_gap_needed_with_other_live_features_held_constant": 414,
+    "closest_model_probability": {
+      "mexico": 0.6725129335309076,
+      "draw": 0.20550545909839035,
+      "south_africa": 0.121981607370702
+    },
+    "squared_error": 0.00020482486251263197
+  },
+  "historical_holdout": {
+    "protocol": {
+      "base": "existing xg-proxy-v4 chronological holdout",
+      "holdout_start": "2025-06-08",
+      "holdout_end": "2026-06-09",
+      "all_holdout_matches": 233,
+      "canonical_prior_eligible_matches": 19,
+      "time_aligned_matches_after_2025_12_01": 1,
+      "features_held_constant": [
+        "attack_rating",
+        "defense_rating",
+        "rest",
+        "draw_multiplier",
+        "shot_volume_rating"
+      ],
+      "important_limitation": "The canonical priors use the repo's November 2025 FIFA ranks. Results before December 2025 are look-ahead diagnostics and must not be used for production promotion.",
+      "source_coverage": {
+        "matches_with_two_team_stat_rows": 1553,
+        "team_stat_rows": 3106,
+        "fields": {
+          "shots": {
+            "available_in_schema": true,
+            "non_null_rows": 2934
+          },
+          "shots_on_target": {
+            "available_in_schema": true,
+            "non_null_rows": 2932
+          },
+          "shots_inside_box": {
+            "available_in_schema": true,
+            "non_null_rows": 2720
+          },
+          "shots_outside_box": {
+            "available_in_schema": true,
+            "non_null_rows": 2720
+          },
+          "blocked_shots": {
+            "available_in_schema": true,
+            "non_null_rows": 2750
+          },
+          "goalkeeper_saves": {
+            "available_in_schema": true,
+            "non_null_rows": 2908
+          },
+          "pass_accuracy": {
+            "available_in_schema": true,
+            "non_null_rows": 2717
+          },
+          "corners": {
+            "available_in_schema": true,
+            "non_null_rows": 2942
+          },
+          "possession": {
+            "available_in_schema": true,
+            "non_null_rows": 2922
+          },
+          "passes_attempted": {
+            "available_in_schema": true,
+            "non_null_rows": 2719
+          },
+          "passes_completed": {
+            "available_in_schema": true,
+            "non_null_rows": 2719
+          },
+          "yellow_cards": {
+            "available_in_schema": true,
+            "non_null_rows": 2986
+          },
+          "red_cards": {
+            "available_in_schema": true,
+            "non_null_rows": 754
+          }
+        }
+      }
+    },
+    "lookahead_diagnostic_all_eligible_holdout": {
+      "db_elo_only": {
+        "matches": 19,
+        "log_loss": 1.089138,
+        "brier_score": 0.660096,
+        "ranked_probability_score": 0.209816,
+        "accuracy": 0.421053,
+        "expected_calibration_error": 0.050391,
+        "calibration_bins": [
+          {
+            "lower": 0.0,
+            "upper": 0.1,
+            "count": 0,
+            "mean_probability": 0.0,
+            "observed_rate": 0.0
+          },
+          {
+            "lower": 0.1,
+            "upper": 0.2,
+            "count": 0,
+            "mean_probability": 0.0,
+            "observed_rate": 0.0
+          },
+          {
+            "lower": 0.2,
+            "upper": 0.3,
+            "count": 28,
+            "mean_probability": 0.276924,
+            "observed_rate": 0.321429
+          },
+          {
+            "lower": 0.3,
+            "upper": 0.4,
+            "count": 17,
+            "mean_probability": 0.348666,
+            "observed_rate": 0.294118
+          },
+          {
+            "lower": 0.4,
+            "upper": 0.5,
+            "count": 11,
+            "mean_probability": 0.43727,
+            "observed_rate": 0.454545
+          },
+          {
+            "lower": 0.5,
+            "upper": 0.6,
+            "count": 1,
+            "mean_probability": 0.508829,
+            "observed_rate": 0.0
+          },
+          {
+            "lower": 0.6,
+            "upper": 0.7,
+            "count": 0,
+            "mean_probability": 0.0,
+            "observed_rate": 0.0
+          },
+          {
+            "lower": 0.7,
+            "upper": 0.8,
+            "count": 0,
+            "mean_probability": 0.0,
+            "observed_rate": 0.0
+          },
+          {
+            "lower": 0.8,
+            "upper": 0.9,
+            "count": 0,
+            "mean_probability": 0.0,
+            "observed_rate": 0.0
+          },
+          {
+            "lower": 0.9,
+            "upper": 1.0,
+            "count": 0,
+            "mean_probability": 0.0,
+            "observed_rate": 0.0
+          }
+        ]
+      },
+      "canonical_prior_only": {
+        "matches": 19,
+        "log_loss": 1.076635,
+        "brier_score": 0.650431,
+        "ranked_probability_score": 0.205366,
+        "accuracy": 0.473684,
+        "expected_calibration_error": 0.088135,
+        "calibration_bins": [
+          {
+            "lower": 0.0,
+            "upper": 0.1,
+            "count": 0,
+            "mean_probability": 0.0,
+            "observed_rate": 0.0
+          },
+          {
+            "lower": 0.1,
+            "upper": 0.2,
+            "count": 0,
+            "mean_probability": 0.0,
+            "observed_rate": 0.0
+          },
+          {
+            "lower": 0.2,
+            "upper": 0.3,
+            "count": 21,
+            "mean_probability": 0.283183,
+            "observed_rate": 0.333333
+          },
+          {
+            "lower": 0.3,
+            "upper": 0.4,
+            "count": 30,
+            "mean_probability": 0.350395,
+            "observed_rate": 0.266667
+          },
+          {
+            "lower": 0.4,
+            "upper": 0.5,
+            "count": 6,
+            "mean_probability": 0.423553,
+            "observed_rate": 0.666667
+          },
+          {
+            "lower": 0.5,
+            "upper": 0.6,
+            "count": 0,
+            "mean_probability": 0.0,
+            "observed_rate": 0.0
+          },
+          {
+            "lower": 0.6,
+            "upper": 0.7,
+            "count": 0,
+            "mean_probability": 0.0,
+            "observed_rate": 0.0
+          },
+          {
+            "lower": 0.7,
+            "upper": 0.8,
+            "count": 0,
+            "mean_probability": 0.0,
+            "observed_rate": 0.0
+          },
+          {
+            "lower": 0.8,
+            "upper": 0.9,
+            "count": 0,
+            "mean_probability": 0.0,
+            "observed_rate": 0.0
+          },
+          {
+            "lower": 0.9,
+            "upper": 1.0,
+            "count": 0,
+            "mean_probability": 0.0,
+            "observed_rate": 0.0
+          }
+        ]
+      },
+      "canonical_70_db_30": {
+        "matches": 19,
+        "log_loss": 1.079403,
+        "brier_score": 0.652552,
+        "ranked_probability_score": 0.206359,
+        "accuracy": 0.473684,
+        "expected_calibration_error": 0.086822,
+        "calibration_bins": [
+          {
+            "lower": 0.0,
+            "upper": 0.1,
+            "count": 0,
+            "mean_probability": 0.0,
+            "observed_rate": 0.0
+          },
+          {
+            "lower": 0.1,
+            "upper": 0.2,
+            "count": 0,
+            "mean_probability": 0.0,
+            "observed_rate": 0.0
+          },
+          {
+            "lower": 0.2,
+            "upper": 0.3,
+            "count": 25,
+            "mean_probability": 0.283642,
+            "observed_rate": 0.32
+          },
+          {
+            "lower": 0.3,
+            "upper": 0.4,
+            "count": 24,
+            "mean_probability": 0.353102,
+            "observed_rate": 0.25
+          },
+          {
+            "lower": 0.4,
+            "upper": 0.5,
+            "count": 8,
+            "mean_probability": 0.429315,
+            "observed_rate": 0.625
+          },
+          {
+            "lower": 0.5,
+            "upper": 0.6,
+            "count": 0,
+            "mean_probability": 0.0,
+            "observed_rate": 0.0
+          },
+          {
+            "lower": 0.6,
+            "upper": 0.7,
+            "count": 0,
+            "mean_probability": 0.0,
+            "observed_rate": 0.0
+          },
+          {
+            "lower": 0.7,
+            "upper": 0.8,
+            "count": 0,
+            "mean_probability": 0.0,
+            "observed_rate": 0.0
+          },
+          {
+            "lower": 0.8,
+            "upper": 0.9,
+            "count": 0,
+            "mean_probability": 0.0,
+            "observed_rate": 0.0
+          },
+          {
+            "lower": 0.9,
+            "upper": 1.0,
+            "count": 0,
+            "mean_probability": 0.0,
+            "observed_rate": 0.0
+          }
+        ]
+      },
+      "canonical_50_db_50": {
+        "matches": 19,
+        "log_loss": 1.081716,
+        "brier_score": 0.654342,
+        "ranked_probability_score": 0.207187,
+        "accuracy": 0.421053,
+        "expected_calibration_error": 0.072343,
+        "calibration_bins": [
+          {
+            "lower": 0.0,
+            "upper": 0.1,
+            "count": 0,
+            "mean_probability": 0.0,
+            "observed_rate": 0.0
+          },
+          {
+            "lower": 0.1,
+            "upper": 0.2,
+            "count": 0,
+            "mean_probability": 0.0,
+            "observed_rate": 0.0
+          },
+          {
+            "lower": 0.2,
+            "upper": 0.3,
+            "count": 25,
+            "mean_probability": 0.28129,
+            "observed_rate": 0.32
+          },
+          {
+            "lower": 0.3,
+            "upper": 0.4,
+            "count": 23,
+            "mean_probability": 0.350512,
+            "observed_rate": 0.26087
+          },
+          {
+            "lower": 0.4,
+            "upper": 0.5,
+            "count": 9,
+            "mean_probability": 0.433996,
+            "observed_rate": 0.555556
+          },
+          {
+            "lower": 0.5,
+            "upper": 0.6,
+            "count": 0,
+            "mean_probability": 0.0,
+            "observed_rate": 0.0
+          },
+          {
+            "lower": 0.6,
+            "upper": 0.7,
+            "count": 0,
+            "mean_probability": 0.0,
+            "observed_rate": 0.0
+          },
+          {
+            "lower": 0.7,
+            "upper": 0.8,
+            "count": 0,
+            "mean_probability": 0.0,
+            "observed_rate": 0.0
+          },
+          {
+            "lower": 0.8,
+            "upper": 0.9,
+            "count": 0,
+            "mean_probability": 0.0,
+            "observed_rate": 0.0
+          },
+          {
+            "lower": 0.9,
+            "upper": 1.0,
+            "count": 0,
+            "mean_probability": 0.0,
+            "observed_rate": 0.0
+          }
+        ]
+      }
+    },
+    "time_aligned_holdout": {
+      "db_elo_only": {
+        "matches": 1,
+        "log_loss": 1.120629,
+        "brier_score": 0.686606,
+        "ranked_probability_score": 0.302611,
+        "accuracy": 0.0,
+        "expected_calibration_error": 0.190184,
+        "calibration_bins": [
+          {
+            "lower": 0.0,
+            "upper": 0.1,
+            "count": 0,
+            "mean_probability": 0.0,
+            "observed_rate": 0.0
+          },
+          {
+            "lower": 0.1,
+            "upper": 0.2,
+            "count": 0,
+            "mean_probability": 0.0,
+            "observed_rate": 0.0
+          },
+          {
+            "lower": 0.2,
+            "upper": 0.3,
+            "count": 1,
+            "mean_probability": 0.285277,
+            "observed_rate": 0.0
+          },
+          {
+            "lower": 0.3,
+            "upper": 0.4,
+            "count": 2,
+            "mean_probability": 0.357362,
+            "observed_rate": 0.5
+          },
+          {
+            "lower": 0.4,
+            "upper": 0.5,
+            "count": 0,
+            "mean_probability": 0.0,
+            "observed_rate": 0.0
+          },
+          {
+            "lower": 0.5,
+            "upper": 0.6,
+            "count": 0,
+            "mean_probability": 0.0,
+            "observed_rate": 0.0
+          },
+          {
+            "lower": 0.6,
+            "upper": 0.7,
+            "count": 0,
+            "mean_probability": 0.0,
+            "observed_rate": 0.0
+          },
+          {
+            "lower": 0.7,
+            "upper": 0.8,
+            "count": 0,
+            "mean_probability": 0.0,
+            "observed_rate": 0.0
+          },
+          {
+            "lower": 0.8,
+            "upper": 0.9,
+            "count": 0,
+            "mean_probability": 0.0,
+            "observed_rate": 0.0
+          },
+          {
+            "lower": 0.9,
+            "upper": 1.0,
+            "count": 0,
+            "mean_probability": 0.0,
+            "observed_rate": 0.0
+          }
+        ]
+      },
+      "canonical_prior_only": {
+        "matches": 1,
+        "log_loss": 1.072897,
+        "brier_score": 0.653122,
+        "ranked_probability_score": 0.285682,
+        "accuracy": 0.0,
+        "expected_calibration_error": 0.190622,
+        "calibration_bins": [
+          {
+            "lower": 0.0,
+            "upper": 0.1,
+            "count": 0,
+            "mean_probability": 0.0,
+            "observed_rate": 0.0
+          },
+          {
+            "lower": 0.1,
+            "upper": 0.2,
+            "count": 0,
+            "mean_probability": 0.0,
+            "observed_rate": 0.0
+          },
+          {
+            "lower": 0.2,
+            "upper": 0.3,
+            "count": 1,
+            "mean_probability": 0.285934,
+            "observed_rate": 0.0
+          },
+          {
+            "lower": 0.3,
+            "upper": 0.4,
+            "count": 2,
+            "mean_probability": 0.357033,
+            "observed_rate": 0.5
+          },
+          {
+            "lower": 0.4,
+            "upper": 0.5,
+            "count": 0,
+            "mean_probability": 0.0,
+            "observed_rate": 0.0
+          },
+          {
+            "lower": 0.5,
+            "upper": 0.6,
+            "count": 0,
+            "mean_probability": 0.0,
+            "observed_rate": 0.0
+          },
+          {
+            "lower": 0.6,
+            "upper": 0.7,
+            "count": 0,
+            "mean_probability": 0.0,
+            "observed_rate": 0.0
+          },
+          {
+            "lower": 0.7,
+            "upper": 0.8,
+            "count": 0,
+            "mean_probability": 0.0,
+            "observed_rate": 0.0
+          },
+          {
+            "lower": 0.8,
+            "upper": 0.9,
+            "count": 0,
+            "mean_probability": 0.0,
+            "observed_rate": 0.0
+          },
+          {
+            "lower": 0.9,
+            "upper": 1.0,
+            "count": 0,
+            "mean_probability": 0.0,
+            "observed_rate": 0.0
+          }
+        ]
+      },
+      "canonical_70_db_30": {
+        "matches": 1,
+        "log_loss": 1.087078,
+        "brier_score": 0.663115,
+        "ranked_probability_score": 0.290718,
+        "accuracy": 0.0,
+        "expected_calibration_error": 0.190529,
+        "calibration_bins": [
+          {
+            "lower": 0.0,
+            "upper": 0.1,
+            "count": 0,
+            "mean_probability": 0.0,
+            "observed_rate": 0.0
+          },
+          {
+            "lower": 0.1,
+            "upper": 0.2,
+            "count": 0,
+            "mean_probability": 0.0,
+            "observed_rate": 0.0
+          },
+          {
+            "lower": 0.2,
+            "upper": 0.3,
+            "count": 1,
+            "mean_probability": 0.285794,
+            "observed_rate": 0.0
+          },
+          {
+            "lower": 0.3,
+            "upper": 0.4,
+            "count": 2,
+            "mean_probability": 0.357103,
+            "observed_rate": 0.5
+          },
+          {
+            "lower": 0.4,
+            "upper": 0.5,
+            "count": 0,
+            "mean_probability": 0.0,
+            "observed_rate": 0.0
+          },
+          {
+            "lower": 0.5,
+            "upper": 0.6,
+            "count": 0,
+            "mean_probability": 0.0,
+            "observed_rate": 0.0
+          },
+          {
+            "lower": 0.6,
+            "upper": 0.7,
+            "count": 0,
+            "mean_probability": 0.0,
+            "observed_rate": 0.0
+          },
+          {
+            "lower": 0.7,
+            "upper": 0.8,
+            "count": 0,
+            "mean_probability": 0.0,
+            "observed_rate": 0.0
+          },
+          {
+            "lower": 0.8,
+            "upper": 0.9,
+            "count": 0,
+            "mean_probability": 0.0,
+            "observed_rate": 0.0
+          },
+          {
+            "lower": 0.9,
+            "upper": 1.0,
+            "count": 0,
+            "mean_probability": 0.0,
+            "observed_rate": 0.0
+          }
+        ]
+      },
+      "canonical_50_db_50": {
+        "matches": 1,
+        "log_loss": 1.096597,
+        "brier_score": 0.669802,
+        "ranked_probability_score": 0.294096,
+        "accuracy": 0.0,
+        "expected_calibration_error": 0.190449,
+        "calibration_bins": [
+          {
+            "lower": 0.0,
+            "upper": 0.1,
+            "count": 0,
+            "mean_probability": 0.0,
+            "observed_rate": 0.0
+          },
+          {
+            "lower": 0.1,
+            "upper": 0.2,
+            "count": 0,
+            "mean_probability": 0.0,
+            "observed_rate": 0.0
+          },
+          {
+            "lower": 0.2,
+            "upper": 0.3,
+            "count": 1,
+            "mean_probability": 0.285673,
+            "observed_rate": 0.0
+          },
+          {
+            "lower": 0.3,
+            "upper": 0.4,
+            "count": 2,
+            "mean_probability": 0.357163,
+            "observed_rate": 0.5
+          },
+          {
+            "lower": 0.4,
+            "upper": 0.5,
+            "count": 0,
+            "mean_probability": 0.0,
+            "observed_rate": 0.0
+          },
+          {
+            "lower": 0.5,
+            "upper": 0.6,
+            "count": 0,
+            "mean_probability": 0.0,
+            "observed_rate": 0.0
+          },
+          {
+            "lower": 0.6,
+            "upper": 0.7,
+            "count": 0,
+            "mean_probability": 0.0,
+            "observed_rate": 0.0
+          },
+          {
+            "lower": 0.7,
+            "upper": 0.8,
+            "count": 0,
+            "mean_probability": 0.0,
+            "observed_rate": 0.0
+          },
+          {
+            "lower": 0.8,
+            "upper": 0.9,
+            "count": 0,
+            "mean_probability": 0.0,
+            "observed_rate": 0.0
+          },
+          {
+            "lower": 0.9,
+            "upper": 1.0,
+            "count": 0,
+            "mean_probability": 0.0,
+            "observed_rate": 0.0
+          }
+        ]
+      }
+    }
+  },
+  "recommendation": {
+    "production_v4_change_recommended": true,
+    "preferred_change": "input shrinkage plus freshness gating",
+    "rating_prior_blending": "Use canonical-prior blending when database samples are sparse or stale, with reliability determined from effective sample size, freshness, competition mix, and connected opponent coverage. Do not promote a fixed blend from this holdout: only 19 matches have both priors and only one is time-aligned to the rank snapshot.",
+    "attack_defense": "Shrink goal-rate attack/defense toward 50 and use a rolling, time-decayed, opponent-adjusted window instead of lifetime provider coverage.",
+    "rest": "Cap meaningful rest at a short football window and treat long gaps as missing/stale data, not additional rest.",
+    "shot_volume": "Keep only with sample shrinkage and opponent-strength adjustment; it currently helps Mexico and is not the cause of this reversal.",
+    "market_policy": "Do not train production probabilities on this market snapshot. Use it only to trigger audits and monitor disagreement."
+  }
+}

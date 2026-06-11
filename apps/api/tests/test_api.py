@@ -17,14 +17,14 @@ class LatestV4PredictionSource:
     def load_latest(self):
         return {
             "model_run_id": "v4-run",
-            "model_version": "elo-context-v4",
+            "model_version": "elo-context-v4.1",
             "generated_at": "2026-06-11T06:00:00+00:00",
             "data_cutoff": "2026-06-11T05:59:00+00:00",
             "source": "database_latest",
             "predictions": {
                 "WC26-001": {
                     "canonical_match_id": "WC26-001",
-                    "model_version": "elo-context-v4",
+                    "model_version": "elo-context-v4.1",
                     "home_win_probability": 0.61,
                     "draw_probability": 0.24,
                     "away_win_probability": 0.15,
@@ -81,7 +81,7 @@ class LatestV4SimulationSource:
         return {
             "run": {
                 "id": "v4-simulation",
-                "model_version": "elo-context-v4",
+                "model_version": "elo-context-v4.1",
                 "num_simulations": 50000,
                 "random_seed": 2026,
                 "created_at": "2026-06-11T06:05:00+00:00",
@@ -300,7 +300,7 @@ def test_latest_database_prediction_run_wins_over_static(monkeypatch):
     payload = response.json()
 
     assert response.status_code == 200
-    assert payload["model_version"] == "elo-context-v4"
+    assert payload["model_version"] == "elo-context-v4.1"
     assert payload["source"] == "database_latest"
     assert len(payload["predictions"]) == 1
     prediction = payload["predictions"][0]
@@ -311,7 +311,7 @@ def test_latest_database_prediction_run_wins_over_static(monkeypatch):
         "away_win": 0.15,
     }
     assert prediction["probabilities"] != static["probabilities"]
-    assert prediction["model_version"] == "elo-context-v4"
+    assert prediction["model_version"] == "elo-context-v4.1"
     assert prediction["source"] == "database_latest"
 
 
@@ -323,7 +323,7 @@ def test_latest_database_simulation_wins_over_static(monkeypatch):
         payload = response.json()
 
         assert response.status_code == 200
-        assert payload["model_version"] == "elo-context-v4"
+        assert payload["model_version"] == "elo-context-v4.1"
         assert payload["generated_at"] == "2026-06-11T06:05:00+00:00"
         assert payload["created_at"] == "2026-06-11T06:05:00+00:00"
         assert payload["source"] == "database_latest"
@@ -376,7 +376,7 @@ def test_api_matches_use_v4_probabilities_and_canonical_fixture(monkeypatch):
     assert match["group"] == "A"
     assert match["home_team"]["id"] == "MEX"
     assert match["away_team"]["id"] == "RSA"
-    assert match["prediction"]["model_version"] == "elo-context-v4"
+    assert match["prediction"]["model_version"] == "elo-context-v4.1"
     assert match["prediction"]["source"] == "database_latest"
     assert match["prediction"]["final_home_probability"] == 0.61
     assert match["prediction"]["top_factors"][0]["factor"] == "Shot volume"
@@ -448,7 +448,7 @@ def test_database_source_selects_newest_prediction_run():
                   ('old-run', 'context-0.2.0', 'completed',
                    '2026-06-10T00:00:00+00:00',
                    '2026-06-10T00:00:00+00:00'),
-                  ('v4-run', 'elo-context-v4', 'completed',
+                  ('v4-run', 'elo-context-v4.1', 'completed',
                    '2026-06-11T00:00:00+00:00',
                    '2026-06-11T00:00:00+00:00'),
                   ('failed-run', 'elo-context-v5', 'failed',
@@ -464,7 +464,7 @@ def test_database_source_selects_newest_prediction_run():
                   ('WC26-001', 'old-run', 'context-0.2.0',
                    '2026-06-10T00:00:00+00:00',
                    '2026-06-10T00:00:00+00:00', 0.40, 0.30, 0.30),
-                  ('WC26-001', 'v4-run', 'elo-context-v4',
+                  ('WC26-001', 'v4-run', 'elo-context-v4.1',
                    '2026-06-11T00:00:00+00:00',
                    '2026-06-11T00:00:00+00:00', 0.61, 0.24, 0.15)
                 """
@@ -474,7 +474,7 @@ def test_database_source_selects_newest_prediction_run():
     latest = DatabasePredictionSource(engine).load_latest()
 
     assert latest["model_run_id"] == "v4-run"
-    assert latest["model_version"] == "elo-context-v4"
+    assert latest["model_version"] == "elo-context-v4.1"
     assert latest["predictions"]["WC26-001"]["home_win_probability"] == 0.61
 
 
@@ -511,7 +511,7 @@ def test_database_source_selects_newest_simulation_run_and_team_results():
                 insert into simulation_runs values
                   ('old-simulation', 'context-0.2.0', 1000, 2026,
                    '2026-06-10T00:46:29+00:00'),
-                  ('v4-simulation', 'elo-context-v4', 50000, 2026,
+                  ('v4-simulation', 'elo-context-v4.1', 50000, 2026,
                    '2026-06-11T06:05:00+00:00')
                 """
             )
@@ -529,7 +529,7 @@ def test_database_source_selects_newest_simulation_run_and_team_results():
     latest = DatabaseSimulationSource(engine).load_latest()
 
     assert latest["run"]["id"] == "v4-simulation"
-    assert latest["run"]["model_version"] == "elo-context-v4"
+    assert latest["run"]["model_version"] == "elo-context-v4.1"
     assert latest["results"] == [
         {
             "simulation_run_id": "v4-simulation",

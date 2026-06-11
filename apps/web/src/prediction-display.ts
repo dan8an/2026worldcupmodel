@@ -75,7 +75,6 @@ const impactValue = (impact: string) => {
 };
 
 const normalizedFactorName = (factor: string) => {
-  if (factor === "Rest context") return "Rest-day edge";
   if (factor === "Shot volume") return "Shot-volume edge";
   return factor;
 };
@@ -85,11 +84,12 @@ const factorImportance = (factor: string): FactorImportance => {
   if (
     label.includes("elo") ||
     label.includes("attack") ||
-    label.includes("defense") ||
-    label.includes("shot-volume") ||
-    label.includes("draw calibration")
+    label.includes("shot-volume")
   ) {
     return "high";
+  }
+  if (label.includes("defense") || label.includes("draw calibration")) {
+    return "medium";
   }
   if (
     label.includes("home") ||
@@ -104,7 +104,7 @@ const factorImportance = (factor: string): FactorImportance => {
 const shouldHideFactor = (factor: string, value: number) => {
   const label = factor.toLowerCase();
   return (
-    (label.includes("rest") || label.includes("travel")) &&
+    label.includes("travel") &&
     Math.abs(value) < 0.3
   );
 };
@@ -113,6 +113,15 @@ const importanceRank: Record<FactorImportance, number> = {
   high: 0,
   medium: 1,
   low: 2,
+};
+
+const modelImportanceRank = (factor: string) => {
+  const label = factor.toLowerCase();
+  if (label.includes("elo")) return 0;
+  if (label.includes("shot-volume")) return 1;
+  if (label.includes("attack")) return 2;
+  if (label.includes("defense")) return 3;
+  return 4;
 };
 
 export const displayFactors = (prediction: Prediction): DisplayFactor[] =>
@@ -129,6 +138,7 @@ export const displayFactors = (prediction: Prediction): DisplayFactor[] =>
   }).filter((factor) => !shouldHideFactor(factor.factor, factor.value))
     .sort(
       (left, right) =>
+        modelImportanceRank(left.factor) - modelImportanceRank(right.factor) ||
         importanceRank[left.importance] - importanceRank[right.importance] ||
         Math.abs(right.value) - Math.abs(left.value),
     );
@@ -141,14 +151,14 @@ export const additionalFactors = (prediction: Prediction): DisplayFactor[] =>
 
 const factorPhrase = (factor: DisplayFactor) => {
   const label = factor.factor.toLowerCase();
-  if (label.includes("attack") || label.includes("defense")) {
-    return `stronger attack and defense ratings favor ${factor.team}`;
+  if (label.includes("attack")) {
+    return `the attack rating favors ${factor.team}`;
+  }
+  if (label.includes("defense")) {
+    return `the defense rating favors ${factor.team}`;
   }
   if (label.includes("draw")) {
     return `${factor.direction === "negative" ? "draw calibration reduces" : "draw calibration increases"} the likelihood of a stalemate`;
-  }
-  if (label.includes("rest")) {
-    return `the rest-day edge favors ${factor.team}`;
   }
   if (label.includes("shot-volume")) {
     return `sustained shot volume favors ${factor.team}`;

@@ -131,7 +131,7 @@ def calculate_confidence(
     elif separation <= 0.25:
         reasons.append("the leading outcomes are tightly grouped")
     if agreement < 0.75:
-        reasons.append("context moves the forecast away from the Elo baseline")
+        reasons.append("model features move the forecast away from the Elo baseline")
     if final_probabilities[1] >= 0.30:
         reasons.append("the draw probability adds volatility")
     if completeness.missing:

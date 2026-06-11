@@ -160,7 +160,7 @@ test("canonical predictions attach without database match rows", () => {
           { factor: "Elo advantage", team: "Mexico", impact: "+4.0%" },
           { factor: "Shot volume", team: "Mexico", impact: "+1.1%" },
         ],
-        model_version: "elo-context-v4",
+        model_version: "elo-context-v4.1",
       prediction_timestamp: "2026-06-10T19:00:00Z",
     },
   ]);
@@ -168,7 +168,7 @@ test("canonical predictions attach without database match rows", () => {
   assert.equal(match.id, "WC26-001");
   assert.equal(match.prediction.home_xg, 1.8);
   assert.equal(match.prediction.probabilities.home_win, 0.58);
-  assert.equal(match.prediction.model_version, "elo-context-v4");
+  assert.equal(match.prediction.model_version, "elo-context-v4.1");
   assert.equal(match.prediction.final_home_probability, 0.58);
   assert.equal(match.prediction.top_factors[0].factor, "Elo advantage");
   assert.equal(match.prediction.top_factors[1].factor, "Shot volume");
@@ -181,7 +181,7 @@ test("persisted Step 5 simulation rows retain the frontend shape", () => {
     {
       num_simulations: 50000,
       random_seed: 2026,
-      model_version: "elo-context-v4",
+      model_version: "elo-context-v4.1",
       created_at: "2026-06-10T20:00:00Z",
     },
     [

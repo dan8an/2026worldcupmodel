@@ -39,12 +39,14 @@ export function simulationDriverLabels(team: SimulationTeam): string[] {
 
   const labels = [
     `Elo #${inputs.elo_rank}`,
-    `Attack ${inputs.attack_rating.toFixed(1)}`,
-    `Defense ${inputs.defense_rating.toFixed(1)}`,
   ];
   if (inputs.shot_volume_rating != null) {
     labels.push(`Shot volume ${inputs.shot_volume_rating.toFixed(1)}`);
   }
+  labels.push(
+    `Attack ${inputs.attack_rating.toFixed(1)}`,
+    `Defense ${inputs.defense_rating.toFixed(1)}`,
+  );
   labels.push(
     inputs.rating_source === "canonical_rank_prior"
       ? "Source: conservative prior"

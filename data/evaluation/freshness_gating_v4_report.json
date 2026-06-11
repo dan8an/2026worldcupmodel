@@ -1,0 +1,822 @@
+{
+  "generated_at": "2026-06-11T21:02:37.451073+00:00",
+  "production_model_version": "elo-context-v4",
+  "experimental_model_version": "elo-context-v4-freshness-gated",
+  "market_odds_used": false,
+  "source_coverage": {
+    "matches_with_two_team_stat_rows": 1553,
+    "team_stat_rows": 3106,
+    "fields": {
+      "shots": {
+        "available_in_schema": true,
+        "non_null_rows": 2934
+      },
+      "shots_on_target": {
+        "available_in_schema": true,
+        "non_null_rows": 2932
+      },
+      "shots_inside_box": {
+        "available_in_schema": true,
+        "non_null_rows": 2720
+      },
+      "shots_outside_box": {
+        "available_in_schema": true,
+        "non_null_rows": 2720
+      },
+      "blocked_shots": {
+        "available_in_schema": true,
+        "non_null_rows": 2750
+      },
+      "goalkeeper_saves": {
+        "available_in_schema": true,
+        "non_null_rows": 2908
+      },
+      "pass_accuracy": {
+        "available_in_schema": true,
+        "non_null_rows": 2717
+      },
+      "corners": {
+        "available_in_schema": true,
+        "non_null_rows": 2942
+      },
+      "possession": {
+        "available_in_schema": true,
+        "non_null_rows": 2922
+      },
+      "passes_attempted": {
+        "available_in_schema": true,
+        "non_null_rows": 2719
+      },
+      "passes_completed": {
+        "available_in_schema": true,
+        "non_null_rows": 2719
+      },
+      "yellow_cards": {
+        "available_in_schema": true,
+        "non_null_rows": 2986
+      },
+      "red_cards": {
+        "available_in_schema": true,
+        "non_null_rows": 754
+      }
+    }
+  },
+  "reliability_policy": {
+    "freshness_grace_days": 90,
+    "freshness_half_life_days": 180,
+    "sample_reliability": "matches / (matches + 10)",
+    "combined_reliability": "sqrt(freshness * sample_reliability)",
+    "elo_prior_live": "canonical rank prior",
+    "elo_prior_holdout": 1500.0,
+    "attack_defense_prior": 50.0,
+    "shot_volume_prior": 50.0,
+    "rest_context": "rest difference multiplied by the lower team freshness"
+  },
+  "historical_holdout": {
+    "protocol": {
+      "method": "existing xg-proxy-v4 chronological holdout",
+      "tuning_matches": 824,
+      "holdout_matches": 233,
+      "holdout_start": "2025-06-08",
+      "holdout_end": "2026-06-09",
+      "same_day_updates": "batched after prediction",
+      "historical_elo_prior": 1500.0,
+      "historical_prior_note": "Point-in-time FIFA snapshots are unavailable. Historical Elo shrinks to the time-safe neutral initialization prior; live canonical fixtures use repository rank priors."
+    },
+    "metrics": {
+      "current_v4": {
+        "matches": 233,
+        "log_loss": 0.945067,
+        "brier_score": 0.557889,
+        "ranked_probability_score": 0.19377,
+        "accuracy": 0.600858,
+        "expected_calibration_error": 0.088281,
+        "calibration_bins": [
+          {
+            "lower": 0.0,
+            "upper": 0.1,
+            "count": 1,
+            "mean_probability": 0.085709,
+            "observed_rate": 0.0
+          },
+          {
+            "lower": 0.1,
+            "upper": 0.2,
+            "count": 40,
+            "mean_probability": 0.166949,
+            "observed_rate": 0.05
+          },
+          {
+            "lower": 0.2,
+            "upper": 0.3,
+            "count": 337,
+            "mean_probability": 0.266394,
+            "observed_rate": 0.195846
+          },
+          {
+            "lower": 0.3,
+            "upper": 0.4,
+            "count": 150,
+            "mean_probability": 0.348772,
+            "observed_rate": 0.333333
+          },
+          {
+            "lower": 0.4,
+            "upper": 0.5,
+            "count": 102,
+            "mean_probability": 0.443983,
+            "observed_rate": 0.598039
+          },
+          {
+            "lower": 0.5,
+            "upper": 0.6,
+            "count": 52,
+            "mean_probability": 0.538351,
+            "observed_rate": 0.75
+          },
+          {
+            "lower": 0.6,
+            "upper": 0.7,
+            "count": 16,
+            "mean_probability": 0.633652,
+            "observed_rate": 0.875
+          },
+          {
+            "lower": 0.7,
+            "upper": 0.8,
+            "count": 1,
+            "mean_probability": 0.726895,
+            "observed_rate": 1.0
+          },
+          {
+            "lower": 0.8,
+            "upper": 0.9,
+            "count": 0,
+            "mean_probability": 0.0,
+            "observed_rate": 0.0
+          },
+          {
+            "lower": 0.9,
+            "upper": 1.0,
+            "count": 0,
+            "mean_probability": 0.0,
+            "observed_rate": 0.0
+          }
+        ]
+      },
+      "v4_freshness_gated": {
+        "matches": 233,
+        "log_loss": 0.957401,
+        "brier_score": 0.566546,
+        "ranked_probability_score": 0.19779,
+        "accuracy": 0.600858,
+        "expected_calibration_error": 0.091045,
+        "calibration_bins": [
+          {
+            "lower": 0.0,
+            "upper": 0.1,
+            "count": 1,
+            "mean_probability": 0.0996,
+            "observed_rate": 0.0
+          },
+          {
+            "lower": 0.1,
+            "upper": 0.2,
+            "count": 22,
+            "mean_probability": 0.166358,
+            "observed_rate": 0.045455
+          },
+          {
+            "lower": 0.2,
+            "upper": 0.3,
+            "count": 340,
+            "mean_probability": 0.267825,
+            "observed_rate": 0.182353
+          },
+          {
+            "lower": 0.3,
+            "upper": 0.4,
+            "count": 183,
+            "mean_probability": 0.35102,
+            "observed_rate": 0.360656
+          },
+          {
+            "lower": 0.4,
+            "upper": 0.5,
+            "count": 99,
+            "mean_probability": 0.445747,
+            "observed_rate": 0.606061
+          },
+          {
+            "lower": 0.5,
+            "upper": 0.6,
+            "count": 45,
+            "mean_probability": 0.536627,
+            "observed_rate": 0.8
+          },
+          {
+            "lower": 0.6,
+            "upper": 0.7,
+            "count": 9,
+            "mean_probability": 0.629557,
+            "observed_rate": 0.888889
+          },
+          {
+            "lower": 0.7,
+            "upper": 0.8,
+            "count": 0,
+            "mean_probability": 0.0,
+            "observed_rate": 0.0
+          },
+          {
+            "lower": 0.8,
+            "upper": 0.9,
+            "count": 0,
+            "mean_probability": 0.0,
+            "observed_rate": 0.0
+          },
+          {
+            "lower": 0.9,
+            "upper": 1.0,
+            "count": 0,
+            "mean_probability": 0.0,
+            "observed_rate": 0.0
+          }
+        ]
+      },
+      "v4_without_rest_penalty": {
+        "matches": 233,
+        "log_loss": 0.94445,
+        "brier_score": 0.557658,
+        "ranked_probability_score": 0.193482,
+        "accuracy": 0.60515,
+        "expected_calibration_error": 0.090944,
+        "calibration_bins": [
+          {
+            "lower": 0.0,
+            "upper": 0.1,
+            "count": 0,
+            "mean_probability": 0.0,
+            "observed_rate": 0.0
+          },
+          {
+            "lower": 0.1,
+            "upper": 0.2,
+            "count": 41,
+            "mean_probability": 0.16936,
+            "observed_rate": 0.04878
+          },
+          {
+            "lower": 0.2,
+            "upper": 0.3,
+            "count": 335,
+            "mean_probability": 0.26712,
+            "observed_rate": 0.18806
+          },
+          {
+            "lower": 0.3,
+            "upper": 0.4,
+            "count": 153,
+            "mean_probability": 0.348731,
+            "observed_rate": 0.346405
+          },
+          {
+            "lower": 0.4,
+            "upper": 0.5,
+            "count": 105,
+            "mean_probability": 0.444139,
+            "observed_rate": 0.619048
+          },
+          {
+            "lower": 0.5,
+            "upper": 0.6,
+            "count": 52,
+            "mean_probability": 0.544187,
+            "observed_rate": 0.75
+          },
+          {
+            "lower": 0.6,
+            "upper": 0.7,
+            "count": 13,
+            "mean_probability": 0.637148,
+            "observed_rate": 0.846154
+          },
+          {
+            "lower": 0.7,
+            "upper": 0.8,
+            "count": 0,
+            "mean_probability": 0.0,
+            "observed_rate": 0.0
+          },
+          {
+            "lower": 0.8,
+            "upper": 0.9,
+            "count": 0,
+            "mean_probability": 0.0,
+            "observed_rate": 0.0
+          },
+          {
+            "lower": 0.9,
+            "upper": 1.0,
+            "count": 0,
+            "mean_probability": 0.0,
+            "observed_rate": 0.0
+          }
+        ]
+      },
+      "v4_attack_defense_freshness_only": {
+        "matches": 233,
+        "log_loss": 0.947581,
+        "brier_score": 0.559587,
+        "ranked_probability_score": 0.194573,
+        "accuracy": 0.596567,
+        "expected_calibration_error": 0.08782,
+        "calibration_bins": [
+          {
+            "lower": 0.0,
+            "upper": 0.1,
+            "count": 1,
+            "mean_probability": 0.088145,
+            "observed_rate": 0.0
+          },
+          {
+            "lower": 0.1,
+            "upper": 0.2,
+            "count": 36,
+            "mean_probability": 0.167755,
+            "observed_rate": 0.055556
+          },
+          {
+            "lower": 0.2,
+            "upper": 0.3,
+            "count": 333,
+            "mean_probability": 0.266523,
+            "observed_rate": 0.192192
+          },
+          {
+            "lower": 0.3,
+            "upper": 0.4,
+            "count": 163,
+            "mean_probability": 0.34855,
+            "observed_rate": 0.337423
+          },
+          {
+            "lower": 0.4,
+            "upper": 0.5,
+            "count": 102,
+            "mean_probability": 0.444612,
+            "observed_rate": 0.607843
+          },
+          {
+            "lower": 0.5,
+            "upper": 0.6,
+            "count": 48,
+            "mean_probability": 0.53738,
+            "observed_rate": 0.75
+          },
+          {
+            "lower": 0.6,
+            "upper": 0.7,
+            "count": 15,
+            "mean_probability": 0.629327,
+            "observed_rate": 0.866667
+          },
+          {
+            "lower": 0.7,
+            "upper": 0.8,
+            "count": 1,
+            "mean_probability": 0.722404,
+            "observed_rate": 1.0
+          },
+          {
+            "lower": 0.8,
+            "upper": 0.9,
+            "count": 0,
+            "mean_probability": 0.0,
+            "observed_rate": 0.0
+          },
+          {
+            "lower": 0.9,
+            "upper": 1.0,
+            "count": 0,
+            "mean_probability": 0.0,
+            "observed_rate": 0.0
+          }
+        ]
+      },
+      "v4_full_reliability_gating": {
+        "matches": 233,
+        "log_loss": 0.961963,
+        "brier_score": 0.569825,
+        "ranked_probability_score": 0.199324,
+        "accuracy": 0.600858,
+        "expected_calibration_error": 0.087919,
+        "calibration_bins": [
+          {
+            "lower": 0.0,
+            "upper": 0.1,
+            "count": 0,
+            "mean_probability": 0.0,
+            "observed_rate": 0.0
+          },
+          {
+            "lower": 0.1,
+            "upper": 0.2,
+            "count": 21,
+            "mean_probability": 0.165782,
+            "observed_rate": 0.047619
+          },
+          {
+            "lower": 0.2,
+            "upper": 0.3,
+            "count": 336,
+            "mean_probability": 0.26859,
+            "observed_rate": 0.184524
+          },
+          {
+            "lower": 0.3,
+            "upper": 0.4,
+            "count": 193,
+            "mean_probability": 0.350669,
+            "observed_rate": 0.352332
+          },
+          {
+            "lower": 0.4,
+            "upper": 0.5,
+            "count": 102,
+            "mean_probability": 0.447354,
+            "observed_rate": 0.637255
+          },
+          {
+            "lower": 0.5,
+            "upper": 0.6,
+            "count": 39,
+            "mean_probability": 0.537833,
+            "observed_rate": 0.769231
+          },
+          {
+            "lower": 0.6,
+            "upper": 0.7,
+            "count": 8,
+            "mean_probability": 0.623454,
+            "observed_rate": 0.875
+          },
+          {
+            "lower": 0.7,
+            "upper": 0.8,
+            "count": 0,
+            "mean_probability": 0.0,
+            "observed_rate": 0.0
+          },
+          {
+            "lower": 0.8,
+            "upper": 0.9,
+            "count": 0,
+            "mean_probability": 0.0,
+            "observed_rate": 0.0
+          },
+          {
+            "lower": 0.9,
+            "upper": 1.0,
+            "count": 0,
+            "mean_probability": 0.0,
+            "observed_rate": 0.0
+          }
+        ]
+      }
+    },
+    "comparisons": {
+      "current_v4": {
+        "brier_delta_vs_current": 0.0,
+        "log_loss_delta_vs_current": 0.0,
+        "calibration_delta_vs_current": 0.0
+      },
+      "v4_freshness_gated": {
+        "brier_delta_vs_current": 0.008657,
+        "log_loss_delta_vs_current": 0.012334,
+        "calibration_delta_vs_current": 0.002764
+      },
+      "v4_without_rest_penalty": {
+        "brier_delta_vs_current": -0.000231,
+        "log_loss_delta_vs_current": -0.000617,
+        "calibration_delta_vs_current": 0.002663
+      },
+      "v4_attack_defense_freshness_only": {
+        "brier_delta_vs_current": 0.001698,
+        "log_loss_delta_vs_current": 0.002514,
+        "calibration_delta_vs_current": -0.000461
+      },
+      "v4_full_reliability_gating": {
+        "brier_delta_vs_current": 0.011936,
+        "log_loss_delta_vs_current": 0.016896,
+        "calibration_delta_vs_current": -0.000362
+      }
+    }
+  },
+  "live_diagnostics": {
+    "mexico_vs_south_africa": {
+      "before_current_v4": {
+        "mexico": 0.25585242396797125,
+        "draw": 0.27667695905879136,
+        "south_africa": 0.46747061697323744
+      },
+      "after_full_reliability_gating": {
+        "mexico": 0.3518107684200091,
+        "draw": 0.28602387248030375,
+        "south_africa": 0.3621653590996872
+      },
+      "input_reliability": {
+        "home": {
+          "elo": {
+            "age_days": 710,
+            "sample_matches": 10,
+            "freshness": 0.091858,
+            "sample_size": 0.5,
+            "combined": 0.214311
+          },
+          "attack_defense": {
+            "age_days": 710,
+            "sample_matches": 10,
+            "freshness": 0.091858,
+            "sample_size": 0.5,
+            "combined": 0.214311
+          },
+          "shot_volume": {
+            "age_days": 710,
+            "sample_matches": 10,
+            "freshness": 0.091858,
+            "sample_size": 0.5,
+            "combined": 0.214311
+          },
+          "rest_context": 0.091858,
+          "canonical_elo_prior": 1552.5,
+          "effective_elo": 1539.32630283,
+          "effective_attack_rating": 43.57067,
+          "effective_defense_rating": 53.57256437,
+          "effective_shot_volume_rating": 60.581605625
+        },
+        "away": {
+          "elo": {
+            "age_days": 240,
+            "sample_matches": 9,
+            "freshness": 0.561231,
+            "sample_size": 0.473684,
+            "combined": 0.515603
+          },
+          "attack_defense": {
+            "age_days": 240,
+            "sample_matches": 9,
+            "freshness": 0.561231,
+            "sample_size": 0.473684,
+            "combined": 0.515603
+          },
+          "shot_volume": {
+            "age_days": 240,
+            "sample_matches": 9,
+            "freshness": 0.561231,
+            "sample_size": 0.473684,
+            "combined": 0.515603
+          },
+          "rest_context": 0.561231,
+          "canonical_elo_prior": 1483.5,
+          "effective_elo": 1516.04486136,
+          "effective_attack_rating": 52.866752680000005,
+          "effective_defense_rating": 64.32345134,
+          "effective_shot_volume_rating": 62.173953993299996
+        },
+        "rest_context_reliability": 0.091858,
+        "gates": {
+          "elo": true,
+          "attack_defense": true,
+          "rest": true,
+          "shot_volume": true
+        }
+      }
+    },
+    "teams_most_affected": [
+      {
+        "team": "Canada",
+        "group_matches": 3,
+        "mean_absolute_win_probability_change": 0.092614,
+        "maximum_absolute_win_probability_change": 0.095785
+      },
+      {
+        "team": "Mexico",
+        "group_matches": 3,
+        "mean_absolute_win_probability_change": 0.083906,
+        "maximum_absolute_win_probability_change": 0.095958
+      },
+      {
+        "team": "United States",
+        "group_matches": 3,
+        "mean_absolute_win_probability_change": 0.083304,
+        "maximum_absolute_win_probability_change": 0.103499
+      },
+      {
+        "team": "Curacao",
+        "group_matches": 3,
+        "mean_absolute_win_probability_change": 0.079651,
+        "maximum_absolute_win_probability_change": 0.105036
+      },
+      {
+        "team": "Ecuador",
+        "group_matches": 3,
+        "mean_absolute_win_probability_change": 0.060536,
+        "maximum_absolute_win_probability_change": 0.088734
+      },
+      {
+        "team": "Spain",
+        "group_matches": 3,
+        "mean_absolute_win_probability_change": 0.058229,
+        "maximum_absolute_win_probability_change": 0.066609
+      },
+      {
+        "team": "Bosnia and Herzegovina",
+        "group_matches": 3,
+        "mean_absolute_win_probability_change": 0.054575,
+        "maximum_absolute_win_probability_change": 0.107165
+      },
+      {
+        "team": "Belgium",
+        "group_matches": 2,
+        "mean_absolute_win_probability_change": 0.052512,
+        "maximum_absolute_win_probability_change": 0.069755
+      },
+      {
+        "team": "Switzerland",
+        "group_matches": 3,
+        "mean_absolute_win_probability_change": 0.051878,
+        "maximum_absolute_win_probability_change": 0.104791
+      },
+      {
+        "team": "Qatar",
+        "group_matches": 3,
+        "mean_absolute_win_probability_change": 0.051084,
+        "maximum_absolute_win_probability_change": 0.099979
+      },
+      {
+        "team": "South Africa",
+        "group_matches": 3,
+        "mean_absolute_win_probability_change": 0.05069,
+        "maximum_absolute_win_probability_change": 0.105305
+      },
+      {
+        "team": "Norway",
+        "group_matches": 3,
+        "mean_absolute_win_probability_change": 0.05008,
+        "maximum_absolute_win_probability_change": 0.0829
+      },
+      {
+        "team": "Haiti",
+        "group_matches": 3,
+        "mean_absolute_win_probability_change": 0.049311,
+        "maximum_absolute_win_probability_change": 0.05889
+      },
+      {
+        "team": "South Korea",
+        "group_matches": 3,
+        "mean_absolute_win_probability_change": 0.048525,
+        "maximum_absolute_win_probability_change": 0.105931
+      },
+      {
+        "team": "Ivory Coast",
+        "group_matches": 3,
+        "mean_absolute_win_probability_change": 0.043581,
+        "maximum_absolute_win_probability_change": 0.062579
+      }
+    ],
+    "most_affected_group_fixtures": [
+      {
+        "match_id": "WC26-021",
+        "home_team": "United States",
+        "away_team": "Australia",
+        "home_probability_change": 0.103499,
+        "away_probability_change": -0.123361,
+        "maximum_absolute_change": 0.123361
+      },
+      {
+        "match_id": "WC26-007",
+        "home_team": "Canada",
+        "away_team": "Bosnia and Herzegovina",
+        "home_probability_change": 0.095785,
+        "away_probability_change": -0.107165,
+        "maximum_absolute_change": 0.107165
+      },
+      {
+        "match_id": "WC26-003",
+        "home_team": "Mexico",
+        "away_team": "South Korea",
+        "home_probability_change": 0.091001,
+        "away_probability_change": -0.105931,
+        "maximum_absolute_change": 0.105931
+      },
+      {
+        "match_id": "WC26-001",
+        "home_team": "Mexico",
+        "away_team": "South Africa",
+        "home_probability_change": 0.095958,
+        "away_probability_change": -0.105305,
+        "maximum_absolute_change": 0.105305
+      },
+      {
+        "match_id": "WC26-028",
+        "home_team": "Ecuador",
+        "away_team": "Curacao",
+        "home_probability_change": 0.088734,
+        "away_probability_change": -0.105036,
+        "maximum_absolute_change": 0.105036
+      },
+      {
+        "match_id": "WC26-011",
+        "home_team": "Switzerland",
+        "away_team": "Canada",
+        "home_probability_change": -0.104791,
+        "away_probability_change": 0.089428,
+        "maximum_absolute_change": 0.104791
+      },
+      {
+        "match_id": "WC26-009",
+        "home_team": "Canada",
+        "away_team": "Qatar",
+        "home_probability_change": 0.092628,
+        "away_probability_change": -0.099979,
+        "maximum_absolute_change": 0.099979
+      },
+      {
+        "match_id": "WC26-023",
+        "home_team": "Turkey",
+        "away_team": "United States",
+        "home_probability_change": -0.08389,
+        "away_probability_change": 0.070145,
+        "maximum_absolute_change": 0.08389
+      },
+      {
+        "match_id": "WC26-052",
+        "home_team": "Norway",
+        "away_team": "Senegal",
+        "home_probability_change": -0.0829,
+        "away_probability_change": 0.061734,
+        "maximum_absolute_change": 0.0829
+      },
+      {
+        "match_id": "WC26-019",
+        "home_team": "United States",
+        "away_team": "Paraguay",
+        "home_probability_change": 0.076268,
+        "away_probability_change": -0.080619,
+        "maximum_absolute_change": 0.080619
+      },
+      {
+        "match_id": "WC26-030",
+        "home_team": "Curacao",
+        "away_team": "Ivory Coast",
+        "home_probability_change": -0.074718,
+        "away_probability_change": 0.062579,
+        "maximum_absolute_change": 0.074718
+      },
+      {
+        "match_id": "WC26-005",
+        "home_team": "Czechia",
+        "away_team": "Mexico",
+        "home_probability_change": -0.071291,
+        "away_probability_change": 0.064759,
+        "maximum_absolute_change": 0.071291
+      },
+      {
+        "match_id": "WC26-037",
+        "home_team": "Belgium",
+        "away_team": "Egypt",
+        "home_probability_change": -0.069755,
+        "away_probability_change": 0.053157,
+        "maximum_absolute_change": 0.069755
+      },
+      {
+        "match_id": "WC26-047",
+        "home_team": "Uruguay",
+        "away_team": "Spain",
+        "home_probability_change": 0.049604,
+        "away_probability_change": -0.066609,
+        "maximum_absolute_change": 0.066609
+      },
+      {
+        "match_id": "WC26-025",
+        "home_team": "Germany",
+        "away_team": "Curacao",
+        "home_probability_change": 0.059124,
+        "away_probability_change": -0.059199,
+        "maximum_absolute_change": 0.059199
+      }
+    ]
+  },
+  "promotion": {
+    "best_candidate": "v4_without_rest_penalty",
+    "best_candidate_beats_current_on_brier_and_log_loss": true,
+    "experimental_beats_current_on_brier_and_log_loss": false,
+    "clearly_fixes_mexico_stale_pathology": true,
+    "experimental_no_material_holdout_harm": false,
+    "recommend_experimental_promotion": false,
+    "recommend_narrow_rest_change_for_review": true,
+    "production_changed": false,
+    "decision": "do not promote full freshness gating; review removal or stale-only disabling of the rest penalty"
+  }
+}

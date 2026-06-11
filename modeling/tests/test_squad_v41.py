@@ -936,7 +936,7 @@ class SquadSchemaAndIsolationTests(unittest.TestCase):
         prediction_source = (ROOT / "scripts" / "generate_predictions.py").read_text()
         simulation_source = (ROOT / "scripts" / "run_simulations.py").read_text()
 
-        self.assertIn('MODEL_VERSION = "elo-context-v4"', prediction_source)
+        self.assertIn('MODEL_VERSION = "elo-context-v4.1"', prediction_source)
         for source in (prediction_source, simulation_source):
             self.assertNotIn("squad_strength_ratings", source)
             self.assertNotIn("player_availability_reports", source)

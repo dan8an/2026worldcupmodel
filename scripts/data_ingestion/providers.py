@@ -104,6 +104,10 @@ class SportsProvider(ABC):
     ) -> list[dict[str, Any]]:
         raise NotImplementedError
 
+    @abstractmethod
+    def get_odds(self, fixture_id: int) -> list[dict[str, Any]]:
+        raise NotImplementedError
+
 
 def _team(payload: dict[str, Any] | None) -> dict[str, Any]:
     payload = payload or {}
@@ -547,6 +551,61 @@ class ApiFootballProvider(SportsProvider):
             )
         return rows
 
+    def get_odds(self, fixture_id: int) -> list[dict[str, Any]]:
+        rows = []
+        for item in self._request("/odds", fixture=fixture_id):
+            fixture = item.get("fixture") or {}
+            for bookmaker in item.get("bookmakers", []):
+                selections: dict[str, float] = {}
+                for bet in bookmaker.get("bets", []):
+                    normalized_bet = "".join(
+                        character
+                        for character in str(bet.get("name") or "").casefold()
+                        if character.isalnum()
+                    )
+                    if normalized_bet not in {
+                        "matchwinner",
+                        "fulltimeresult",
+                        "1x2",
+                    }:
+                        continue
+                    for value in bet.get("values", []):
+                        normalized_selection = str(
+                            value.get("value") or ""
+                        ).strip().casefold()
+                        selection = {
+                            "home": "home",
+                            "1": "home",
+                            "draw": "draw",
+                            "x": "draw",
+                            "away": "away",
+                            "2": "away",
+                        }.get(normalized_selection)
+                        try:
+                            decimal_odds = float(value.get("odd"))
+                        except (TypeError, ValueError):
+                            continue
+                        if selection and decimal_odds > 1.0:
+                            selections[selection] = decimal_odds
+                if set(selections) != {"home", "draw", "away"}:
+                    continue
+                rows.append(
+                    {
+                        "provider_fixture_id": int(
+                            fixture.get("id") or fixture_id
+                        ),
+                        "bookmaker": bookmaker.get("name") or "Unknown bookmaker",
+                        "bookmaker_provider_id": bookmaker.get("id"),
+                        "collected_at": item.get("update"),
+                        "home_decimal_odds": selections["home"],
+                        "draw_decimal_odds": selections["draw"],
+                        "away_decimal_odds": selections["away"],
+                        "source": self.name,
+                        "raw": item,
+                    }
+                )
+        return rows
+
 
 class SampleSportsProvider(SportsProvider):
     name = "sample"
@@ -655,6 +714,9 @@ class SampleSportsProvider(SportsProvider):
         return self._convert(
             self.payload.get("player_statistics", {}).get(str(team_id), [])
         )
+
+    def get_odds(self, fixture_id: int) -> list[dict[str, Any]]:
+        return self._convert(self.payload.get("odds", {}).get(str(fixture_id), []))
 
 
 def create_sports_provider(

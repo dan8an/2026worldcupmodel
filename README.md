@@ -114,9 +114,10 @@ python scripts/generate_predictions.py
 
 The command creates a model run when at least one match can be predicted and
 updates the existing prediction for each match. It uses current team ratings,
-an Elo probability base, validated attack/defense/rest context, draw
+an Elo probability base, validated attack/defense ratings, draw
 calibration, and a normalized score grid from 0-0 through 6-6. The production
-model version is `elo-context-v4`. The canonical fixture catalog from
+model version is `elo-context-v4.1`: the v4 shot-volume model with the
+rest/context component removed. The canonical fixture catalog from
 `modeling/src/data.py` is authoritative; database match rows only enrich it.
 Predictions retain IDs such as `WC26-001` even before provider match rows exist.
 V4 preserves the complete v3 pipeline and adds only the validated

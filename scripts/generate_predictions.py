@@ -30,7 +30,8 @@ from scripts.confidence_v1 import (
 )
 from scripts.database import create_database_engine
 
-MODEL_VERSION = "elo-context-v4"
+MODEL_VERSION = "elo-context-v4.1"
+MODEL_DESCRIPTION = "v4 shot-volume model with rest/context component removed."
 LEGACY_MODEL_VERSION = "poisson-ratings-v1"
 CHANCE_QUALITY_MODEL_VERSION = "xg-proxy-v4"
 PROMOTION_CONFIG_PATH = (
@@ -40,7 +41,6 @@ TEAM_ALIASES_PATH = ROOT / "data" / "seed" / "team_aliases.json"
 MAX_GOALS = 6
 V3_ATTACK_WEIGHT = 0.15
 V3_DEFENSE_WEIGHT = 0.30
-V3_REST_WEIGHT = -0.15
 V3_DRAW_MULTIPLIER = 1.15
 SHOT_VOLUME_FACTOR_MINIMUM_IMPACT = 0.0005
 PREDICTION_REQUIRED_COLUMNS = {
@@ -423,19 +423,19 @@ def _format_impact(value: float) -> str:
 
 def _top_factors(
     elo_probabilities: tuple[float, float, float],
+    attack_probabilities: tuple[float, float, float],
     attack_defense_probabilities: tuple[float, float, float],
-    context_probabilities: tuple[float, float, float],
     final_probabilities: tuple[float, float, float],
     home_team_name: str,
     away_team_name: str,
     shot_volume_impact: float = 0.0,
 ) -> list[dict[str, str]]:
     elo_home_impact = (elo_probabilities[0] - elo_probabilities[2]) / 2.0
-    attack_defense_impact = (
-        attack_defense_probabilities[0] - elo_probabilities[0]
+    attack_impact = attack_probabilities[0] - elo_probabilities[0]
+    defense_impact = (
+        attack_defense_probabilities[0] - attack_probabilities[0]
     )
-    rest_impact = context_probabilities[0] - attack_defense_probabilities[0]
-    draw_impact = final_probabilities[1] - context_probabilities[1]
+    draw_impact = final_probabilities[1] - attack_defense_probabilities[1]
 
     factors = [
         (
@@ -447,23 +447,27 @@ def _top_factors(
             },
         ),
         (
-            abs(attack_defense_impact),
+            abs(attack_impact),
             {
-                "factor": "Attack/defense edge",
+                "factor": "Attack rating",
                 "team": (
                     home_team_name
-                    if attack_defense_impact >= 0
+                    if attack_impact >= 0
                     else away_team_name
                 ),
-                "impact": _format_impact(abs(attack_defense_impact)),
+                "impact": _format_impact(abs(attack_impact)),
             },
         ),
         (
-            abs(rest_impact),
+            abs(defense_impact),
             {
-                "factor": "Rest context",
-                "team": home_team_name if rest_impact >= 0 else away_team_name,
-                "impact": _format_impact(abs(rest_impact)),
+                "factor": "Defense rating",
+                "team": (
+                    home_team_name
+                    if defense_impact >= 0
+                    else away_team_name
+                ),
+                "impact": _format_impact(abs(defense_impact)),
             },
         ),
         (
@@ -506,7 +510,11 @@ def calculate_prediction(
     home_shot_volume_rating: float | None = None,
     away_shot_volume_rating: float | None = None,
 ) -> dict[str, Any]:
-    """Calculate Elo context v4 with the validated shot-volume ablation."""
+    """Calculate production v4.1 without a rest/context contribution.
+
+    The rest arguments remain accepted so historical research scripts can
+    replay older ablations, but production v4.1 intentionally ignores them.
+    """
     home_elo = _number(home_rating.get("elo_rating"), 1500.0)
     away_elo = _number(away_rating.get("elo_rating"), 1500.0)
     elo_gap = home_elo - away_elo
@@ -541,15 +549,17 @@ def calculate_prediction(
         away_rating.get("defense_rating"),
         100.0,
     )
-    rest_signal = _rating_difference(home_rest_days, away_rest_days, 14.0)
-    context_tilt = (
-        V3_ATTACK_WEIGHT * attack_signal
-        + V3_DEFENSE_WEIGHT * defense_signal
-        + V3_REST_WEIGHT * rest_signal
-    )
     attack_defense_tilt = (
         V3_ATTACK_WEIGHT * attack_signal
         + V3_DEFENSE_WEIGHT * defense_signal
+    )
+    attack_tilt = V3_ATTACK_WEIGHT * attack_signal
+    attack_probabilities = _normalize_probabilities(
+        (
+            elo_probabilities[0] * math.exp(attack_tilt),
+            elo_probabilities[1],
+            elo_probabilities[2] * math.exp(-attack_tilt),
+        )
     )
     attack_defense_probabilities = _normalize_probabilities(
         (
@@ -558,18 +568,11 @@ def calculate_prediction(
             elo_probabilities[2] * math.exp(-attack_defense_tilt),
         )
     )
-    context_probabilities = _normalize_probabilities(
-        (
-            elo_probabilities[0] * math.exp(context_tilt),
-            elo_probabilities[1],
-            elo_probabilities[2] * math.exp(-context_tilt),
-        )
-    )
     v3_probabilities = _normalize_probabilities(
         (
-            elo_probabilities[0] * math.exp(context_tilt),
+            elo_probabilities[0] * math.exp(attack_defense_tilt),
             elo_probabilities[1] * V3_DRAW_MULTIPLIER,
-            elo_probabilities[2] * math.exp(-context_tilt),
+            elo_probabilities[2] * math.exp(-attack_defense_tilt),
         )
     )
     shot_volume_signal = _rating_difference(
@@ -623,16 +626,14 @@ def calculate_prediction(
                     and away_rating.get("defense_rating") is not None,
                 )
             ),
-            player_ratings=(
-                home_player_rating is not None and away_player_rating is not None
-            ),
-            context=home_rest_days is not None and away_rest_days is not None,
+            player_ratings=True,
+            context=True,
         ),
     )
     top_factors = _top_factors(
         elo_probabilities,
+        attack_probabilities,
         attack_defense_probabilities,
-        context_probabilities,
         v3_probabilities,
         home_team_name,
         away_team_name,
@@ -649,10 +650,10 @@ def calculate_prediction(
             attack_defense_probabilities[0] - elo_probabilities[0]
         ),
         "draw_calibration_adjustment": (
-            v3_probabilities[1] - context_probabilities[1]
+            v3_probabilities[1] - attack_defense_probabilities[1]
         ),
         "context_adjustment_total": (
-            context_probabilities[0] - elo_probabilities[0]
+            attack_defense_probabilities[0] - elo_probabilities[0]
         ),
         "final_home_probability": probabilities[0],
         "final_draw_probability": probabilities[1],
@@ -931,7 +932,7 @@ class PredictionRepository:
             "id": run_id,
             "run_date": generated_at.date().isoformat(),
             "model_version": MODEL_VERSION,
-            "notes": "Promoted Elo context v4 with validated shot-volume adjustment",
+            "notes": MODEL_DESCRIPTION,
             "data_cutoff": timestamp,
             "status": "completed",
             "random_seed": 0,
@@ -942,7 +943,6 @@ class PredictionRepository:
                 "base_model": "walk-forward Elo probabilities",
                 "attack_weight": V3_ATTACK_WEIGHT,
                 "defense_weight": V3_DEFENSE_WEIGHT,
-                "rest_weight": V3_REST_WEIGHT,
                 "draw_multiplier": V3_DRAW_MULTIPLIER,
                 "selected_ablation": PROMOTION_CONFIG["selected_ablation"],
                 "shot_volume_weight": SHOT_VOLUME_WEIGHT,
@@ -1008,7 +1008,6 @@ class PredictionRepository:
             "explanation_factors": [
                 "Elo result probabilities",
                 "Validated attack and defense rating adjustments",
-                "Validated rest adjustment when match history is available",
                 "Validated draw calibration",
                 "Validated shot-volume adjustment when ratings are available",
             ],
@@ -1086,11 +1085,9 @@ def main() -> int:
                     team_id,
                     reason,
                 )
-        player_ratings = repository.load_player_team_averages(database_team_ids)
         shot_volume_ratings = repository.load_current_shot_volume_ratings(
             database_team_ids
         )
-        latest_match_dates = repository.load_latest_team_match_dates(database_team_ids)
         predictions = []
         team_names = {team.id: team.name for team in load_teams()}
         for match in matches:
@@ -1109,20 +1106,6 @@ def main() -> int:
                     **calculate_prediction(
                         home_rating,
                         away_rating,
-                        home_player_rating=player_ratings.get(match["home_team_id"]),
-                        away_player_rating=player_ratings.get(match["away_team_id"]),
-                        home_rest_days=(
-                            (match["kickoff"].date() - latest_match_dates[
-                                match["home_team_id"]
-                            ]).days
-                            if match["home_team_id"] in latest_match_dates else None
-                        ),
-                        away_rest_days=(
-                            (match["kickoff"].date() - latest_match_dates[
-                                match["away_team_id"]
-                            ]).days
-                            if match["away_team_id"] in latest_match_dates else None
-                        ),
                         home_team_name=team_names[match["home_team_id"]],
                         away_team_name=team_names[match["away_team_id"]],
                         home_shot_volume_rating=shot_volume_ratings.get(

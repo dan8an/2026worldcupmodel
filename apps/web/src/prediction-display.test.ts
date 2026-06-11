@@ -21,9 +21,9 @@ const prediction = {
   confidence_score: 72,
   top_factors: [
     { factor: "Elo advantage", team: "Brazil", impact: "+4.2%" },
-    { factor: "Attack/defense edge", team: "Brazil", impact: "+1.6%" },
+    { factor: "Attack rating", team: "Brazil", impact: "+1.6%" },
+    { factor: "Defense rating", team: "Brazil", impact: "+0.9%" },
     { factor: "Draw calibration", team: "Draw", impact: "+0.8%" },
-    { factor: "Rest context", team: "Morocco", impact: "-0.2%" },
     { factor: "Shot volume", team: "Brazil", impact: "+1.1%" },
     { factor: "Venue context", team: "Brazil", impact: "+1.8%" },
     { factor: "Travel context", team: "Morocco", impact: "-0.5%" },
@@ -55,21 +55,22 @@ describe("prediction display helpers", () => {
     const factors = displayFactors(prediction);
     expect(factors.map((factor) => factor.factor)).toEqual([
       "Elo advantage",
-      "Attack/defense edge",
       "Shot-volume edge",
-      "Draw calibration",
+      "Attack rating",
+      "Defense rating",
       "Venue context",
+      "Draw calibration",
       "Travel context",
     ]);
     expect(factors[0].direction).toBe("positive");
     expect(primaryFactors(prediction)).toHaveLength(3);
-    expect(additionalFactors(prediction)).toHaveLength(3);
-    expect(factors.some((factor) => factor.factor === "Rest-day edge")).toBe(false);
+    expect(additionalFactors(prediction)).toHaveLength(4);
+    expect(factors.some((factor) => /rest|recovery/i.test(factor.factor))).toBe(false);
   });
 
   it("builds summary copy from the strongest non-Elo factors", () => {
     expect(predictionSummary(match)).toBe(
-      "Brazil's win probability rises above the Elo baseline because stronger attack and defense ratings favor Brazil, while sustained shot volume favors Brazil.",
+      "Brazil's win probability rises above the Elo baseline because sustained shot volume favors Brazil, while the attack rating favors Brazil.",
     );
   });
 });

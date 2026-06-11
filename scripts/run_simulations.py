@@ -233,10 +233,8 @@ KnockoutPrediction = Callable[[str, str], dict[str, Any]]
 
 def build_knockout_prediction_provider(
     team_ratings: dict[str, dict[str, Any]],
-    player_ratings: dict[str, float] | None = None,
     shot_volume_ratings: dict[str, float] | None = None,
 ) -> KnockoutPrediction:
-    player_ratings = player_ratings or {}
     shot_volume_ratings = shot_volume_ratings or {}
     team_names = {team.id: team.name for team in load_teams()}
     cache: dict[tuple[str, str], dict[str, Any]] = {}
@@ -247,8 +245,6 @@ def build_knockout_prediction_provider(
             cache[key] = calculate_prediction(
                 team_ratings[home_id],
                 team_ratings[away_id],
-                home_player_rating=player_ratings.get(home_id),
-                away_player_rating=player_ratings.get(away_id),
                 home_team_name=team_names[home_id],
                 away_team_name=team_names[away_id],
                 home_shot_volume_rating=shot_volume_ratings.get(home_id),
@@ -551,9 +547,6 @@ def main() -> int:
         team_ratings = prediction_repository.load_current_team_ratings(
             database_team_ids
         )
-        player_ratings = prediction_repository.load_player_team_averages(
-            database_team_ids
-        )
         shot_volume_ratings = (
             prediction_repository.load_current_shot_volume_ratings(
                 database_team_ids
@@ -561,7 +554,6 @@ def main() -> int:
         )
         knockout_prediction = build_knockout_prediction_provider(
             team_ratings,
-            player_ratings,
             shot_volume_ratings,
         )
         logger.info("[simulation] Running %d tournaments", args.simulations)

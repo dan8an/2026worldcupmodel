@@ -148,7 +148,7 @@ class PredictionCalculationTests(unittest.TestCase):
         )
         expected_total = sum(expected_raw)
 
-        self.assertEqual(MODEL_VERSION, "elo-context-v4")
+        self.assertEqual(MODEL_VERSION, "elo-context-v4.1")
         self.assertAlmostEqual(
             v4["home_win_probability"],
             expected_raw[0] / expected_total,
@@ -270,6 +270,40 @@ class PredictionCalculationTests(unittest.TestCase):
             "score_probabilities",
         ):
             self.assertEqual(with_context[field], without_form_or_players[field])
+
+    def test_v41_ignores_rest_inputs(self):
+        home = {
+            "elo_rating": 1510,
+            "attack_rating": 55,
+            "defense_rating": 60,
+        }
+        away = {
+            "elo_rating": 1490,
+            "attack_rating": 50,
+            "defense_rating": 52,
+        }
+
+        stale_gap = calculate_prediction(
+            home,
+            away,
+            home_rest_days=710,
+            away_rest_days=2,
+        )
+        reversed_gap = calculate_prediction(
+            home,
+            away,
+            home_rest_days=2,
+            away_rest_days=710,
+        )
+
+        self.assertEqual(stale_gap, reversed_gap)
+        self.assertFalse(
+            any(
+                "rest" in factor["factor"].lower()
+                or "recovery" in factor["factor"].lower()
+                for factor in stale_gap["top_factors"]
+            )
+        )
 
 
 class PredictionScriptTests(unittest.TestCase):

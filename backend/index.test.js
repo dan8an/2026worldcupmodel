@@ -45,7 +45,7 @@ const predictionRows = [{
     { factor: "Elo advantage", team: "Mexico", impact: "+3.0%" },
     { factor: "Shot volume", team: "Mexico", impact: "+1.2%" },
   ],
-  model_version: "elo-context-v4",
+  model_version: "elo-context-v4.1",
   prediction_timestamp: "2026-06-10T20:00:00Z",
 }];
 
@@ -56,7 +56,7 @@ db.query = async (sql) => {
         id: "simulation-run",
         num_simulations: 50000,
         random_seed: 2026,
-        model_version: "elo-context-v4",
+        model_version: "elo-context-v4.1",
         created_at: "2026-06-10T20:00:00Z",
       }],
     };
@@ -112,7 +112,7 @@ test("GET /api/simulations/latest returns the frontend simulation shape", async 
 
   assert.equal(response.status, 200);
   assert.equal(simulation.iterations, 50000);
-  assert.equal(simulation.model_version, "elo-context-v4");
+  assert.equal(simulation.model_version, "elo-context-v4.1");
   assert.equal(simulation.generated_at, "2026-06-10T20:00:00Z");
   assert.equal(simulation.created_at, "2026-06-10T20:00:00Z");
   assert.equal(simulation.source, "database_latest");

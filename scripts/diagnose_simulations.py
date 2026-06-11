@@ -799,9 +799,6 @@ def main() -> int:
         team_ratings = prediction_repository.load_current_team_ratings(
             database_team_ids
         )
-        player_ratings = prediction_repository.load_player_team_averages(
-            database_team_ids
-        )
         shot_volume_ratings = (
             prediction_repository.load_current_shot_volume_ratings(
                 database_team_ids
@@ -809,7 +806,6 @@ def main() -> int:
         )
         knockout_prediction = build_knockout_prediction_provider(
             team_ratings,
-            player_ratings,
             shot_volume_ratings,
         )
         mappings = mapping_diagnostics(engine)
@@ -907,7 +903,7 @@ def main() -> int:
             "knockout_model": {
                 "matchup_definition": (
                     "Each simulated knockout matchup uses a cached neutral-site "
-                    "elo-context-v4 prediction computed from the current team "
+                    "elo-context-v4.1 prediction computed from the current team "
                     "ratings and validated shot-volume inputs."
                 ),
                 "draw_handling": (

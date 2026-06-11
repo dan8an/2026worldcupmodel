@@ -1,0 +1,586 @@
+{
+  "generated_at": "2026-06-11T21:29:52.062599+00:00",
+  "model_version": "market-comparison-v5-research",
+  "status": "current_comparison_only",
+  "purpose": "model evaluation and market benchmarking only",
+  "production_predictions_changed": false,
+  "production_simulation_changed": false,
+  "coverage": {
+    "market_snapshots": 28,
+    "snapshots_with_model_comparison": 28,
+    "comparison_matches": 2,
+    "historical_validation_matches": 0,
+    "historical_validation_available": false
+  },
+  "model_metrics": null,
+  "market_metrics": null,
+  "model_vs_market": null,
+  "average_absolute_disagreement": 0.137646,
+  "disagreement_buckets": {
+    "0-2%": 0,
+    "2-5%": 1,
+    "5-10%": 0,
+    "10%+": 1
+  },
+  "calibration": {
+    "model": null,
+    "market": null
+  },
+  "validation_note": "Historical outperformance is not evaluated because complete pre-match odds and model snapshots are unavailable.",
+  "sample_comparisons": [
+    {
+      "match_id": null,
+      "canonical_match_id": "WC26-001",
+      "provider_fixture_id": 1489369,
+      "bookmakers": [
+        "10Bet",
+        "1xBet",
+        "888Sport",
+        "Bet365",
+        "BetVictor",
+        "Betano",
+        "Betfair",
+        "Dafabet",
+        "Marathonbet",
+        "Pinnacle",
+        "SBO",
+        "Superbet",
+        "Unibet",
+        "William Hill"
+      ],
+      "bookmaker_count": 14,
+      "market_probability": {
+        "home": 0.6717002554906989,
+        "draw": 0.21600719791535955,
+        "away": 0.1122925465939416
+      },
+      "model_probability": {
+        "home": 0.3044770276716843,
+        "draw": 0.2833960657911413,
+        "away": 0.41212690653717443
+      },
+      "model_vs_market_difference": {
+        "home": -0.3672232278190146,
+        "draw": 0.06738886787578174,
+        "away": 0.2998343599432328
+      },
+      "average_absolute_disagreement": 0.2448154852126764,
+      "disagreement_bucket": "10%+",
+      "outcome": null,
+      "historical_validation_eligible": false
+    },
+    {
+      "match_id": null,
+      "canonical_match_id": "WC26-002",
+      "provider_fixture_id": 1538999,
+      "bookmakers": [
+        "10Bet",
+        "1xBet",
+        "888Sport",
+        "Bet365",
+        "BetVictor",
+        "Betano",
+        "Betfair",
+        "Dafabet",
+        "Marathonbet",
+        "Pinnacle",
+        "SBO",
+        "Superbet",
+        "Unibet",
+        "William Hill"
+      ],
+      "bookmaker_count": 14,
+      "market_probability": {
+        "home": 0.35928914761401204,
+        "draw": 0.31194678368425494,
+        "away": 0.3287640687017331
+      },
+      "model_probability": {
+        "home": 0.4050029124534184,
+        "draw": 0.2840091259842343,
+        "away": 0.31098796156234726
+      },
+      "model_vs_market_difference": {
+        "home": 0.04571376483940637,
+        "draw": -0.027937657700020657,
+        "away": -0.01777610713938582
+      },
+      "average_absolute_disagreement": 0.03047584322627095,
+      "disagreement_bucket": "2-5%",
+      "outcome": null,
+      "historical_validation_eligible": false
+    }
+  ],
+  "sample_bookmaker_snapshots": [
+    {
+      "snapshot_id": "b2eeb0a7-82c2-4634-a214-5991956b44bc",
+      "match_id": null,
+      "canonical_match_id": "WC26-001",
+      "canonical_home_team_code": "MEX",
+      "canonical_away_team_code": "RSA",
+      "provider_home_team_id": 16,
+      "provider_away_team_id": 1531,
+      "provider_home_team_name": "Mexico",
+      "provider_away_team_name": "South Africa",
+      "provider_fixture_id": 1489369,
+      "bookmaker": "10Bet",
+      "source": "api_football",
+      "collected_at": "2026-06-11T16:08:33+00:00",
+      "model_run_id": "3ee5cdf2-8448-47ab-bb3c-5d79c116db5e",
+      "model_version": "elo-context-v4.1",
+      "decimal_odds": {
+        "home": 1.4,
+        "draw": 4.3,
+        "away": 8.8
+      },
+      "raw_implied_probabilities": {
+        "home": 0.7142857142857143,
+        "draw": 0.23255813953488372,
+        "away": 0.11363636363636363
+      },
+      "overround": 1.0604802174569616,
+      "market_probability": {
+        "home": 0.6735493058027768,
+        "draw": 0.21929512281950872,
+        "away": 0.10715557137771445
+      },
+      "model_probability": {
+        "home": 0.3044770276716843,
+        "draw": 0.2833960657911413,
+        "away": 0.41212690653717443
+      },
+      "model_vs_market_difference": {
+        "home": -0.36907227813109256,
+        "draw": 0.06410094297163257,
+        "away": 0.30497133515945996
+      },
+      "average_absolute_disagreement": 0.24604818542072837,
+      "disagreement_bucket": "10%+",
+      "outcome": null,
+      "historical_validation_eligible": false
+    },
+    {
+      "snapshot_id": "470835a4-7db5-46e5-b6ca-3fc3c63cf363",
+      "match_id": null,
+      "canonical_match_id": "WC26-001",
+      "canonical_home_team_code": "MEX",
+      "canonical_away_team_code": "RSA",
+      "provider_home_team_id": 16,
+      "provider_away_team_id": 1531,
+      "provider_home_team_name": "Mexico",
+      "provider_away_team_name": "South Africa",
+      "provider_fixture_id": 1489369,
+      "bookmaker": "1xBet",
+      "source": "api_football",
+      "collected_at": "2026-06-11T16:08:33+00:00",
+      "model_run_id": "3ee5cdf2-8448-47ab-bb3c-5d79c116db5e",
+      "model_version": "elo-context-v4.1",
+      "decimal_odds": {
+        "home": 1.44,
+        "draw": 4.6,
+        "away": 8.75
+      },
+      "raw_implied_probabilities": {
+        "home": 0.6944444444444444,
+        "draw": 0.2173913043478261,
+        "away": 0.11428571428571428
+      },
+      "overround": 1.026121463077985,
+      "market_probability": {
+        "home": 0.6767663180549482,
+        "draw": 0.21185728217372296,
+        "away": 0.1113763997713288
+      },
+      "model_probability": {
+        "home": 0.3044770276716843,
+        "draw": 0.2833960657911413,
+        "away": 0.41212690653717443
+      },
+      "model_vs_market_difference": {
+        "home": -0.37228929038326397,
+        "draw": 0.07153878361741833,
+        "away": 0.30075050676584564
+      },
+      "average_absolute_disagreement": 0.24819286025550932,
+      "disagreement_bucket": "10%+",
+      "outcome": null,
+      "historical_validation_eligible": false
+    },
+    {
+      "snapshot_id": "8ff307f5-b443-443b-a5d5-ab51d6b939df",
+      "match_id": null,
+      "canonical_match_id": "WC26-001",
+      "canonical_home_team_code": "MEX",
+      "canonical_away_team_code": "RSA",
+      "provider_home_team_id": 16,
+      "provider_away_team_id": 1531,
+      "provider_home_team_name": "Mexico",
+      "provider_away_team_name": "South Africa",
+      "provider_fixture_id": 1489369,
+      "bookmaker": "888Sport",
+      "source": "api_football",
+      "collected_at": "2026-06-11T16:08:33+00:00",
+      "model_run_id": "3ee5cdf2-8448-47ab-bb3c-5d79c116db5e",
+      "model_version": "elo-context-v4.1",
+      "decimal_odds": {
+        "home": 1.4,
+        "draw": 4.0,
+        "away": 7.5
+      },
+      "raw_implied_probabilities": {
+        "home": 0.7142857142857143,
+        "draw": 0.25,
+        "away": 0.13333333333333333
+      },
+      "overround": 1.0976190476190477,
+      "market_probability": {
+        "home": 0.6507592190889371,
+        "draw": 0.22776572668112796,
+        "away": 0.12147505422993496
+      },
+      "model_probability": {
+        "home": 0.3044770276716843,
+        "draw": 0.2833960657911413,
+        "away": 0.41212690653717443
+      },
+      "model_vs_market_difference": {
+        "home": -0.3462821914172528,
+        "draw": 0.05563033911001333,
+        "away": 0.29065185230723944
+      },
+      "average_absolute_disagreement": 0.23085479427816855,
+      "disagreement_bucket": "10%+",
+      "outcome": null,
+      "historical_validation_eligible": false
+    },
+    {
+      "snapshot_id": "905e3713-9eaa-4144-80fe-39014a6ebc0e",
+      "match_id": null,
+      "canonical_match_id": "WC26-001",
+      "canonical_home_team_code": "MEX",
+      "canonical_away_team_code": "RSA",
+      "provider_home_team_id": 16,
+      "provider_away_team_id": 1531,
+      "provider_home_team_name": "Mexico",
+      "provider_away_team_name": "South Africa",
+      "provider_fixture_id": 1489369,
+      "bookmaker": "Bet365",
+      "source": "api_football",
+      "collected_at": "2026-06-11T16:08:33+00:00",
+      "model_run_id": "3ee5cdf2-8448-47ab-bb3c-5d79c116db5e",
+      "model_version": "elo-context-v4.1",
+      "decimal_odds": {
+        "home": 1.4,
+        "draw": 4.5,
+        "away": 8.5
+      },
+      "raw_implied_probabilities": {
+        "home": 0.7142857142857143,
+        "draw": 0.2222222222222222,
+        "away": 0.11764705882352941
+      },
+      "overround": 1.054154995331466,
+      "market_probability": {
+        "home": 0.6775907883082374,
+        "draw": 0.21080602302922938,
+        "away": 0.11160318866253324
+      },
+      "model_probability": {
+        "home": 0.3044770276716843,
+        "draw": 0.2833960657911413,
+        "away": 0.41212690653717443
+      },
+      "model_vs_market_difference": {
+        "home": -0.3731137606365531,
+        "draw": 0.07259004276191192,
+        "away": 0.30052371787464116
+      },
+      "average_absolute_disagreement": 0.2487425070910354,
+      "disagreement_bucket": "10%+",
+      "outcome": null,
+      "historical_validation_eligible": false
+    },
+    {
+      "snapshot_id": "21593fb1-51bf-438d-b298-0605cbb93c2b",
+      "match_id": null,
+      "canonical_match_id": "WC26-001",
+      "canonical_home_team_code": "MEX",
+      "canonical_away_team_code": "RSA",
+      "provider_home_team_id": 16,
+      "provider_away_team_id": 1531,
+      "provider_home_team_name": "Mexico",
+      "provider_away_team_name": "South Africa",
+      "provider_fixture_id": 1489369,
+      "bookmaker": "BetVictor",
+      "source": "api_football",
+      "collected_at": "2026-06-11T16:08:33+00:00",
+      "model_run_id": "3ee5cdf2-8448-47ab-bb3c-5d79c116db5e",
+      "model_version": "elo-context-v4.1",
+      "decimal_odds": {
+        "home": 1.4,
+        "draw": 4.2,
+        "away": 9.0
+      },
+      "raw_implied_probabilities": {
+        "home": 0.7142857142857143,
+        "draw": 0.23809523809523808,
+        "away": 0.1111111111111111
+      },
+      "overround": 1.0634920634920635,
+      "market_probability": {
+        "home": 0.6716417910447762,
+        "draw": 0.22388059701492535,
+        "away": 0.10447761194029848
+      },
+      "model_probability": {
+        "home": 0.3044770276716843,
+        "draw": 0.2833960657911413,
+        "away": 0.41212690653717443
+      },
+      "model_vs_market_difference": {
+        "home": -0.3671647633730919,
+        "draw": 0.05951546877621594,
+        "away": 0.30764929459687596
+      },
+      "average_absolute_disagreement": 0.2447765089153946,
+      "disagreement_bucket": "10%+",
+      "outcome": null,
+      "historical_validation_eligible": false
+    },
+    {
+      "snapshot_id": "14208d24-3699-4afb-9927-302ce211ea7b",
+      "match_id": null,
+      "canonical_match_id": "WC26-001",
+      "canonical_home_team_code": "MEX",
+      "canonical_away_team_code": "RSA",
+      "provider_home_team_id": 16,
+      "provider_away_team_id": 1531,
+      "provider_home_team_name": "Mexico",
+      "provider_away_team_name": "South Africa",
+      "provider_fixture_id": 1489369,
+      "bookmaker": "Betano",
+      "source": "api_football",
+      "collected_at": "2026-06-11T16:08:33+00:00",
+      "model_run_id": "3ee5cdf2-8448-47ab-bb3c-5d79c116db5e",
+      "model_version": "elo-context-v4.1",
+      "decimal_odds": {
+        "home": 1.47,
+        "draw": 4.45,
+        "away": 8.25
+      },
+      "raw_implied_probabilities": {
+        "home": 0.6802721088435374,
+        "draw": 0.2247191011235955,
+        "away": 0.12121212121212122
+      },
+      "overround": 1.026203331179254,
+      "market_probability": {
+        "home": 0.6629018715636088,
+        "draw": 0.21898106768505732,
+        "away": 0.11811706075133388
+      },
+      "model_probability": {
+        "home": 0.3044770276716843,
+        "draw": 0.2833960657911413,
+        "away": 0.41212690653717443
+      },
+      "model_vs_market_difference": {
+        "home": -0.3584248438919245,
+        "draw": 0.06441499810608398,
+        "away": 0.29400984578584055
+      },
+      "average_absolute_disagreement": 0.23894989592794968,
+      "disagreement_bucket": "10%+",
+      "outcome": null,
+      "historical_validation_eligible": false
+    },
+    {
+      "snapshot_id": "9e4928c9-1fdb-4f9f-b212-0d23f2ddb0ad",
+      "match_id": null,
+      "canonical_match_id": "WC26-001",
+      "canonical_home_team_code": "MEX",
+      "canonical_away_team_code": "RSA",
+      "provider_home_team_id": 16,
+      "provider_away_team_id": 1531,
+      "provider_home_team_name": "Mexico",
+      "provider_away_team_name": "South Africa",
+      "provider_fixture_id": 1489369,
+      "bookmaker": "Betfair",
+      "source": "api_football",
+      "collected_at": "2026-06-11T16:08:33+00:00",
+      "model_run_id": "3ee5cdf2-8448-47ab-bb3c-5d79c116db5e",
+      "model_version": "elo-context-v4.1",
+      "decimal_odds": {
+        "home": 1.4,
+        "draw": 4.6,
+        "away": 9.0
+      },
+      "raw_implied_probabilities": {
+        "home": 0.7142857142857143,
+        "draw": 0.2173913043478261,
+        "away": 0.1111111111111111
+      },
+      "overround": 1.0427881297446515,
+      "market_probability": {
+        "home": 0.684976836532098,
+        "draw": 0.20847121111846462,
+        "away": 0.10655195234943743
+      },
+      "model_probability": {
+        "home": 0.3044770276716843,
+        "draw": 0.2833960657911413,
+        "away": 0.41212690653717443
+      },
+      "model_vs_market_difference": {
+        "home": -0.3804998088604137,
+        "draw": 0.07492485467267668,
+        "away": 0.305574954187737
+      },
+      "average_absolute_disagreement": 0.25366653924027577,
+      "disagreement_bucket": "10%+",
+      "outcome": null,
+      "historical_validation_eligible": false
+    },
+    {
+      "snapshot_id": "4997b63b-ad0e-4f8f-b54d-5a739f8ff941",
+      "match_id": null,
+      "canonical_match_id": "WC26-001",
+      "canonical_home_team_code": "MEX",
+      "canonical_away_team_code": "RSA",
+      "provider_home_team_id": 16,
+      "provider_away_team_id": 1531,
+      "provider_home_team_name": "Mexico",
+      "provider_away_team_name": "South Africa",
+      "provider_fixture_id": 1489369,
+      "bookmaker": "Dafabet",
+      "source": "api_football",
+      "collected_at": "2026-06-11T16:08:33+00:00",
+      "model_run_id": "3ee5cdf2-8448-47ab-bb3c-5d79c116db5e",
+      "model_version": "elo-context-v4.1",
+      "decimal_odds": {
+        "home": 1.45,
+        "draw": 4.4,
+        "away": 8.0
+      },
+      "raw_implied_probabilities": {
+        "home": 0.6896551724137931,
+        "draw": 0.22727272727272727,
+        "away": 0.125
+      },
+      "overround": 1.0419278996865204,
+      "market_probability": {
+        "home": 0.661902971041745,
+        "draw": 0.21812711545693866,
+        "away": 0.11996991350131633
+      },
+      "model_probability": {
+        "home": 0.3044770276716843,
+        "draw": 0.2833960657911413,
+        "away": 0.41212690653717443
+      },
+      "model_vs_market_difference": {
+        "home": -0.35742594337006073,
+        "draw": 0.06526895033420263,
+        "away": 0.29215699303585807
+      },
+      "average_absolute_disagreement": 0.23828396224670714,
+      "disagreement_bucket": "10%+",
+      "outcome": null,
+      "historical_validation_eligible": false
+    },
+    {
+      "snapshot_id": "3dc96198-1db0-4572-bfc8-56597e736ca8",
+      "match_id": null,
+      "canonical_match_id": "WC26-001",
+      "canonical_home_team_code": "MEX",
+      "canonical_away_team_code": "RSA",
+      "provider_home_team_id": 16,
+      "provider_away_team_id": 1531,
+      "provider_home_team_name": "Mexico",
+      "provider_away_team_name": "South Africa",
+      "provider_fixture_id": 1489369,
+      "bookmaker": "Marathonbet",
+      "source": "api_football",
+      "collected_at": "2026-06-11T16:08:33+00:00",
+      "model_run_id": "3ee5cdf2-8448-47ab-bb3c-5d79c116db5e",
+      "model_version": "elo-context-v4.1",
+      "decimal_odds": {
+        "home": 1.44,
+        "draw": 4.6,
+        "away": 8.8
+      },
+      "raw_implied_probabilities": {
+        "home": 0.6944444444444444,
+        "draw": 0.2173913043478261,
+        "away": 0.11363636363636363
+      },
+      "overround": 1.0254721124286341,
+      "market_probability": {
+        "home": 0.6771948608137045,
+        "draw": 0.2119914346895075,
+        "away": 0.11081370449678798
+      },
+      "model_probability": {
+        "home": 0.3044770276716843,
+        "draw": 0.2833960657911413,
+        "away": 0.41212690653717443
+      },
+      "model_vs_market_difference": {
+        "home": -0.3727178331420202,
+        "draw": 0.07140463110163378,
+        "away": 0.3013132020403865
+      },
+      "average_absolute_disagreement": 0.24847855542801348,
+      "disagreement_bucket": "10%+",
+      "outcome": null,
+      "historical_validation_eligible": false
+    },
+    {
+      "snapshot_id": "a7c9dcec-1e0f-4772-af8e-b3ebfbc53c84",
+      "match_id": null,
+      "canonical_match_id": "WC26-001",
+      "canonical_home_team_code": "MEX",
+      "canonical_away_team_code": "RSA",
+      "provider_home_team_id": 16,
+      "provider_away_team_id": 1531,
+      "provider_home_team_name": "Mexico",
+      "provider_away_team_name": "South Africa",
+      "provider_fixture_id": 1489369,
+      "bookmaker": "Pinnacle",
+      "source": "api_football",
+      "collected_at": "2026-06-11T16:08:33+00:00",
+      "model_run_id": "3ee5cdf2-8448-47ab-bb3c-5d79c116db5e",
+      "model_version": "elo-context-v4.1",
+      "decimal_odds": {
+        "home": 1.43,
+        "draw": 4.7,
+        "away": 9.0
+      },
+      "raw_implied_probabilities": {
+        "home": 0.6993006993006994,
+        "draw": 0.2127659574468085,
+        "away": 0.1111111111111111
+      },
+      "overround": 1.023177767858619,
+      "market_probability": {
+        "home": 0.6834596306409656,
+        "draw": 0.207946228046081,
+        "away": 0.10859414131295339
+      },
+      "model_probability": {
+        "home": 0.3044770276716843,
+        "draw": 0.2833960657911413,
+        "away": 0.41212690653717443
+      },
+      "model_vs_market_difference": {
+        "home": -0.3789826029692813,
+        "draw": 0.07544983774506028,
+        "away": 0.303532765224221
+      },
+      "average_absolute_disagreement": 0.25265506864618753,
+      "disagreement_bucket": "10%+",
+      "outcome": null,
+      "historical_validation_eligible": false
+    }
+  ]
+}

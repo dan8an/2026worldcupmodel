@@ -87,9 +87,9 @@ describe("Championship outlook model transparency", () => {
     ]);
     expect(simulationDriverLabels(team)).toEqual([
       "Elo #42",
+      "Shot volume 97.0",
       "Attack 50.0",
       "Defense 50.0",
-      "Shot volume 97.0",
       "Source: conservative prior",
     ]);
   });

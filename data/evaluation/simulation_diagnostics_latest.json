@@ -1,11 +1,11 @@
 {
-  "generated_at": "2026-06-11T02:19:14.452840-07:00",
+  "generated_at": "2026-06-11T14:30:13.424322-07:00",
   "source": "database_latest",
   "api_verification": {
-    "simulation_run_id": "1b98733b-59ac-4426-b3ee-52eb5b2a2117",
-    "model_run_id": "2e948e94-8cdf-4ada-a48e-c4767b235b51",
-    "model_version": "elo-context-v4",
-    "created_at": "2026-06-11T09:18:15.389133+00:00",
+    "simulation_run_id": "0a28ff60-675b-4415-8277-25f7d0b82c67",
+    "model_run_id": "3ee5cdf2-8448-47ab-bb3c-5d79c116db5e",
+    "model_version": "elo-context-v4.1",
+    "created_at": "2026-06-11T21:29:14.576645+00:00",
     "team_result_rows": 48,
     "assessment": "/api/simulations/latest selects this newest simulation_runs row and its team_simulation_results rows."
   },
@@ -45,10 +45,10 @@
     "stage_probability_sums": {
       "round_of_32_probability": 32.0,
       "round_of_16_probability": 16.0,
-      "quarterfinal_probability": 8.0,
+      "quarterfinal_probability": 7.9999999999999964,
       "semifinal_probability": 4.0,
-      "final_probability": 1.9999999999999998,
-      "champion_probability": 1.0
+      "final_probability": 2.0000000000000004,
+      "champion_probability": 0.9999999999999999
     },
     "expected_stage_probability_sums": {
       "round_of_32_probability": 32,
@@ -61,108 +61,108 @@
     "stage_sum_checks_pass": true,
     "monotonic_checks_pass": true,
     "monotonic_violations": [],
-    "champion_probability_sum": 1.0
+    "champion_probability_sum": 0.9999999999999999
   },
   "top_20_champion_probabilities": [
     {
       "team_id": "ESP",
       "team_name": "Spain",
-      "champion_probability": 0.11312
+      "champion_probability": 0.10798
     },
     {
       "team_id": "NOR",
       "team_name": "Norway",
-      "champion_probability": 0.07388
+      "champion_probability": 0.074
     },
     {
       "team_id": "ENG",
       "team_name": "England",
-      "champion_probability": 0.06882
+      "champion_probability": 0.06886
     },
     {
       "team_id": "NED",
       "team_name": "Netherlands",
-      "champion_probability": 0.05078
+      "champion_probability": 0.05024
     },
     {
       "team_id": "FRA",
       "team_name": "France",
-      "champion_probability": 0.05016
-    },
-    {
-      "team_id": "POR",
-      "team_name": "Portugal",
-      "champion_probability": 0.04542
+      "champion_probability": 0.047
     },
     {
       "team_id": "JPN",
       "team_name": "Japan",
-      "champion_probability": 0.0447
+      "champion_probability": 0.04634
+    },
+    {
+      "team_id": "POR",
+      "team_name": "Portugal",
+      "champion_probability": 0.0435
     },
     {
       "team_id": "CUW",
       "team_name": "Curacao",
-      "champion_probability": 0.0442
+      "champion_probability": 0.04156
     },
     {
       "team_id": "ARG",
       "team_name": "Argentina",
-      "champion_probability": 0.04416
+      "champion_probability": 0.0396
     },
     {
       "team_id": "BEL",
       "team_name": "Belgium",
-      "champion_probability": 0.03046
-    },
-    {
-      "team_id": "GER",
-      "team_name": "Germany",
-      "champion_probability": 0.02974
-    },
-    {
-      "team_id": "CRO",
-      "team_name": "Croatia",
-      "champion_probability": 0.02566
+      "champion_probability": 0.03158
     },
     {
       "team_id": "BRA",
       "team_name": "Brazil",
-      "champion_probability": 0.0248
+      "champion_probability": 0.02906
+    },
+    {
+      "team_id": "GER",
+      "team_name": "Germany",
+      "champion_probability": 0.0283
     },
     {
       "team_id": "AUS",
       "team_name": "Australia",
-      "champion_probability": 0.02464
+      "champion_probability": 0.02532
     },
     {
       "team_id": "COL",
       "team_name": "Colombia",
-      "champion_probability": 0.02328
+      "champion_probability": 0.02416
     },
     {
       "team_id": "KOR",
       "team_name": "South Korea",
-      "champion_probability": 0.02186
+      "champion_probability": 0.02386
+    },
+    {
+      "team_id": "CRO",
+      "team_name": "Croatia",
+      "champion_probability": 0.0234
     },
     {
       "team_id": "TUR",
       "team_name": "Turkey",
-      "champion_probability": 0.02114
-    },
-    {
-      "team_id": "AUT",
-      "team_name": "Austria",
-      "champion_probability": 0.01844
-    },
-    {
-      "team_id": "MAR",
-      "team_name": "Morocco",
-      "champion_probability": 0.0155
+      "champion_probability": 0.0206
     },
     {
       "team_id": "UZB",
       "team_name": "Uzbekistan",
-      "champion_probability": 0.01548
+      "champion_probability": 0.0192
+    },
+    {
+      "team_id": "AUT",
+      "team_name": "Austria",
+      "champion_probability": 0.01876
+    },
+    {
+      "team_id": "URU",
+      "team_name": "Uruguay",
+      "champion_probability": 0.01604
     }
   ],
   "team_mapping_diagnostics": {
@@ -281,9 +281,9 @@
         "home_team_name": "South Korea",
         "away_team_id": "CZE",
         "away_team_name": "Czechia",
-        "home_win_probability": 0.350723450436115,
-        "draw_probability": 0.285747951984295,
-        "away_win_probability": 0.36352859757959,
+        "home_win_probability": 0.405002912453418,
+        "draw_probability": 0.284009125984234,
+        "away_win_probability": 0.310987961562347,
         "home_xg": 1.439,
         "away_xg": 1.2665
       },
@@ -293,9 +293,9 @@
         "home_team_name": "Czechia",
         "away_team_id": "RSA",
         "away_team_name": "South Africa",
-        "home_win_probability": 0.395931216121845,
-        "draw_probability": 0.284914386500357,
-        "away_win_probability": 0.319154397377797,
+        "home_win_probability": 0.341978061976113,
+        "draw_probability": 0.285915074989099,
+        "away_win_probability": 0.372106863034789,
         "home_xg": 1.3303,
         "away_xg": 1.37
       },
@@ -305,28 +305,28 @@
         "home_team_name": "Czechia",
         "away_team_id": "MEX",
         "away_team_name": "Mexico",
-        "home_win_probability": 0.451790367347381,
-        "draw_probability": 0.279139035366322,
-        "away_win_probability": 0.269070597286297,
+        "home_win_probability": 0.396547016717382,
+        "draw_probability": 0.284657391647086,
+        "away_win_probability": 0.318795591635532,
         "home_xg": 1.426,
         "away_xg": 1.278
       }
     ],
     "persisted_stage_probabilities": {
-      "round_of_32_probability": 0.73618,
-      "round_of_16_probability": 0.33994,
-      "quarterfinal_probability": 0.15792,
-      "semifinal_probability": 0.07112,
-      "final_probability": 0.02932,
-      "champion_probability": 0.01198
+      "round_of_32_probability": 0.6627,
+      "round_of_16_probability": 0.30672,
+      "quarterfinal_probability": 0.14596,
+      "semifinal_probability": 0.06616,
+      "final_probability": 0.02754,
+      "champion_probability": 0.01158
     },
     "replayed_stage_probabilities": {
-      "round_of_32_probability": 0.73618,
-      "round_of_16_probability": 0.33994,
-      "quarterfinal_probability": 0.15792,
-      "semifinal_probability": 0.07112,
-      "final_probability": 0.02932,
-      "champion_probability": 0.01198
+      "round_of_32_probability": 0.6627,
+      "round_of_16_probability": 0.30672,
+      "quarterfinal_probability": 0.14596,
+      "semifinal_probability": 0.06616,
+      "final_probability": 0.02754,
+      "champion_probability": 0.01158
     },
     "replay_minus_persisted": {
       "round_of_32_probability": 0.0,
@@ -336,342 +336,342 @@
       "final_probability": 0.0,
       "champion_probability": 0.0
     },
-    "average_group_finish": 2.31386,
+    "average_group_finish": 2.51638,
     "group_finish_distribution": {
-      "1": 0.30162,
-      "2": 0.27282,
-      "3": 0.23564,
-      "4": 0.18992
+      "1": 0.24006,
+      "2": 0.25426,
+      "3": 0.25492,
+      "4": 0.25076
     },
     "round_of_32_opponents": [
       {
         "team_id": "SUI",
         "team_name": "Switzerland",
-        "count": 1441,
-        "share": 0.03914803444809693,
+        "count": 1224,
+        "share": 0.036939791760977815,
         "focus_advance_probability": 0.5066619095125492
       },
       {
         "team_id": "BIH",
         "team_name": "Bosnia and Herzegovina",
-        "count": 1352,
-        "share": 0.03673014751826999,
+        "count": 1071,
+        "share": 0.03232231779085559,
         "focus_advance_probability": 0.5355470416757568
       },
       {
         "team_id": "ESP",
         "team_name": "Spain",
-        "count": 1124,
-        "share": 0.030536010214893095,
+        "count": 1010,
+        "share": 0.030481364116493135,
         "focus_advance_probability": 0.2967425038875464
-      },
-      {
-        "team_id": "NOR",
-        "team_name": "Norway",
-        "count": 1077,
-        "share": 0.029259148577793475,
-        "focus_advance_probability": 0.3293318717882876
-      },
-      {
-        "team_id": "FRA",
-        "team_name": "France",
-        "count": 1077,
-        "share": 0.029259148577793475,
-        "focus_advance_probability": 0.3733504056916872
-      },
-      {
-        "team_id": "ARG",
-        "team_name": "Argentina",
-        "count": 1064,
-        "share": 0.028905974082425494,
-        "focus_advance_probability": 0.3879579799627334
-      },
-      {
-        "team_id": "BEL",
-        "team_name": "Belgium",
-        "count": 1062,
-        "share": 0.028851639544676573,
-        "focus_advance_probability": 0.4190580825734923
-      },
-      {
-        "team_id": "TUR",
-        "team_name": "Turkey",
-        "count": 1053,
-        "share": 0.028607134124806432,
-        "focus_advance_probability": 0.4551832098863815
-      },
-      {
-        "team_id": "CUW",
-        "team_name": "Curacao",
-        "count": 1052,
-        "share": 0.028579966855931973,
-        "focus_advance_probability": 0.384933027661599
       },
       {
         "team_id": "ENG",
         "team_name": "England",
-        "count": 1051,
-        "share": 0.028552799587057514,
+        "count": 972,
+        "share": 0.02933454051607062,
         "focus_advance_probability": 0.3382442935117527
-      },
-      {
-        "team_id": "POR",
-        "team_name": "Portugal",
-        "count": 1023,
-        "share": 0.02779211605857263,
-        "focus_advance_probability": 0.379962168723588
       },
       {
         "team_id": "NED",
         "team_name": "Netherlands",
-        "count": 1015,
-        "share": 0.027574777907576953,
+        "count": 964,
+        "share": 0.029093103968613247,
         "focus_advance_probability": 0.37011526083211643
+      },
+      {
+        "team_id": "NOR",
+        "team_name": "Norway",
+        "count": 962,
+        "share": 0.029032744831748905,
+        "focus_advance_probability": 0.3293318717882876
+      },
+      {
+        "team_id": "CUW",
+        "team_name": "Curacao",
+        "count": 930,
+        "share": 0.02806699864191942,
+        "focus_advance_probability": 0.384933027661599
       },
       {
         "team_id": "QAT",
         "team_name": "Qatar",
-        "count": 1006,
-        "share": 0.02733027248770681,
+        "count": 921,
+        "share": 0.027795382526029876,
         "focus_advance_probability": 0.567018070202124
       },
       {
-        "team_id": "GER",
-        "team_name": "Germany",
-        "count": 998,
-        "share": 0.02711293433671113,
-        "focus_advance_probability": 0.41898782576880517
+        "team_id": "POR",
+        "team_name": "Portugal",
+        "count": 901,
+        "share": 0.02719179115738645,
+        "focus_advance_probability": 0.379962168723588
+      },
+      {
+        "team_id": "BEL",
+        "team_name": "Belgium",
+        "count": 891,
+        "share": 0.026889995473064737,
+        "focus_advance_probability": 0.4190580825734923
       },
       {
         "team_id": "AUS",
         "team_name": "Australia",
-        "count": 970,
-        "share": 0.02635225080822625,
+        "count": 880,
+        "share": 0.02655802022031085,
         "focus_advance_probability": 0.43340497471413675
       },
       {
         "team_id": "IRN",
         "team_name": "Iran",
-        "count": 905,
-        "share": 0.024586378331386344,
+        "count": 878,
+        "share": 0.026497661083446505,
         "focus_advance_probability": 0.4748219390411653
       },
       {
         "team_id": "JPN",
         "team_name": "Japan",
-        "count": 904,
-        "share": 0.024559211062511885,
+        "count": 875,
+        "share": 0.026407122378149992,
         "focus_advance_probability": 0.37304272669754557
       },
       {
-        "team_id": "AUT",
-        "team_name": "Austria",
-        "count": 886,
-        "share": 0.024070200222771603,
-        "focus_advance_probability": 0.4528426849084959
+        "team_id": "FRA",
+        "team_name": "France",
+        "count": 861,
+        "share": 0.025984608420099593,
+        "focus_advance_probability": 0.3733504056916872
       },
       {
-        "team_id": "CRO",
-        "team_name": "Croatia",
-        "count": 885,
-        "share": 0.024043032953897144,
-        "focus_advance_probability": 0.43204855988524093
-      },
-      {
-        "team_id": "HAI",
-        "team_name": "Haiti",
-        "count": 842,
-        "share": 0.022874840392295363,
-        "focus_advance_probability": 0.4816340442293038
-      },
-      {
-        "team_id": "PAN",
-        "team_name": "Panama",
-        "count": 841,
-        "share": 0.0228476731234209,
-        "focus_advance_probability": 0.5024424171918553
-      },
-      {
-        "team_id": "COL",
-        "team_name": "Colombia",
-        "count": 818,
-        "share": 0.02222282593930832,
-        "focus_advance_probability": 0.4331916540446791
+        "team_id": "ARG",
+        "team_name": "Argentina",
+        "count": 859,
+        "share": 0.02592424928323525,
+        "focus_advance_probability": 0.3879579799627334
       },
       {
         "team_id": "BRA",
         "team_name": "Brazil",
-        "count": 815,
-        "share": 0.02214132413268494,
+        "count": 841,
+        "share": 0.025381017051456164,
         "focus_advance_probability": 0.4230242088689426
       },
       {
-        "team_id": "SCO",
-        "team_name": "Scotland",
-        "count": 802,
-        "share": 0.02178814963731696,
-        "focus_advance_probability": 0.5195656652345383
+        "team_id": "COL",
+        "team_name": "Colombia",
+        "count": 813,
+        "share": 0.024535989135355363,
+        "focus_advance_probability": 0.4331916540446791
       },
       {
-        "team_id": "PAR",
-        "team_name": "Paraguay",
-        "count": 788,
-        "share": 0.02140780787307452,
-        "focus_advance_probability": 0.5408230121996043
-      },
-      {
-        "team_id": "MAR",
-        "team_name": "Morocco",
-        "count": 775,
-        "share": 0.02105463337770654,
-        "focus_advance_probability": 0.47385831891604524
-      },
-      {
-        "team_id": "SWE",
-        "team_name": "Sweden",
-        "count": 734,
-        "share": 0.019940775353853676,
-        "focus_advance_probability": 0.5440383807719816
-      },
-      {
-        "team_id": "KSA",
-        "team_name": "Saudi Arabia",
-        "count": 726,
-        "share": 0.019723437202857998,
-        "focus_advance_probability": 0.5203743132244858
-      },
-      {
-        "team_id": "UZB",
-        "team_name": "Uzbekistan",
-        "count": 725,
-        "share": 0.019696269933983535,
-        "focus_advance_probability": 0.4504425599680405
-      },
-      {
-        "team_id": "URU",
-        "team_name": "Uruguay",
-        "count": 688,
-        "share": 0.018691080985628515,
-        "focus_advance_probability": 0.4714385701161786
-      },
-      {
-        "team_id": "CIV",
-        "team_name": "Ivory Coast",
-        "count": 683,
-        "share": 0.018555244641256213,
-        "focus_advance_probability": 0.4946818416033275
+        "team_id": "GER",
+        "team_name": "Germany",
+        "count": 792,
+        "share": 0.023902218198279764,
+        "focus_advance_probability": 0.41898782576880517
       },
       {
         "team_id": "CAN",
         "team_name": "Canada",
-        "count": 664,
-        "share": 0.018039066532641472,
+        "count": 786,
+        "share": 0.023721140787686737,
         "focus_advance_probability": 0.6175557460552004
       },
       {
-        "team_id": "CPV",
-        "team_name": "Cape Verde",
-        "count": 629,
-        "share": 0.017088212122035373,
-        "focus_advance_probability": 0.5669208662502857
+        "team_id": "TUR",
+        "team_name": "Turkey",
+        "count": 770,
+        "share": 0.023238267692771993,
+        "focus_advance_probability": 0.4551832098863815
+      },
+      {
+        "team_id": "CRO",
+        "team_name": "Croatia",
+        "count": 756,
+        "share": 0.022815753734721594,
+        "focus_advance_probability": 0.43204855988524093
+      },
+      {
+        "team_id": "URU",
+        "team_name": "Uruguay",
+        "count": 753,
+        "share": 0.02272521502942508,
+        "focus_advance_probability": 0.4714385701161786
+      },
+      {
+        "team_id": "MAR",
+        "team_name": "Morocco",
+        "count": 744,
+        "share": 0.022453598913535537,
+        "focus_advance_probability": 0.47385831891604524
+      },
+      {
+        "team_id": "UZB",
+        "team_name": "Uzbekistan",
+        "count": 741,
+        "share": 0.022363060208239024,
+        "focus_advance_probability": 0.4504425599680405
+      },
+      {
+        "team_id": "AUT",
+        "team_name": "Austria",
+        "count": 728,
+        "share": 0.021970725818620793,
+        "focus_advance_probability": 0.4528426849084959
+      },
+      {
+        "team_id": "HAI",
+        "team_name": "Haiti",
+        "count": 717,
+        "share": 0.021638750565866907,
+        "focus_advance_probability": 0.4816340442293038
       },
       {
         "team_id": "JOR",
         "team_name": "Jordan",
-        "count": 628,
-        "share": 0.01706104485316091,
+        "count": 678,
+        "share": 0.020461747397012224,
         "focus_advance_probability": 0.48185468861054137
       },
       {
-        "team_id": "EGY",
-        "team_name": "Egypt",
-        "count": 617,
-        "share": 0.016762204895541852,
-        "focus_advance_probability": 0.5964495843646387
+        "team_id": "KSA",
+        "team_name": "Saudi Arabia",
+        "count": 660,
+        "share": 0.019918515165233137,
+        "focus_advance_probability": 0.5203743132244858
       },
       {
-        "team_id": "IRQ",
-        "team_name": "Iraq",
-        "count": 605,
-        "share": 0.01643619766904833,
-        "focus_advance_probability": 0.5240994721583008
+        "team_id": "SCO",
+        "team_name": "Scotland",
+        "count": 654,
+        "share": 0.019737437754640107,
+        "focus_advance_probability": 0.5195656652345383
       },
       {
-        "team_id": "ALG",
-        "team_name": "Algeria",
-        "count": 576,
-        "share": 0.01564834687168899,
-        "focus_advance_probability": 0.5358286724455178
+        "team_id": "PAN",
+        "team_name": "Panama",
+        "count": 653,
+        "share": 0.019707258186207936,
+        "focus_advance_probability": 0.5024424171918553
       },
       {
-        "team_id": "TUN",
-        "team_name": "Tunisia",
-        "count": 573,
-        "share": 0.015566845065065608,
-        "focus_advance_probability": 0.5260007086256058
+        "team_id": "CIV",
+        "team_name": "Ivory Coast",
+        "count": 636,
+        "share": 0.019194205522861024,
+        "focus_advance_probability": 0.4946818416033275
       },
       {
-        "team_id": "NZL",
-        "team_name": "New Zealand",
-        "count": 572,
-        "share": 0.01553967779619115,
-        "focus_advance_probability": 0.5909519976984929
+        "team_id": "PAR",
+        "team_name": "Paraguay",
+        "count": 607,
+        "share": 0.018318998038328052,
+        "focus_advance_probability": 0.5408230121996043
       },
       {
         "team_id": "ECU",
         "team_name": "Ecuador",
-        "count": 558,
-        "share": 0.015159336031948708,
+        "count": 599,
+        "share": 0.01807756149087068,
         "focus_advance_probability": 0.5089261083704061
       },
       {
-        "team_id": "COD",
-        "team_name": "DR Congo",
-        "count": 554,
-        "share": 0.015050666956450867,
-        "focus_advance_probability": 0.5861629164700115
+        "team_id": "EGY",
+        "team_name": "Egypt",
+        "count": 594,
+        "share": 0.017926663648709824,
+        "focus_advance_probability": 0.5964495843646387
       },
       {
         "team_id": "USA",
         "team_name": "United States",
-        "count": 522,
-        "share": 0.014181314352468147,
+        "count": 591,
+        "share": 0.017836124943413308,
         "focus_advance_probability": 0.5660596684185357
+      },
+      {
+        "team_id": "TUN",
+        "team_name": "Tunisia",
+        "count": 577,
+        "share": 0.01741361098536291,
+        "focus_advance_probability": 0.5260007086256058
+      },
+      {
+        "team_id": "ALG",
+        "team_name": "Algeria",
+        "count": 557,
+        "share": 0.01681001961671948,
+        "focus_advance_probability": 0.5358286724455178
+      },
+      {
+        "team_id": "NZL",
+        "team_name": "New Zealand",
+        "count": 544,
+        "share": 0.016417685227101252,
+        "focus_advance_probability": 0.5909519976984929
+      },
+      {
+        "team_id": "SWE",
+        "team_name": "Sweden",
+        "count": 531,
+        "share": 0.016025350837483025,
+        "focus_advance_probability": 0.5440383807719816
       },
       {
         "team_id": "SEN",
         "team_name": "Senegal",
-        "count": 493,
-        "share": 0.013393463555108806,
+        "count": 527,
+        "share": 0.015904632563754337,
         "focus_advance_probability": 0.5215855880957019
       },
       {
         "team_id": "GHA",
         "team_name": "Ghana",
-        "count": 485,
-        "share": 0.013176125404113125,
+        "count": 511,
+        "share": 0.015421759468839596,
         "focus_advance_probability": 0.5520218623692489
       },
       {
-        "team_id": "RSA",
-        "team_name": "South Africa",
-        "count": 65,
-        "share": 0.0017658724768399032,
-        "focus_advance_probability": 0.4812562683095443
+        "team_id": "CPV",
+        "team_name": "Cape Verde",
+        "count": 507,
+        "share": 0.01530104119511091,
+        "focus_advance_probability": 0.5669208662502857
+      },
+      {
+        "team_id": "IRQ",
+        "team_name": "Iraq",
+        "count": 495,
+        "share": 0.014938886373924853,
+        "focus_advance_probability": 0.5240994721583008
+      },
+      {
+        "team_id": "COD",
+        "team_name": "DR Congo",
+        "count": 431,
+        "share": 0.013007393994265882,
+        "focus_advance_probability": 0.5861629164700115
       },
       {
         "team_id": "KOR",
         "team_name": "South Korea",
-        "count": 45,
-        "share": 0.0012225270993507023,
+        "count": 51,
+        "share": 0.0015391579900407425,
         "focus_advance_probability": 0.44161830593615836
       },
       {
         "team_id": "MEX",
         "team_name": "Mexico",
-        "count": 41,
-        "share": 0.001113858023852862,
+        "count": 49,
+        "share": 0.0014787988531763997,
         "focus_advance_probability": 0.5483123347533763
+      },
+      {
+        "team_id": "RSA",
+        "team_name": "South Africa",
+        "count": 43,
+        "share": 0.0012977214425833712,
+        "focus_advance_probability": 0.4812562683095443
       }
     ],
     "knockout_opponents_by_stage": {
@@ -679,992 +679,992 @@
         {
           "team_id": "SUI",
           "team_name": "Switzerland",
-          "count": 1441,
-          "share": 0.03914803444809693,
+          "count": 1224,
+          "share": 0.036939791760977815,
           "focus_advance_probability": 0.5066619095125492
         },
         {
           "team_id": "BIH",
           "team_name": "Bosnia and Herzegovina",
-          "count": 1352,
-          "share": 0.03673014751826999,
+          "count": 1071,
+          "share": 0.03232231779085559,
           "focus_advance_probability": 0.5355470416757568
         },
         {
           "team_id": "ESP",
           "team_name": "Spain",
-          "count": 1124,
-          "share": 0.030536010214893095,
+          "count": 1010,
+          "share": 0.030481364116493135,
           "focus_advance_probability": 0.2967425038875464
-        },
-        {
-          "team_id": "NOR",
-          "team_name": "Norway",
-          "count": 1077,
-          "share": 0.029259148577793475,
-          "focus_advance_probability": 0.3293318717882876
-        },
-        {
-          "team_id": "FRA",
-          "team_name": "France",
-          "count": 1077,
-          "share": 0.029259148577793475,
-          "focus_advance_probability": 0.3733504056916872
-        },
-        {
-          "team_id": "ARG",
-          "team_name": "Argentina",
-          "count": 1064,
-          "share": 0.028905974082425494,
-          "focus_advance_probability": 0.3879579799627334
-        },
-        {
-          "team_id": "BEL",
-          "team_name": "Belgium",
-          "count": 1062,
-          "share": 0.028851639544676573,
-          "focus_advance_probability": 0.4190580825734923
-        },
-        {
-          "team_id": "TUR",
-          "team_name": "Turkey",
-          "count": 1053,
-          "share": 0.028607134124806432,
-          "focus_advance_probability": 0.4551832098863815
-        },
-        {
-          "team_id": "CUW",
-          "team_name": "Curacao",
-          "count": 1052,
-          "share": 0.028579966855931973,
-          "focus_advance_probability": 0.384933027661599
         },
         {
           "team_id": "ENG",
           "team_name": "England",
-          "count": 1051,
-          "share": 0.028552799587057514,
+          "count": 972,
+          "share": 0.02933454051607062,
           "focus_advance_probability": 0.3382442935117527
-        },
-        {
-          "team_id": "POR",
-          "team_name": "Portugal",
-          "count": 1023,
-          "share": 0.02779211605857263,
-          "focus_advance_probability": 0.379962168723588
         },
         {
           "team_id": "NED",
           "team_name": "Netherlands",
-          "count": 1015,
-          "share": 0.027574777907576953,
+          "count": 964,
+          "share": 0.029093103968613247,
           "focus_advance_probability": 0.37011526083211643
+        },
+        {
+          "team_id": "NOR",
+          "team_name": "Norway",
+          "count": 962,
+          "share": 0.029032744831748905,
+          "focus_advance_probability": 0.3293318717882876
+        },
+        {
+          "team_id": "CUW",
+          "team_name": "Curacao",
+          "count": 930,
+          "share": 0.02806699864191942,
+          "focus_advance_probability": 0.384933027661599
         },
         {
           "team_id": "QAT",
           "team_name": "Qatar",
-          "count": 1006,
-          "share": 0.02733027248770681,
+          "count": 921,
+          "share": 0.027795382526029876,
           "focus_advance_probability": 0.567018070202124
         },
         {
-          "team_id": "GER",
-          "team_name": "Germany",
-          "count": 998,
-          "share": 0.02711293433671113,
-          "focus_advance_probability": 0.41898782576880517
+          "team_id": "POR",
+          "team_name": "Portugal",
+          "count": 901,
+          "share": 0.02719179115738645,
+          "focus_advance_probability": 0.379962168723588
+        },
+        {
+          "team_id": "BEL",
+          "team_name": "Belgium",
+          "count": 891,
+          "share": 0.026889995473064737,
+          "focus_advance_probability": 0.4190580825734923
         },
         {
           "team_id": "AUS",
           "team_name": "Australia",
-          "count": 970,
-          "share": 0.02635225080822625,
+          "count": 880,
+          "share": 0.02655802022031085,
           "focus_advance_probability": 0.43340497471413675
         },
         {
           "team_id": "IRN",
           "team_name": "Iran",
-          "count": 905,
-          "share": 0.024586378331386344,
+          "count": 878,
+          "share": 0.026497661083446505,
           "focus_advance_probability": 0.4748219390411653
         },
         {
           "team_id": "JPN",
           "team_name": "Japan",
-          "count": 904,
-          "share": 0.024559211062511885,
+          "count": 875,
+          "share": 0.026407122378149992,
           "focus_advance_probability": 0.37304272669754557
         },
         {
-          "team_id": "AUT",
-          "team_name": "Austria",
-          "count": 886,
-          "share": 0.024070200222771603,
-          "focus_advance_probability": 0.4528426849084959
+          "team_id": "FRA",
+          "team_name": "France",
+          "count": 861,
+          "share": 0.025984608420099593,
+          "focus_advance_probability": 0.3733504056916872
         },
         {
-          "team_id": "CRO",
-          "team_name": "Croatia",
-          "count": 885,
-          "share": 0.024043032953897144,
-          "focus_advance_probability": 0.43204855988524093
-        },
-        {
-          "team_id": "HAI",
-          "team_name": "Haiti",
-          "count": 842,
-          "share": 0.022874840392295363,
-          "focus_advance_probability": 0.4816340442293038
-        },
-        {
-          "team_id": "PAN",
-          "team_name": "Panama",
-          "count": 841,
-          "share": 0.0228476731234209,
-          "focus_advance_probability": 0.5024424171918553
-        },
-        {
-          "team_id": "COL",
-          "team_name": "Colombia",
-          "count": 818,
-          "share": 0.02222282593930832,
-          "focus_advance_probability": 0.4331916540446791
+          "team_id": "ARG",
+          "team_name": "Argentina",
+          "count": 859,
+          "share": 0.02592424928323525,
+          "focus_advance_probability": 0.3879579799627334
         },
         {
           "team_id": "BRA",
           "team_name": "Brazil",
-          "count": 815,
-          "share": 0.02214132413268494,
+          "count": 841,
+          "share": 0.025381017051456164,
           "focus_advance_probability": 0.4230242088689426
         },
         {
-          "team_id": "SCO",
-          "team_name": "Scotland",
-          "count": 802,
-          "share": 0.02178814963731696,
-          "focus_advance_probability": 0.5195656652345383
+          "team_id": "COL",
+          "team_name": "Colombia",
+          "count": 813,
+          "share": 0.024535989135355363,
+          "focus_advance_probability": 0.4331916540446791
         },
         {
-          "team_id": "PAR",
-          "team_name": "Paraguay",
-          "count": 788,
-          "share": 0.02140780787307452,
-          "focus_advance_probability": 0.5408230121996043
-        },
-        {
-          "team_id": "MAR",
-          "team_name": "Morocco",
-          "count": 775,
-          "share": 0.02105463337770654,
-          "focus_advance_probability": 0.47385831891604524
-        },
-        {
-          "team_id": "SWE",
-          "team_name": "Sweden",
-          "count": 734,
-          "share": 0.019940775353853676,
-          "focus_advance_probability": 0.5440383807719816
-        },
-        {
-          "team_id": "KSA",
-          "team_name": "Saudi Arabia",
-          "count": 726,
-          "share": 0.019723437202857998,
-          "focus_advance_probability": 0.5203743132244858
-        },
-        {
-          "team_id": "UZB",
-          "team_name": "Uzbekistan",
-          "count": 725,
-          "share": 0.019696269933983535,
-          "focus_advance_probability": 0.4504425599680405
-        },
-        {
-          "team_id": "URU",
-          "team_name": "Uruguay",
-          "count": 688,
-          "share": 0.018691080985628515,
-          "focus_advance_probability": 0.4714385701161786
-        },
-        {
-          "team_id": "CIV",
-          "team_name": "Ivory Coast",
-          "count": 683,
-          "share": 0.018555244641256213,
-          "focus_advance_probability": 0.4946818416033275
+          "team_id": "GER",
+          "team_name": "Germany",
+          "count": 792,
+          "share": 0.023902218198279764,
+          "focus_advance_probability": 0.41898782576880517
         },
         {
           "team_id": "CAN",
           "team_name": "Canada",
-          "count": 664,
-          "share": 0.018039066532641472,
+          "count": 786,
+          "share": 0.023721140787686737,
           "focus_advance_probability": 0.6175557460552004
         },
         {
-          "team_id": "CPV",
-          "team_name": "Cape Verde",
-          "count": 629,
-          "share": 0.017088212122035373,
-          "focus_advance_probability": 0.5669208662502857
+          "team_id": "TUR",
+          "team_name": "Turkey",
+          "count": 770,
+          "share": 0.023238267692771993,
+          "focus_advance_probability": 0.4551832098863815
+        },
+        {
+          "team_id": "CRO",
+          "team_name": "Croatia",
+          "count": 756,
+          "share": 0.022815753734721594,
+          "focus_advance_probability": 0.43204855988524093
+        },
+        {
+          "team_id": "URU",
+          "team_name": "Uruguay",
+          "count": 753,
+          "share": 0.02272521502942508,
+          "focus_advance_probability": 0.4714385701161786
+        },
+        {
+          "team_id": "MAR",
+          "team_name": "Morocco",
+          "count": 744,
+          "share": 0.022453598913535537,
+          "focus_advance_probability": 0.47385831891604524
+        },
+        {
+          "team_id": "UZB",
+          "team_name": "Uzbekistan",
+          "count": 741,
+          "share": 0.022363060208239024,
+          "focus_advance_probability": 0.4504425599680405
+        },
+        {
+          "team_id": "AUT",
+          "team_name": "Austria",
+          "count": 728,
+          "share": 0.021970725818620793,
+          "focus_advance_probability": 0.4528426849084959
+        },
+        {
+          "team_id": "HAI",
+          "team_name": "Haiti",
+          "count": 717,
+          "share": 0.021638750565866907,
+          "focus_advance_probability": 0.4816340442293038
         },
         {
           "team_id": "JOR",
           "team_name": "Jordan",
-          "count": 628,
-          "share": 0.01706104485316091,
+          "count": 678,
+          "share": 0.020461747397012224,
           "focus_advance_probability": 0.48185468861054137
         },
         {
-          "team_id": "EGY",
-          "team_name": "Egypt",
-          "count": 617,
-          "share": 0.016762204895541852,
-          "focus_advance_probability": 0.5964495843646387
+          "team_id": "KSA",
+          "team_name": "Saudi Arabia",
+          "count": 660,
+          "share": 0.019918515165233137,
+          "focus_advance_probability": 0.5203743132244858
         },
         {
-          "team_id": "IRQ",
-          "team_name": "Iraq",
-          "count": 605,
-          "share": 0.01643619766904833,
-          "focus_advance_probability": 0.5240994721583008
+          "team_id": "SCO",
+          "team_name": "Scotland",
+          "count": 654,
+          "share": 0.019737437754640107,
+          "focus_advance_probability": 0.5195656652345383
         },
         {
-          "team_id": "ALG",
-          "team_name": "Algeria",
-          "count": 576,
-          "share": 0.01564834687168899,
-          "focus_advance_probability": 0.5358286724455178
+          "team_id": "PAN",
+          "team_name": "Panama",
+          "count": 653,
+          "share": 0.019707258186207936,
+          "focus_advance_probability": 0.5024424171918553
         },
         {
-          "team_id": "TUN",
-          "team_name": "Tunisia",
-          "count": 573,
-          "share": 0.015566845065065608,
-          "focus_advance_probability": 0.5260007086256058
+          "team_id": "CIV",
+          "team_name": "Ivory Coast",
+          "count": 636,
+          "share": 0.019194205522861024,
+          "focus_advance_probability": 0.4946818416033275
         },
         {
-          "team_id": "NZL",
-          "team_name": "New Zealand",
-          "count": 572,
-          "share": 0.01553967779619115,
-          "focus_advance_probability": 0.5909519976984929
+          "team_id": "PAR",
+          "team_name": "Paraguay",
+          "count": 607,
+          "share": 0.018318998038328052,
+          "focus_advance_probability": 0.5408230121996043
         },
         {
           "team_id": "ECU",
           "team_name": "Ecuador",
-          "count": 558,
-          "share": 0.015159336031948708,
+          "count": 599,
+          "share": 0.01807756149087068,
           "focus_advance_probability": 0.5089261083704061
         },
         {
-          "team_id": "COD",
-          "team_name": "DR Congo",
-          "count": 554,
-          "share": 0.015050666956450867,
-          "focus_advance_probability": 0.5861629164700115
+          "team_id": "EGY",
+          "team_name": "Egypt",
+          "count": 594,
+          "share": 0.017926663648709824,
+          "focus_advance_probability": 0.5964495843646387
         },
         {
           "team_id": "USA",
           "team_name": "United States",
-          "count": 522,
-          "share": 0.014181314352468147,
+          "count": 591,
+          "share": 0.017836124943413308,
           "focus_advance_probability": 0.5660596684185357
+        },
+        {
+          "team_id": "TUN",
+          "team_name": "Tunisia",
+          "count": 577,
+          "share": 0.01741361098536291,
+          "focus_advance_probability": 0.5260007086256058
+        },
+        {
+          "team_id": "ALG",
+          "team_name": "Algeria",
+          "count": 557,
+          "share": 0.01681001961671948,
+          "focus_advance_probability": 0.5358286724455178
+        },
+        {
+          "team_id": "NZL",
+          "team_name": "New Zealand",
+          "count": 544,
+          "share": 0.016417685227101252,
+          "focus_advance_probability": 0.5909519976984929
+        },
+        {
+          "team_id": "SWE",
+          "team_name": "Sweden",
+          "count": 531,
+          "share": 0.016025350837483025,
+          "focus_advance_probability": 0.5440383807719816
         },
         {
           "team_id": "SEN",
           "team_name": "Senegal",
-          "count": 493,
-          "share": 0.013393463555108806,
+          "count": 527,
+          "share": 0.015904632563754337,
           "focus_advance_probability": 0.5215855880957019
         },
         {
           "team_id": "GHA",
           "team_name": "Ghana",
-          "count": 485,
-          "share": 0.013176125404113125,
+          "count": 511,
+          "share": 0.015421759468839596,
           "focus_advance_probability": 0.5520218623692489
         },
         {
-          "team_id": "RSA",
-          "team_name": "South Africa",
-          "count": 65,
-          "share": 0.0017658724768399032,
-          "focus_advance_probability": 0.4812562683095443
+          "team_id": "CPV",
+          "team_name": "Cape Verde",
+          "count": 507,
+          "share": 0.01530104119511091,
+          "focus_advance_probability": 0.5669208662502857
+        },
+        {
+          "team_id": "IRQ",
+          "team_name": "Iraq",
+          "count": 495,
+          "share": 0.014938886373924853,
+          "focus_advance_probability": 0.5240994721583008
+        },
+        {
+          "team_id": "COD",
+          "team_name": "DR Congo",
+          "count": 431,
+          "share": 0.013007393994265882,
+          "focus_advance_probability": 0.5861629164700115
         },
         {
           "team_id": "KOR",
           "team_name": "South Korea",
-          "count": 45,
-          "share": 0.0012225270993507023,
+          "count": 51,
+          "share": 0.0015391579900407425,
           "focus_advance_probability": 0.44161830593615836
         },
         {
           "team_id": "MEX",
           "team_name": "Mexico",
-          "count": 41,
-          "share": 0.001113858023852862,
+          "count": 49,
+          "share": 0.0014787988531763997,
           "focus_advance_probability": 0.5483123347533763
+        },
+        {
+          "team_id": "RSA",
+          "team_name": "South Africa",
+          "count": 43,
+          "share": 0.0012977214425833712,
+          "focus_advance_probability": 0.4812562683095443
         }
       ],
       "round_of_16": [
         {
           "team_id": "SUI",
           "team_name": "Switzerland",
-          "count": 1275,
-          "share": 0.07501323763017002,
+          "count": 965,
+          "share": 0.06292383933229004,
           "focus_advance_probability": 0.5066619095125492
         },
         {
           "team_id": "BIH",
           "team_name": "Bosnia and Herzegovina",
-          "count": 1186,
-          "share": 0.06977701947402483,
+          "count": 829,
+          "share": 0.05405581637976004,
           "focus_advance_probability": 0.5355470416757568
         },
         {
           "team_id": "QAT",
           "team_name": "Qatar",
-          "count": 661,
-          "share": 0.03888921574395481,
+          "count": 636,
+          "share": 0.041471048513302036,
           "focus_advance_probability": 0.567018070202124
-        },
-        {
-          "team_id": "RSA",
-          "team_name": "South Africa",
-          "count": 600,
-          "share": 0.03530034712008001,
-          "focus_advance_probability": 0.4812562683095443
         },
         {
           "team_id": "KOR",
           "team_name": "South Korea",
-          "count": 599,
-          "share": 0.03524151320821321,
+          "count": 596,
+          "share": 0.03886280646844027,
           "focus_advance_probability": 0.44161830593615836
+        },
+        {
+          "team_id": "RSA",
+          "team_name": "South Africa",
+          "count": 472,
+          "share": 0.030777256129368807,
+          "focus_advance_probability": 0.4812562683095443
         },
         {
           "team_id": "ESP",
           "team_name": "Spain",
-          "count": 486,
-          "share": 0.02859328116726481,
+          "count": 447,
+          "share": 0.029147104851330204,
           "focus_advance_probability": 0.2967425038875464
-        },
-        {
-          "team_id": "NOR",
-          "team_name": "Norway",
-          "count": 481,
-          "share": 0.02829911160793081,
-          "focus_advance_probability": 0.3293318717882876
-        },
-        {
-          "team_id": "FRA",
-          "team_name": "France",
-          "count": 461,
-          "share": 0.02712243337059481,
-          "focus_advance_probability": 0.3733504056916872
-        },
-        {
-          "team_id": "ENG",
-          "team_name": "England",
-          "count": 439,
-          "share": 0.02582808730952521,
-          "focus_advance_probability": 0.3382442935117527
         },
         {
           "team_id": "CAN",
           "team_name": "Canada",
-          "count": 419,
-          "share": 0.02465140907218921,
+          "count": 438,
+          "share": 0.028560250391236306,
           "focus_advance_probability": 0.6175557460552004
         },
         {
-          "team_id": "CUW",
-          "team_name": "Curacao",
+          "team_id": "ENG",
+          "team_name": "England",
           "count": 415,
-          "share": 0.02441607342472201,
-          "focus_advance_probability": 0.384933027661599
+          "share": 0.027060511215440793,
+          "focus_advance_probability": 0.3382442935117527
+        },
+        {
+          "team_id": "NOR",
+          "team_name": "Norway",
+          "count": 409,
+          "share": 0.02666927490871153,
+          "focus_advance_probability": 0.3293318717882876
         },
         {
           "team_id": "NED",
           "team_name": "Netherlands",
-          "count": 402,
-          "share": 0.02365123257045361,
+          "count": 406,
+          "share": 0.026473656755346898,
           "focus_advance_probability": 0.37011526083211643
-        },
-        {
-          "team_id": "POR",
-          "team_name": "Portugal",
-          "count": 393,
-          "share": 0.02312172736365241,
-          "focus_advance_probability": 0.379962168723588
-        },
-        {
-          "team_id": "ARG",
-          "team_name": "Argentina",
-          "count": 392,
-          "share": 0.02306289345178561,
-          "focus_advance_probability": 0.3879579799627334
-        },
-        {
-          "team_id": "CRO",
-          "team_name": "Croatia",
-          "count": 388,
-          "share": 0.02282755780431841,
-          "focus_advance_probability": 0.43204855988524093
         },
         {
           "team_id": "JPN",
           "team_name": "Japan",
-          "count": 379,
-          "share": 0.022298052597517208,
+          "count": 377,
+          "share": 0.024582681272822118,
           "focus_advance_probability": 0.37304272669754557
         },
         {
           "team_id": "BEL",
           "team_name": "Belgium",
-          "count": 375,
-          "share": 0.02206271695005001,
+          "count": 373,
+          "share": 0.02432185706833594,
           "focus_advance_probability": 0.4190580825734923
         },
         {
-          "team_id": "TUR",
-          "team_name": "Turkey",
-          "count": 365,
-          "share": 0.021474377831382008,
-          "focus_advance_probability": 0.4551832098863815
+          "team_id": "CUW",
+          "team_name": "Curacao",
+          "count": 369,
+          "share": 0.024061032863849766,
+          "focus_advance_probability": 0.384933027661599
+        },
+        {
+          "team_id": "POR",
+          "team_name": "Portugal",
+          "count": 368,
+          "share": 0.023995826812728223,
+          "focus_advance_probability": 0.379962168723588
+        },
+        {
+          "team_id": "FRA",
+          "team_name": "France",
+          "count": 363,
+          "share": 0.023669796557120502,
+          "focus_advance_probability": 0.3733504056916872
+        },
+        {
+          "team_id": "ARG",
+          "team_name": "Argentina",
+          "count": 346,
+          "share": 0.022561293688054252,
+          "focus_advance_probability": 0.3879579799627334
+        },
+        {
+          "team_id": "AUS",
+          "team_name": "Australia",
+          "count": 344,
+          "share": 0.022430881585811163,
+          "focus_advance_probability": 0.43340497471413675
         },
         {
           "team_id": "GER",
           "team_name": "Germany",
-          "count": 348,
-          "share": 0.02047420132964641,
+          "count": 333,
+          "share": 0.02171361502347418,
           "focus_advance_probability": 0.41898782576880517
         },
         {
           "team_id": "BRA",
           "team_name": "Brazil",
-          "count": 330,
-          "share": 0.019415190916044007,
+          "count": 328,
+          "share": 0.02138758476786646,
           "focus_advance_probability": 0.4230242088689426
         },
         {
-          "team_id": "AUS",
-          "team_name": "Australia",
-          "count": 329,
-          "share": 0.01935635700417721,
-          "focus_advance_probability": 0.43340497471413675
-        },
-        {
-          "team_id": "AUT",
-          "team_name": "Austria",
-          "count": 314,
-          "share": 0.018473848326175206,
-          "focus_advance_probability": 0.4528426849084959
+          "team_id": "TUR",
+          "team_name": "Turkey",
+          "count": 315,
+          "share": 0.020539906103286387,
+          "focus_advance_probability": 0.4551832098863815
         },
         {
           "team_id": "COL",
           "team_name": "Colombia",
-          "count": 308,
-          "share": 0.018120844854974408,
+          "count": 305,
+          "share": 0.019887845592070946,
           "focus_advance_probability": 0.4331916540446791
         },
         {
           "team_id": "IRN",
           "team_name": "Iran",
           "count": 303,
-          "share": 0.017826675295640408,
+          "share": 0.019757433489827857,
           "focus_advance_probability": 0.4748219390411653
         },
         {
-          "team_id": "MEX",
-          "team_name": "Mexico",
-          "count": 296,
-          "share": 0.017414837912572808,
-          "focus_advance_probability": 0.5483123347533763
-        },
-        {
-          "team_id": "HAI",
-          "team_name": "Haiti",
-          "count": 288,
-          "share": 0.016944166617638406,
-          "focus_advance_probability": 0.4816340442293038
-        },
-        {
-          "team_id": "MAR",
-          "team_name": "Morocco",
-          "count": 287,
-          "share": 0.016885332705771607,
-          "focus_advance_probability": 0.47385831891604524
+          "team_id": "CRO",
+          "team_name": "Croatia",
+          "count": 301,
+          "share": 0.019627021387584768,
+          "focus_advance_probability": 0.43204855988524093
         },
         {
           "team_id": "URU",
           "team_name": "Uruguay",
-          "count": 285,
-          "share": 0.016767664882038007,
+          "count": 298,
+          "share": 0.019431403234220136,
           "focus_advance_probability": 0.4714385701161786
         },
         {
           "team_id": "UZB",
           "team_name": "Uzbekistan",
-          "count": 277,
-          "share": 0.016296993587103608,
+          "count": 286,
+          "share": 0.018648930620761606,
           "focus_advance_probability": 0.4504425599680405
-        },
-        {
-          "team_id": "JOR",
-          "team_name": "Jordan",
-          "count": 266,
-          "share": 0.015649820556568807,
-          "focus_advance_probability": 0.48185468861054137
-        },
-        {
-          "team_id": "CIV",
-          "team_name": "Ivory Coast",
-          "count": 256,
-          "share": 0.015061481437900806,
-          "focus_advance_probability": 0.4946818416033275
-        },
-        {
-          "team_id": "PAR",
-          "team_name": "Paraguay",
-          "count": 252,
-          "share": 0.014826145790433606,
-          "focus_advance_probability": 0.5408230121996043
-        },
-        {
-          "team_id": "KSA",
-          "team_name": "Saudi Arabia",
-          "count": 251,
-          "share": 0.014767311878566806,
-          "focus_advance_probability": 0.5203743132244858
         },
         {
           "team_id": "PAN",
           "team_name": "Panama",
-          "count": 246,
-          "share": 0.014473142319232806,
+          "count": 276,
+          "share": 0.017996870109546165,
           "focus_advance_probability": 0.5024424171918553
         },
         {
-          "team_id": "IRQ",
-          "team_name": "Iraq",
-          "count": 244,
-          "share": 0.014355474495499206,
-          "focus_advance_probability": 0.5240994721583008
+          "team_id": "MAR",
+          "team_name": "Morocco",
+          "count": 274,
+          "share": 0.017866458007303077,
+          "focus_advance_probability": 0.47385831891604524
         },
         {
-          "team_id": "SCO",
-          "team_name": "Scotland",
-          "count": 241,
-          "share": 0.014178972759898805,
-          "focus_advance_probability": 0.5195656652345383
+          "team_id": "AUT",
+          "team_name": "Austria",
+          "count": 272,
+          "share": 0.01773604590505999,
+          "focus_advance_probability": 0.4528426849084959
         },
         {
-          "team_id": "SWE",
-          "team_name": "Sweden",
-          "count": 235,
-          "share": 0.013825969288698005,
-          "focus_advance_probability": 0.5440383807719816
-        },
-        {
-          "team_id": "CPV",
-          "team_name": "Cape Verde",
-          "count": 217,
-          "share": 0.012766958875095605,
-          "focus_advance_probability": 0.5669208662502857
-        },
-        {
-          "team_id": "ALG",
-          "team_name": "Algeria",
-          "count": 209,
-          "share": 0.012296287580161205,
-          "focus_advance_probability": 0.5358286724455178
-        },
-        {
-          "team_id": "TUN",
-          "team_name": "Tunisia",
-          "count": 207,
-          "share": 0.012178619756427604,
-          "focus_advance_probability": 0.5260007086256058
+          "team_id": "MEX",
+          "team_name": "Mexico",
+          "count": 268,
+          "share": 0.017475221700573813,
+          "focus_advance_probability": 0.5483123347533763
         },
         {
           "team_id": "ECU",
           "team_name": "Ecuador",
-          "count": 196,
-          "share": 0.011531446725892805,
+          "count": 257,
+          "share": 0.01675795513823683,
           "focus_advance_probability": 0.5089261083704061
         },
         {
-          "team_id": "EGY",
-          "team_name": "Egypt",
-          "count": 192,
-          "share": 0.011296111078425604,
-          "focus_advance_probability": 0.5964495843646387
+          "team_id": "HAI",
+          "team_name": "Haiti",
+          "count": 255,
+          "share": 0.01662754303599374,
+          "focus_advance_probability": 0.4816340442293038
         },
         {
-          "team_id": "COD",
-          "team_name": "DR Congo",
-          "count": 190,
-          "share": 0.011178443254692005,
-          "focus_advance_probability": 0.5861629164700115
+          "team_id": "CIV",
+          "team_name": "Ivory Coast",
+          "count": 246,
+          "share": 0.016040688575899843,
+          "focus_advance_probability": 0.4946818416033275
         },
         {
-          "team_id": "NZL",
-          "team_name": "New Zealand",
-          "count": 187,
-          "share": 0.011001941519091604,
-          "focus_advance_probability": 0.5909519976984929
+          "team_id": "JOR",
+          "team_name": "Jordan",
+          "count": 244,
+          "share": 0.015910276473656754,
+          "focus_advance_probability": 0.48185468861054137
         },
         {
-          "team_id": "GHA",
-          "team_name": "Ghana",
-          "count": 177,
-          "share": 0.010413602400423605,
-          "focus_advance_probability": 0.5520218623692489
+          "team_id": "TUN",
+          "team_name": "Tunisia",
+          "count": 231,
+          "share": 0.015062597809076683,
+          "focus_advance_probability": 0.5260007086256058
+        },
+        {
+          "team_id": "PAR",
+          "team_name": "Paraguay",
+          "count": 219,
+          "share": 0.014280125195618153,
+          "focus_advance_probability": 0.5408230121996043
+        },
+        {
+          "team_id": "SWE",
+          "team_name": "Sweden",
+          "count": 217,
+          "share": 0.014149713093375066,
+          "focus_advance_probability": 0.5440383807719816
+        },
+        {
+          "team_id": "SCO",
+          "team_name": "Scotland",
+          "count": 212,
+          "share": 0.013823682837767345,
+          "focus_advance_probability": 0.5195656652345383
+        },
+        {
+          "team_id": "KSA",
+          "team_name": "Saudi Arabia",
+          "count": 204,
+          "share": 0.013302034428794992,
+          "focus_advance_probability": 0.5203743132244858
+        },
+        {
+          "team_id": "ALG",
+          "team_name": "Algeria",
+          "count": 203,
+          "share": 0.013236828377673449,
+          "focus_advance_probability": 0.5358286724455178
         },
         {
           "team_id": "SEN",
           "team_name": "Senegal",
-          "count": 176,
-          "share": 0.010354768488556805,
+          "count": 188,
+          "share": 0.012258737610850287,
           "focus_advance_probability": 0.5215855880957019
         },
         {
           "team_id": "USA",
           "team_name": "United States",
-          "count": 174,
-          "share": 0.010237100664823204,
+          "count": 181,
+          "share": 0.011802295252999478,
           "focus_advance_probability": 0.5660596684185357
+        },
+        {
+          "team_id": "IRQ",
+          "team_name": "Iraq",
+          "count": 179,
+          "share": 0.011671883150756391,
+          "focus_advance_probability": 0.5240994721583008
+        },
+        {
+          "team_id": "GHA",
+          "team_name": "Ghana",
+          "count": 175,
+          "share": 0.011411058946270213,
+          "focus_advance_probability": 0.5520218623692489
+        },
+        {
+          "team_id": "EGY",
+          "team_name": "Egypt",
+          "count": 164,
+          "share": 0.01069379238393323,
+          "focus_advance_probability": 0.5964495843646387
+        },
+        {
+          "team_id": "CPV",
+          "team_name": "Cape Verde",
+          "count": 160,
+          "share": 0.010432968179447054,
+          "focus_advance_probability": 0.5669208662502857
+        },
+        {
+          "team_id": "NZL",
+          "team_name": "New Zealand",
+          "count": 149,
+          "share": 0.009715701617110068,
+          "focus_advance_probability": 0.5909519976984929
+        },
+        {
+          "team_id": "COD",
+          "team_name": "DR Congo",
+          "count": 140,
+          "share": 0.009128847157016172,
+          "focus_advance_probability": 0.5861629164700115
         }
       ],
       "quarterfinal": [
         {
-          "team_id": "TUR",
-          "team_name": "Turkey",
-          "count": 459,
-          "share": 0.058130699088145894,
-          "focus_advance_probability": 0.4551832098863815
-        },
-        {
           "team_id": "BRA",
           "team_name": "Brazil",
-          "count": 456,
-          "share": 0.057750759878419454,
+          "count": 503,
+          "share": 0.06892299260071252,
           "focus_advance_probability": 0.4230242088689426
         },
         {
           "team_id": "AUS",
           "team_name": "Australia",
-          "count": 441,
-          "share": 0.05585106382978723,
+          "count": 399,
+          "share": 0.054672513017265,
           "focus_advance_probability": 0.43340497471413675
         },
         {
-          "team_id": "HAI",
-          "team_name": "Haiti",
-          "count": 370,
-          "share": 0.04685916919959473,
-          "focus_advance_probability": 0.4816340442293038
+          "team_id": "TUR",
+          "team_name": "Turkey",
+          "count": 316,
+          "share": 0.043299534118936694,
+          "focus_advance_probability": 0.4551832098863815
         },
         {
           "team_id": "MAR",
           "team_name": "Morocco",
-          "count": 349,
-          "share": 0.044199594731509625,
+          "count": 289,
+          "share": 0.03959989038092628,
           "focus_advance_probability": 0.47385831891604524
         },
         {
           "team_id": "ESP",
           "team_name": "Spain",
-          "count": 276,
-          "share": 0.034954407294832825,
+          "count": 284,
+          "share": 0.03891477117018361,
           "focus_advance_probability": 0.2967425038875464
+        },
+        {
+          "team_id": "HAI",
+          "team_name": "Haiti",
+          "count": 264,
+          "share": 0.03617429432721293,
+          "focus_advance_probability": 0.4816340442293038
         },
         {
           "team_id": "NOR",
           "team_name": "Norway",
-          "count": 263,
-          "share": 0.03330800405268491,
+          "count": 251,
+          "share": 0.034392984379281996,
           "focus_advance_probability": 0.3293318717882876
         },
         {
           "team_id": "SCO",
           "team_name": "Scotland",
-          "count": 263,
-          "share": 0.03330800405268491,
+          "count": 231,
+          "share": 0.03165250753631132,
           "focus_advance_probability": 0.5195656652345383
         },
         {
           "team_id": "ENG",
           "team_name": "England",
-          "count": 262,
-          "share": 0.03318135764944276,
+          "count": 223,
+          "share": 0.03055631679912305,
           "focus_advance_probability": 0.3382442935117527
-        },
-        {
-          "team_id": "FRA",
-          "team_name": "France",
-          "count": 220,
-          "share": 0.027862208713272545,
-          "focus_advance_probability": 0.3733504056916872
         },
         {
           "team_id": "JPN",
           "team_name": "Japan",
-          "count": 214,
-          "share": 0.027102330293819657,
+          "count": 211,
+          "share": 0.02891203069334064,
           "focus_advance_probability": 0.37304272669754557
-        },
-        {
-          "team_id": "CUW",
-          "team_name": "Curacao",
-          "count": 206,
-          "share": 0.02608915906788247,
-          "focus_advance_probability": 0.384933027661599
         },
         {
           "team_id": "POR",
           "team_name": "Portugal",
-          "count": 202,
-          "share": 0.02558257345491388,
+          "count": 208,
+          "share": 0.02850095916689504,
           "focus_advance_probability": 0.379962168723588
-        },
-        {
-          "team_id": "ARG",
-          "team_name": "Argentina",
-          "count": 200,
-          "share": 0.025329280648429583,
-          "focus_advance_probability": 0.3879579799627334
         },
         {
           "team_id": "NED",
           "team_name": "Netherlands",
-          "count": 185,
-          "share": 0.023429584599797364,
+          "count": 200,
+          "share": 0.02740476842970677,
           "focus_advance_probability": 0.37011526083211643
         },
         {
-          "team_id": "GER",
-          "team_name": "Germany",
-          "count": 178,
-          "share": 0.02254305977710233,
-          "focus_advance_probability": 0.41898782576880517
+          "team_id": "FRA",
+          "team_name": "France",
+          "count": 199,
+          "share": 0.027267744587558235,
+          "focus_advance_probability": 0.3733504056916872
         },
         {
-          "team_id": "CRO",
-          "team_name": "Croatia",
-          "count": 177,
-          "share": 0.022416413373860182,
-          "focus_advance_probability": 0.43204855988524093
-        },
-        {
-          "team_id": "PAR",
-          "team_name": "Paraguay",
-          "count": 176,
-          "share": 0.022289766970618033,
-          "focus_advance_probability": 0.5408230121996043
+          "team_id": "ARG",
+          "team_name": "Argentina",
+          "count": 197,
+          "share": 0.02699369690326117,
+          "focus_advance_probability": 0.3879579799627334
         },
         {
           "team_id": "BEL",
           "team_name": "Belgium",
-          "count": 175,
-          "share": 0.022163120567375887,
+          "count": 195,
+          "share": 0.0267196492189641,
           "focus_advance_probability": 0.4190580825734923
         },
         {
-          "team_id": "AUT",
-          "team_name": "Austria",
-          "count": 167,
-          "share": 0.0211499493414387,
-          "focus_advance_probability": 0.4528426849084959
+          "team_id": "CUW",
+          "team_name": "Curacao",
+          "count": 190,
+          "share": 0.02603453000822143,
+          "focus_advance_probability": 0.384933027661599
         },
         {
-          "team_id": "COL",
-          "team_name": "Colombia",
-          "count": 160,
-          "share": 0.020263424518743668,
-          "focus_advance_probability": 0.4331916540446791
-        },
-        {
-          "team_id": "SUI",
-          "team_name": "Switzerland",
-          "count": 155,
-          "share": 0.01963019250253293,
-          "focus_advance_probability": 0.5066619095125492
-        },
-        {
-          "team_id": "KOR",
-          "team_name": "South Korea",
-          "count": 143,
-          "share": 0.018110435663627154,
-          "focus_advance_probability": 0.44161830593615836
-        },
-        {
-          "team_id": "UZB",
-          "team_name": "Uzbekistan",
-          "count": 138,
-          "share": 0.017477203647416412,
-          "focus_advance_probability": 0.4504425599680405
-        },
-        {
-          "team_id": "IRN",
-          "team_name": "Iran",
-          "count": 136,
-          "share": 0.017223910840932118,
-          "focus_advance_probability": 0.4748219390411653
-        },
-        {
-          "team_id": "USA",
-          "team_name": "United States",
-          "count": 127,
-          "share": 0.016084093211752786,
-          "focus_advance_probability": 0.5660596684185357
+          "team_id": "PAR",
+          "team_name": "Paraguay",
+          "count": 174,
+          "share": 0.02384214853384489,
+          "focus_advance_probability": 0.5408230121996043
         },
         {
           "team_id": "URU",
           "team_name": "Uruguay",
-          "count": 127,
-          "share": 0.016084093211752786,
+          "count": 148,
+          "share": 0.020279528637983008,
           "focus_advance_probability": 0.4714385701161786
         },
         {
-          "team_id": "RSA",
-          "team_name": "South Africa",
+          "team_id": "COL",
+          "team_name": "Colombia",
+          "count": 142,
+          "share": 0.019457385585091806,
+          "focus_advance_probability": 0.4331916540446791
+        },
+        {
+          "team_id": "JOR",
+          "team_name": "Jordan",
+          "count": 138,
+          "share": 0.01890929021649767,
+          "focus_advance_probability": 0.48185468861054137
+        },
+        {
+          "team_id": "GER",
+          "team_name": "Germany",
+          "count": 138,
+          "share": 0.01890929021649767,
+          "focus_advance_probability": 0.41898782576880517
+        },
+        {
+          "team_id": "USA",
+          "team_name": "United States",
+          "count": 136,
+          "share": 0.018635242532200603,
+          "focus_advance_probability": 0.5660596684185357
+        },
+        {
+          "team_id": "AUT",
+          "team_name": "Austria",
+          "count": 133,
+          "share": 0.018224171005755,
+          "focus_advance_probability": 0.4528426849084959
+        },
+        {
+          "team_id": "CRO",
+          "team_name": "Croatia",
+          "count": 132,
+          "share": 0.018087147163606467,
+          "focus_advance_probability": 0.43204855988524093
+        },
+        {
+          "team_id": "IRN",
+          "team_name": "Iran",
+          "count": 126,
+          "share": 0.017265004110715264,
+          "focus_advance_probability": 0.4748219390411653
+        },
+        {
+          "team_id": "KOR",
+          "team_name": "South Korea",
           "count": 125,
-          "share": 0.01583080040526849,
-          "focus_advance_probability": 0.4812562683095443
+          "share": 0.017127980268566732,
+          "focus_advance_probability": 0.44161830593615836
+        },
+        {
+          "team_id": "SUI",
+          "team_name": "Switzerland",
+          "count": 125,
+          "share": 0.017127980268566732,
+          "focus_advance_probability": 0.5066619095125492
         },
         {
           "team_id": "BIH",
           "team_name": "Bosnia and Herzegovina",
-          "count": 118,
-          "share": 0.014944275582573455,
+          "count": 121,
+          "share": 0.016579884899972596,
           "focus_advance_probability": 0.5355470416757568
+        },
+        {
+          "team_id": "UZB",
+          "team_name": "Uzbekistan",
+          "count": 117,
+          "share": 0.01603178953137846,
+          "focus_advance_probability": 0.4504425599680405
+        },
+        {
+          "team_id": "PAN",
+          "team_name": "Panama",
+          "count": 112,
+          "share": 0.01534667032063579,
+          "focus_advance_probability": 0.5024424171918553
+        },
+        {
+          "team_id": "RSA",
+          "team_name": "South Africa",
+          "count": 106,
+          "share": 0.014524527267744588,
+          "focus_advance_probability": 0.4812562683095443
         },
         {
           "team_id": "CIV",
           "team_name": "Ivory Coast",
-          "count": 112,
-          "share": 0.014184397163120567,
+          "count": 101,
+          "share": 0.013839408057001918,
           "focus_advance_probability": 0.4946818416033275
         },
         {
           "team_id": "QAT",
           "team_name": "Qatar",
           "count": 101,
-          "share": 0.01279128672745694,
+          "share": 0.013839408057001918,
           "focus_advance_probability": 0.567018070202124
-        },
-        {
-          "team_id": "ALG",
-          "team_name": "Algeria",
-          "count": 100,
-          "share": 0.012664640324214792,
-          "focus_advance_probability": 0.5358286724455178
-        },
-        {
-          "team_id": "PAN",
-          "team_name": "Panama",
-          "count": 100,
-          "share": 0.012664640324214792,
-          "focus_advance_probability": 0.5024424171918553
-        },
-        {
-          "team_id": "KSA",
-          "team_name": "Saudi Arabia",
-          "count": 95,
-          "share": 0.012031408308004053,
-          "focus_advance_probability": 0.5203743132244858
-        },
-        {
-          "team_id": "JOR",
-          "team_name": "Jordan",
-          "count": 91,
-          "share": 0.01152482269503546,
-          "focus_advance_probability": 0.48185468861054137
-        },
-        {
-          "team_id": "IRQ",
-          "team_name": "Iraq",
-          "count": 90,
-          "share": 0.011398176291793313,
-          "focus_advance_probability": 0.5240994721583008
         },
         {
           "team_id": "ECU",
           "team_name": "Ecuador",
-          "count": 86,
-          "share": 0.010891590678824722,
+          "count": 93,
+          "share": 0.012743217319813647,
           "focus_advance_probability": 0.5089261083704061
-        },
-        {
-          "team_id": "SWE",
-          "team_name": "Sweden",
-          "count": 85,
-          "share": 0.010764944275582573,
-          "focus_advance_probability": 0.5440383807719816
-        },
-        {
-          "team_id": "EGY",
-          "team_name": "Egypt",
-          "count": 75,
-          "share": 0.009498480243161094,
-          "focus_advance_probability": 0.5964495843646387
         },
         {
           "team_id": "SEN",
           "team_name": "Senegal",
-          "count": 75,
-          "share": 0.009498480243161094,
+          "count": 86,
+          "share": 0.011784050424773911,
           "focus_advance_probability": 0.5215855880957019
+        },
+        {
+          "team_id": "SWE",
+          "team_name": "Sweden",
+          "count": 81,
+          "share": 0.011098931214031242,
+          "focus_advance_probability": 0.5440383807719816
         },
         {
           "team_id": "TUN",
           "team_name": "Tunisia",
-          "count": 70,
-          "share": 0.008865248226950355,
+          "count": 79,
+          "share": 0.010824883529734174,
           "focus_advance_probability": 0.5260007086256058
         },
         {
           "team_id": "GHA",
           "team_name": "Ghana",
-          "count": 66,
-          "share": 0.008358662613981762,
+          "count": 73,
+          "share": 0.010002740476842971,
           "focus_advance_probability": 0.5520218623692489
         },
         {
-          "team_id": "COD",
-          "team_name": "DR Congo",
-          "count": 65,
-          "share": 0.008232016210739615,
-          "focus_advance_probability": 0.5861629164700115
+          "team_id": "IRQ",
+          "team_name": "Iraq",
+          "count": 73,
+          "share": 0.010002740476842971,
+          "focus_advance_probability": 0.5240994721583008
         },
         {
-          "team_id": "MEX",
-          "team_name": "Mexico",
-          "count": 62,
-          "share": 0.007852077001013171,
-          "focus_advance_probability": 0.5483123347533763
+          "team_id": "KSA",
+          "team_name": "Saudi Arabia",
+          "count": 71,
+          "share": 0.009728692792545903,
+          "focus_advance_probability": 0.5203743132244858
         },
         {
           "team_id": "CPV",
           "team_name": "Cape Verde",
-          "count": 60,
-          "share": 0.007598784194528876,
+          "count": 68,
+          "share": 0.009317621266100301,
           "focus_advance_probability": 0.5669208662502857
+        },
+        {
+          "team_id": "ALG",
+          "team_name": "Algeria",
+          "count": 67,
+          "share": 0.009180597423951768,
+          "focus_advance_probability": 0.5358286724455178
+        },
+        {
+          "team_id": "MEX",
+          "team_name": "Mexico",
+          "count": 66,
+          "share": 0.009043573581803233,
+          "focus_advance_probability": 0.5483123347533763
         },
         {
           "team_id": "CAN",
           "team_name": "Canada",
-          "count": 51,
-          "share": 0.006458966565349544,
+          "count": 57,
+          "share": 0.007810359002466429,
           "focus_advance_probability": 0.6175557460552004
+        },
+        {
+          "team_id": "EGY",
+          "team_name": "Egypt",
+          "count": 56,
+          "share": 0.007673335160317895,
+          "focus_advance_probability": 0.5964495843646387
+        },
+        {
+          "team_id": "COD",
+          "team_name": "DR Congo",
+          "count": 53,
+          "share": 0.007262263633872294,
+          "focus_advance_probability": 0.5861629164700115
         },
         {
           "team_id": "NZL",
           "team_name": "New Zealand",
-          "count": 44,
-          "share": 0.005572441742654508,
+          "count": 40,
+          "share": 0.005480953685941353,
           "focus_advance_probability": 0.5909519976984929
         }
       ],
@@ -1672,710 +1672,710 @@
         {
           "team_id": "ESP",
           "team_name": "Spain",
-          "count": 450,
-          "share": 0.1265466816647919,
+          "count": 354,
+          "share": 0.10701330108827085,
           "focus_advance_probability": 0.2967425038875464
         },
         {
           "team_id": "NED",
           "team_name": "Netherlands",
-          "count": 235,
-          "share": 0.06608548931383577,
+          "count": 190,
+          "share": 0.05743651753325272,
           "focus_advance_probability": 0.37011526083211643
         },
         {
           "team_id": "CUW",
           "team_name": "Curacao",
-          "count": 196,
-          "share": 0.05511811023622047,
+          "count": 188,
+          "share": 0.056831922611850064,
           "focus_advance_probability": 0.384933027661599
         },
         {
           "team_id": "JPN",
           "team_name": "Japan",
-          "count": 171,
-          "share": 0.048087739032620924,
+          "count": 176,
+          "share": 0.053204353083434096,
           "focus_advance_probability": 0.37304272669754557
-        },
-        {
-          "team_id": "NOR",
-          "team_name": "Norway",
-          "count": 155,
-          "share": 0.04358830146231721,
-          "focus_advance_probability": 0.3293318717882876
-        },
-        {
-          "team_id": "BEL",
-          "team_name": "Belgium",
-          "count": 153,
-          "share": 0.04302587176602925,
-          "focus_advance_probability": 0.4190580825734923
         },
         {
           "team_id": "ENG",
           "team_name": "England",
           "count": 151,
-          "share": 0.04246344206974128,
+          "share": 0.04564691656590085,
           "focus_advance_probability": 0.3382442935117527
+        },
+        {
+          "team_id": "NOR",
+          "team_name": "Norway",
+          "count": 144,
+          "share": 0.04353083434099154,
+          "focus_advance_probability": 0.3293318717882876
         },
         {
           "team_id": "GER",
           "team_name": "Germany",
-          "count": 142,
-          "share": 0.03993250843644545,
+          "count": 127,
+          "share": 0.03839177750906892,
           "focus_advance_probability": 0.41898782576880517
-        },
-        {
-          "team_id": "POR",
-          "team_name": "Portugal",
-          "count": 123,
-          "share": 0.03458942632170978,
-          "focus_advance_probability": 0.379962168723588
         },
         {
           "team_id": "FRA",
           "team_name": "France",
-          "count": 121,
-          "share": 0.03402699662542182,
+          "count": 122,
+          "share": 0.03688029020556227,
           "focus_advance_probability": 0.3733504056916872
+        },
+        {
+          "team_id": "POR",
+          "team_name": "Portugal",
+          "count": 117,
+          "share": 0.03536880290205562,
+          "focus_advance_probability": 0.379962168723588
+        },
+        {
+          "team_id": "BEL",
+          "team_name": "Belgium",
+          "count": 115,
+          "share": 0.03476420798065296,
+          "focus_advance_probability": 0.4190580825734923
         },
         {
           "team_id": "ARG",
           "team_name": "Argentina",
-          "count": 102,
-          "share": 0.028683914510686165,
+          "count": 109,
+          "share": 0.03295042321644498,
           "focus_advance_probability": 0.3879579799627334
-        },
-        {
-          "team_id": "CRO",
-          "team_name": "Croatia",
-          "count": 85,
-          "share": 0.023903262092238472,
-          "focus_advance_probability": 0.43204855988524093
         },
         {
           "team_id": "IRN",
           "team_name": "Iran",
-          "count": 85,
-          "share": 0.023903262092238472,
+          "count": 89,
+          "share": 0.02690447400241838,
           "focus_advance_probability": 0.4748219390411653
         },
         {
-          "team_id": "COL",
-          "team_name": "Colombia",
-          "count": 79,
-          "share": 0.02221597300337458,
-          "focus_advance_probability": 0.4331916540446791
+          "team_id": "CRO",
+          "team_name": "Croatia",
+          "count": 78,
+          "share": 0.02357920193470375,
+          "focus_advance_probability": 0.43204855988524093
         },
         {
           "team_id": "AUS",
           "team_name": "Australia",
-          "count": 68,
-          "share": 0.019122609673790775,
+          "count": 77,
+          "share": 0.023276904474002418,
           "focus_advance_probability": 0.43340497471413675
-        },
-        {
-          "team_id": "URU",
-          "team_name": "Uruguay",
-          "count": 67,
-          "share": 0.018841394825646795,
-          "focus_advance_probability": 0.4714385701161786
-        },
-        {
-          "team_id": "CIV",
-          "team_name": "Ivory Coast",
-          "count": 63,
-          "share": 0.017716535433070866,
-          "focus_advance_probability": 0.4946818416033275
-        },
-        {
-          "team_id": "TUN",
-          "team_name": "Tunisia",
-          "count": 63,
-          "share": 0.017716535433070866,
-          "focus_advance_probability": 0.5260007086256058
-        },
-        {
-          "team_id": "TUR",
-          "team_name": "Turkey",
-          "count": 62,
-          "share": 0.017435320584926885,
-          "focus_advance_probability": 0.4551832098863815
-        },
-        {
-          "team_id": "UZB",
-          "team_name": "Uzbekistan",
-          "count": 61,
-          "share": 0.0171541057367829,
-          "focus_advance_probability": 0.4504425599680405
-        },
-        {
-          "team_id": "AUT",
-          "team_name": "Austria",
-          "count": 60,
-          "share": 0.01687289088863892,
-          "focus_advance_probability": 0.4528426849084959
         },
         {
           "team_id": "BRA",
           "team_name": "Brazil",
-          "count": 57,
-          "share": 0.016029246344206972,
+          "count": 75,
+          "share": 0.02267230955259976,
           "focus_advance_probability": 0.4230242088689426
+        },
+        {
+          "team_id": "CIV",
+          "team_name": "Ivory Coast",
+          "count": 74,
+          "share": 0.022370012091898428,
+          "focus_advance_probability": 0.4946818416033275
+        },
+        {
+          "team_id": "UZB",
+          "team_name": "Uzbekistan",
+          "count": 70,
+          "share": 0.021160822249093107,
+          "focus_advance_probability": 0.4504425599680405
+        },
+        {
+          "team_id": "COL",
+          "team_name": "Colombia",
+          "count": 69,
+          "share": 0.02085852478839178,
+          "focus_advance_probability": 0.4331916540446791
+        },
+        {
+          "team_id": "URU",
+          "team_name": "Uruguay",
+          "count": 66,
+          "share": 0.01995163240628779,
+          "focus_advance_probability": 0.4714385701161786
+        },
+        {
+          "team_id": "TUR",
+          "team_name": "Turkey",
+          "count": 59,
+          "share": 0.017835550181378477,
+          "focus_advance_probability": 0.4551832098863815
+        },
+        {
+          "team_id": "AUT",
+          "team_name": "Austria",
+          "count": 56,
+          "share": 0.016928657799274487,
+          "focus_advance_probability": 0.4528426849084959
         },
         {
           "team_id": "KOR",
           "team_name": "South Korea",
-          "count": 54,
-          "share": 0.015185601799775027,
+          "count": 56,
+          "share": 0.016928657799274487,
           "focus_advance_probability": 0.44161830593615836
-        },
-        {
-          "team_id": "HAI",
-          "team_name": "Haiti",
-          "count": 50,
-          "share": 0.0140607424071991,
-          "focus_advance_probability": 0.4816340442293038
-        },
-        {
-          "team_id": "JOR",
-          "team_name": "Jordan",
-          "count": 49,
-          "share": 0.013779527559055118,
-          "focus_advance_probability": 0.48185468861054137
         },
         {
           "team_id": "KSA",
           "team_name": "Saudi Arabia",
-          "count": 48,
-          "share": 0.013498312710911136,
+          "count": 53,
+          "share": 0.016021765417170496,
           "focus_advance_probability": 0.5203743132244858
+        },
+        {
+          "team_id": "JOR",
+          "team_name": "Jordan",
+          "count": 47,
+          "share": 0.014207980652962516,
+          "focus_advance_probability": 0.48185468861054137
         },
         {
           "team_id": "MAR",
           "team_name": "Morocco",
           "count": 46,
-          "share": 0.012935883014623173,
+          "share": 0.013905683192261185,
           "focus_advance_probability": 0.47385831891604524
         },
         {
-          "team_id": "SUI",
-          "team_name": "Switzerland",
+          "team_id": "HAI",
+          "team_name": "Haiti",
+          "count": 41,
+          "share": 0.012394195888754534,
+          "focus_advance_probability": 0.4816340442293038
+        },
+        {
+          "team_id": "TUN",
+          "team_name": "Tunisia",
           "count": 40,
-          "share": 0.01124859392575928,
-          "focus_advance_probability": 0.5066619095125492
-        },
-        {
-          "team_id": "PAN",
-          "team_name": "Panama",
-          "count": 39,
-          "share": 0.010967379077615299,
-          "focus_advance_probability": 0.5024424171918553
-        },
-        {
-          "team_id": "SWE",
-          "team_name": "Sweden",
-          "count": 39,
-          "share": 0.010967379077615299,
-          "focus_advance_probability": 0.5440383807719816
-        },
-        {
-          "team_id": "PAR",
-          "team_name": "Paraguay",
-          "count": 38,
-          "share": 0.010686164229471317,
-          "focus_advance_probability": 0.5408230121996043
-        },
-        {
-          "team_id": "RSA",
-          "team_name": "South Africa",
-          "count": 37,
-          "share": 0.010404949381327334,
-          "focus_advance_probability": 0.4812562683095443
-        },
-        {
-          "team_id": "IRQ",
-          "team_name": "Iraq",
-          "count": 34,
-          "share": 0.009561304836895388,
-          "focus_advance_probability": 0.5240994721583008
-        },
-        {
-          "team_id": "ALG",
-          "team_name": "Algeria",
-          "count": 32,
-          "share": 0.008998875140607425,
-          "focus_advance_probability": 0.5358286724455178
+          "share": 0.012091898428053204,
+          "focus_advance_probability": 0.5260007086256058
         },
         {
           "team_id": "ECU",
           "team_name": "Ecuador",
-          "count": 32,
-          "share": 0.008998875140607425,
+          "count": 40,
+          "share": 0.012091898428053204,
           "focus_advance_probability": 0.5089261083704061
         },
         {
-          "team_id": "BIH",
-          "team_name": "Bosnia and Herzegovina",
-          "count": 32,
-          "share": 0.008998875140607425,
-          "focus_advance_probability": 0.5355470416757568
-        },
-        {
-          "team_id": "CPV",
-          "team_name": "Cape Verde",
-          "count": 30,
-          "share": 0.00843644544431946,
-          "focus_advance_probability": 0.5669208662502857
-        },
-        {
-          "team_id": "GHA",
-          "team_name": "Ghana",
-          "count": 29,
-          "share": 0.008155230596175478,
-          "focus_advance_probability": 0.5520218623692489
+          "team_id": "PAR",
+          "team_name": "Paraguay",
+          "count": 36,
+          "share": 0.010882708585247884,
+          "focus_advance_probability": 0.5408230121996043
         },
         {
           "team_id": "SCO",
           "team_name": "Scotland",
-          "count": 29,
-          "share": 0.008155230596175478,
+          "count": 36,
+          "share": 0.010882708585247884,
           "focus_advance_probability": 0.5195656652345383
         },
         {
-          "team_id": "COD",
-          "team_name": "DR Congo",
-          "count": 27,
-          "share": 0.007592800899887514,
-          "focus_advance_probability": 0.5861629164700115
+          "team_id": "IRQ",
+          "team_name": "Iraq",
+          "count": 35,
+          "share": 0.010580411124546553,
+          "focus_advance_probability": 0.5240994721583008
+        },
+        {
+          "team_id": "SWE",
+          "team_name": "Sweden",
+          "count": 32,
+          "share": 0.009673518742442563,
+          "focus_advance_probability": 0.5440383807719816
         },
         {
           "team_id": "SEN",
           "team_name": "Senegal",
-          "count": 26,
-          "share": 0.007311586051743532,
+          "count": 31,
+          "share": 0.009371221281741234,
           "focus_advance_probability": 0.5215855880957019
         },
         {
-          "team_id": "EGY",
-          "team_name": "Egypt",
-          "count": 25,
-          "share": 0.00703037120359955,
-          "focus_advance_probability": 0.5964495843646387
+          "team_id": "RSA",
+          "team_name": "South Africa",
+          "count": 31,
+          "share": 0.009371221281741234,
+          "focus_advance_probability": 0.4812562683095443
         },
         {
-          "team_id": "USA",
-          "team_name": "United States",
-          "count": 19,
-          "share": 0.005343082114735658,
-          "focus_advance_probability": 0.5660596684185357
+          "team_id": "PAN",
+          "team_name": "Panama",
+          "count": 30,
+          "share": 0.009068923821039904,
+          "focus_advance_probability": 0.5024424171918553
         },
         {
-          "team_id": "NZL",
-          "team_name": "New Zealand",
-          "count": 16,
-          "share": 0.0044994375703037125,
-          "focus_advance_probability": 0.5909519976984929
+          "team_id": "BIH",
+          "team_name": "Bosnia and Herzegovina",
+          "count": 30,
+          "share": 0.009068923821039904,
+          "focus_advance_probability": 0.5355470416757568
+        },
+        {
+          "team_id": "ALG",
+          "team_name": "Algeria",
+          "count": 28,
+          "share": 0.008464328899637243,
+          "focus_advance_probability": 0.5358286724455178
+        },
+        {
+          "team_id": "SUI",
+          "team_name": "Switzerland",
+          "count": 28,
+          "share": 0.008464328899637243,
+          "focus_advance_probability": 0.5066619095125492
         },
         {
           "team_id": "QAT",
           "team_name": "Qatar",
-          "count": 14,
-          "share": 0.003937007874015748,
+          "count": 26,
+          "share": 0.007859733978234583,
           "focus_advance_probability": 0.567018070202124
         },
         {
-          "team_id": "CAN",
-          "team_name": "Canada",
-          "count": 13,
-          "share": 0.003655793025871766,
-          "focus_advance_probability": 0.6175557460552004
+          "team_id": "EGY",
+          "team_name": "Egypt",
+          "count": 23,
+          "share": 0.006952841596130592,
+          "focus_advance_probability": 0.5964495843646387
+        },
+        {
+          "team_id": "CPV",
+          "team_name": "Cape Verde",
+          "count": 20,
+          "share": 0.006045949214026602,
+          "focus_advance_probability": 0.5669208662502857
+        },
+        {
+          "team_id": "NZL",
+          "team_name": "New Zealand",
+          "count": 19,
+          "share": 0.005743651753325272,
+          "focus_advance_probability": 0.5909519976984929
         },
         {
           "team_id": "MEX",
           "team_name": "Mexico",
-          "count": 9,
-          "share": 0.002530933633295838,
+          "count": 17,
+          "share": 0.005139056831922612,
           "focus_advance_probability": 0.5483123347533763
+        },
+        {
+          "team_id": "GHA",
+          "team_name": "Ghana",
+          "count": 16,
+          "share": 0.0048367593712212815,
+          "focus_advance_probability": 0.5520218623692489
+        },
+        {
+          "team_id": "USA",
+          "team_name": "United States",
+          "count": 16,
+          "share": 0.0048367593712212815,
+          "focus_advance_probability": 0.5660596684185357
+        },
+        {
+          "team_id": "COD",
+          "team_name": "DR Congo",
+          "count": 14,
+          "share": 0.004232164449818622,
+          "focus_advance_probability": 0.5861629164700115
+        },
+        {
+          "team_id": "CAN",
+          "team_name": "Canada",
+          "count": 11,
+          "share": 0.003325272067714631,
+          "focus_advance_probability": 0.6175557460552004
         }
       ],
       "final": [
         {
-          "team_id": "NOR",
-          "team_name": "Norway",
-          "count": 114,
-          "share": 0.07776261937244201,
-          "focus_advance_probability": 0.3293318717882876
-        },
-        {
           "team_id": "ESP",
           "team_name": "Spain",
-          "count": 104,
-          "share": 0.07094133697135062,
+          "count": 114,
+          "share": 0.08278867102396514,
           "focus_advance_probability": 0.2967425038875464
+        },
+        {
+          "team_id": "NOR",
+          "team_name": "Norway",
+          "count": 104,
+          "share": 0.07552650689905592,
+          "focus_advance_probability": 0.3293318717882876
         },
         {
           "team_id": "ENG",
           "team_name": "England",
-          "count": 103,
-          "share": 0.07025920873124147,
+          "count": 99,
+          "share": 0.0718954248366013,
           "focus_advance_probability": 0.3382442935117527
+        },
+        {
+          "team_id": "POR",
+          "team_name": "Portugal",
+          "count": 65,
+          "share": 0.04720406681190995,
+          "focus_advance_probability": 0.379962168723588
         },
         {
           "team_id": "ARG",
           "team_name": "Argentina",
-          "count": 88,
-          "share": 0.06002728512960437,
+          "count": 60,
+          "share": 0.04357298474945534,
           "focus_advance_probability": 0.3879579799627334
         },
         {
           "team_id": "FRA",
           "team_name": "France",
-          "count": 81,
-          "share": 0.05525238744884038,
+          "count": 59,
+          "share": 0.042846768336964415,
           "focus_advance_probability": 0.3733504056916872
-        },
-        {
-          "team_id": "POR",
-          "team_name": "Portugal",
-          "count": 74,
-          "share": 0.0504774897680764,
-          "focus_advance_probability": 0.379962168723588
-        },
-        {
-          "team_id": "NED",
-          "team_name": "Netherlands",
-          "count": 68,
-          "share": 0.04638472032742155,
-          "focus_advance_probability": 0.37011526083211643
-        },
-        {
-          "team_id": "CUW",
-          "team_name": "Curacao",
-          "count": 58,
-          "share": 0.03956343792633015,
-          "focus_advance_probability": 0.384933027661599
         },
         {
           "team_id": "JPN",
           "team_name": "Japan",
-          "count": 51,
-          "share": 0.034788540245566164,
+          "count": 55,
+          "share": 0.03994190268700073,
           "focus_advance_probability": 0.37304272669754557
         },
         {
-          "team_id": "CRO",
-          "team_name": "Croatia",
-          "count": 50,
-          "share": 0.034106412005457026,
-          "focus_advance_probability": 0.43204855988524093
+          "team_id": "CUW",
+          "team_name": "Curacao",
+          "count": 52,
+          "share": 0.03776325344952796,
+          "focus_advance_probability": 0.384933027661599
         },
         {
-          "team_id": "AUT",
-          "team_name": "Austria",
-          "count": 49,
-          "share": 0.03342428376534789,
-          "focus_advance_probability": 0.4528426849084959
-        },
-        {
-          "team_id": "GER",
-          "team_name": "Germany",
-          "count": 43,
-          "share": 0.029331514324693043,
-          "focus_advance_probability": 0.41898782576880517
-        },
-        {
-          "team_id": "BRA",
-          "team_name": "Brazil",
-          "count": 35,
-          "share": 0.023874488403819918,
-          "focus_advance_probability": 0.4230242088689426
-        },
-        {
-          "team_id": "KOR",
-          "team_name": "South Korea",
-          "count": 32,
-          "share": 0.021828103683492497,
-          "focus_advance_probability": 0.44161830593615836
-        },
-        {
-          "team_id": "AUS",
-          "team_name": "Australia",
-          "count": 31,
-          "share": 0.021145975443383355,
-          "focus_advance_probability": 0.43340497471413675
-        },
-        {
-          "team_id": "BEL",
-          "team_name": "Belgium",
-          "count": 30,
-          "share": 0.020463847203274217,
-          "focus_advance_probability": 0.4190580825734923
+          "team_id": "NED",
+          "team_name": "Netherlands",
+          "count": 52,
+          "share": 0.03776325344952796,
+          "focus_advance_probability": 0.37011526083211643
         },
         {
           "team_id": "COL",
           "team_name": "Colombia",
-          "count": 30,
-          "share": 0.020463847203274217,
+          "count": 46,
+          "share": 0.03340595497458242,
           "focus_advance_probability": 0.4331916540446791
+        },
+        {
+          "team_id": "AUT",
+          "team_name": "Austria",
+          "count": 41,
+          "share": 0.029774872912127815,
+          "focus_advance_probability": 0.4528426849084959
+        },
+        {
+          "team_id": "CRO",
+          "team_name": "Croatia",
+          "count": 40,
+          "share": 0.029048656499636893,
+          "focus_advance_probability": 0.43204855988524093
+        },
+        {
+          "team_id": "BEL",
+          "team_name": "Belgium",
+          "count": 40,
+          "share": 0.029048656499636893,
+          "focus_advance_probability": 0.4190580825734923
+        },
+        {
+          "team_id": "AUS",
+          "team_name": "Australia",
+          "count": 38,
+          "share": 0.027596223674655047,
+          "focus_advance_probability": 0.43340497471413675
+        },
+        {
+          "team_id": "KOR",
+          "team_name": "South Korea",
+          "count": 31,
+          "share": 0.02251270878721859,
+          "focus_advance_probability": 0.44161830593615836
+        },
+        {
+          "team_id": "GER",
+          "team_name": "Germany",
+          "count": 30,
+          "share": 0.02178649237472767,
+          "focus_advance_probability": 0.41898782576880517
+        },
+        {
+          "team_id": "UZB",
+          "team_name": "Uzbekistan",
+          "count": 28,
+          "share": 0.020334059549745823,
+          "focus_advance_probability": 0.4504425599680405
         },
         {
           "team_id": "RSA",
           "team_name": "South Africa",
           "count": 27,
-          "share": 0.018417462482946793,
+          "share": 0.0196078431372549,
           "focus_advance_probability": 0.4812562683095443
         },
         {
-          "team_id": "MAR",
-          "team_name": "Morocco",
+          "team_id": "BRA",
+          "team_name": "Brazil",
           "count": 26,
-          "share": 0.017735334242837655,
-          "focus_advance_probability": 0.47385831891604524
+          "share": 0.01888162672476398,
+          "focus_advance_probability": 0.4230242088689426
         },
         {
           "team_id": "JOR",
           "team_name": "Jordan",
           "count": 26,
-          "share": 0.017735334242837655,
+          "share": 0.01888162672476398,
           "focus_advance_probability": 0.48185468861054137
         },
         {
-          "team_id": "SUI",
-          "team_name": "Switzerland",
+          "team_id": "MAR",
+          "team_name": "Morocco",
           "count": 24,
-          "share": 0.01637107776261937,
-          "focus_advance_probability": 0.5066619095125492
+          "share": 0.017429193899782137,
+          "focus_advance_probability": 0.47385831891604524
         },
         {
-          "team_id": "UZB",
-          "team_name": "Uzbekistan",
+          "team_id": "URU",
+          "team_name": "Uruguay",
           "count": 24,
-          "share": 0.01637107776261937,
-          "focus_advance_probability": 0.4504425599680405
+          "share": 0.017429193899782137,
+          "focus_advance_probability": 0.4714385701161786
         },
         {
           "team_id": "PAN",
           "team_name": "Panama",
-          "count": 23,
-          "share": 0.015688949522510234,
+          "count": 22,
+          "share": 0.01597676107480029,
           "focus_advance_probability": 0.5024424171918553
         },
         {
           "team_id": "TUR",
           "team_name": "Turkey",
           "count": 21,
-          "share": 0.01432469304229195,
+          "share": 0.015250544662309368,
           "focus_advance_probability": 0.4551832098863815
-        },
-        {
-          "team_id": "HAI",
-          "team_name": "Haiti",
-          "count": 21,
-          "share": 0.01432469304229195,
-          "focus_advance_probability": 0.4816340442293038
         },
         {
           "team_id": "IRN",
           "team_name": "Iran",
-          "count": 19,
-          "share": 0.01296043656207367,
+          "count": 21,
+          "share": 0.015250544662309368,
           "focus_advance_probability": 0.4748219390411653
         },
         {
-          "team_id": "TUN",
-          "team_name": "Tunisia",
-          "count": 18,
-          "share": 0.01227830832196453,
-          "focus_advance_probability": 0.5260007086256058
+          "team_id": "SUI",
+          "team_name": "Switzerland",
+          "count": 20,
+          "share": 0.014524328249818447,
+          "focus_advance_probability": 0.5066619095125492
         },
         {
-          "team_id": "CIV",
-          "team_name": "Ivory Coast",
+          "team_id": "KSA",
+          "team_name": "Saudi Arabia",
           "count": 18,
-          "share": 0.01227830832196453,
-          "focus_advance_probability": 0.4946818416033275
+          "share": 0.013071895424836602,
+          "focus_advance_probability": 0.5203743132244858
+        },
+        {
+          "team_id": "IRQ",
+          "team_name": "Iraq",
+          "count": 17,
+          "share": 0.012345679012345678,
+          "focus_advance_probability": 0.5240994721583008
         },
         {
           "team_id": "SEN",
           "team_name": "Senegal",
-          "count": 17,
-          "share": 0.011596180081855388,
+          "count": 16,
+          "share": 0.011619462599854757,
           "focus_advance_probability": 0.5215855880957019
         },
         {
-          "team_id": "QAT",
-          "team_name": "Qatar",
-          "count": 14,
-          "share": 0.009549795361527967,
-          "focus_advance_probability": 0.567018070202124
+          "team_id": "HAI",
+          "team_name": "Haiti",
+          "count": 15,
+          "share": 0.010893246187363835,
+          "focus_advance_probability": 0.4816340442293038
         },
         {
-          "team_id": "PAR",
-          "team_name": "Paraguay",
+          "team_id": "CIV",
+          "team_name": "Ivory Coast",
           "count": 14,
-          "share": 0.009549795361527967,
-          "focus_advance_probability": 0.5408230121996043
+          "share": 0.010167029774872912,
+          "focus_advance_probability": 0.4946818416033275
         },
         {
-          "team_id": "SCO",
-          "team_name": "Scotland",
-          "count": 14,
-          "share": 0.009549795361527967,
-          "focus_advance_probability": 0.5195656652345383
-        },
-        {
-          "team_id": "URU",
-          "team_name": "Uruguay",
+          "team_id": "BIH",
+          "team_name": "Bosnia and Herzegovina",
           "count": 13,
-          "share": 0.008867667121418827,
-          "focus_advance_probability": 0.4714385701161786
+          "share": 0.00944081336238199,
+          "focus_advance_probability": 0.5355470416757568
         },
         {
           "team_id": "ALG",
           "team_name": "Algeria",
           "count": 12,
-          "share": 0.008185538881309686,
+          "share": 0.008714596949891068,
           "focus_advance_probability": 0.5358286724455178
-        },
-        {
-          "team_id": "IRQ",
-          "team_name": "Iraq",
-          "count": 12,
-          "share": 0.008185538881309686,
-          "focus_advance_probability": 0.5240994721583008
-        },
-        {
-          "team_id": "ECU",
-          "team_name": "Ecuador",
-          "count": 11,
-          "share": 0.007503410641200546,
-          "focus_advance_probability": 0.5089261083704061
-        },
-        {
-          "team_id": "BIH",
-          "team_name": "Bosnia and Herzegovina",
-          "count": 11,
-          "share": 0.007503410641200546,
-          "focus_advance_probability": 0.5355470416757568
-        },
-        {
-          "team_id": "KSA",
-          "team_name": "Saudi Arabia",
-          "count": 11,
-          "share": 0.007503410641200546,
-          "focus_advance_probability": 0.5203743132244858
-        },
-        {
-          "team_id": "MEX",
-          "team_name": "Mexico",
-          "count": 8,
-          "share": 0.005457025920873124,
-          "focus_advance_probability": 0.5483123347533763
-        },
-        {
-          "team_id": "SWE",
-          "team_name": "Sweden",
-          "count": 7,
-          "share": 0.0047748976807639835,
-          "focus_advance_probability": 0.5440383807719816
         },
         {
           "team_id": "GHA",
           "team_name": "Ghana",
-          "count": 7,
-          "share": 0.0047748976807639835,
+          "count": 12,
+          "share": 0.008714596949891068,
           "focus_advance_probability": 0.5520218623692489
+        },
+        {
+          "team_id": "SCO",
+          "team_name": "Scotland",
+          "count": 12,
+          "share": 0.008714596949891068,
+          "focus_advance_probability": 0.5195656652345383
+        },
+        {
+          "team_id": "USA",
+          "team_name": "United States",
+          "count": 12,
+          "share": 0.008714596949891068,
+          "focus_advance_probability": 0.5660596684185357
+        },
+        {
+          "team_id": "PAR",
+          "team_name": "Paraguay",
+          "count": 10,
+          "share": 0.007262164124909223,
+          "focus_advance_probability": 0.5408230121996043
+        },
+        {
+          "team_id": "EGY",
+          "team_name": "Egypt",
+          "count": 9,
+          "share": 0.006535947712418301,
+          "focus_advance_probability": 0.5964495843646387
+        },
+        {
+          "team_id": "QAT",
+          "team_name": "Qatar",
+          "count": 8,
+          "share": 0.005809731299927378,
+          "focus_advance_probability": 0.567018070202124
+        },
+        {
+          "team_id": "SWE",
+          "team_name": "Sweden",
+          "count": 8,
+          "share": 0.005809731299927378,
+          "focus_advance_probability": 0.5440383807719816
+        },
+        {
+          "team_id": "ECU",
+          "team_name": "Ecuador",
+          "count": 7,
+          "share": 0.005083514887436456,
+          "focus_advance_probability": 0.5089261083704061
+        },
+        {
+          "team_id": "MEX",
+          "team_name": "Mexico",
+          "count": 6,
+          "share": 0.004357298474945534,
+          "focus_advance_probability": 0.5483123347533763
+        },
+        {
+          "team_id": "CPV",
+          "team_name": "Cape Verde",
+          "count": 6,
+          "share": 0.004357298474945534,
+          "focus_advance_probability": 0.5669208662502857
+        },
+        {
+          "team_id": "TUN",
+          "team_name": "Tunisia",
+          "count": 6,
+          "share": 0.004357298474945534,
+          "focus_advance_probability": 0.5260007086256058
         },
         {
           "team_id": "NZL",
           "team_name": "New Zealand",
           "count": 5,
-          "share": 0.0034106412005457027,
+          "share": 0.0036310820624546117,
           "focus_advance_probability": 0.5909519976984929
-        },
-        {
-          "team_id": "CAN",
-          "team_name": "Canada",
-          "count": 5,
-          "share": 0.0034106412005457027,
-          "focus_advance_probability": 0.6175557460552004
-        },
-        {
-          "team_id": "CPV",
-          "team_name": "Cape Verde",
-          "count": 5,
-          "share": 0.0034106412005457027,
-          "focus_advance_probability": 0.5669208662502857
-        },
-        {
-          "team_id": "USA",
-          "team_name": "United States",
-          "count": 5,
-          "share": 0.0034106412005457027,
-          "focus_advance_probability": 0.5660596684185357
-        },
-        {
-          "team_id": "EGY",
-          "team_name": "Egypt",
-          "count": 4,
-          "share": 0.002728512960436562,
-          "focus_advance_probability": 0.5964495843646387
         },
         {
           "team_id": "COD",
           "team_name": "DR Congo",
-          "count": 3,
-          "share": 0.0020463847203274215,
+          "count": 4,
+          "share": 0.002904865649963689,
           "focus_advance_probability": 0.5861629164700115
+        },
+        {
+          "team_id": "CAN",
+          "team_name": "Canada",
+          "count": 2,
+          "share": 0.0014524328249818446,
+          "focus_advance_probability": 0.6175557460552004
         }
       ]
     },
     "path_difficulty": {
-      "average_focus_advance_probability": 0.4598507672344213,
-      "average_round_of_32_advance_probability": 0.4638608447803924
+      "average_focus_advance_probability": 0.45996082204208194,
+      "average_round_of_32_advance_probability": 0.46486391166772234
     },
     "title_probability_decomposition": {
       "stage_probabilities": {
-        "round_of_32_probability": 0.73618,
-        "round_of_16_probability": 0.33994,
-        "quarterfinal_probability": 0.15792,
-        "semifinal_probability": 0.07112,
-        "final_probability": 0.02932,
-        "champion_probability": 0.01198
+        "round_of_32_probability": 0.6627,
+        "round_of_16_probability": 0.30672,
+        "quarterfinal_probability": 0.14596,
+        "semifinal_probability": 0.06616,
+        "final_probability": 0.02754,
+        "champion_probability": 0.01158
       },
       "conditional_advancement": {
-        "round_of_16_probability": 0.46176206905919753,
-        "quarterfinal_probability": 0.46455256810025297,
-        "semifinal_probability": 0.450354609929078,
-        "final_probability": 0.4122609673790776,
-        "champion_probability": 0.40859481582537516
+        "round_of_16_probability": 0.4628338614757809,
+        "quarterfinal_probability": 0.4758737610850287,
+        "semifinal_probability": 0.45327486982734994,
+        "final_probability": 0.41626360338573154,
+        "champion_probability": 0.42047930283224405
       },
       "by_group_finish": [
         {
           "finish": 1,
-          "iterations": 15081,
-          "title_count": 237,
-          "title_probability_given_finish": 0.01571513825343147,
-          "title_probability_contribution": 0.00474
+          "iterations": 12003,
+          "title_count": 224,
+          "title_probability_given_finish": 0.018662001166375074,
+          "title_probability_contribution": 0.00448
         },
         {
           "finish": 2,
-          "iterations": 13641,
-          "title_count": 221,
-          "title_probability_given_finish": 0.016201158272853896,
-          "title_probability_contribution": 0.00442
+          "iterations": 12713,
+          "title_count": 220,
+          "title_probability_given_finish": 0.017305120742547,
+          "title_probability_contribution": 0.0044
         },
         {
           "finish": 3,
-          "iterations": 11782,
-          "title_count": 141,
-          "title_probability_given_finish": 0.011967407910371753,
-          "title_probability_contribution": 0.00282
+          "iterations": 12746,
+          "title_count": 135,
+          "title_probability_given_finish": 0.010591558135885769,
+          "title_probability_contribution": 0.0027
         },
         {
           "finish": 4,
-          "iterations": 9496,
+          "iterations": 12538,
           "title_count": 0,
           "title_probability_given_finish": 0.0,
           "title_probability_contribution": 0.0
@@ -2385,505 +2385,505 @@
         {
           "team_id": "SUI",
           "team_name": "Switzerland",
-          "count": 1441,
-          "share": 0.03914803444809693,
+          "count": 1224,
+          "share": 0.036939791760977815,
           "focus_advance_probability": 0.5066619095125492,
-          "title_count": 22,
-          "title_probability_given_opponent": 0.015267175572519083,
-          "title_probability_contribution": 0.00044
+          "title_count": 24,
+          "title_probability_given_opponent": 0.0196078431372549,
+          "title_probability_contribution": 0.00048
         },
         {
           "team_id": "BIH",
           "team_name": "Bosnia and Herzegovina",
-          "count": 1352,
-          "share": 0.03673014751826999,
+          "count": 1071,
+          "share": 0.03232231779085559,
           "focus_advance_probability": 0.5355470416757568,
-          "title_count": 21,
-          "title_probability_given_opponent": 0.015532544378698224,
-          "title_probability_contribution": 0.00042
+          "title_count": 19,
+          "title_probability_given_opponent": 0.017740429505135387,
+          "title_probability_contribution": 0.00038
         },
         {
           "team_id": "ESP",
           "team_name": "Spain",
-          "count": 1124,
-          "share": 0.030536010214893095,
+          "count": 1010,
+          "share": 0.030481364116493135,
           "focus_advance_probability": 0.2967425038875464,
-          "title_count": 14,
-          "title_probability_given_opponent": 0.012455516014234875,
-          "title_probability_contribution": 0.00028
-        },
-        {
-          "team_id": "NOR",
-          "team_name": "Norway",
-          "count": 1077,
-          "share": 0.029259148577793475,
-          "focus_advance_probability": 0.3293318717882876,
-          "title_count": 13,
-          "title_probability_given_opponent": 0.012070566388115135,
-          "title_probability_contribution": 0.00026
-        },
-        {
-          "team_id": "FRA",
-          "team_name": "France",
-          "count": 1077,
-          "share": 0.029259148577793475,
-          "focus_advance_probability": 0.3733504056916872,
-          "title_count": 11,
-          "title_probability_given_opponent": 0.01021355617455896,
-          "title_probability_contribution": 0.00022
-        },
-        {
-          "team_id": "ARG",
-          "team_name": "Argentina",
-          "count": 1064,
-          "share": 0.028905974082425494,
-          "focus_advance_probability": 0.3879579799627334,
-          "title_count": 23,
-          "title_probability_given_opponent": 0.021616541353383457,
-          "title_probability_contribution": 0.00046
-        },
-        {
-          "team_id": "BEL",
-          "team_name": "Belgium",
-          "count": 1062,
-          "share": 0.028851639544676573,
-          "focus_advance_probability": 0.4190580825734923,
-          "title_count": 14,
-          "title_probability_given_opponent": 0.013182674199623353,
-          "title_probability_contribution": 0.00028
-        },
-        {
-          "team_id": "TUR",
-          "team_name": "Turkey",
-          "count": 1053,
-          "share": 0.028607134124806432,
-          "focus_advance_probability": 0.4551832098863815,
-          "title_count": 14,
-          "title_probability_given_opponent": 0.013295346628679962,
-          "title_probability_contribution": 0.00028
-        },
-        {
-          "team_id": "CUW",
-          "team_name": "Curacao",
-          "count": 1052,
-          "share": 0.028579966855931973,
-          "focus_advance_probability": 0.384933027661599,
-          "title_count": 11,
-          "title_probability_given_opponent": 0.010456273764258554,
-          "title_probability_contribution": 0.00022
+          "title_count": 8,
+          "title_probability_given_opponent": 0.007920792079207921,
+          "title_probability_contribution": 0.00016
         },
         {
           "team_id": "ENG",
           "team_name": "England",
-          "count": 1051,
-          "share": 0.028552799587057514,
+          "count": 972,
+          "share": 0.02933454051607062,
           "focus_advance_probability": 0.3382442935117527,
-          "title_count": 10,
-          "title_probability_given_opponent": 0.009514747859181731,
-          "title_probability_contribution": 0.0002
-        },
-        {
-          "team_id": "POR",
-          "team_name": "Portugal",
-          "count": 1023,
-          "share": 0.02779211605857263,
-          "focus_advance_probability": 0.379962168723588,
           "title_count": 16,
-          "title_probability_given_opponent": 0.015640273704789834,
+          "title_probability_given_opponent": 0.01646090534979424,
           "title_probability_contribution": 0.00032
         },
         {
           "team_id": "NED",
           "team_name": "Netherlands",
-          "count": 1015,
-          "share": 0.027574777907576953,
+          "count": 964,
+          "share": 0.029093103968613247,
           "focus_advance_probability": 0.37011526083211643,
-          "title_count": 10,
-          "title_probability_given_opponent": 0.009852216748768473,
-          "title_probability_contribution": 0.0002
+          "title_count": 17,
+          "title_probability_given_opponent": 0.017634854771784232,
+          "title_probability_contribution": 0.00034
+        },
+        {
+          "team_id": "NOR",
+          "team_name": "Norway",
+          "count": 962,
+          "share": 0.029032744831748905,
+          "focus_advance_probability": 0.3293318717882876,
+          "title_count": 19,
+          "title_probability_given_opponent": 0.01975051975051975,
+          "title_probability_contribution": 0.00038
+        },
+        {
+          "team_id": "CUW",
+          "team_name": "Curacao",
+          "count": 930,
+          "share": 0.02806699864191942,
+          "focus_advance_probability": 0.384933027661599,
+          "title_count": 18,
+          "title_probability_given_opponent": 0.01935483870967742,
+          "title_probability_contribution": 0.00036
         },
         {
           "team_id": "QAT",
           "team_name": "Qatar",
-          "count": 1006,
-          "share": 0.02733027248770681,
+          "count": 921,
+          "share": 0.027795382526029876,
           "focus_advance_probability": 0.567018070202124,
-          "title_count": 14,
-          "title_probability_given_opponent": 0.013916500994035786,
-          "title_probability_contribution": 0.00028
+          "title_count": 12,
+          "title_probability_given_opponent": 0.013029315960912053,
+          "title_probability_contribution": 0.00024
         },
         {
-          "team_id": "GER",
-          "team_name": "Germany",
-          "count": 998,
-          "share": 0.02711293433671113,
-          "focus_advance_probability": 0.41898782576880517,
-          "title_count": 12,
-          "title_probability_given_opponent": 0.012024048096192385,
-          "title_probability_contribution": 0.00024
+          "team_id": "POR",
+          "team_name": "Portugal",
+          "count": 901,
+          "share": 0.02719179115738645,
+          "focus_advance_probability": 0.379962168723588,
+          "title_count": 17,
+          "title_probability_given_opponent": 0.018867924528301886,
+          "title_probability_contribution": 0.00034
+        },
+        {
+          "team_id": "BEL",
+          "team_name": "Belgium",
+          "count": 891,
+          "share": 0.026889995473064737,
+          "focus_advance_probability": 0.4190580825734923,
+          "title_count": 18,
+          "title_probability_given_opponent": 0.020202020202020204,
+          "title_probability_contribution": 0.00036
         },
         {
           "team_id": "AUS",
           "team_name": "Australia",
-          "count": 970,
-          "share": 0.02635225080822625,
+          "count": 880,
+          "share": 0.02655802022031085,
           "focus_advance_probability": 0.43340497471413675,
-          "title_count": 18,
-          "title_probability_given_opponent": 0.018556701030927835,
-          "title_probability_contribution": 0.00036
+          "title_count": 17,
+          "title_probability_given_opponent": 0.019318181818181818,
+          "title_probability_contribution": 0.00034
         },
         {
           "team_id": "IRN",
           "team_name": "Iran",
-          "count": 905,
-          "share": 0.024586378331386344,
+          "count": 878,
+          "share": 0.026497661083446505,
           "focus_advance_probability": 0.4748219390411653,
-          "title_count": 14,
-          "title_probability_given_opponent": 0.015469613259668509,
-          "title_probability_contribution": 0.00028
+          "title_count": 15,
+          "title_probability_given_opponent": 0.017084282460136675,
+          "title_probability_contribution": 0.0003
         },
         {
           "team_id": "JPN",
           "team_name": "Japan",
-          "count": 904,
-          "share": 0.024559211062511885,
+          "count": 875,
+          "share": 0.026407122378149992,
           "focus_advance_probability": 0.37304272669754557,
-          "title_count": 10,
-          "title_probability_given_opponent": 0.011061946902654867,
-          "title_probability_contribution": 0.0002
+          "title_count": 9,
+          "title_probability_given_opponent": 0.010285714285714285,
+          "title_probability_contribution": 0.00018
         },
         {
-          "team_id": "AUT",
-          "team_name": "Austria",
-          "count": 886,
-          "share": 0.024070200222771603,
-          "focus_advance_probability": 0.4528426849084959,
-          "title_count": 12,
-          "title_probability_given_opponent": 0.013544018058690745,
-          "title_probability_contribution": 0.00024
-        },
-        {
-          "team_id": "CRO",
-          "team_name": "Croatia",
-          "count": 885,
-          "share": 0.024043032953897144,
-          "focus_advance_probability": 0.43204855988524093,
-          "title_count": 20,
-          "title_probability_given_opponent": 0.022598870056497175,
-          "title_probability_contribution": 0.0004
-        },
-        {
-          "team_id": "HAI",
-          "team_name": "Haiti",
-          "count": 842,
-          "share": 0.022874840392295363,
-          "focus_advance_probability": 0.4816340442293038,
-          "title_count": 20,
-          "title_probability_given_opponent": 0.023752969121140142,
-          "title_probability_contribution": 0.0004
-        },
-        {
-          "team_id": "PAN",
-          "team_name": "Panama",
-          "count": 841,
-          "share": 0.0228476731234209,
-          "focus_advance_probability": 0.5024424171918553,
-          "title_count": 19,
-          "title_probability_given_opponent": 0.022592152199762187,
-          "title_probability_contribution": 0.00038
-        },
-        {
-          "team_id": "COL",
-          "team_name": "Colombia",
-          "count": 818,
-          "share": 0.02222282593930832,
-          "focus_advance_probability": 0.4331916540446791,
+          "team_id": "FRA",
+          "team_name": "France",
+          "count": 861,
+          "share": 0.025984608420099593,
+          "focus_advance_probability": 0.3733504056916872,
           "title_count": 7,
-          "title_probability_given_opponent": 0.008557457212713936,
+          "title_probability_given_opponent": 0.008130081300813009,
+          "title_probability_contribution": 0.00014
+        },
+        {
+          "team_id": "ARG",
+          "team_name": "Argentina",
+          "count": 859,
+          "share": 0.02592424928323525,
+          "focus_advance_probability": 0.3879579799627334,
+          "title_count": 7,
+          "title_probability_given_opponent": 0.008149010477299184,
           "title_probability_contribution": 0.00014
         },
         {
           "team_id": "BRA",
           "team_name": "Brazil",
-          "count": 815,
-          "share": 0.02214132413268494,
+          "count": 841,
+          "share": 0.025381017051456164,
           "focus_advance_probability": 0.4230242088689426,
           "title_count": 10,
-          "title_probability_given_opponent": 0.012269938650306749,
+          "title_probability_given_opponent": 0.011890606420927468,
           "title_probability_contribution": 0.0002
         },
         {
-          "team_id": "SCO",
-          "team_name": "Scotland",
-          "count": 802,
-          "share": 0.02178814963731696,
-          "focus_advance_probability": 0.5195656652345383,
+          "team_id": "COL",
+          "team_name": "Colombia",
+          "count": 813,
+          "share": 0.024535989135355363,
+          "focus_advance_probability": 0.4331916540446791,
+          "title_count": 10,
+          "title_probability_given_opponent": 0.012300123001230012,
+          "title_probability_contribution": 0.0002
+        },
+        {
+          "team_id": "GER",
+          "team_name": "Germany",
+          "count": 792,
+          "share": 0.023902218198279764,
+          "focus_advance_probability": 0.41898782576880517,
           "title_count": 12,
-          "title_probability_given_opponent": 0.014962593516209476,
+          "title_probability_given_opponent": 0.015151515151515152,
           "title_probability_contribution": 0.00024
         },
         {
-          "team_id": "PAR",
-          "team_name": "Paraguay",
-          "count": 788,
-          "share": 0.02140780787307452,
-          "focus_advance_probability": 0.5408230121996043,
-          "title_count": 11,
-          "title_probability_given_opponent": 0.013959390862944163,
-          "title_probability_contribution": 0.00022
+          "team_id": "CAN",
+          "team_name": "Canada",
+          "count": 786,
+          "share": 0.023721140787686737,
+          "focus_advance_probability": 0.6175557460552004,
+          "title_count": 19,
+          "title_probability_given_opponent": 0.024173027989821884,
+          "title_probability_contribution": 0.00038
         },
         {
-          "team_id": "MAR",
-          "team_name": "Morocco",
-          "count": 775,
-          "share": 0.02105463337770654,
-          "focus_advance_probability": 0.47385831891604524,
-          "title_count": 16,
-          "title_probability_given_opponent": 0.02064516129032258,
-          "title_probability_contribution": 0.00032
+          "team_id": "TUR",
+          "team_name": "Turkey",
+          "count": 770,
+          "share": 0.023238267692771993,
+          "focus_advance_probability": 0.4551832098863815,
+          "title_count": 19,
+          "title_probability_given_opponent": 0.024675324675324677,
+          "title_probability_contribution": 0.00038
         },
         {
-          "team_id": "SWE",
-          "team_name": "Sweden",
-          "count": 734,
-          "share": 0.019940775353853676,
-          "focus_advance_probability": 0.5440383807719816,
-          "title_count": 7,
-          "title_probability_given_opponent": 0.009536784741144414,
-          "title_probability_contribution": 0.00014
-        },
-        {
-          "team_id": "KSA",
-          "team_name": "Saudi Arabia",
-          "count": 726,
-          "share": 0.019723437202857998,
-          "focus_advance_probability": 0.5203743132244858,
-          "title_count": 14,
-          "title_probability_given_opponent": 0.01928374655647383,
-          "title_probability_contribution": 0.00028
-        },
-        {
-          "team_id": "UZB",
-          "team_name": "Uzbekistan",
-          "count": 725,
-          "share": 0.019696269933983535,
-          "focus_advance_probability": 0.4504425599680405,
-          "title_count": 7,
-          "title_probability_given_opponent": 0.009655172413793104,
-          "title_probability_contribution": 0.00014
+          "team_id": "CRO",
+          "team_name": "Croatia",
+          "count": 756,
+          "share": 0.022815753734721594,
+          "focus_advance_probability": 0.43204855988524093,
+          "title_count": 12,
+          "title_probability_given_opponent": 0.015873015873015872,
+          "title_probability_contribution": 0.00024
         },
         {
           "team_id": "URU",
           "team_name": "Uruguay",
-          "count": 688,
-          "share": 0.018691080985628515,
+          "count": 753,
+          "share": 0.02272521502942508,
           "focus_advance_probability": 0.4714385701161786,
+          "title_count": 15,
+          "title_probability_given_opponent": 0.0199203187250996,
+          "title_probability_contribution": 0.0003
+        },
+        {
+          "team_id": "MAR",
+          "team_name": "Morocco",
+          "count": 744,
+          "share": 0.022453598913535537,
+          "focus_advance_probability": 0.47385831891604524,
+          "title_count": 15,
+          "title_probability_given_opponent": 0.020161290322580645,
+          "title_probability_contribution": 0.0003
+        },
+        {
+          "team_id": "UZB",
+          "team_name": "Uzbekistan",
+          "count": 741,
+          "share": 0.022363060208239024,
+          "focus_advance_probability": 0.4504425599680405,
+          "title_count": 9,
+          "title_probability_given_opponent": 0.012145748987854251,
+          "title_probability_contribution": 0.00018
+        },
+        {
+          "team_id": "AUT",
+          "team_name": "Austria",
+          "count": 728,
+          "share": 0.021970725818620793,
+          "focus_advance_probability": 0.4528426849084959,
+          "title_count": 18,
+          "title_probability_given_opponent": 0.024725274725274724,
+          "title_probability_contribution": 0.00036
+        },
+        {
+          "team_id": "HAI",
+          "team_name": "Haiti",
+          "count": 717,
+          "share": 0.021638750565866907,
+          "focus_advance_probability": 0.4816340442293038,
+          "title_count": 12,
+          "title_probability_given_opponent": 0.016736401673640166,
+          "title_probability_contribution": 0.00024
+        },
+        {
+          "team_id": "JOR",
+          "team_name": "Jordan",
+          "count": 678,
+          "share": 0.020461747397012224,
+          "focus_advance_probability": 0.48185468861054137,
+          "title_count": 12,
+          "title_probability_given_opponent": 0.017699115044247787,
+          "title_probability_contribution": 0.00024
+        },
+        {
+          "team_id": "KSA",
+          "team_name": "Saudi Arabia",
+          "count": 660,
+          "share": 0.019918515165233137,
+          "focus_advance_probability": 0.5203743132244858,
+          "title_count": 9,
+          "title_probability_given_opponent": 0.013636363636363636,
+          "title_probability_contribution": 0.00018
+        },
+        {
+          "team_id": "SCO",
+          "team_name": "Scotland",
+          "count": 654,
+          "share": 0.019737437754640107,
+          "focus_advance_probability": 0.5195656652345383,
+          "title_count": 12,
+          "title_probability_given_opponent": 0.01834862385321101,
+          "title_probability_contribution": 0.00024
+        },
+        {
+          "team_id": "PAN",
+          "team_name": "Panama",
+          "count": 653,
+          "share": 0.019707258186207936,
+          "focus_advance_probability": 0.5024424171918553,
           "title_count": 8,
-          "title_probability_given_opponent": 0.011627906976744186,
+          "title_probability_given_opponent": 0.01225114854517611,
           "title_probability_contribution": 0.00016
         },
         {
           "team_id": "CIV",
           "team_name": "Ivory Coast",
-          "count": 683,
-          "share": 0.018555244641256213,
+          "count": 636,
+          "share": 0.019194205522861024,
           "focus_advance_probability": 0.4946818416033275,
-          "title_count": 8,
-          "title_probability_given_opponent": 0.01171303074670571,
-          "title_probability_contribution": 0.00016
+          "title_count": 18,
+          "title_probability_given_opponent": 0.02830188679245283,
+          "title_probability_contribution": 0.00036
         },
         {
-          "team_id": "CAN",
-          "team_name": "Canada",
-          "count": 664,
-          "share": 0.018039066532641472,
-          "focus_advance_probability": 0.6175557460552004,
-          "title_count": 16,
-          "title_probability_given_opponent": 0.024096385542168676,
-          "title_probability_contribution": 0.00032
+          "team_id": "PAR",
+          "team_name": "Paraguay",
+          "count": 607,
+          "share": 0.018318998038328052,
+          "focus_advance_probability": 0.5408230121996043,
+          "title_count": 14,
+          "title_probability_given_opponent": 0.023064250411861616,
+          "title_probability_contribution": 0.00028
         },
         {
-          "team_id": "CPV",
-          "team_name": "Cape Verde",
-          "count": 629,
-          "share": 0.017088212122035373,
-          "focus_advance_probability": 0.5669208662502857,
-          "title_count": 16,
-          "title_probability_given_opponent": 0.025437201907790145,
-          "title_probability_contribution": 0.00032
-        },
-        {
-          "team_id": "JOR",
-          "team_name": "Jordan",
-          "count": 628,
-          "share": 0.01706104485316091,
-          "focus_advance_probability": 0.48185468861054137,
-          "title_count": 13,
-          "title_probability_given_opponent": 0.020700636942675158,
-          "title_probability_contribution": 0.00026
+          "team_id": "ECU",
+          "team_name": "Ecuador",
+          "count": 599,
+          "share": 0.01807756149087068,
+          "focus_advance_probability": 0.5089261083704061,
+          "title_count": 15,
+          "title_probability_given_opponent": 0.025041736227045076,
+          "title_probability_contribution": 0.0003
         },
         {
           "team_id": "EGY",
           "team_name": "Egypt",
-          "count": 617,
-          "share": 0.016762204895541852,
+          "count": 594,
+          "share": 0.017926663648709824,
           "focus_advance_probability": 0.5964495843646387,
-          "title_count": 17,
-          "title_probability_given_opponent": 0.027552674230145867,
-          "title_probability_contribution": 0.00034
+          "title_count": 10,
+          "title_probability_given_opponent": 0.016835016835016835,
+          "title_probability_contribution": 0.0002
         },
         {
-          "team_id": "IRQ",
-          "team_name": "Iraq",
-          "count": 605,
-          "share": 0.01643619766904833,
-          "focus_advance_probability": 0.5240994721583008,
+          "team_id": "USA",
+          "team_name": "United States",
+          "count": 591,
+          "share": 0.017836124943413308,
+          "focus_advance_probability": 0.5660596684185357,
+          "title_count": 13,
+          "title_probability_given_opponent": 0.021996615905245348,
+          "title_probability_contribution": 0.00026
+        },
+        {
+          "team_id": "TUN",
+          "team_name": "Tunisia",
+          "count": 577,
+          "share": 0.01741361098536291,
+          "focus_advance_probability": 0.5260007086256058,
           "title_count": 14,
-          "title_probability_given_opponent": 0.023140495867768594,
+          "title_probability_given_opponent": 0.024263431542461005,
           "title_probability_contribution": 0.00028
         },
         {
           "team_id": "ALG",
           "team_name": "Algeria",
-          "count": 576,
-          "share": 0.01564834687168899,
+          "count": 557,
+          "share": 0.01681001961671948,
           "focus_advance_probability": 0.5358286724455178,
-          "title_count": 19,
-          "title_probability_given_opponent": 0.03298611111111111,
-          "title_probability_contribution": 0.00038
-        },
-        {
-          "team_id": "TUN",
-          "team_name": "Tunisia",
-          "count": 573,
-          "share": 0.015566845065065608,
-          "focus_advance_probability": 0.5260007086256058,
-          "title_count": 11,
-          "title_probability_given_opponent": 0.019197207678883072,
-          "title_probability_contribution": 0.00022
+          "title_count": 10,
+          "title_probability_given_opponent": 0.017953321364452424,
+          "title_probability_contribution": 0.0002
         },
         {
           "team_id": "NZL",
           "team_name": "New Zealand",
-          "count": 572,
-          "share": 0.01553967779619115,
+          "count": 544,
+          "share": 0.016417685227101252,
           "focus_advance_probability": 0.5909519976984929,
-          "title_count": 7,
-          "title_probability_given_opponent": 0.012237762237762238,
-          "title_probability_contribution": 0.00014
+          "title_count": 9,
+          "title_probability_given_opponent": 0.016544117647058824,
+          "title_probability_contribution": 0.00018
         },
         {
-          "team_id": "ECU",
-          "team_name": "Ecuador",
-          "count": 558,
-          "share": 0.015159336031948708,
-          "focus_advance_probability": 0.5089261083704061,
-          "title_count": 13,
-          "title_probability_given_opponent": 0.023297491039426525,
-          "title_probability_contribution": 0.00026
-        },
-        {
-          "team_id": "COD",
-          "team_name": "DR Congo",
-          "count": 554,
-          "share": 0.015050666956450867,
-          "focus_advance_probability": 0.5861629164700115,
-          "title_count": 8,
-          "title_probability_given_opponent": 0.01444043321299639,
-          "title_probability_contribution": 0.00016
-        },
-        {
-          "team_id": "USA",
-          "team_name": "United States",
-          "count": 522,
-          "share": 0.014181314352468147,
-          "focus_advance_probability": 0.5660596684185357,
-          "title_count": 13,
-          "title_probability_given_opponent": 0.02490421455938697,
-          "title_probability_contribution": 0.00026
+          "team_id": "SWE",
+          "team_name": "Sweden",
+          "count": 531,
+          "share": 0.016025350837483025,
+          "focus_advance_probability": 0.5440383807719816,
+          "title_count": 6,
+          "title_probability_given_opponent": 0.011299435028248588,
+          "title_probability_contribution": 0.00012
         },
         {
           "team_id": "SEN",
           "team_name": "Senegal",
-          "count": 493,
-          "share": 0.013393463555108806,
+          "count": 527,
+          "share": 0.015904632563754337,
           "focus_advance_probability": 0.5215855880957019,
-          "title_count": 16,
-          "title_probability_given_opponent": 0.032454361054766734,
-          "title_probability_contribution": 0.00032
+          "title_count": 9,
+          "title_probability_given_opponent": 0.017077798861480076,
+          "title_probability_contribution": 0.00018
         },
         {
           "team_id": "GHA",
           "team_name": "Ghana",
-          "count": 485,
-          "share": 0.013176125404113125,
+          "count": 511,
+          "share": 0.015421759468839596,
           "focus_advance_probability": 0.5520218623692489,
-          "title_count": 11,
-          "title_probability_given_opponent": 0.02268041237113402,
-          "title_probability_contribution": 0.00022
+          "title_count": 13,
+          "title_probability_given_opponent": 0.025440313111545987,
+          "title_probability_contribution": 0.00026
         },
         {
-          "team_id": "RSA",
-          "team_name": "South Africa",
-          "count": 65,
-          "share": 0.0017658724768399032,
-          "focus_advance_probability": 0.4812562683095443,
-          "title_count": 1,
-          "title_probability_given_opponent": 0.015384615384615385,
-          "title_probability_contribution": 2e-05
+          "team_id": "CPV",
+          "team_name": "Cape Verde",
+          "count": 507,
+          "share": 0.01530104119511091,
+          "focus_advance_probability": 0.5669208662502857,
+          "title_count": 8,
+          "title_probability_given_opponent": 0.015779092702169626,
+          "title_probability_contribution": 0.00016
+        },
+        {
+          "team_id": "IRQ",
+          "team_name": "Iraq",
+          "count": 495,
+          "share": 0.014938886373924853,
+          "focus_advance_probability": 0.5240994721583008,
+          "title_count": 12,
+          "title_probability_given_opponent": 0.024242424242424242,
+          "title_probability_contribution": 0.00024
+        },
+        {
+          "team_id": "COD",
+          "team_name": "DR Congo",
+          "count": 431,
+          "share": 0.013007393994265882,
+          "focus_advance_probability": 0.5861629164700115,
+          "title_count": 10,
+          "title_probability_given_opponent": 0.02320185614849188,
+          "title_probability_contribution": 0.0002
         },
         {
           "team_id": "KOR",
           "team_name": "South Korea",
-          "count": 45,
-          "share": 0.0012225270993507023,
+          "count": 51,
+          "share": 0.0015391579900407425,
           "focus_advance_probability": 0.44161830593615836,
-          "title_count": 3,
-          "title_probability_given_opponent": 0.06666666666666667,
-          "title_probability_contribution": 6e-05
+          "title_count": 0,
+          "title_probability_given_opponent": 0.0,
+          "title_probability_contribution": 0.0
         },
         {
           "team_id": "MEX",
           "team_name": "Mexico",
-          "count": 41,
-          "share": 0.001113858023852862,
+          "count": 49,
+          "share": 0.0014787988531763997,
           "focus_advance_probability": 0.5483123347533763,
           "title_count": 3,
-          "title_probability_given_opponent": 0.07317073170731707,
+          "title_probability_given_opponent": 0.061224489795918366,
           "title_probability_contribution": 6e-05
+        },
+        {
+          "team_id": "RSA",
+          "team_name": "South Africa",
+          "count": 43,
+          "share": 0.0012977214425833712,
+          "focus_advance_probability": 0.4812562683095443,
+          "title_count": 0,
+          "title_probability_given_opponent": 0.0,
+          "title_probability_contribution": 0.0
         }
       ]
     },
     "knockout_resolution": {
       "round_of_32": {
-        "attempts": 36809,
-        "wins": 16997,
-        "conditional_advance_rate": 0.4617620690591975
+        "attempts": 33135,
+        "wins": 15336,
+        "conditional_advance_rate": 0.46283386147578087
       },
       "round_of_16": {
-        "attempts": 16997,
-        "wins": 7896,
-        "conditional_advance_rate": 0.46455256810025297
+        "attempts": 15336,
+        "wins": 7298,
+        "conditional_advance_rate": 0.4758737610850287
       },
       "quarterfinal": {
-        "attempts": 7896,
-        "wins": 3556,
-        "conditional_advance_rate": 0.450354609929078
+        "attempts": 7298,
+        "wins": 3308,
+        "conditional_advance_rate": 0.45327486982734994
       },
       "semifinal": {
-        "attempts": 3556,
-        "wins": 1466,
-        "conditional_advance_rate": 0.41226096737907764
+        "attempts": 3308,
+        "wins": 1377,
+        "conditional_advance_rate": 0.41626360338573154
       },
       "final": {
-        "attempts": 1466,
-        "wins": 599,
-        "conditional_advance_rate": 0.40859481582537516
+        "attempts": 1377,
+        "wins": 579,
+        "conditional_advance_rate": 0.420479302832244
       }
     }
   },
   "knockout_model": {
-    "matchup_definition": "Each simulated knockout matchup uses a cached neutral-site elo-context-v4 prediction computed from the current team ratings and validated shot-volume inputs.",
+    "matchup_definition": "Each simulated knockout matchup uses a cached neutral-site elo-context-v4.1 prediction computed from the current team ratings and validated shot-volume inputs.",
     "draw_handling": "A modeled regulation draw is always resolved: 40% via extra time using the pair-specific decisive probability and 60% via penalties with that edge compressed toward 50%.",
     "focus_vs_spain": {
       "regulation": {
@@ -2905,14 +2905,14 @@
         "expected_total_goals": 2.76,
         "over_2_5_probability": 0.519767984052236,
         "both_teams_to_score_probability": 0.540209796211915,
-        "confidence_score": 61.6,
+        "confidence_score": 68.4,
         "confidence_tier": "Medium",
-        "confidence_explanation": "Medium confidence because the leading outcome is clearly separated; player ratings, match context are unavailable.",
+        "confidence_explanation": "Medium confidence because the leading outcome is clearly separated.",
         "confidence_components": {
           "probability_separation": 79.9,
           "model_agreement": 81.8,
           "calibration_reliability": 48.7,
-          "data_completeness": 55.0,
+          "data_completeness": 100.0,
           "match_stability": 29.5
         },
         "top_factors": [
@@ -2927,9 +2927,14 @@
             "impact": "+2.6%"
           },
           {
-            "factor": "Attack/defense edge",
+            "factor": "Attack rating",
             "team": "Spain",
-            "impact": "+2.0%"
+            "impact": "+1.2%"
+          },
+          {
+            "factor": "Defense rating",
+            "team": "Spain",
+            "impact": "+0.8%"
           }
         ],
         "score_probabilities": [
@@ -3190,433 +3195,445 @@
     }
   },
   "bracket_replay_validation": {
-    "same_group_round_of_32_rematch_count": 3795,
-    "iterations_with_same_group_round_of_32_rematch": 3795,
-    "iteration_rate": 0.0759,
-    "focus_team_same_group_rematch_count": 151,
+    "same_group_round_of_32_rematch_count": 3732,
+    "iterations_with_same_group_round_of_32_rematch": 3732,
+    "iteration_rate": 0.07464,
+    "focus_team_same_group_rematch_count": 143,
     "pairings": [
       {
-        "pairing": "JPN-TUN",
-        "count": 49
-      },
-      {
-        "pairing": "FRA-IRQ",
-        "count": 49
-      },
-      {
-        "pairing": "CRO-GHA",
-        "count": 45
-      },
-      {
-        "pairing": "CUW-CIV",
-        "count": 43
-      },
-      {
-        "pairing": "KSA-URU",
-        "count": 42
-      },
-      {
-        "pairing": "ARG-ALG",
-        "count": 42
-      },
-      {
         "pairing": "URU-KSA",
-        "count": 41
-      },
-      {
-        "pairing": "SUI-QAT",
-        "count": 41
-      },
-      {
-        "pairing": "FRA-SEN",
-        "count": 41
-      },
-      {
-        "pairing": "GER-ECU",
-        "count": 41
-      },
-      {
-        "pairing": "CPV-URU",
-        "count": 41
-      },
-      {
-        "pairing": "TUR-USA",
-        "count": 40
-      },
-      {
-        "pairing": "PAN-GHA",
-        "count": 40
-      },
-      {
-        "pairing": "PAN-CRO",
-        "count": 40
-      },
-      {
-        "pairing": "IRN-EGY",
-        "count": 40
-      },
-      {
-        "pairing": "POR-COD",
-        "count": 40
+        "count": 58
       },
       {
         "pairing": "NOR-IRQ",
+        "count": 47
+      },
+      {
+        "pairing": "NED-SWE",
+        "count": 47
+      },
+      {
+        "pairing": "FRA-IRQ",
+        "count": 42
+      },
+      {
+        "pairing": "TUR-PAR",
+        "count": 41
+      },
+      {
+        "pairing": "GER-CIV",
+        "count": 41
+      },
+      {
+        "pairing": "NOR-SEN",
+        "count": 40
+      },
+      {
+        "pairing": "FRA-SEN",
         "count": 40
       },
       {
         "pairing": "CRO-PAN",
-        "count": 39
-      },
-      {
-        "pairing": "BIH-QAT",
-        "count": 39
-      },
-      {
-        "pairing": "NOR-SEN",
-        "count": 38
-      },
-      {
-        "pairing": "KOR-MEX",
-        "count": 38
-      },
-      {
-        "pairing": "AUT-ALG",
-        "count": 38
-      },
-      {
-        "pairing": "BIH-CAN",
-        "count": 38
-      },
-      {
-        "pairing": "CZE-RSA",
-        "count": 36
-      },
-      {
-        "pairing": "GER-CIV",
-        "count": 36
-      },
-      {
-        "pairing": "BEL-EGY",
-        "count": 36
-      },
-      {
-        "pairing": "HAI-BRA",
-        "count": 35
-      },
-      {
-        "pairing": "BRA-HAI",
-        "count": 35
-      },
-      {
-        "pairing": "KSA-CPV",
-        "count": 35
-      },
-      {
-        "pairing": "AUT-JOR",
-        "count": 35
-      },
-      {
-        "pairing": "NED-TUN",
-        "count": 34
+        "count": 40
       },
       {
         "pairing": "URU-CPV",
-        "count": 34
+        "count": 39
       },
       {
-        "pairing": "NED-SWE",
-        "count": 34
+        "pairing": "IRN-NZL",
+        "count": 39
+      },
+      {
+        "pairing": "QAT-BIH",
+        "count": 39
+      },
+      {
+        "pairing": "NED-TUN",
+        "count": 39
+      },
+      {
+        "pairing": "JOR-ALG",
+        "count": 38
+      },
+      {
+        "pairing": "PAN-CRO",
+        "count": 38
+      },
+      {
+        "pairing": "UZB-COL",
+        "count": 38
+      },
+      {
+        "pairing": "IRN-EGY",
+        "count": 38
+      },
+      {
+        "pairing": "KSA-URU",
+        "count": 37
+      },
+      {
+        "pairing": "QAT-CAN",
+        "count": 37
       },
       {
         "pairing": "SCO-BRA",
+        "count": 35
+      },
+      {
+        "pairing": "COL-COD",
+        "count": 35
+      },
+      {
+        "pairing": "SUI-QAT",
         "count": 34
       },
       {
-        "pairing": "EGY-IRN",
+        "pairing": "JPN-TUN",
         "count": 34
       },
       {
-        "pairing": "SWE-JPN",
+        "pairing": "CRO-GHA",
         "count": 34
       },
       {
-        "pairing": "JPN-SWE",
+        "pairing": "BEL-EGY",
         "count": 34
+      },
+      {
+        "pairing": "BEL-NZL",
+        "count": 34
+      },
+      {
+        "pairing": "COL-UZB",
+        "count": 33
+      },
+      {
+        "pairing": "ARG-ALG",
+        "count": 33
+      },
+      {
+        "pairing": "AUT-JOR",
+        "count": 33
       },
       {
         "pairing": "CUW-ECU",
-        "count": 33
+        "count": 32
       },
       {
-        "pairing": "NED-JPN",
-        "count": 33
+        "pairing": "BIH-QAT",
+        "count": 32
       },
       {
         "pairing": "UZB-COD",
-        "count": 33
+        "count": 32
       },
       {
-        "pairing": "HAI-SCO",
-        "count": 33
+        "pairing": "BRA-SCO",
+        "count": 32
       },
       {
-        "pairing": "ENG-PAN",
+        "pairing": "KOR-MEX",
+        "count": 32
+      },
+      {
+        "pairing": "MAR-SCO",
         "count": 32
       },
       {
         "pairing": "SUI-CAN",
-        "count": 32
-      },
-      {
-        "pairing": "PAR-USA",
-        "count": 32
-      },
-      {
-        "pairing": "ENG-GHA",
-        "count": 32
-      },
-      {
-        "pairing": "POR-UZB",
-        "count": 32
-      },
-      {
-        "pairing": "JOR-ALG",
         "count": 31
       },
       {
-        "pairing": "ALG-JOR",
+        "pairing": "CZE-MEX",
         "count": 31
-      },
-      {
-        "pairing": "IRN-NZL",
-        "count": 30
-      },
-      {
-        "pairing": "EGY-NZL",
-        "count": 30
-      },
-      {
-        "pairing": "TUR-PAR",
-        "count": 30
-      },
-      {
-        "pairing": "AUS-PAR",
-        "count": 30
-      },
-      {
-        "pairing": "PAR-AUS",
-        "count": 30
       },
       {
         "pairing": "MAR-HAI",
+        "count": 30
+      },
+      {
+        "pairing": "POR-UZB",
+        "count": 30
+      },
+      {
+        "pairing": "SWE-TUN",
+        "count": 30
+      },
+      {
+        "pairing": "ALG-JOR",
+        "count": 30
+      },
+      {
+        "pairing": "USA-PAR",
+        "count": 30
+      },
+      {
+        "pairing": "RSA-MEX",
         "count": 29
       },
       {
-        "pairing": "MAR-SCO",
+        "pairing": "JPN-SWE",
         "count": 29
       },
       {
-        "pairing": "RSA-CZE",
+        "pairing": "POR-COL",
         "count": 29
+      },
+      {
+        "pairing": "CUW-CIV",
+        "count": 29
+      },
+      {
+        "pairing": "AUT-ALG",
+        "count": 29
+      },
+      {
+        "pairing": "ENG-GHA",
+        "count": 29
+      },
+      {
+        "pairing": "KSA-CPV",
+        "count": 28
       },
       {
         "pairing": "AUS-USA",
         "count": 28
       },
       {
-        "pairing": "SWE-NED",
+        "pairing": "BRA-MAR",
         "count": 28
       },
       {
-        "pairing": "HAI-MAR",
+        "pairing": "BRA-HAI",
+        "count": 28
+      },
+      {
+        "pairing": "BIH-CAN",
         "count": 27
       },
       {
-        "pairing": "COL-COD",
+        "pairing": "ARG-JOR",
         "count": 27
       },
       {
-        "pairing": "ARG-AUT",
+        "pairing": "AUS-PAR",
         "count": 27
       },
       {
-        "pairing": "ALG-AUT",
+        "pairing": "TUR-USA",
         "count": 27
       },
       {
-        "pairing": "RSA-KOR",
+        "pairing": "HAI-SCO",
         "count": 27
       },
       {
-        "pairing": "TUR-AUS",
+        "pairing": "JOR-AUT",
         "count": 27
       },
       {
-        "pairing": "CIV-ECU",
+        "pairing": "ENG-PAN",
         "count": 27
       },
       {
-        "pairing": "ECU-GER",
+        "pairing": "PAR-TUR",
+        "count": 27
+      },
+      {
+        "pairing": "USA-AUS",
+        "count": 27
+      },
+      {
+        "pairing": "IRQ-SEN",
         "count": 27
       },
       {
         "pairing": "KOR-RSA",
-        "count": 27
-      },
-      {
-        "pairing": "BRA-SCO",
         "count": 26
       },
       {
-        "pairing": "CZE-MEX",
+        "pairing": "IRN-BEL",
         "count": 26
       },
       {
-        "pairing": "ESP-CPV",
+        "pairing": "ARG-AUT",
         "count": 26
       },
       {
-        "pairing": "TUN-JPN",
+        "pairing": "TUN-SWE",
         "count": 26
       },
       {
-        "pairing": "NZL-EGY",
+        "pairing": "CAN-QAT",
         "count": 26
       },
       {
-        "pairing": "BEL-NZL",
+        "pairing": "ESP-URU",
         "count": 26
       },
       {
-        "pairing": "QAT-CAN",
-        "count": 25
+        "pairing": "GHA-PAN",
+        "count": 26
       },
       {
-        "pairing": "MAR-BRA",
-        "count": 25
+        "pairing": "USA-TUR",
+        "count": 26
       },
       {
-        "pairing": "GER-CUW",
-        "count": 24
-      },
-      {
-        "pairing": "COD-COL",
-        "count": 24
+        "pairing": "ECU-CIV",
+        "count": 26
       },
       {
         "pairing": "CZE-KOR",
+        "count": 26
+      },
+      {
+        "pairing": "KOR-CZE",
+        "count": 25
+      },
+      {
+        "pairing": "NZL-IRN",
+        "count": 25
+      },
+      {
+        "pairing": "MEX-RSA",
+        "count": 25
+      },
+      {
+        "pairing": "IRQ-FRA",
+        "count": 25
+      },
+      {
+        "pairing": "ESP-CPV",
+        "count": 25
+      },
+      {
+        "pairing": "HAI-MAR",
+        "count": 25
+      },
+      {
+        "pairing": "PAR-USA",
+        "count": 25
+      },
+      {
+        "pairing": "NED-JPN",
         "count": 24
       },
       {
-        "pairing": "CUW-GER",
+        "pairing": "CIV-GER",
         "count": 24
       },
       {
-        "pairing": "IRQ-SEN",
+        "pairing": "PAN-ENG",
         "count": 24
       },
       {
-        "pairing": "BRA-MAR",
+        "pairing": "FRA-NOR",
         "count": 24
       },
       {
-        "pairing": "RSA-MEX",
+        "pairing": "RSA-CZE",
+        "count": 24
+      },
+      {
+        "pairing": "ECU-CUW",
+        "count": 24
+      },
+      {
+        "pairing": "ESP-KSA",
+        "count": 24
+      },
+      {
+        "pairing": "IRQ-NOR",
         "count": 24
       },
       {
         "pairing": "SCO-MAR",
-        "count": 24
-      },
-      {
-        "pairing": "ARG-JOR",
-        "count": 24
-      },
-      {
-        "pairing": "MEX-KOR",
-        "count": 24
-      },
-      {
-        "pairing": "CAN-BIH",
         "count": 23
       },
       {
-        "pairing": "COL-UZB",
+        "pairing": "POR-COD",
         "count": 23
       },
       {
-        "pairing": "SCO-HAI",
+        "pairing": "SUI-BIH",
         "count": 23
       },
       {
-        "pairing": "ESP-URU",
+        "pairing": "BEL-IRN",
         "count": 23
       },
       {
-        "pairing": "IRQ-FRA",
+        "pairing": "RSA-KOR",
         "count": 22
       },
       {
-        "pairing": "TUN-SWE",
+        "pairing": "TUN-JPN",
         "count": 22
       },
       {
-        "pairing": "USA-AUS",
-        "count": 22
-      },
-      {
-        "pairing": "CPV-KSA",
-        "count": 22
-      },
-      {
-        "pairing": "COD-UZB",
-        "count": 22
-      },
-      {
-        "pairing": "USA-PAR",
-        "count": 22
-      },
-      {
-        "pairing": "UZB-COL",
+        "pairing": "EGY-IRN",
         "count": 21
       },
       {
-        "pairing": "KOR-CZE",
+        "pairing": "CPV-URU",
         "count": 21
       },
       {
-        "pairing": "BIH-SUI",
+        "pairing": "PAN-GHA",
         "count": 21
       },
       {
-        "pairing": "TUN-NED",
+        "pairing": "UZB-POR",
         "count": 21
       },
       {
-        "pairing": "QAT-BIH",
+        "pairing": "SWE-JPN",
         "count": 21
-      },
-      {
-        "pairing": "ALG-ARG",
-        "count": 21
-      },
-      {
-        "pairing": "JOR-AUT",
-        "count": 21
-      },
-      {
-        "pairing": "ESP-KSA",
-        "count": 20
       },
       {
         "pairing": "SEN-IRQ",
+        "count": 21
+      },
+      {
+        "pairing": "JOR-ARG",
+        "count": 21
+      },
+      {
+        "pairing": "AUT-ARG",
+        "count": 21
+      },
+      {
+        "pairing": "ENG-CRO",
+        "count": 21
+      },
+      {
+        "pairing": "COL-POR",
         "count": 20
       },
       {
-        "pairing": "ECU-CUW",
+        "pairing": "PAR-AUS",
         "count": 20
       },
       {
-        "pairing": "CIV-GER",
+        "pairing": "TUN-NED",
+        "count": 20
+      },
+      {
+        "pairing": "GER-ECU",
+        "count": 20
+      },
+      {
+        "pairing": "QAT-SUI",
+        "count": 20
+      },
+      {
+        "pairing": "HAI-BRA",
+        "count": 20
+      },
+      {
+        "pairing": "MAR-BRA",
         "count": 20
       },
       {
@@ -3624,131 +3641,127 @@
         "count": 20
       },
       {
-        "pairing": "SUI-BIH",
-        "count": 20
-      },
-      {
-        "pairing": "USA-TUR",
-        "count": 20
-      },
-      {
-        "pairing": "CAN-QAT",
+        "pairing": "CZE-RSA",
         "count": 19
       },
       {
-        "pairing": "POR-COL",
+        "pairing": "NOR-FRA",
         "count": 19
       },
       {
-        "pairing": "NZL-IRN",
+        "pairing": "EGY-NZL",
         "count": 19
       },
       {
-        "pairing": "UZB-POR",
+        "pairing": "COD-COL",
         "count": 19
       },
       {
-        "pairing": "SEN-NOR",
+        "pairing": "CIV-CUW",
+        "count": 19
+      },
+      {
+        "pairing": "EGY-BEL",
         "count": 19
       },
       {
         "pairing": "CRO-ENG",
-        "count": 18
-      },
-      {
-        "pairing": "CIV-CUW",
-        "count": 18
-      },
-      {
-        "pairing": "QAT-SUI",
-        "count": 18
-      },
-      {
-        "pairing": "CAN-SUI",
-        "count": 18
-      },
-      {
-        "pairing": "ENG-CRO",
-        "count": 18
-      },
-      {
-        "pairing": "IRQ-NOR",
-        "count": 18
-      },
-      {
-        "pairing": "MEX-RSA",
-        "count": 17
-      },
-      {
-        "pairing": "COD-POR",
-        "count": 17
-      },
-      {
-        "pairing": "JPN-NED",
-        "count": 17
+        "count": 19
       },
       {
         "pairing": "GHA-CRO",
-        "count": 16
+        "count": 18
       },
       {
-        "pairing": "GHA-PAN",
-        "count": 16
+        "pairing": "TUR-AUS",
+        "count": 18
       },
       {
-        "pairing": "NOR-FRA",
-        "count": 16
+        "pairing": "CPV-KSA",
+        "count": 18
+      },
+      {
+        "pairing": "BIH-SUI",
+        "count": 18
+      },
+      {
+        "pairing": "GER-CUW",
+        "count": 18
       },
       {
         "pairing": "MEX-CZE",
-        "count": 15
+        "count": 18
       },
       {
-        "pairing": "PAN-ENG",
-        "count": 15
+        "pairing": "CIV-ECU",
+        "count": 18
       },
       {
-        "pairing": "AUS-TUR",
-        "count": 14
-      },
-      {
-        "pairing": "SWE-TUN",
-        "count": 13
-      },
-      {
-        "pairing": "AUT-ARG",
-        "count": 13
-      },
-      {
-        "pairing": "COL-POR",
-        "count": 13
+        "pairing": "ECU-GER",
+        "count": 17
       },
       {
         "pairing": "NZL-BEL",
+        "count": 17
+      },
+      {
+        "pairing": "SCO-HAI",
+        "count": 17
+      },
+      {
+        "pairing": "ALG-AUT",
+        "count": 16
+      },
+      {
+        "pairing": "JPN-NED",
+        "count": 16
+      },
+      {
+        "pairing": "CAN-BIH",
+        "count": 16
+      },
+      {
+        "pairing": "ALG-ARG",
+        "count": 16
+      },
+      {
+        "pairing": "CUW-GER",
+        "count": 16
+      },
+      {
+        "pairing": "SWE-NED",
+        "count": 16
+      },
+      {
+        "pairing": "AUS-TUR",
+        "count": 15
+      },
+      {
+        "pairing": "SEN-NOR",
+        "count": 15
+      },
+      {
+        "pairing": "MEX-KOR",
+        "count": 14
+      },
+      {
+        "pairing": "NZL-EGY",
         "count": 13
       },
       {
-        "pairing": "IRN-BEL",
-        "count": 13
-      },
-      {
-        "pairing": "BEL-IRN",
-        "count": 13
-      },
-      {
-        "pairing": "EGY-BEL",
-        "count": 13
-      },
-      {
-        "pairing": "ECU-CIV",
-        "count": 13
-      },
-      {
-        "pairing": "PAR-TUR",
+        "pairing": "KSA-ESP",
         "count": 12
       },
       {
-        "pairing": "CPV-ESP",
+        "pairing": "COD-UZB",
+        "count": 12
+      },
+      {
+        "pairing": "URU-ESP",
+        "count": 12
+      },
+      {
+        "pairing": "CAN-SUI",
         "count": 12
       },
       {
@@ -3756,374 +3769,366 @@
         "count": 11
       },
       {
-        "pairing": "FRA-NOR",
+        "pairing": "CPV-ESP",
+        "count": 11
+      },
+      {
+        "pairing": "COD-POR",
         "count": 10
-      },
-      {
-        "pairing": "JOR-ARG",
-        "count": 8
-      },
-      {
-        "pairing": "KSA-ESP",
-        "count": 7
-      },
-      {
-        "pairing": "URU-ESP",
-        "count": 7
       }
     ]
   },
   "champion_probability_comparison": {
-    "before_run_id": "cc81032d-93a5-406b-9463-537a21df9994",
-    "before_created_at": "2026-06-11T09:10:30.391953+00:00",
-    "after_run_id": "1b98733b-59ac-4426-b3ee-52eb5b2a2117",
-    "after_created_at": "2026-06-11T09:18:15.389133+00:00",
+    "before_run_id": "83134649-455d-48da-b98e-9ac7c73cef59",
+    "before_created_at": "2026-06-11T21:24:02.216868+00:00",
+    "after_run_id": "0a28ff60-675b-4415-8277-25f7d0b82c67",
+    "after_created_at": "2026-06-11T21:29:14.576645+00:00",
     "before_top_20": [
       {
         "team_id": "ESP",
         "team_name": "Spain",
-        "champion_probability": 0.14332
-      },
-      {
-        "team_id": "ENG",
-        "team_name": "England",
-        "champion_probability": 0.0661
-      },
-      {
-        "team_id": "BEL",
-        "team_name": "Belgium",
-        "champion_probability": 0.06314
-      },
-      {
-        "team_id": "ARG",
-        "team_name": "Argentina",
-        "champion_probability": 0.05884
-      },
-      {
-        "team_id": "POR",
-        "team_name": "Portugal",
-        "champion_probability": 0.05342
-      },
-      {
-        "team_id": "FRA",
-        "team_name": "France",
-        "champion_probability": 0.05152
+        "champion_probability": 0.10798
       },
       {
         "team_id": "NOR",
         "team_name": "Norway",
-        "champion_probability": 0.04832
+        "champion_probability": 0.074
       },
       {
-        "team_id": "CUW",
-        "team_name": "Curacao",
-        "champion_probability": 0.04632
+        "team_id": "ENG",
+        "team_name": "England",
+        "champion_probability": 0.06886
       },
       {
         "team_id": "NED",
         "team_name": "Netherlands",
-        "champion_probability": 0.04358
+        "champion_probability": 0.05024
       },
       {
-        "team_id": "TUR",
-        "team_name": "Turkey",
-        "champion_probability": 0.0409
-      },
-      {
-        "team_id": "BIH",
-        "team_name": "Bosnia and Herzegovina",
-        "champion_probability": 0.03048
-      },
-      {
-        "team_id": "SUI",
-        "team_name": "Switzerland",
-        "champion_probability": 0.02812
-      },
-      {
-        "team_id": "GER",
-        "team_name": "Germany",
-        "champion_probability": 0.02794
-      },
-      {
-        "team_id": "AUS",
-        "team_name": "Australia",
-        "champion_probability": 0.02268
-      },
-      {
-        "team_id": "CZE",
-        "team_name": "Czechia",
-        "champion_probability": 0.02104
-      },
-      {
-        "team_id": "CRO",
-        "team_name": "Croatia",
-        "champion_probability": 0.02092
-      },
-      {
-        "team_id": "KOR",
-        "team_name": "South Korea",
-        "champion_probability": 0.01864
+        "team_id": "FRA",
+        "team_name": "France",
+        "champion_probability": 0.047
       },
       {
         "team_id": "JPN",
         "team_name": "Japan",
-        "champion_probability": 0.01808
+        "champion_probability": 0.04634
+      },
+      {
+        "team_id": "POR",
+        "team_name": "Portugal",
+        "champion_probability": 0.0435
+      },
+      {
+        "team_id": "CUW",
+        "team_name": "Curacao",
+        "champion_probability": 0.04156
+      },
+      {
+        "team_id": "ARG",
+        "team_name": "Argentina",
+        "champion_probability": 0.0396
+      },
+      {
+        "team_id": "BEL",
+        "team_name": "Belgium",
+        "champion_probability": 0.03158
+      },
+      {
+        "team_id": "BRA",
+        "team_name": "Brazil",
+        "champion_probability": 0.02906
+      },
+      {
+        "team_id": "GER",
+        "team_name": "Germany",
+        "champion_probability": 0.0283
+      },
+      {
+        "team_id": "AUS",
+        "team_name": "Australia",
+        "champion_probability": 0.02532
+      },
+      {
+        "team_id": "COL",
+        "team_name": "Colombia",
+        "champion_probability": 0.02416
+      },
+      {
+        "team_id": "KOR",
+        "team_name": "South Korea",
+        "champion_probability": 0.02386
+      },
+      {
+        "team_id": "CRO",
+        "team_name": "Croatia",
+        "champion_probability": 0.0234
+      },
+      {
+        "team_id": "TUR",
+        "team_name": "Turkey",
+        "champion_probability": 0.0206
+      },
+      {
+        "team_id": "UZB",
+        "team_name": "Uzbekistan",
+        "champion_probability": 0.0192
       },
       {
         "team_id": "AUT",
         "team_name": "Austria",
-        "champion_probability": 0.01792
+        "champion_probability": 0.01876
       },
       {
-        "team_id": "RSA",
-        "team_name": "South Africa",
-        "champion_probability": 0.01708
+        "team_id": "URU",
+        "team_name": "Uruguay",
+        "champion_probability": 0.01604
       }
     ],
     "after_top_20": [
       {
         "team_id": "ESP",
         "team_name": "Spain",
-        "champion_probability": 0.11312
+        "champion_probability": 0.10798
       },
       {
         "team_id": "NOR",
         "team_name": "Norway",
-        "champion_probability": 0.07388
+        "champion_probability": 0.074
       },
       {
         "team_id": "ENG",
         "team_name": "England",
-        "champion_probability": 0.06882
+        "champion_probability": 0.06886
       },
       {
         "team_id": "NED",
         "team_name": "Netherlands",
-        "champion_probability": 0.05078
+        "champion_probability": 0.05024
       },
       {
         "team_id": "FRA",
         "team_name": "France",
-        "champion_probability": 0.05016
-      },
-      {
-        "team_id": "POR",
-        "team_name": "Portugal",
-        "champion_probability": 0.04542
+        "champion_probability": 0.047
       },
       {
         "team_id": "JPN",
         "team_name": "Japan",
-        "champion_probability": 0.0447
+        "champion_probability": 0.04634
+      },
+      {
+        "team_id": "POR",
+        "team_name": "Portugal",
+        "champion_probability": 0.0435
       },
       {
         "team_id": "CUW",
         "team_name": "Curacao",
-        "champion_probability": 0.0442
+        "champion_probability": 0.04156
       },
       {
         "team_id": "ARG",
         "team_name": "Argentina",
-        "champion_probability": 0.04416
+        "champion_probability": 0.0396
       },
       {
         "team_id": "BEL",
         "team_name": "Belgium",
-        "champion_probability": 0.03046
+        "champion_probability": 0.03158
+      },
+      {
+        "team_id": "BRA",
+        "team_name": "Brazil",
+        "champion_probability": 0.02906
       },
       {
         "team_id": "GER",
         "team_name": "Germany",
-        "champion_probability": 0.02974
-      },
-      {
-        "team_id": "CRO",
-        "team_name": "Croatia",
-        "champion_probability": 0.02566
-      },
-      {
-        "team_id": "BRA",
-        "team_name": "Brazil",
-        "champion_probability": 0.0248
+        "champion_probability": 0.0283
       },
       {
         "team_id": "AUS",
         "team_name": "Australia",
-        "champion_probability": 0.02464
+        "champion_probability": 0.02532
       },
       {
         "team_id": "COL",
         "team_name": "Colombia",
-        "champion_probability": 0.02328
+        "champion_probability": 0.02416
       },
       {
         "team_id": "KOR",
         "team_name": "South Korea",
-        "champion_probability": 0.02186
+        "champion_probability": 0.02386
+      },
+      {
+        "team_id": "CRO",
+        "team_name": "Croatia",
+        "champion_probability": 0.0234
       },
       {
         "team_id": "TUR",
         "team_name": "Turkey",
-        "champion_probability": 0.02114
+        "champion_probability": 0.0206
+      },
+      {
+        "team_id": "UZB",
+        "team_name": "Uzbekistan",
+        "champion_probability": 0.0192
       },
       {
         "team_id": "AUT",
         "team_name": "Austria",
-        "champion_probability": 0.01844
-      },
-      {
-        "team_id": "MAR",
-        "team_name": "Morocco",
-        "champion_probability": 0.0155
-      },
-      {
-        "team_id": "UZB",
-        "team_name": "Uzbekistan",
-        "champion_probability": 0.01548
-      }
-    ],
-    "biggest_risers": [
-      {
-        "team_id": "JPN",
-        "team_name": "Japan",
-        "before": 0.01808,
-        "after": 0.0447,
-        "change": 0.026619999999999998
-      },
-      {
-        "team_id": "NOR",
-        "team_name": "Norway",
-        "before": 0.04832,
-        "after": 0.07388,
-        "change": 0.02556
-      },
-      {
-        "team_id": "BRA",
-        "team_name": "Brazil",
-        "before": 0.01164,
-        "after": 0.0248,
-        "change": 0.01316
-      },
-      {
-        "team_id": "UZB",
-        "team_name": "Uzbekistan",
-        "before": 0.00602,
-        "after": 0.01548,
-        "change": 0.00946
-      },
-      {
-        "team_id": "COL",
-        "team_name": "Colombia",
-        "before": 0.01492,
-        "after": 0.02328,
-        "change": 0.00836
+        "champion_probability": 0.01876
       },
       {
         "team_id": "URU",
         "team_name": "Uruguay",
-        "before": 0.00454,
-        "after": 0.01256,
-        "change": 0.00802
-      },
-      {
-        "team_id": "NED",
-        "team_name": "Netherlands",
-        "before": 0.04358,
-        "after": 0.05078,
-        "change": 0.007199999999999998
-      },
-      {
-        "team_id": "JOR",
-        "team_name": "Jordan",
-        "before": 0.00388,
-        "after": 0.01066,
-        "change": 0.00678
-      },
-      {
-        "team_id": "MAR",
-        "team_name": "Morocco",
-        "before": 0.00944,
-        "after": 0.0155,
-        "change": 0.006059999999999999
-      },
-      {
-        "team_id": "ECU",
-        "team_name": "Ecuador",
-        "before": 0.00186,
-        "after": 0.00788,
-        "change": 0.006019999999999999
+        "champion_probability": 0.01604
       }
     ],
-    "biggest_fallers": [
+    "biggest_risers": [
       {
-        "team_id": "BEL",
-        "team_name": "Belgium",
-        "before": 0.06314,
-        "after": 0.03046,
-        "change": -0.03268
-      },
-      {
-        "team_id": "ESP",
-        "team_name": "Spain",
-        "before": 0.14332,
-        "after": 0.11312,
-        "change": -0.030200000000000005
-      },
-      {
-        "team_id": "BIH",
-        "team_name": "Bosnia and Herzegovina",
-        "before": 0.03048,
-        "after": 0.00888,
-        "change": -0.0216
-      },
-      {
-        "team_id": "TUR",
-        "team_name": "Turkey",
-        "before": 0.0409,
-        "after": 0.02114,
-        "change": -0.01976
-      },
-      {
-        "team_id": "SUI",
-        "team_name": "Switzerland",
-        "before": 0.02812,
-        "after": 0.01216,
-        "change": -0.01596
-      },
-      {
-        "team_id": "ARG",
-        "team_name": "Argentina",
-        "before": 0.05884,
-        "after": 0.04416,
-        "change": -0.014680000000000006
-      },
-      {
-        "team_id": "CZE",
-        "team_name": "Czechia",
-        "before": 0.02104,
-        "after": 0.01198,
-        "change": -0.00906
-      },
-      {
-        "team_id": "POR",
-        "team_name": "Portugal",
-        "before": 0.05342,
-        "after": 0.04542,
-        "change": -0.008
-      },
-      {
-        "team_id": "QAT",
-        "team_name": "Qatar",
-        "before": 0.00856,
-        "after": 0.00496,
-        "change": -0.0036
+        "team_id": "MEX",
+        "team_name": "Mexico",
+        "before": 0.00638,
+        "after": 0.00638,
+        "change": 0.0
       },
       {
         "team_id": "RSA",
         "team_name": "South Africa",
-        "before": 0.01708,
-        "after": 0.01466,
-        "change": -0.002420000000000002
+        "before": 0.01484,
+        "after": 0.01484,
+        "change": 0.0
+      },
+      {
+        "team_id": "KOR",
+        "team_name": "South Korea",
+        "before": 0.02386,
+        "after": 0.02386,
+        "change": 0.0
+      },
+      {
+        "team_id": "CZE",
+        "team_name": "Czechia",
+        "before": 0.01158,
+        "after": 0.01158,
+        "change": 0.0
+      },
+      {
+        "team_id": "CAN",
+        "team_name": "Canada",
+        "before": 0.00214,
+        "after": 0.00214,
+        "change": 0.0
+      },
+      {
+        "team_id": "BIH",
+        "team_name": "Bosnia and Herzegovina",
+        "before": 0.00772,
+        "after": 0.00772,
+        "change": 0.0
+      },
+      {
+        "team_id": "QAT",
+        "team_name": "Qatar",
+        "before": 0.0049,
+        "after": 0.0049,
+        "change": 0.0
+      },
+      {
+        "team_id": "SUI",
+        "team_name": "Switzerland",
+        "before": 0.01234,
+        "after": 0.01234,
+        "change": 0.0
+      },
+      {
+        "team_id": "BRA",
+        "team_name": "Brazil",
+        "before": 0.02906,
+        "after": 0.02906,
+        "change": 0.0
+      },
+      {
+        "team_id": "MAR",
+        "team_name": "Morocco",
+        "before": 0.0155,
+        "after": 0.0155,
+        "change": 0.0
+      }
+    ],
+    "biggest_fallers": [
+      {
+        "team_id": "MEX",
+        "team_name": "Mexico",
+        "before": 0.00638,
+        "after": 0.00638,
+        "change": 0.0
+      },
+      {
+        "team_id": "RSA",
+        "team_name": "South Africa",
+        "before": 0.01484,
+        "after": 0.01484,
+        "change": 0.0
+      },
+      {
+        "team_id": "KOR",
+        "team_name": "South Korea",
+        "before": 0.02386,
+        "after": 0.02386,
+        "change": 0.0
+      },
+      {
+        "team_id": "CZE",
+        "team_name": "Czechia",
+        "before": 0.01158,
+        "after": 0.01158,
+        "change": 0.0
+      },
+      {
+        "team_id": "CAN",
+        "team_name": "Canada",
+        "before": 0.00214,
+        "after": 0.00214,
+        "change": 0.0
+      },
+      {
+        "team_id": "BIH",
+        "team_name": "Bosnia and Herzegovina",
+        "before": 0.00772,
+        "after": 0.00772,
+        "change": 0.0
+      },
+      {
+        "team_id": "QAT",
+        "team_name": "Qatar",
+        "before": 0.0049,
+        "after": 0.0049,
+        "change": 0.0
+      },
+      {
+        "team_id": "SUI",
+        "team_name": "Switzerland",
+        "before": 0.01234,
+        "after": 0.01234,
+        "change": 0.0
+      },
+      {
+        "team_id": "BRA",
+        "team_name": "Brazil",
+        "before": 0.02906,
+        "after": 0.02906,
+        "change": 0.0
+      },
+      {
+        "team_id": "MAR",
+        "team_name": "Morocco",
+        "before": 0.0155,
+        "after": 0.0155,
+        "change": 0.0
       }
     ]
   },
@@ -4141,7 +4146,7 @@
     {
       "severity": "high",
       "code": "same_group_round_of_32_rematches",
-      "message": "The greedy pairing fallback produced 3795 same-group Round-of-32 rematches in the diagnostic replay."
+      "message": "The greedy pairing fallback produced 3732 same-group Round-of-32 rematches in the diagnostic replay."
     }
   ]
 }

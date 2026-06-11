@@ -1,0 +1,1351 @@
+{
+  "generated_at": "2026-06-11T21:38:10.827533+00:00",
+  "production_model_version": "elo-context-v4.1",
+  "baseline_model_version": "elo-context-v4",
+  "candidate_model_version": "elo-context-v4-no-rest",
+  "production_changed": true,
+  "market_odds_used_in_model": false,
+  "source_coverage": {
+    "matches_with_two_team_stat_rows": 1553,
+    "team_stat_rows": 3106,
+    "fields": {
+      "shots": {
+        "available_in_schema": true,
+        "non_null_rows": 2934
+      },
+      "shots_on_target": {
+        "available_in_schema": true,
+        "non_null_rows": 2932
+      },
+      "shots_inside_box": {
+        "available_in_schema": true,
+        "non_null_rows": 2720
+      },
+      "shots_outside_box": {
+        "available_in_schema": true,
+        "non_null_rows": 2720
+      },
+      "blocked_shots": {
+        "available_in_schema": true,
+        "non_null_rows": 2750
+      },
+      "goalkeeper_saves": {
+        "available_in_schema": true,
+        "non_null_rows": 2908
+      },
+      "pass_accuracy": {
+        "available_in_schema": true,
+        "non_null_rows": 2717
+      },
+      "corners": {
+        "available_in_schema": true,
+        "non_null_rows": 2942
+      },
+      "possession": {
+        "available_in_schema": true,
+        "non_null_rows": 2922
+      },
+      "passes_attempted": {
+        "available_in_schema": true,
+        "non_null_rows": 2719
+      },
+      "passes_completed": {
+        "available_in_schema": true,
+        "non_null_rows": 2719
+      },
+      "yellow_cards": {
+        "available_in_schema": true,
+        "non_null_rows": 2986
+      },
+      "red_cards": {
+        "available_in_schema": true,
+        "non_null_rows": 754
+      }
+    }
+  },
+  "historical_validation": {
+    "protocol": {
+      "method": "existing xg-proxy-v4 chronological holdout",
+      "tuning_matches": 824,
+      "holdout_matches": 233,
+      "holdout_start": "2025-06-08",
+      "holdout_end": "2026-06-09",
+      "segment_definition": "Favorites and underdogs are decisive outcomes classified by the higher current-v4 home/away pre-match probability; draws are evaluated separately.",
+      "confederation_counting": "A match appears once in each participating confederation; same-confederation matches appear once."
+    },
+    "full_holdout": {
+      "matches": 233,
+      "current_v4": {
+        "matches": 233,
+        "log_loss": 0.945067,
+        "brier_score": 0.557889,
+        "ranked_probability_score": 0.19377,
+        "accuracy": 0.600858,
+        "expected_calibration_error": 0.088281,
+        "calibration_bins": [
+          {
+            "lower": 0.0,
+            "upper": 0.1,
+            "count": 1,
+            "mean_probability": 0.085709,
+            "observed_rate": 0.0
+          },
+          {
+            "lower": 0.1,
+            "upper": 0.2,
+            "count": 40,
+            "mean_probability": 0.166949,
+            "observed_rate": 0.05
+          },
+          {
+            "lower": 0.2,
+            "upper": 0.3,
+            "count": 337,
+            "mean_probability": 0.266394,
+            "observed_rate": 0.195846
+          },
+          {
+            "lower": 0.3,
+            "upper": 0.4,
+            "count": 150,
+            "mean_probability": 0.348772,
+            "observed_rate": 0.333333
+          },
+          {
+            "lower": 0.4,
+            "upper": 0.5,
+            "count": 102,
+            "mean_probability": 0.443983,
+            "observed_rate": 0.598039
+          },
+          {
+            "lower": 0.5,
+            "upper": 0.6,
+            "count": 52,
+            "mean_probability": 0.538351,
+            "observed_rate": 0.75
+          },
+          {
+            "lower": 0.6,
+            "upper": 0.7,
+            "count": 16,
+            "mean_probability": 0.633652,
+            "observed_rate": 0.875
+          },
+          {
+            "lower": 0.7,
+            "upper": 0.8,
+            "count": 1,
+            "mean_probability": 0.726895,
+            "observed_rate": 1.0
+          },
+          {
+            "lower": 0.8,
+            "upper": 0.9,
+            "count": 0,
+            "mean_probability": 0.0,
+            "observed_rate": 0.0
+          },
+          {
+            "lower": 0.9,
+            "upper": 1.0,
+            "count": 0,
+            "mean_probability": 0.0,
+            "observed_rate": 0.0
+          }
+        ]
+      },
+      "v4_no_rest": {
+        "matches": 233,
+        "log_loss": 0.94445,
+        "brier_score": 0.557658,
+        "ranked_probability_score": 0.193482,
+        "accuracy": 0.60515,
+        "expected_calibration_error": 0.090944,
+        "calibration_bins": [
+          {
+            "lower": 0.0,
+            "upper": 0.1,
+            "count": 0,
+            "mean_probability": 0.0,
+            "observed_rate": 0.0
+          },
+          {
+            "lower": 0.1,
+            "upper": 0.2,
+            "count": 41,
+            "mean_probability": 0.16936,
+            "observed_rate": 0.04878
+          },
+          {
+            "lower": 0.2,
+            "upper": 0.3,
+            "count": 335,
+            "mean_probability": 0.26712,
+            "observed_rate": 0.18806
+          },
+          {
+            "lower": 0.3,
+            "upper": 0.4,
+            "count": 153,
+            "mean_probability": 0.348731,
+            "observed_rate": 0.346405
+          },
+          {
+            "lower": 0.4,
+            "upper": 0.5,
+            "count": 105,
+            "mean_probability": 0.444139,
+            "observed_rate": 0.619048
+          },
+          {
+            "lower": 0.5,
+            "upper": 0.6,
+            "count": 52,
+            "mean_probability": 0.544187,
+            "observed_rate": 0.75
+          },
+          {
+            "lower": 0.6,
+            "upper": 0.7,
+            "count": 13,
+            "mean_probability": 0.637148,
+            "observed_rate": 0.846154
+          },
+          {
+            "lower": 0.7,
+            "upper": 0.8,
+            "count": 0,
+            "mean_probability": 0.0,
+            "observed_rate": 0.0
+          },
+          {
+            "lower": 0.8,
+            "upper": 0.9,
+            "count": 0,
+            "mean_probability": 0.0,
+            "observed_rate": 0.0
+          },
+          {
+            "lower": 0.9,
+            "upper": 1.0,
+            "count": 0,
+            "mean_probability": 0.0,
+            "observed_rate": 0.0
+          }
+        ]
+      },
+      "comparison": {
+        "brier_delta": -0.000231,
+        "log_loss_delta": -0.000617,
+        "calibration_delta": 0.002663,
+        "improves_brier": true,
+        "improves_log_loss": true,
+        "calibration_not_harmed": true,
+        "material_regression": false
+      }
+    },
+    "outcome_segments": {
+      "favorites": {
+        "matches": 140,
+        "current_v4": {
+          "matches": 140,
+          "log_loss": 0.742491,
+          "brier_score": 0.412842,
+          "ranked_probability_score": 0.170179,
+          "accuracy": 1.0,
+          "expected_calibration_error": 0.283013,
+          "calibration_bins": [
+            {
+              "lower": 0.0,
+              "upper": 0.1,
+              "count": 1,
+              "mean_probability": 0.085709,
+              "observed_rate": 0.0
+            },
+            {
+              "lower": 0.1,
+              "upper": 0.2,
+              "count": 33,
+              "mean_probability": 0.164483,
+              "observed_rate": 0.0
+            },
+            {
+              "lower": 0.2,
+              "upper": 0.3,
+              "count": 206,
+              "mean_probability": 0.261743,
+              "observed_rate": 0.0
+            },
+            {
+              "lower": 0.3,
+              "upper": 0.4,
+              "count": 65,
+              "mean_probability": 0.346067,
+              "observed_rate": 0.384615
+            },
+            {
+              "lower": 0.4,
+              "upper": 0.5,
+              "count": 61,
+              "mean_probability": 0.448889,
+              "observed_rate": 1.0
+            },
+            {
+              "lower": 0.5,
+              "upper": 0.6,
+              "count": 39,
+              "mean_probability": 0.54077,
+              "observed_rate": 1.0
+            },
+            {
+              "lower": 0.6,
+              "upper": 0.7,
+              "count": 14,
+              "mean_probability": 0.63384,
+              "observed_rate": 1.0
+            },
+            {
+              "lower": 0.7,
+              "upper": 0.8,
+              "count": 1,
+              "mean_probability": 0.726895,
+              "observed_rate": 1.0
+            },
+            {
+              "lower": 0.8,
+              "upper": 0.9,
+              "count": 0,
+              "mean_probability": 0.0,
+              "observed_rate": 0.0
+            },
+            {
+              "lower": 0.9,
+              "upper": 1.0,
+              "count": 0,
+              "mean_probability": 0.0,
+              "observed_rate": 0.0
+            }
+          ]
+        },
+        "v4_no_rest": {
+          "matches": 140,
+          "log_loss": 0.749275,
+          "brier_score": 0.417637,
+          "ranked_probability_score": 0.172385,
+          "accuracy": 0.978571,
+          "expected_calibration_error": 0.28759,
+          "calibration_bins": [
+            {
+              "lower": 0.0,
+              "upper": 0.1,
+              "count": 0,
+              "mean_probability": 0.0,
+              "observed_rate": 0.0
+            },
+            {
+              "lower": 0.1,
+              "upper": 0.2,
+              "count": 33,
+              "mean_probability": 0.166498,
+              "observed_rate": 0.0
+            },
+            {
+              "lower": 0.2,
+              "upper": 0.3,
+              "count": 209,
+              "mean_probability": 0.262677,
+              "observed_rate": 0.0
+            },
+            {
+              "lower": 0.3,
+              "upper": 0.4,
+              "count": 64,
+              "mean_probability": 0.348101,
+              "observed_rate": 0.40625
+            },
+            {
+              "lower": 0.4,
+              "upper": 0.5,
+              "count": 64,
+              "mean_probability": 0.452422,
+              "observed_rate": 1.0
+            },
+            {
+              "lower": 0.5,
+              "upper": 0.6,
+              "count": 39,
+              "mean_probability": 0.547458,
+              "observed_rate": 1.0
+            },
+            {
+              "lower": 0.6,
+              "upper": 0.7,
+              "count": 11,
+              "mean_probability": 0.638341,
+              "observed_rate": 1.0
+            },
+            {
+              "lower": 0.7,
+              "upper": 0.8,
+              "count": 0,
+              "mean_probability": 0.0,
+              "observed_rate": 0.0
+            },
+            {
+              "lower": 0.8,
+              "upper": 0.9,
+              "count": 0,
+              "mean_probability": 0.0,
+              "observed_rate": 0.0
+            },
+            {
+              "lower": 0.9,
+              "upper": 1.0,
+              "count": 0,
+              "mean_probability": 0.0,
+              "observed_rate": 0.0
+            }
+          ]
+        },
+        "comparison": {
+          "brier_delta": 0.004795,
+          "log_loss_delta": 0.006784,
+          "calibration_delta": 0.004577,
+          "improves_brier": false,
+          "improves_log_loss": false,
+          "calibration_not_harmed": true,
+          "material_regression": false
+        }
+      },
+      "underdogs": {
+        "matches": 43,
+        "current_v4": {
+          "matches": 43,
+          "log_loss": 1.209294,
+          "brier_score": 0.743627,
+          "ranked_probability_score": 0.332345,
+          "accuracy": 0.0,
+          "expected_calibration_error": 0.167998,
+          "calibration_bins": [
+            {
+              "lower": 0.0,
+              "upper": 0.1,
+              "count": 0,
+              "mean_probability": 0.0,
+              "observed_rate": 0.0
+            },
+            {
+              "lower": 0.1,
+              "upper": 0.2,
+              "count": 2,
+              "mean_probability": 0.168073,
+              "observed_rate": 1.0
+            },
+            {
+              "lower": 0.2,
+              "upper": 0.3,
+              "count": 59,
+              "mean_probability": 0.277721,
+              "observed_rate": 0.271186
+            },
+            {
+              "lower": 0.3,
+              "upper": 0.4,
+              "count": 45,
+              "mean_probability": 0.351734,
+              "observed_rate": 0.555556
+            },
+            {
+              "lower": 0.4,
+              "upper": 0.5,
+              "count": 19,
+              "mean_probability": 0.434577,
+              "observed_rate": 0.0
+            },
+            {
+              "lower": 0.5,
+              "upper": 0.6,
+              "count": 3,
+              "mean_probability": 0.524191,
+              "observed_rate": 0.0
+            },
+            {
+              "lower": 0.6,
+              "upper": 0.7,
+              "count": 1,
+              "mean_probability": 0.62077,
+              "observed_rate": 0.0
+            },
+            {
+              "lower": 0.7,
+              "upper": 0.8,
+              "count": 0,
+              "mean_probability": 0.0,
+              "observed_rate": 0.0
+            },
+            {
+              "lower": 0.8,
+              "upper": 0.9,
+              "count": 0,
+              "mean_probability": 0.0,
+              "observed_rate": 0.0
+            },
+            {
+              "lower": 0.9,
+              "upper": 1.0,
+              "count": 0,
+              "mean_probability": 0.0,
+              "observed_rate": 0.0
+            }
+          ]
+        },
+        "v4_no_rest": {
+          "matches": 43,
+          "log_loss": 1.183144,
+          "brier_score": 0.725903,
+          "ranked_probability_score": 0.323313,
+          "accuracy": 0.093023,
+          "expected_calibration_error": 0.178141,
+          "calibration_bins": [
+            {
+              "lower": 0.0,
+              "upper": 0.1,
+              "count": 0,
+              "mean_probability": 0.0,
+              "observed_rate": 0.0
+            },
+            {
+              "lower": 0.1,
+              "upper": 0.2,
+              "count": 2,
+              "mean_probability": 0.169233,
+              "observed_rate": 1.0
+            },
+            {
+              "lower": 0.2,
+              "upper": 0.3,
+              "count": 56,
+              "mean_probability": 0.2794,
+              "observed_rate": 0.232143
+            },
+            {
+              "lower": 0.3,
+              "upper": 0.4,
+              "count": 49,
+              "mean_probability": 0.350437,
+              "observed_rate": 0.55102
+            },
+            {
+              "lower": 0.4,
+              "upper": 0.5,
+              "count": 19,
+              "mean_probability": 0.429476,
+              "observed_rate": 0.052632
+            },
+            {
+              "lower": 0.5,
+              "upper": 0.6,
+              "count": 2,
+              "mean_probability": 0.533199,
+              "observed_rate": 0.0
+            },
+            {
+              "lower": 0.6,
+              "upper": 0.7,
+              "count": 1,
+              "mean_probability": 0.617268,
+              "observed_rate": 0.0
+            },
+            {
+              "lower": 0.7,
+              "upper": 0.8,
+              "count": 0,
+              "mean_probability": 0.0,
+              "observed_rate": 0.0
+            },
+            {
+              "lower": 0.8,
+              "upper": 0.9,
+              "count": 0,
+              "mean_probability": 0.0,
+              "observed_rate": 0.0
+            },
+            {
+              "lower": 0.9,
+              "upper": 1.0,
+              "count": 0,
+              "mean_probability": 0.0,
+              "observed_rate": 0.0
+            }
+          ]
+        },
+        "comparison": {
+          "brier_delta": -0.017724,
+          "log_loss_delta": -0.02615,
+          "calibration_delta": 0.010143,
+          "improves_brier": true,
+          "improves_log_loss": true,
+          "calibration_not_harmed": false,
+          "material_regression": false
+        }
+      },
+      "draws": {
+        "matches": 50,
+        "current_v4": {
+          "matches": 50,
+          "log_loss": 1.285044,
+          "brier_score": 0.804288,
+          "ranked_probability_score": 0.14065,
+          "accuracy": 0.0,
+          "expected_calibration_error": 0.407066,
+          "calibration_bins": [
+            {
+              "lower": 0.0,
+              "upper": 0.1,
+              "count": 0,
+              "mean_probability": 0.0,
+              "observed_rate": 0.0
+            },
+            {
+              "lower": 0.1,
+              "upper": 0.2,
+              "count": 5,
+              "mean_probability": 0.182772,
+              "observed_rate": 0.0
+            },
+            {
+              "lower": 0.2,
+              "upper": 0.3,
+              "count": 72,
+              "mean_probability": 0.270418,
+              "observed_rate": 0.694444
+            },
+            {
+              "lower": 0.3,
+              "upper": 0.4,
+              "count": 40,
+              "mean_probability": 0.349836,
+              "observed_rate": 0.0
+            },
+            {
+              "lower": 0.4,
+              "upper": 0.5,
+              "count": 22,
+              "mean_probability": 0.438504,
+              "observed_rate": 0.0
+            },
+            {
+              "lower": 0.5,
+              "upper": 0.6,
+              "count": 10,
+              "mean_probability": 0.533165,
+              "observed_rate": 0.0
+            },
+            {
+              "lower": 0.6,
+              "upper": 0.7,
+              "count": 1,
+              "mean_probability": 0.643908,
+              "observed_rate": 0.0
+            },
+            {
+              "lower": 0.7,
+              "upper": 0.8,
+              "count": 0,
+              "mean_probability": 0.0,
+              "observed_rate": 0.0
+            },
+            {
+              "lower": 0.8,
+              "upper": 0.9,
+              "count": 0,
+              "mean_probability": 0.0,
+              "observed_rate": 0.0
+            },
+            {
+              "lower": 0.9,
+              "upper": 1.0,
+              "count": 0,
+              "mean_probability": 0.0,
+              "observed_rate": 0.0
+            }
+          ]
+        },
+        "v4_no_rest": {
+          "matches": 50,
+          "log_loss": 1.285663,
+          "brier_score": 0.805026,
+          "ranked_probability_score": 0.140901,
+          "accuracy": 0.0,
+          "expected_calibration_error": 0.414142,
+          "calibration_bins": [
+            {
+              "lower": 0.0,
+              "upper": 0.1,
+              "count": 0,
+              "mean_probability": 0.0,
+              "observed_rate": 0.0
+            },
+            {
+              "lower": 0.1,
+              "upper": 0.2,
+              "count": 6,
+              "mean_probability": 0.185143,
+              "observed_rate": 0.0
+            },
+            {
+              "lower": 0.2,
+              "upper": 0.3,
+              "count": 70,
+              "mean_probability": 0.270562,
+              "observed_rate": 0.714286
+            },
+            {
+              "lower": 0.3,
+              "upper": 0.4,
+              "count": 40,
+              "mean_probability": 0.347648,
+              "observed_rate": 0.0
+            },
+            {
+              "lower": 0.4,
+              "upper": 0.5,
+              "count": 22,
+              "mean_probability": 0.432705,
+              "observed_rate": 0.0
+            },
+            {
+              "lower": 0.5,
+              "upper": 0.6,
+              "count": 11,
+              "mean_probability": 0.534588,
+              "observed_rate": 0.0
+            },
+            {
+              "lower": 0.6,
+              "upper": 0.7,
+              "count": 1,
+              "mean_probability": 0.643908,
+              "observed_rate": 0.0
+            },
+            {
+              "lower": 0.7,
+              "upper": 0.8,
+              "count": 0,
+              "mean_probability": 0.0,
+              "observed_rate": 0.0
+            },
+            {
+              "lower": 0.8,
+              "upper": 0.9,
+              "count": 0,
+              "mean_probability": 0.0,
+              "observed_rate": 0.0
+            },
+            {
+              "lower": 0.9,
+              "upper": 1.0,
+              "count": 0,
+              "mean_probability": 0.0,
+              "observed_rate": 0.0
+            }
+          ]
+        },
+        "comparison": {
+          "brier_delta": 0.000738,
+          "log_loss_delta": 0.000619,
+          "calibration_delta": 0.007076,
+          "improves_brier": false,
+          "improves_log_loss": false,
+          "calibration_not_harmed": false,
+          "material_regression": false
+        }
+      }
+    },
+    "confederations": {
+      "CONMEBOL": {
+        "matches": 7,
+        "current_v4": {
+          "matches": 7,
+          "log_loss": 1.131577,
+          "brier_score": 0.674828,
+          "ranked_probability_score": 0.270618,
+          "accuracy": 0.428571,
+          "expected_calibration_error": 0.161824,
+          "calibration_bins": [
+            {
+              "lower": 0.0,
+              "upper": 0.1,
+              "count": 0,
+              "mean_probability": 0.0,
+              "observed_rate": 0.0
+            },
+            {
+              "lower": 0.1,
+              "upper": 0.2,
+              "count": 2,
+              "mean_probability": 0.166518,
+              "observed_rate": 0.5
+            },
+            {
+              "lower": 0.2,
+              "upper": 0.3,
+              "count": 11,
+              "mean_probability": 0.263359,
+              "observed_rate": 0.272727
+            },
+            {
+              "lower": 0.3,
+              "upper": 0.4,
+              "count": 1,
+              "mean_probability": 0.306552,
+              "observed_rate": 0.0
+            },
+            {
+              "lower": 0.4,
+              "upper": 0.5,
+              "count": 4,
+              "mean_probability": 0.442958,
+              "observed_rate": 0.25
+            },
+            {
+              "lower": 0.5,
+              "upper": 0.6,
+              "count": 2,
+              "mean_probability": 0.535429,
+              "observed_rate": 1.0
+            },
+            {
+              "lower": 0.6,
+              "upper": 0.7,
+              "count": 1,
+              "mean_probability": 0.62077,
+              "observed_rate": 0.0
+            },
+            {
+              "lower": 0.7,
+              "upper": 0.8,
+              "count": 0,
+              "mean_probability": 0.0,
+              "observed_rate": 0.0
+            },
+            {
+              "lower": 0.8,
+              "upper": 0.9,
+              "count": 0,
+              "mean_probability": 0.0,
+              "observed_rate": 0.0
+            },
+            {
+              "lower": 0.9,
+              "upper": 1.0,
+              "count": 0,
+              "mean_probability": 0.0,
+              "observed_rate": 0.0
+            }
+          ]
+        },
+        "v4_no_rest": {
+          "matches": 7,
+          "log_loss": 1.10748,
+          "brier_score": 0.659033,
+          "ranked_probability_score": 0.262415,
+          "accuracy": 0.428571,
+          "expected_calibration_error": 0.152256,
+          "calibration_bins": [
+            {
+              "lower": 0.0,
+              "upper": 0.1,
+              "count": 0,
+              "mean_probability": 0.0,
+              "observed_rate": 0.0
+            },
+            {
+              "lower": 0.1,
+              "upper": 0.2,
+              "count": 2,
+              "mean_probability": 0.169061,
+              "observed_rate": 0.5
+            },
+            {
+              "lower": 0.2,
+              "upper": 0.3,
+              "count": 10,
+              "mean_probability": 0.263211,
+              "observed_rate": 0.2
+            },
+            {
+              "lower": 0.3,
+              "upper": 0.4,
+              "count": 3,
+              "mean_probability": 0.340425,
+              "observed_rate": 0.333333
+            },
+            {
+              "lower": 0.4,
+              "upper": 0.5,
+              "count": 3,
+              "mean_probability": 0.442681,
+              "observed_rate": 0.333333
+            },
+            {
+              "lower": 0.5,
+              "upper": 0.6,
+              "count": 2,
+              "mean_probability": 0.531593,
+              "observed_rate": 1.0
+            },
+            {
+              "lower": 0.6,
+              "upper": 0.7,
+              "count": 1,
+              "mean_probability": 0.617268,
+              "observed_rate": 0.0
+            },
+            {
+              "lower": 0.7,
+              "upper": 0.8,
+              "count": 0,
+              "mean_probability": 0.0,
+              "observed_rate": 0.0
+            },
+            {
+              "lower": 0.8,
+              "upper": 0.9,
+              "count": 0,
+              "mean_probability": 0.0,
+              "observed_rate": 0.0
+            },
+            {
+              "lower": 0.9,
+              "upper": 1.0,
+              "count": 0,
+              "mean_probability": 0.0,
+              "observed_rate": 0.0
+            }
+          ]
+        },
+        "comparison": {
+          "brier_delta": -0.015795,
+          "log_loss_delta": -0.024097,
+          "calibration_delta": -0.009568,
+          "improves_brier": true,
+          "improves_log_loss": true,
+          "calibration_not_harmed": true,
+          "material_regression": false
+        }
+      },
+      "UEFA": {
+        "matches": 15,
+        "current_v4": {
+          "matches": 15,
+          "log_loss": 0.790173,
+          "brier_score": 0.451675,
+          "ranked_probability_score": 0.145116,
+          "accuracy": 0.733333,
+          "expected_calibration_error": 0.098692,
+          "calibration_bins": [
+            {
+              "lower": 0.0,
+              "upper": 0.1,
+              "count": 0,
+              "mean_probability": 0.0,
+              "observed_rate": 0.0
+            },
+            {
+              "lower": 0.1,
+              "upper": 0.2,
+              "count": 7,
+              "mean_probability": 0.143944,
+              "observed_rate": 0.0
+            },
+            {
+              "lower": 0.2,
+              "upper": 0.3,
+              "count": 21,
+              "mean_probability": 0.247437,
+              "observed_rate": 0.190476
+            },
+            {
+              "lower": 0.3,
+              "upper": 0.4,
+              "count": 3,
+              "mean_probability": 0.338931,
+              "observed_rate": 0.333333
+            },
+            {
+              "lower": 0.4,
+              "upper": 0.5,
+              "count": 4,
+              "mean_probability": 0.461592,
+              "observed_rate": 0.5
+            },
+            {
+              "lower": 0.5,
+              "upper": 0.6,
+              "count": 4,
+              "mean_probability": 0.526606,
+              "observed_rate": 0.75
+            },
+            {
+              "lower": 0.6,
+              "upper": 0.7,
+              "count": 6,
+              "mean_probability": 0.637772,
+              "observed_rate": 0.833333
+            },
+            {
+              "lower": 0.7,
+              "upper": 0.8,
+              "count": 0,
+              "mean_probability": 0.0,
+              "observed_rate": 0.0
+            },
+            {
+              "lower": 0.8,
+              "upper": 0.9,
+              "count": 0,
+              "mean_probability": 0.0,
+              "observed_rate": 0.0
+            },
+            {
+              "lower": 0.9,
+              "upper": 1.0,
+              "count": 0,
+              "mean_probability": 0.0,
+              "observed_rate": 0.0
+            }
+          ]
+        },
+        "v4_no_rest": {
+          "matches": 15,
+          "log_loss": 0.791818,
+          "brier_score": 0.453237,
+          "ranked_probability_score": 0.145342,
+          "accuracy": 0.733333,
+          "expected_calibration_error": 0.134967,
+          "calibration_bins": [
+            {
+              "lower": 0.0,
+              "upper": 0.1,
+              "count": 0,
+              "mean_probability": 0.0,
+              "observed_rate": 0.0
+            },
+            {
+              "lower": 0.1,
+              "upper": 0.2,
+              "count": 6,
+              "mean_probability": 0.141662,
+              "observed_rate": 0.0
+            },
+            {
+              "lower": 0.2,
+              "upper": 0.3,
+              "count": 21,
+              "mean_probability": 0.24699,
+              "observed_rate": 0.142857
+            },
+            {
+              "lower": 0.3,
+              "upper": 0.4,
+              "count": 5,
+              "mean_probability": 0.346976,
+              "observed_rate": 0.4
+            },
+            {
+              "lower": 0.4,
+              "upper": 0.5,
+              "count": 4,
+              "mean_probability": 0.474204,
+              "observed_rate": 0.75
+            },
+            {
+              "lower": 0.5,
+              "upper": 0.6,
+              "count": 4,
+              "mean_probability": 0.535834,
+              "observed_rate": 0.75
+            },
+            {
+              "lower": 0.6,
+              "upper": 0.7,
+              "count": 5,
+              "mean_probability": 0.637641,
+              "observed_rate": 0.8
+            },
+            {
+              "lower": 0.7,
+              "upper": 0.8,
+              "count": 0,
+              "mean_probability": 0.0,
+              "observed_rate": 0.0
+            },
+            {
+              "lower": 0.8,
+              "upper": 0.9,
+              "count": 0,
+              "mean_probability": 0.0,
+              "observed_rate": 0.0
+            },
+            {
+              "lower": 0.9,
+              "upper": 1.0,
+              "count": 0,
+              "mean_probability": 0.0,
+              "observed_rate": 0.0
+            }
+          ]
+        },
+        "comparison": {
+          "brier_delta": 0.001562,
+          "log_loss_delta": 0.001645,
+          "calibration_delta": 0.036275,
+          "improves_brier": false,
+          "improves_log_loss": false,
+          "calibration_not_harmed": false,
+          "material_regression": false
+        }
+      }
+    },
+    "confederation_coverage": {
+      "holdout_matches_with_at_least_one_label": 21,
+      "holdout_matches": 233,
+      "coverage": 0.090129,
+      "limitation": "Database confederation metadata is sparse outside currently canonical teams. Confederation slices are reported where available but do not independently determine promotion."
+    },
+    "calibration_assessment": {
+      "full_holdout_ece_delta": 0.002663,
+      "major_calibration_harm": false,
+      "eligible_confederation_regressions": [],
+      "outcome_segment_note": "Outcome segments are selected using the realized result, so their ECE values are descriptive and are not used as a pre-match calibration promotion gate.",
+      "thresholds": {
+        "full_holdout_ece_regression": 0.005,
+        "subgroup_ece_regression": 0.01,
+        "minimum_subgroup_matches": 20
+      }
+    },
+    "subgroup_gate": {
+      "minimum_matches": 20,
+      "maximum_brier_regression": 0.01,
+      "maximum_log_loss_regression": 0.02,
+      "material_regressions": []
+    }
+  },
+  "live_before_after": {
+    "mexico_vs_south_africa": {
+      "current_v4": {
+        "mexico": 0.25585242396797125,
+        "draw": 0.27667695905879136,
+        "south_africa": 0.46747061697323744
+      },
+      "v4_no_rest": {
+        "mexico": 0.3044770276716845,
+        "draw": 0.2833960657911412,
+        "south_africa": 0.4121269065371744
+      }
+    },
+    "focus_teams": {
+      "MEX": {
+        "team": "Mexico",
+        "latest_input_match_date": "2024-07-01",
+        "group_matches": [
+          {
+            "match_id": "WC26-001",
+            "opponent": "South Africa",
+            "kickoff": "2026-06-11T17:00:00+00:00",
+            "current_v4_team_win_probability": 0.25585242396797125,
+            "v4_no_rest_team_win_probability": 0.3044770276716845,
+            "change": 0.048625
+          },
+          {
+            "match_id": "WC26-003",
+            "opponent": "South Korea",
+            "kickoff": "2026-06-18T17:00:00+00:00",
+            "current_v4_team_win_probability": 0.22901711108998027,
+            "v4_no_rest_team_win_probability": 0.2750811963025093,
+            "change": 0.046064
+          },
+          {
+            "match_id": "WC26-005",
+            "opponent": "Czechia",
+            "kickoff": "2026-06-24T17:00:00+00:00",
+            "current_v4_team_win_probability": 0.2690705972862966,
+            "v4_no_rest_team_win_probability": 0.3187955916355323,
+            "change": 0.049725
+          }
+        ],
+        "mean_current_v4_win_probability": 0.251313,
+        "mean_v4_no_rest_win_probability": 0.299451
+      },
+      "NOR": {
+        "team": "Norway",
+        "latest_input_match_date": "2025-11-16",
+        "group_matches": [
+          {
+            "match_id": "WC26-050",
+            "opponent": "Iraq",
+            "kickoff": "2026-06-16T20:00:00+00:00",
+            "current_v4_team_win_probability": 0.5174765568918672,
+            "v4_no_rest_team_win_probability": 0.5252159152853494,
+            "change": 0.007739
+          },
+          {
+            "match_id": "WC26-052",
+            "opponent": "Senegal",
+            "kickoff": "2026-06-22T20:00:00+00:00",
+            "current_v4_team_win_probability": 0.5759073965562983,
+            "v4_no_rest_team_win_probability": 0.5229544501312168,
+            "change": -0.052953
+          },
+          {
+            "match_id": "WC26-053",
+            "opponent": "France",
+            "kickoff": "2026-06-26T17:00:00+00:00",
+            "current_v4_team_win_probability": 0.34249558274302105,
+            "v4_no_rest_team_win_probability": 0.3964705392098642,
+            "change": 0.053975
+          }
+        ],
+        "mean_current_v4_win_probability": 0.478627,
+        "mean_v4_no_rest_win_probability": 0.481547
+      },
+      "CUW": {
+        "team": "Curacao",
+        "latest_input_match_date": "2025-11-19",
+        "group_matches": [
+          {
+            "match_id": "WC26-025",
+            "opponent": "Germany",
+            "kickoff": "2026-06-14T17:00:00+00:00",
+            "current_v4_team_win_probability": 0.39371848693836514,
+            "v4_no_rest_team_win_probability": 0.38590700307172576,
+            "change": -0.007811
+          },
+          {
+            "match_id": "WC26-028",
+            "opponent": "Ecuador",
+            "kickoff": "2026-06-20T20:00:00+00:00",
+            "current_v4_team_win_probability": 0.5159640149559538,
+            "v4_no_rest_team_win_probability": 0.4610776704450117,
+            "change": -0.054886
+          },
+          {
+            "match_id": "WC26-030",
+            "opponent": "Ivory Coast",
+            "kickoff": "2026-06-25T20:00:00+00:00",
+            "current_v4_team_win_probability": 0.504406411665678,
+            "v4_no_rest_team_win_probability": 0.4493068920960217,
+            "change": -0.0551
+          }
+        ],
+        "mean_current_v4_win_probability": 0.471363,
+        "mean_v4_no_rest_win_probability": 0.432097
+      },
+      "CZE": {
+        "team": "Czechia",
+        "latest_input_match_date": "2026-03-31",
+        "group_matches": [
+          {
+            "match_id": "WC26-002",
+            "opponent": "South Korea",
+            "kickoff": "2026-06-11T20:00:00+00:00",
+            "current_v4_team_win_probability": 0.36352859757959,
+            "v4_no_rest_team_win_probability": 0.31098796156234726,
+            "change": -0.052541
+          },
+          {
+            "match_id": "WC26-004",
+            "opponent": "South Africa",
+            "kickoff": "2026-06-18T20:00:00+00:00",
+            "current_v4_team_win_probability": 0.3959312161218454,
+            "v4_no_rest_team_win_probability": 0.3419780619761127,
+            "change": -0.053953
+          },
+          {
+            "match_id": "WC26-005",
+            "opponent": "Mexico",
+            "kickoff": "2026-06-24T17:00:00+00:00",
+            "current_v4_team_win_probability": 0.4517903673473814,
+            "v4_no_rest_team_win_probability": 0.39654701671738174,
+            "change": -0.055243
+          }
+        ],
+        "mean_current_v4_win_probability": 0.40375,
+        "mean_v4_no_rest_win_probability": 0.349838
+      },
+      "BIH": {
+        "team": "Bosnia and Herzegovina",
+        "latest_input_match_date": "2026-03-31",
+        "group_matches": [
+          {
+            "match_id": "WC26-007",
+            "opponent": "Canada",
+            "kickoff": "2026-06-12T17:00:00+00:00",
+            "current_v4_team_win_probability": 0.48152684020835224,
+            "v4_no_rest_team_win_probability": 0.42621058215878016,
+            "change": -0.055316
+          },
+          {
+            "match_id": "WC26-010",
+            "opponent": "Switzerland",
+            "kickoff": "2026-06-18T20:00:00+00:00",
+            "current_v4_team_win_probability": 0.38769386053566096,
+            "v4_no_rest_team_win_probability": 0.3340413977138402,
+            "change": -0.053652
+          },
+          {
+            "match_id": "WC26-012",
+            "opponent": "Qatar",
+            "kickoff": "2026-06-24T20:00:00+00:00",
+            "current_v4_team_win_probability": 0.43782111321184697,
+            "v4_no_rest_team_win_probability": 0.38277162485995203,
+            "change": -0.055049
+          }
+        ],
+        "mean_current_v4_win_probability": 0.435681,
+        "mean_v4_no_rest_win_probability": 0.381008
+      }
+    }
+  },
+  "high_disagreement_market_diagnostics": {
+    "available": true,
+    "historical_outcomes_available": false,
+    "purpose": "diagnostic comparison only; market probabilities are not model inputs",
+    "matches": [
+      {
+        "canonical_match_id": "WC26-001",
+        "bookmaker_count": 14,
+        "market_probability": {
+          "home": 0.6717002554906989,
+          "draw": 0.21600719791535955,
+          "away": 0.1122925465939416
+        },
+        "current_v4_probability": {
+          "home": 0.25585242396797125,
+          "draw": 0.27667695905879136,
+          "away": 0.46747061697323744
+        },
+        "v4_no_rest_probability": {
+          "home": 0.3044770276716845,
+          "draw": 0.2833960657911412,
+          "away": 0.4121269065371744
+        },
+        "current_average_absolute_disagreement": 0.27723188768181845,
+        "no_rest_average_absolute_disagreement": 0.24481548521267626,
+        "disagreement_change": -0.032416,
+        "outcome_available": false
+      }
+    ],
+    "validation_limit": "No completed high-disagreement market match has an outcome, so this section cannot support the promotion performance gate."
+  },
+  "promotion": {
+    "beats_full_holdout_brier_and_log_loss": true,
+    "no_major_subgroup_regressions": true,
+    "calibration_not_materially_harmed": true,
+    "recommend_promotion": true,
+    "decision": "promoted elo-context-v4-no-rest as elo-context-v4.1",
+    "implementation_status": "production promotion complete"
+  }
+}
