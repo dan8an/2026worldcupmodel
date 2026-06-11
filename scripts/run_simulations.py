@@ -12,7 +12,7 @@ import sys
 from collections import Counter, defaultdict
 from datetime import datetime, timezone
 from pathlib import Path
-from typing import Any
+from typing import Any, Callable
 from uuid import uuid4
 
 from dotenv import load_dotenv
@@ -25,6 +25,7 @@ if str(ROOT) not in sys.path:
 
 from modeling.src.data import build_fixtures, load_teams, validate_tournament
 from scripts.database import create_database_engine
+from scripts.generate_predictions import PredictionRepository, calculate_prediction
 
 DEFAULT_SIMULATIONS = 50_000
 DEFAULT_SEED = 2026
@@ -227,34 +228,56 @@ def build_round_of_32(
     return pairings
 
 
-def derive_team_strengths(
-    fixtures: list[Any],
-    predictions: dict[str, dict[str, Any]],
-) -> dict[str, float]:
-    expected_points: dict[str, list[float]] = defaultdict(list)
-    for fixture in fixtures:
-        prediction = predictions[fixture.id]
-        home_win = _number(prediction.get("home_win_probability"))
-        draw = _number(prediction.get("draw_probability"))
-        away_win = _number(prediction.get("away_win_probability"))
-        expected_points[fixture.home_team_id].append(3.0 * home_win + draw)
-        expected_points[fixture.away_team_id].append(3.0 * away_win + draw)
-    return {
-        team_id: sum(values) / len(values)
-        for team_id, values in expected_points.items()
-    }
+KnockoutPrediction = Callable[[str, str], dict[str, Any]]
+
+
+def build_knockout_prediction_provider(
+    team_ratings: dict[str, dict[str, Any]],
+    player_ratings: dict[str, float] | None = None,
+    shot_volume_ratings: dict[str, float] | None = None,
+) -> KnockoutPrediction:
+    player_ratings = player_ratings or {}
+    shot_volume_ratings = shot_volume_ratings or {}
+    team_names = {team.id: team.name for team in load_teams()}
+    cache: dict[tuple[str, str], dict[str, Any]] = {}
+
+    def prediction(home_id: str, away_id: str) -> dict[str, Any]:
+        key = (home_id, away_id)
+        if key not in cache:
+            cache[key] = calculate_prediction(
+                team_ratings[home_id],
+                team_ratings[away_id],
+                home_player_rating=player_ratings.get(home_id),
+                away_player_rating=player_ratings.get(away_id),
+                home_team_name=team_names[home_id],
+                away_team_name=team_names[away_id],
+                home_shot_volume_rating=shot_volume_ratings.get(home_id),
+                away_shot_volume_rating=shot_volume_ratings.get(away_id),
+            )
+        return cache[key]
+
+    return prediction
 
 
 def knockout_winner(
     home_id: str,
     away_id: str,
-    strengths: dict[str, float],
+    prediction: dict[str, Any],
     rng: random.Random,
 ) -> str:
-    difference = strengths[home_id] - strengths[away_id]
-    decisive_home = 1.0 / (1.0 + math.exp(-1.6 * difference))
-    draw_probability = max(0.16, 0.27 - 0.07 * abs(difference))
-    home_regulation = (1.0 - draw_probability) * decisive_home
+    home_regulation = _number(prediction.get("home_win_probability"))
+    draw_probability = _number(prediction.get("draw_probability"))
+    away_regulation = _number(prediction.get("away_win_probability"))
+    total = home_regulation + draw_probability + away_regulation
+    if total <= 0:
+        raise ValueError(f"Invalid knockout probabilities for {home_id}-{away_id}")
+    home_regulation /= total
+    draw_probability /= total
+    away_regulation /= total
+    decisive_total = home_regulation + away_regulation
+    decisive_home = (
+        home_regulation / decisive_total if decisive_total > 0 else 0.5
+    )
     draw_threshold = home_regulation + draw_probability
     roll = rng.random()
     if roll < home_regulation:
@@ -275,6 +298,7 @@ def simulate_tournaments(
     predictions: dict[str, dict[str, Any]],
     num_simulations: int,
     seed: int,
+    knockout_prediction: KnockoutPrediction,
 ) -> list[dict[str, Any]]:
     if num_simulations < 1:
         raise ValueError("num_simulations must be at least 1")
@@ -289,7 +313,6 @@ def simulate_tournaments(
         )
 
     team_groups = {team.id: team.group for team in teams}
-    strengths = derive_team_strengths(group_fixtures, predictions)
     score_samplers = {
         fixture.id: compile_score_sampler(predictions[fixture.id])
         for fixture in group_fixtures
@@ -328,17 +351,32 @@ def simulate_tournaments(
         )
 
         current = [
-            knockout_winner(home_id, away_id, strengths, rng)
+            knockout_winner(
+                home_id,
+                away_id,
+                knockout_prediction(home_id, away_id),
+                rng,
+            )
             for home_id, away_id in pairings
         ]
         counts["round_of_16"].update(current)
         for stage in ("quarterfinal", "semifinal", "final"):
             current = [
-                knockout_winner(current[index], current[index + 1], strengths, rng)
+                knockout_winner(
+                    current[index],
+                    current[index + 1],
+                    knockout_prediction(current[index], current[index + 1]),
+                    rng,
+                )
                 for index in range(0, len(current), 2)
             ]
             counts[stage].update(current)
-        champion = knockout_winner(current[0], current[1], strengths, rng)
+        champion = knockout_winner(
+            current[0],
+            current[1],
+            knockout_prediction(current[0], current[1]),
+            rng,
+        )
         counts["champion"].update([champion])
 
     return [
@@ -508,8 +546,31 @@ def main() -> int:
             logger.info("[simulation] SUCCESS: no prediction run available")
             return 0
         model_run_id, model_version, predictions = latest
+        prediction_repository = PredictionRepository(engine)
+        database_team_ids = prediction_repository.load_database_team_ids()
+        team_ratings = prediction_repository.load_current_team_ratings(
+            database_team_ids
+        )
+        player_ratings = prediction_repository.load_player_team_averages(
+            database_team_ids
+        )
+        shot_volume_ratings = (
+            prediction_repository.load_current_shot_volume_ratings(
+                database_team_ids
+            )
+        )
+        knockout_prediction = build_knockout_prediction_provider(
+            team_ratings,
+            player_ratings,
+            shot_volume_ratings,
+        )
         logger.info("[simulation] Running %d tournaments", args.simulations)
-        results = simulate_tournaments(predictions, args.simulations, args.seed)
+        results = simulate_tournaments(
+            predictions,
+            args.simulations,
+            args.seed,
+            knockout_prediction,
+        )
         logger.info("[simulation] Updating team probabilities")
         run_id = repository.store_results(
             model_run_id,

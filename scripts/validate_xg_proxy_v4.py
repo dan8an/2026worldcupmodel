@@ -122,6 +122,12 @@ class XgProxyValidationRow:
     outcome: int
     v3: ProbabilityVector
     shot_volume_signal: float
+    home_shot_volume_rating: float
+    away_shot_volume_rating: float
+    home_shot_volume_sample: int
+    away_shot_volume_sample: int
+    home_confederation: str | None
+    away_confederation: str | None
     shot_quality_signal: float
     defensive_suppression_signal: float
     all_features_signal: float
@@ -207,7 +213,9 @@ def _apply_signal(
 
 def build_validation_rows(
     matches: list[dict[str, Any]],
+    team_confederations: dict[Any, str | None] | None = None,
 ) -> list[XgProxyValidationRow]:
+    team_confederations = team_confederations or {}
     ordered = sorted(
         matches,
         key=lambda match: (
@@ -289,6 +297,16 @@ def build_validation_rows(
                     outcome=_outcome(match["home_goals"], match["away_goals"]),
                     v3=_v3_probabilities(home_history, away_history, played_on),
                     shot_volume_signal=volume,
+                    home_shot_volume_rating=home_features[
+                        "shot_volume_rating"
+                    ],
+                    away_shot_volume_rating=away_features[
+                        "shot_volume_rating"
+                    ],
+                    home_shot_volume_sample=int(home_features["sample_matches"]),
+                    away_shot_volume_sample=int(away_features["sample_matches"]),
+                    home_confederation=team_confederations.get(home_id),
+                    away_confederation=team_confederations.get(away_id),
                     shot_quality_signal=quality,
                     defensive_suppression_signal=defense,
                     all_features_signal=all_features,

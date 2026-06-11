@@ -6,7 +6,7 @@ import logging
 import math
 import os
 import sys
-from collections import defaultdict
+from collections import Counter, defaultdict
 from datetime import date, datetime, timezone
 from pathlib import Path
 from typing import Any
@@ -36,6 +36,7 @@ CHANCE_QUALITY_MODEL_VERSION = "xg-proxy-v4"
 PROMOTION_CONFIG_PATH = (
     ROOT / "data" / "evaluation" / "xg_proxy_v4_promotion_config.json"
 )
+TEAM_ALIASES_PATH = ROOT / "data" / "seed" / "team_aliases.json"
 MAX_GOALS = 6
 V3_ATTACK_WEIGHT = 0.15
 V3_DEFENSE_WEIGHT = 0.30
@@ -148,6 +149,33 @@ def _parse_timestamp(value: Any) -> datetime | None:
 
 def _normalize_name(value: Any) -> str:
     return "".join(character for character in str(value or "").lower() if character.isalnum())
+
+
+def canonical_prior_elo(rank: int) -> float:
+    """Return a conservative rank prior on the database Elo scale."""
+    return round(1500.0 + _clamp((50.0 - rank) * 1.5, -75.0, 75.0), 2)
+
+
+def load_team_aliases() -> dict[str, list[str]]:
+    payload = json.loads(TEAM_ALIASES_PATH.read_text())
+    canonical_ids = {team.id for team in load_teams()}
+    if set(payload) != canonical_ids:
+        missing = sorted(canonical_ids - set(payload))
+        extra = sorted(set(payload) - canonical_ids)
+        raise RuntimeError(
+            f"Team aliases must cover all canonical teams; missing={missing}, extra={extra}"
+        )
+    alias_owners: dict[str, str] = {}
+    for team_id, aliases in payload.items():
+        for alias in aliases:
+            normalized = _normalize_name(alias)
+            owner = alias_owners.get(normalized)
+            if owner is not None and owner != team_id:
+                raise RuntimeError(
+                    f"Team alias {alias!r} is shared by {owner} and {team_id}"
+                )
+            alias_owners[normalized] = team_id
+    return payload
 
 
 def load_canonical_future_matches(
@@ -704,19 +732,38 @@ class PredictionRepository:
         with self.engine.connect() as connection:
             rows = [dict(row) for row in connection.execute(select(teams)).mappings()]
         canonical_teams = load_teams()
-        database_by_name = {
-            _normalize_name(row.get("name")): row["id"]
-            for row in rows
-            if row.get("name")
-        }
+        aliases = load_team_aliases()
+        database_by_name: dict[str, list[Any]] = defaultdict(list)
+        for row in rows:
+            if row.get("name"):
+                database_by_name[_normalize_name(row["name"])].append(row["id"])
         database_ids = {str(row["id"]): row["id"] for row in rows}
-        return {
-            team.id: (
-                database_ids.get(team.id)
-                or database_by_name.get(_normalize_name(team.name))
+        mapping = {}
+        for team in canonical_teams:
+            direct = database_ids.get(team.id)
+            candidates = {direct} if direct is not None else set()
+            for name in (team.name, *aliases[team.id]):
+                candidates.update(database_by_name.get(_normalize_name(name), []))
+            if len(candidates) > 1:
+                raise RuntimeError(
+                    f"Canonical team {team.id} maps to multiple database teams: "
+                    f"{sorted(str(candidate) for candidate in candidates)}"
+                )
+            mapping[team.id] = next(iter(candidates), None)
+
+        mapped_ids = [
+            str(team_id) for team_id in mapping.values() if team_id is not None
+        ]
+        collisions = [
+            team_id
+            for team_id, count in Counter(mapped_ids).items()
+            if count > 1
+        ]
+        if collisions:
+            raise RuntimeError(
+                f"Database team IDs map to multiple canonical teams: {collisions}"
             )
-            for team in canonical_teams
-        }
+        return mapping
 
     def load_current_team_ratings(
         self,
@@ -736,18 +783,22 @@ class PredictionRepository:
         canonical_ratings = {}
         for team in load_teams():
             database_rating = rating_by_database_id.get(database_team_ids.get(team.id))
-            # Rank-derived Elo and neutral component priors let canonical
-            # fixtures run before provider data exists. Database ratings enrich
-            # these values as soon as the canonical team can be resolved.
+            rating_source = (
+                "database_current"
+                if database_rating is not None
+                else "canonical_rank_prior"
+            )
             canonical_ratings[team.id] = {
                 "team_id": team.id,
-                "elo_rating": team.elo,
+                "elo_rating": canonical_prior_elo(team.rank),
                 "attack_rating": 50.0,
                 "defense_rating": 50.0,
                 "form_rating": 50.0,
                 "matches_played": 0,
                 **(database_rating or {}),
-                "_team_rating_available": True,
+                "_rating_source": rating_source,
+                "_database_team_id": database_team_ids.get(team.id),
+                "_team_rating_available": database_rating is not None,
                 "_attack_defense_available": bool(
                     database_rating
                     and database_rating.get("attack_rating") is not None
@@ -1002,6 +1053,18 @@ def main() -> int:
             return 0
 
         team_ratings = repository.load_current_team_ratings(database_team_ids)
+        for team_id, rating in team_ratings.items():
+            if rating["_rating_source"] == "canonical_rank_prior":
+                reason = (
+                    "database team mapping is missing"
+                    if rating["_database_team_id"] is None
+                    else "current database rating is missing"
+                )
+                logger.warning(
+                    "Using conservative canonical rank prior for %s: %s",
+                    team_id,
+                    reason,
+                )
         player_ratings = repository.load_player_team_averages(database_team_ids)
         shot_volume_ratings = repository.load_current_shot_volume_ratings(
             database_team_ids

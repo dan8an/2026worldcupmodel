@@ -1,5 +1,6 @@
 import json
 import os
+import random
 import sqlite3
 import subprocess
 import sys
@@ -8,8 +9,17 @@ import unittest
 from pathlib import Path
 
 from modeling.src.data import build_fixtures, load_teams
-from scripts.generate_predictions import MODEL_VERSION, calculate_prediction
-from scripts.run_simulations import rank_group, simulate_tournaments
+from scripts.generate_predictions import (
+    MODEL_VERSION,
+    calculate_prediction,
+    canonical_prior_elo,
+)
+from scripts.run_simulations import (
+    build_knockout_prediction_provider,
+    knockout_winner,
+    rank_group,
+    simulate_tournaments,
+)
 
 ROOT = Path(__file__).resolve().parents[2]
 
@@ -30,6 +40,34 @@ create table predictions (
   draw_probability real,
   away_win_probability real,
   score_probabilities text
+);
+create table teams (
+  id text primary key,
+  name text not null
+);
+create table team_ratings (
+  team_id text not null,
+  model_run_id text,
+  rated_at text,
+  updated_at text,
+  elo_rating real,
+  attack_rating real,
+  defense_rating real,
+  form_rating real,
+  matches_played integer
+);
+create table player_ratings (
+  player_id text primary key,
+  team_id text,
+  model_run_id text,
+  rated_at text,
+  overall_rating real
+);
+create table team_chance_quality_ratings (
+  team_id text not null,
+  rated_at text,
+  model_version text,
+  shot_volume_rating real
 );
 create table simulation_runs (
   id text primary key,
@@ -83,6 +121,20 @@ def canonical_predictions():
     return predictions
 
 
+def canonical_knockout_prediction():
+    ratings = {
+        team.id: {
+            "elo_rating": canonical_prior_elo(team.rank),
+            "attack_rating": 50,
+            "defense_rating": 50,
+            "form_rating": 50,
+            "matches_played": 0,
+        }
+        for team in load_teams()
+    }
+    return build_knockout_prediction_provider(ratings)
+
+
 class SimulationCalculationTests(unittest.TestCase):
     def test_group_tiebreaker_is_deterministic(self):
         table = rank_group(
@@ -101,8 +153,12 @@ class SimulationCalculationTests(unittest.TestCase):
     def test_simulation_is_reproducible_and_stage_totals_are_correct(self):
         predictions = canonical_predictions()
 
-        first = simulate_tournaments(predictions, 20, 7)
-        second = simulate_tournaments(predictions, 20, 7)
+        first = simulate_tournaments(
+            predictions, 20, 7, canonical_knockout_prediction()
+        )
+        second = simulate_tournaments(
+            predictions, 20, 7, canonical_knockout_prediction()
+        )
 
         self.assertEqual(first, second)
         expected_totals = {
@@ -116,6 +172,99 @@ class SimulationCalculationTests(unittest.TestCase):
         }
         for field, expected in expected_totals.items():
             self.assertAlmostEqual(sum(row[field] for row in first), expected)
+
+    def test_knockout_winner_uses_pair_specific_regulation_probabilities(self):
+        prediction = {
+            "home_win_probability": 1.0,
+            "draw_probability": 0.0,
+            "away_win_probability": 0.0,
+        }
+        winners = {
+            knockout_winner("AAA", "BBB", prediction, random.Random(seed))
+            for seed in range(20)
+        }
+
+        self.assertEqual(winners, {"AAA"})
+
+    def test_knockout_provider_computes_v4_for_the_actual_matchup(self):
+        ratings = {
+            "CZE": {
+                "elo_rating": 1535,
+                "attack_rating": 48,
+                "defense_rating": 52,
+            },
+            "ESP": {
+                "elo_rating": 1640,
+                "attack_rating": 70,
+                "defense_rating": 74,
+            },
+        }
+        provider = build_knockout_prediction_provider(ratings)
+
+        actual = provider("CZE", "ESP")
+        expected = calculate_prediction(
+            ratings["CZE"],
+            ratings["ESP"],
+            home_team_name="Czechia",
+            away_team_name="Spain",
+        )
+
+        self.assertEqual(actual, expected)
+        self.assertLess(
+            actual["home_win_probability"],
+            provider("ESP", "CZE")["home_win_probability"],
+        )
+
+    def test_knockout_draws_are_resolved(self):
+        prediction = {
+            "home_win_probability": 0.0,
+            "draw_probability": 1.0,
+            "away_win_probability": 0.0,
+        }
+        winners = [
+            knockout_winner("AAA", "BBB", prediction, random.Random(seed))
+            for seed in range(100)
+        ]
+
+        self.assertEqual(set(winners), {"AAA", "BBB"})
+
+    def test_single_saturated_feature_does_not_create_tournament_favorite(self):
+        teams = load_teams()
+        ratings = {
+            team.id: {
+                "elo_rating": 1500,
+                "attack_rating": 50,
+                "defense_rating": 50,
+            }
+            for team in teams
+        }
+        shot_volume = {team.id: 50.0 for team in teams}
+        shot_volume["NOR"] = 100.0
+        predictions = {}
+        for fixture in build_fixtures(teams):
+            if fixture.stage != "group":
+                continue
+            predictions[fixture.id] = calculate_prediction(
+                ratings[fixture.home_team_id],
+                ratings[fixture.away_team_id],
+                home_shot_volume_rating=shot_volume[fixture.home_team_id],
+                away_shot_volume_rating=shot_volume[fixture.away_team_id],
+            )
+
+        results = {
+            row["team_id"]: row
+            for row in simulate_tournaments(
+                predictions,
+                5_000,
+                7,
+                build_knockout_prediction_provider(
+                    ratings,
+                    shot_volume_ratings=shot_volume,
+                ),
+            )
+        }
+
+        self.assertLess(results["NOR"]["champion_probability"], 0.05)
 
 
 class SimulationScriptTests(unittest.TestCase):
@@ -150,6 +299,32 @@ class SimulationScriptTests(unittest.TestCase):
 
     def insert_predictions(self):
         with sqlite3.connect(self.database_path) as connection:
+            teams = load_teams()
+            connection.executemany(
+                "insert into teams (id, name) values (?, ?)",
+                [(team.id, team.name) for team in teams],
+            )
+            connection.executemany(
+                """
+                insert into team_ratings (
+                  team_id, model_run_id, rated_at, updated_at, elo_rating,
+                  attack_rating, defense_rating, form_rating, matches_played
+                ) values (?, null, ?, ?, ?, ?, ?, ?, ?)
+                """,
+                [
+                    (
+                        team.id,
+                        "2026-06-10",
+                        "2026-06-10",
+                        canonical_prior_elo(team.rank),
+                        50,
+                        50,
+                        50,
+                        0,
+                    )
+                    for team in teams
+                ],
+            )
             connection.execute(
                 "insert into model_runs (id, model_version) values (?, ?)",
                 ("run-1", MODEL_VERSION),

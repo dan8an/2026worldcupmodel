@@ -5,6 +5,8 @@ from scripts.build_xg_proxy_features import (
     build_team_ratings,
     calculate_chance_quality_rating,
 )
+from scripts.audit_input_ratings import cap_shot_volume, shrink_shot_volume
+from scripts.generate_predictions import calculate_prediction
 from scripts.validate_xg_proxy_v4 import (
     ABLATIONS,
     build_promotion_config,
@@ -151,6 +153,41 @@ class XgProxyFeatureTests(unittest.TestCase):
         self.assertLess(
             by_team["a"]["keeper_pressure_allowed"],
             by_team["b"]["keeper_pressure_allowed"],
+        )
+
+    def test_saturated_volume_transformations_reduce_single_feature_edge(self):
+        rating = {
+            "elo_rating": 1500,
+            "attack_rating": 50,
+            "defense_rating": 50,
+        }
+        saturated = calculate_prediction(
+            rating,
+            rating,
+            home_shot_volume_rating=100,
+            away_shot_volume_rating=0,
+        )
+        capped = calculate_prediction(
+            rating,
+            rating,
+            home_shot_volume_rating=cap_shot_volume(100),
+            away_shot_volume_rating=cap_shot_volume(0),
+        )
+        shrunk = calculate_prediction(
+            rating,
+            rating,
+            home_shot_volume_rating=shrink_shot_volume(100, 10),
+            away_shot_volume_rating=shrink_shot_volume(0, 10),
+        )
+
+        self.assertLess(saturated["home_win_probability"], 0.45)
+        self.assertLess(
+            capped["home_win_probability"],
+            saturated["home_win_probability"],
+        )
+        self.assertLess(
+            shrunk["home_win_probability"],
+            capped["home_win_probability"],
         )
 
     def test_insufficient_history_blocks_promotion_and_lists_ablations(self):

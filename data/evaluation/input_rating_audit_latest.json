@@ -1,0 +1,2811 @@
+{
+  "generated_at": "2026-06-11T09:27:38.757603+00:00",
+  "production_changed": false,
+  "simulation_run": {
+    "id": "1b98733b-59ac-4426-b3ee-52eb5b2a2117",
+    "model_version": "elo-context-v4",
+    "created_at": "2026-06-11 09:18:15.389133+00:00"
+  },
+  "source_coverage": {
+    "matches_with_two_team_stat_rows": 1553,
+    "team_stat_rows": 3106,
+    "fields": {
+      "shots": {
+        "available_in_schema": true,
+        "non_null_rows": 2934
+      },
+      "shots_on_target": {
+        "available_in_schema": true,
+        "non_null_rows": 2932
+      },
+      "shots_inside_box": {
+        "available_in_schema": true,
+        "non_null_rows": 2720
+      },
+      "shots_outside_box": {
+        "available_in_schema": true,
+        "non_null_rows": 2720
+      },
+      "blocked_shots": {
+        "available_in_schema": true,
+        "non_null_rows": 2750
+      },
+      "goalkeeper_saves": {
+        "available_in_schema": true,
+        "non_null_rows": 2908
+      },
+      "pass_accuracy": {
+        "available_in_schema": true,
+        "non_null_rows": 2717
+      },
+      "corners": {
+        "available_in_schema": true,
+        "non_null_rows": 2942
+      },
+      "possession": {
+        "available_in_schema": true,
+        "non_null_rows": 2922
+      },
+      "passes_attempted": {
+        "available_in_schema": true,
+        "non_null_rows": 2719
+      },
+      "passes_completed": {
+        "available_in_schema": true,
+        "non_null_rows": 2719
+      },
+      "yellow_cards": {
+        "available_in_schema": true,
+        "non_null_rows": 2986
+      },
+      "red_cards": {
+        "available_in_schema": true,
+        "non_null_rows": 754
+      }
+    }
+  },
+  "team_inputs": [
+    {
+      "team_id": "ESP",
+      "team_name": "Spain",
+      "group": "H",
+      "fifa_rank": 1,
+      "rating_source": "database_current",
+      "elo": 1733.55,
+      "attack_rating": 74.85,
+      "defense_rating": 67.84,
+      "shot_volume_rating": 100.0,
+      "round_of_32_probability": 0.9285,
+      "champion_probability": 0.11312,
+      "elo_rank": 1,
+      "title_probability_rank": 1,
+      "title_rank_minus_elo_rank": 0
+    },
+    {
+      "team_id": "NOR",
+      "team_name": "Norway",
+      "group": "I",
+      "fifa_rank": 29,
+      "rating_source": "database_current",
+      "elo": 1677.64,
+      "attack_rating": 85.56,
+      "defense_rating": 73.33,
+      "shot_volume_rating": 100.0,
+      "round_of_32_probability": 0.83396,
+      "champion_probability": 0.07388,
+      "elo_rank": 3,
+      "title_probability_rank": 2,
+      "title_rank_minus_elo_rank": -1,
+      "source_audit": {
+        "matches": [
+          {
+            "match_id": "e897dc89-ff18-4108-8385-823e7d629a3c",
+            "played_at": "2025-11-16 19:45:00+00:00",
+            "opponent": "Italy",
+            "competition": "World Cup - Qualification Europe",
+            "provider": "api_football",
+            "stats_source": "api_football",
+            "source_match_key": "1366321",
+            "goals": 4,
+            "shots": 13,
+            "shots_on_target": 5,
+            "shots_inside_box": 8,
+            "shots_outside_box": 5,
+            "blocked_shots": 0
+          },
+          {
+            "match_id": "6c527ebd-de54-49b9-b7cb-292d350e201b",
+            "played_at": "2025-11-13 17:00:00+00:00",
+            "opponent": "Estonia",
+            "competition": "World Cup - Qualification Europe",
+            "provider": "api_football",
+            "stats_source": "api_football",
+            "source_match_key": "1323345",
+            "goals": 4,
+            "shots": 18,
+            "shots_on_target": 7,
+            "shots_inside_box": 15,
+            "shots_outside_box": 3,
+            "blocked_shots": 6
+          },
+          {
+            "match_id": "a4bd2157-fe91-4c6c-93ce-dd8a99d6e992",
+            "played_at": "2025-10-11 16:00:00+00:00",
+            "opponent": "Israel",
+            "competition": "World Cup - Qualification Europe",
+            "provider": "api_football",
+            "stats_source": "api_football",
+            "source_match_key": "1323324",
+            "goals": 5,
+            "shots": 16,
+            "shots_on_target": 5,
+            "shots_inside_box": 12,
+            "shots_outside_box": 4,
+            "blocked_shots": 5
+          },
+          {
+            "match_id": "da940b36-b4b8-434f-995c-c962bb120045",
+            "played_at": "2025-09-09 18:45:00+00:00",
+            "opponent": "Moldova",
+            "competition": "World Cup - Qualification Europe",
+            "provider": "api_football",
+            "stats_source": "api_football",
+            "source_match_key": "1323303",
+            "goals": 11,
+            "shots": 34,
+            "shots_on_target": 17,
+            "shots_inside_box": 29,
+            "shots_outside_box": 5,
+            "blocked_shots": 9
+          },
+          {
+            "match_id": "a528b6ff-2377-4d41-88d5-e98c77f77904",
+            "played_at": "2025-06-09 18:45:00+00:00",
+            "opponent": "Estonia",
+            "competition": "World Cup - Qualification Europe",
+            "provider": "api_football",
+            "stats_source": "api_football",
+            "source_match_key": "1323271",
+            "goals": 1,
+            "shots": 19,
+            "shots_on_target": 3,
+            "shots_inside_box": 15,
+            "shots_outside_box": 4,
+            "blocked_shots": 6
+          },
+          {
+            "match_id": "ad8fb600-ee94-4828-8ea7-ce1a018cad6b",
+            "played_at": "2025-06-06 18:45:00+00:00",
+            "opponent": "Italy",
+            "competition": "World Cup - Qualification Europe",
+            "provider": "api_football",
+            "stats_source": "api_football",
+            "source_match_key": "1366273",
+            "goals": 3,
+            "shots": 8,
+            "shots_on_target": 4,
+            "shots_inside_box": 5,
+            "shots_outside_box": 3,
+            "blocked_shots": 3
+          },
+          {
+            "match_id": "fe71daed-e157-4523-906b-c805a42ee66f",
+            "played_at": "2025-03-25 19:45:00+00:00",
+            "opponent": "Israel",
+            "competition": "World Cup - Qualification Europe",
+            "provider": "api_football",
+            "stats_source": "api_football",
+            "source_match_key": "1323255",
+            "goals": 4,
+            "shots": 23,
+            "shots_on_target": 12,
+            "shots_inside_box": 20,
+            "shots_outside_box": 3,
+            "blocked_shots": 6
+          },
+          {
+            "match_id": "69bba028-2239-43fb-b2db-fa796b3c1ab2",
+            "played_at": "2025-03-22 17:00:00+00:00",
+            "opponent": "Moldova",
+            "competition": "World Cup - Qualification Europe",
+            "provider": "api_football",
+            "stats_source": "api_football",
+            "source_match_key": "1323244",
+            "goals": 5,
+            "shots": 24,
+            "shots_on_target": 8,
+            "shots_inside_box": 17,
+            "shots_outside_box": 7,
+            "blocked_shots": 10
+          },
+          {
+            "match_id": "07486df7-194e-4abe-a74d-4c4182a6e94d",
+            "played_at": "2024-11-17 17:00:00+00:00",
+            "opponent": "Kazakhstan",
+            "competition": "UEFA Nations League",
+            "provider": "api_football",
+            "stats_source": "api_football",
+            "source_match_key": "1172934",
+            "goals": 5,
+            "shots": 24,
+            "shots_on_target": 9,
+            "shots_inside_box": 16,
+            "shots_outside_box": 8,
+            "blocked_shots": 5
+          },
+          {
+            "match_id": "543b3767-c9a1-44b5-b681-2bfed1dba02a",
+            "played_at": "2024-11-14 19:45:00+00:00",
+            "opponent": "Slovenia",
+            "competition": "UEFA Nations League",
+            "provider": "api_football",
+            "stats_source": "api_football",
+            "source_match_key": "1172926",
+            "goals": 4,
+            "shots": 14,
+            "shots_on_target": 7,
+            "shots_inside_box": 9,
+            "shots_outside_box": 5,
+            "blocked_shots": 3
+          }
+        ],
+        "match_count": 10,
+        "competitions": {
+          "World Cup - Qualification Europe": 8,
+          "UEFA Nations League": 2
+        },
+        "opponents": {
+          "Italy": 2,
+          "Estonia": 2,
+          "Israel": 2,
+          "Moldova": 2,
+          "Kazakhstan": 1,
+          "Slovenia": 1
+        },
+        "club_contamination_detected": false,
+        "weak_opponent_concentration": {
+          "moldova_estonia_israel_matches": 6,
+          "share": 0.6
+        }
+      },
+      "alternative_live_shot_volume": {
+        "current": 100.0,
+        "cap_at_90": 90.0,
+        "sample_shrinkage": 75.0
+      },
+      "assessment": {
+        "club_or_team_contamination": "No club contamination detected; all ten rows are Norway senior national-team matches from API-Football.",
+        "rolling_window": "The current feature uses exactly ten matches and averages 19.3 shots per match, which clips to the maximum rating of 100.",
+        "opponent_strength": "Six of ten matches are against Moldova, Estonia, or Israel. The 34-shot, 11-1 Moldova match is a clear schedule-strength driver.",
+        "confederation_fairness": "The production feature has no opponent- or confederation-strength normalization. The tested confederation adjustment was slightly worse than current v4 on holdout Brier, log loss, and calibration."
+      }
+    },
+    {
+      "team_id": "ENG",
+      "team_name": "England",
+      "group": "L",
+      "fifa_rank": 4,
+      "rating_source": "database_current",
+      "elo": 1685.63,
+      "attack_rating": 57.47,
+      "defense_rating": 74.14,
+      "shot_volume_rating": 100.0,
+      "round_of_32_probability": 0.85564,
+      "champion_probability": 0.06882,
+      "elo_rank": 2,
+      "title_probability_rank": 3,
+      "title_rank_minus_elo_rank": 1
+    },
+    {
+      "team_id": "NED",
+      "team_name": "Netherlands",
+      "group": "F",
+      "fifa_rank": 7,
+      "rating_source": "database_current",
+      "elo": 1651.83,
+      "attack_rating": 71.24,
+      "defense_rating": 64.71,
+      "shot_volume_rating": 100.0,
+      "round_of_32_probability": 0.8182,
+      "champion_probability": 0.05078,
+      "elo_rank": 6,
+      "title_probability_rank": 4,
+      "title_rank_minus_elo_rank": -2
+    },
+    {
+      "team_id": "FRA",
+      "team_name": "France",
+      "group": "I",
+      "fifa_rank": 3,
+      "rating_source": "database_current",
+      "elo": 1655.81,
+      "attack_rating": 58.76,
+      "defense_rating": 65.54,
+      "shot_volume_rating": 100.0,
+      "round_of_32_probability": 0.83546,
+      "champion_probability": 0.05016,
+      "elo_rank": 5,
+      "title_probability_rank": 5,
+      "title_rank_minus_elo_rank": 0
+    },
+    {
+      "team_id": "POR",
+      "team_name": "Portugal",
+      "group": "K",
+      "fifa_rank": 6,
+      "rating_source": "database_current",
+      "elo": 1640.09,
+      "attack_rating": 66.67,
+      "defense_rating": 67.31,
+      "shot_volume_rating": 100.0,
+      "round_of_32_probability": 0.83018,
+      "champion_probability": 0.04542,
+      "elo_rank": 8,
+      "title_probability_rank": 6,
+      "title_rank_minus_elo_rank": -2
+    },
+    {
+      "team_id": "JPN",
+      "team_name": "Japan",
+      "group": "F",
+      "fifa_rank": 18,
+      "rating_source": "database_current",
+      "elo": 1645.14,
+      "attack_rating": 83.33,
+      "defense_rating": 73.08,
+      "shot_volume_rating": 81.875,
+      "round_of_32_probability": 0.73276,
+      "champion_probability": 0.0447,
+      "elo_rank": 7,
+      "title_probability_rank": 7,
+      "title_rank_minus_elo_rank": 0
+    },
+    {
+      "team_id": "CUW",
+      "team_name": "Curacao",
+      "group": "E",
+      "fifa_rank": 82,
+      "rating_source": "database_current",
+      "elo": 1592.47,
+      "attack_rating": 93.33,
+      "defense_rating": 83.33,
+      "shot_volume_rating": 100.0,
+      "round_of_32_probability": 0.81924,
+      "champion_probability": 0.0442,
+      "elo_rank": 16,
+      "title_probability_rank": 8,
+      "title_rank_minus_elo_rank": -8
+    },
+    {
+      "team_id": "ARG",
+      "team_name": "Argentina",
+      "group": "J",
+      "fifa_rank": 2,
+      "rating_source": "database_current",
+      "elo": 1656.62,
+      "attack_rating": 56.74,
+      "defense_rating": 73.05,
+      "shot_volume_rating": 71.875,
+      "round_of_32_probability": 0.84262,
+      "champion_probability": 0.04416,
+      "elo_rank": 4,
+      "title_probability_rank": 9,
+      "title_rank_minus_elo_rank": 5
+    },
+    {
+      "team_id": "BEL",
+      "team_name": "Belgium",
+      "group": "G",
+      "fifa_rank": 8,
+      "rating_source": "database_current",
+      "elo": 1599.43,
+      "attack_rating": 67.31,
+      "defense_rating": 64.74,
+      "shot_volume_rating": 100.0,
+      "round_of_32_probability": 0.8536,
+      "champion_probability": 0.03046,
+      "elo_rank": 14,
+      "title_probability_rank": 10,
+      "title_rank_minus_elo_rank": -4
+    },
+    {
+      "team_id": "GER",
+      "team_name": "Germany",
+      "group": "E",
+      "fifa_rank": 9,
+      "rating_source": "database_current",
+      "elo": 1617.0,
+      "attack_rating": 63.12,
+      "defense_rating": 54.61,
+      "shot_volume_rating": 100.0,
+      "round_of_32_probability": 0.7736,
+      "champion_probability": 0.02974,
+      "elo_rank": 9,
+      "title_probability_rank": 11,
+      "title_rank_minus_elo_rank": 2
+    },
+    {
+      "team_id": "CRO",
+      "team_name": "Croatia",
+      "group": "L",
+      "fifa_rank": 10,
+      "rating_source": "database_current",
+      "elo": 1610.16,
+      "attack_rating": 56.36,
+      "defense_rating": 52.73,
+      "shot_volume_rating": 100.0,
+      "round_of_32_probability": 0.74014,
+      "champion_probability": 0.02566,
+      "elo_rank": 11,
+      "title_probability_rank": 12,
+      "title_rank_minus_elo_rank": 1
+    },
+    {
+      "team_id": "BRA",
+      "team_name": "Brazil",
+      "group": "C",
+      "fifa_rank": 5,
+      "rating_source": "database_current",
+      "elo": 1603.65,
+      "attack_rating": 53.03,
+      "defense_rating": 78.79,
+      "shot_volume_rating": 80.625,
+      "round_of_32_probability": 0.68486,
+      "champion_probability": 0.0248,
+      "elo_rank": 12,
+      "title_probability_rank": 13,
+      "title_rank_minus_elo_rank": 1
+    },
+    {
+      "team_id": "AUS",
+      "team_name": "Australia",
+      "group": "D",
+      "fifa_rank": 26,
+      "rating_source": "database_current",
+      "elo": 1611.82,
+      "attack_rating": 63.77,
+      "defense_rating": 73.91,
+      "shot_volume_rating": 59.375,
+      "round_of_32_probability": 0.75582,
+      "champion_probability": 0.02464,
+      "elo_rank": 10,
+      "title_probability_rank": 14,
+      "title_rank_minus_elo_rank": 4
+    },
+    {
+      "team_id": "COL",
+      "team_name": "Colombia",
+      "group": "K",
+      "fifa_rank": 13,
+      "rating_source": "database_current",
+      "elo": 1593.01,
+      "attack_rating": 50.0,
+      "defense_rating": 73.68,
+      "shot_volume_rating": 90.0,
+      "round_of_32_probability": 0.70256,
+      "champion_probability": 0.02328,
+      "elo_rank": 15,
+      "title_probability_rank": 15,
+      "title_rank_minus_elo_rank": 0
+    },
+    {
+      "team_id": "KOR",
+      "team_name": "South Korea",
+      "group": "A",
+      "fifa_rank": 22,
+      "rating_source": "database_current",
+      "elo": 1585.97,
+      "attack_rating": 57.14,
+      "defense_rating": 69.84,
+      "shot_volume_rating": 88.125,
+      "round_of_32_probability": 0.73268,
+      "champion_probability": 0.02186,
+      "elo_rank": 17,
+      "title_probability_rank": 16,
+      "title_rank_minus_elo_rank": -1
+    },
+    {
+      "team_id": "TUR",
+      "team_name": "Turkey",
+      "group": "D",
+      "fifa_rank": 25,
+      "rating_source": "database_current",
+      "elo": 1602.36,
+      "attack_rating": 59.17,
+      "defense_rating": 54.17,
+      "shot_volume_rating": 77.5,
+      "round_of_32_probability": 0.80514,
+      "champion_probability": 0.02114,
+      "elo_rank": 13,
+      "title_probability_rank": 17,
+      "title_rank_minus_elo_rank": 4
+    },
+    {
+      "team_id": "AUT",
+      "team_name": "Austria",
+      "group": "J",
+      "fifa_rank": 24,
+      "rating_source": "database_current",
+      "elo": 1579.24,
+      "attack_rating": 55.83,
+      "defense_rating": 65.83,
+      "shot_volume_rating": 89.375,
+      "round_of_32_probability": 0.72988,
+      "champion_probability": 0.01844,
+      "elo_rank": 18,
+      "title_probability_rank": 18,
+      "title_rank_minus_elo_rank": 0
+    },
+    {
+      "team_id": "MAR",
+      "team_name": "Morocco",
+      "group": "C",
+      "fifa_rank": 11,
+      "rating_source": "database_current",
+      "elo": 1563.05,
+      "attack_rating": 44.44,
+      "defense_rating": 77.78,
+      "shot_volume_rating": 73.125,
+      "round_of_32_probability": 0.64826,
+      "champion_probability": 0.0155,
+      "elo_rank": 20,
+      "title_probability_rank": 19,
+      "title_rank_minus_elo_rank": -1
+    },
+    {
+      "team_id": "UZB",
+      "team_name": "Uzbekistan",
+      "group": "K",
+      "fifa_rank": 50,
+      "rating_source": "database_current",
+      "elo": 1558.37,
+      "attack_rating": 48.48,
+      "defense_rating": 78.79,
+      "shot_volume_rating": 100.0,
+      "round_of_32_probability": 0.61016,
+      "champion_probability": 0.01548,
+      "elo_rank": 21,
+      "title_probability_rank": 20,
+      "title_rank_minus_elo_rank": -1
+    },
+    {
+      "team_id": "IRN",
+      "team_name": "Iran",
+      "group": "G",
+      "fifa_rank": 20,
+      "rating_source": "database_current",
+      "elo": 1552.15,
+      "attack_rating": 52.08,
+      "defense_rating": 64.58,
+      "shot_volume_rating": 97.5,
+      "round_of_32_probability": 0.70642,
+      "champion_probability": 0.0151,
+      "elo_rank": 23,
+      "title_probability_rank": 21,
+      "title_rank_minus_elo_rank": -2
+    },
+    {
+      "team_id": "RSA",
+      "team_name": "South Africa",
+      "group": "A",
+      "fifa_rank": 61,
+      "rating_source": "database_current",
+      "elo": 1546.62,
+      "attack_rating": 55.56,
+      "defense_rating": 77.78,
+      "shot_volume_rating": 73.6111,
+      "round_of_32_probability": 0.7149,
+      "champion_probability": 0.01466,
+      "elo_rank": 25,
+      "title_probability_rank": 22,
+      "title_rank_minus_elo_rank": -3
+    },
+    {
+      "team_id": "HAI",
+      "team_name": "Haiti",
+      "group": "C",
+      "fifa_rank": 84,
+      "rating_source": "database_current",
+      "elo": 1545.68,
+      "attack_rating": 66.67,
+      "defense_rating": 56.67,
+      "shot_volume_rating": 97.5,
+      "round_of_32_probability": 0.707,
+      "champion_probability": 0.01456,
+      "elo_rank": 27,
+      "title_probability_rank": 23,
+      "title_rank_minus_elo_rank": -4
+    },
+    {
+      "team_id": "URU",
+      "team_name": "Uruguay",
+      "group": "H",
+      "fifa_rank": 16,
+      "rating_source": "database_current",
+      "elo": 1574.68,
+      "attack_rating": 43.09,
+      "defense_rating": 79.67,
+      "shot_volume_rating": 61.875,
+      "round_of_32_probability": 0.58754,
+      "champion_probability": 0.01256,
+      "elo_rank": 19,
+      "title_probability_rank": 24,
+      "title_rank_minus_elo_rank": 5
+    },
+    {
+      "team_id": "SUI",
+      "team_name": "Switzerland",
+      "group": "B",
+      "fifa_rank": 17,
+      "rating_source": "database_current",
+      "elo": 1557.97,
+      "attack_rating": 51.77,
+      "defense_rating": 51.77,
+      "shot_volume_rating": 75.0,
+      "round_of_32_probability": 0.7749,
+      "champion_probability": 0.01216,
+      "elo_rank": 22,
+      "title_probability_rank": 25,
+      "title_rank_minus_elo_rank": 3
+    },
+    {
+      "team_id": "CZE",
+      "team_name": "Czechia",
+      "group": "A",
+      "fifa_rank": 44,
+      "rating_source": "database_current",
+      "elo": 1534.87,
+      "attack_rating": 47.5,
+      "defense_rating": 58.33,
+      "shot_volume_rating": 100.0,
+      "round_of_32_probability": 0.73618,
+      "champion_probability": 0.01198,
+      "elo_rank": 35,
+      "title_probability_rank": 26,
+      "title_rank_minus_elo_rank": -9
+    },
+    {
+      "team_id": "JOR",
+      "team_name": "Jordan",
+      "group": "J",
+      "fifa_rank": 66,
+      "rating_source": "database_current",
+      "elo": 1549.21,
+      "attack_rating": 57.14,
+      "defense_rating": 73.81,
+      "shot_volume_rating": 75.0,
+      "round_of_32_probability": 0.56056,
+      "champion_probability": 0.01066,
+      "elo_rank": 24,
+      "title_probability_rank": 27,
+      "title_rank_minus_elo_rank": 3
+    },
+    {
+      "team_id": "PAN",
+      "team_name": "Panama",
+      "group": "L",
+      "fifa_rank": 30,
+      "rating_source": "database_current",
+      "elo": 1544.69,
+      "attack_rating": 52.94,
+      "defense_rating": 49.02,
+      "shot_volume_rating": 96.875,
+      "round_of_32_probability": 0.6413,
+      "champion_probability": 0.0103,
+      "elo_rank": 28,
+      "title_probability_rank": 28,
+      "title_rank_minus_elo_rank": 0
+    },
+    {
+      "team_id": "CIV",
+      "team_name": "Ivory Coast",
+      "group": "E",
+      "fifa_rank": 42,
+      "rating_source": "database_current",
+      "elo": 1538.8,
+      "attack_rating": 100.0,
+      "defense_rating": 100.0,
+      "shot_volume_rating": 0.0,
+      "round_of_32_probability": 0.58912,
+      "champion_probability": 0.01022,
+      "elo_rank": 31,
+      "title_probability_rank": 29,
+      "title_rank_minus_elo_rank": -2
+    },
+    {
+      "team_id": "BIH",
+      "team_name": "Bosnia and Herzegovina",
+      "group": "B",
+      "fifa_rank": 71,
+      "rating_source": "database_current",
+      "elo": 1510.42,
+      "attack_rating": 40.62,
+      "defense_rating": 52.08,
+      "shot_volume_rating": 100.0,
+      "round_of_32_probability": 0.7831,
+      "champion_probability": 0.00888,
+      "elo_rank": 42,
+      "title_probability_rank": 30,
+      "title_rank_minus_elo_rank": -12
+    },
+    {
+      "team_id": "SCO",
+      "team_name": "Scotland",
+      "group": "C",
+      "fifa_rank": 36,
+      "rating_source": "database_current",
+      "elo": 1541.88,
+      "attack_rating": 46.3,
+      "defense_rating": 60.19,
+      "shot_volume_rating": 68.75,
+      "round_of_32_probability": 0.64678,
+      "champion_probability": 0.00882,
+      "elo_rank": 30,
+      "title_probability_rank": 31,
+      "title_rank_minus_elo_rank": 1
+    },
+    {
+      "team_id": "ECU",
+      "team_name": "Ecuador",
+      "group": "E",
+      "fifa_rank": 23,
+      "rating_source": "database_current",
+      "elo": 1546.49,
+      "attack_rating": 30.3,
+      "defense_rating": 71.72,
+      "shot_volume_rating": 70.625,
+      "round_of_32_probability": 0.49008,
+      "champion_probability": 0.00788,
+      "elo_rank": 26,
+      "title_probability_rank": 32,
+      "title_rank_minus_elo_rank": 6
+    },
+    {
+      "team_id": "KSA",
+      "team_name": "Saudi Arabia",
+      "group": "H",
+      "fifa_rank": 60,
+      "rating_source": "database_current",
+      "elo": 1529.25,
+      "attack_rating": 37.5,
+      "defense_rating": 65.28,
+      "shot_volume_rating": 80.0,
+      "round_of_32_probability": 0.59538,
+      "champion_probability": 0.00764,
+      "elo_rank": 37,
+      "title_probability_rank": 33,
+      "title_rank_minus_elo_rank": -4
+    },
+    {
+      "team_id": "PAR",
+      "team_name": "Paraguay",
+      "group": "D",
+      "fifa_rank": 39,
+      "rating_source": "database_current",
+      "elo": 1520.29,
+      "attack_rating": 31.11,
+      "defense_rating": 68.89,
+      "shot_volume_rating": 65.625,
+      "round_of_32_probability": 0.63548,
+      "champion_probability": 0.00694,
+      "elo_rank": 40,
+      "title_probability_rank": 34,
+      "title_rank_minus_elo_rank": -6
+    },
+    {
+      "team_id": "IRQ",
+      "team_name": "Iraq",
+      "group": "I",
+      "fifa_rank": 58,
+      "rating_source": "database_current",
+      "elo": 1537.39,
+      "attack_rating": 33.33,
+      "defense_rating": 75.56,
+      "shot_volume_rating": 55.0,
+      "round_of_32_probability": 0.54212,
+      "champion_probability": 0.0066,
+      "elo_rank": 32,
+      "title_probability_rank": 35,
+      "title_rank_minus_elo_rank": 3
+    },
+    {
+      "team_id": "TUN",
+      "team_name": "Tunisia",
+      "group": "F",
+      "fifa_rank": 40,
+      "rating_source": "database_current",
+      "elo": 1536.93,
+      "attack_rating": 59.26,
+      "defense_rating": 66.67,
+      "shot_volume_rating": 47.2222,
+      "round_of_32_probability": 0.51688,
+      "champion_probability": 0.00654,
+      "elo_rank": 33,
+      "title_probability_rank": 36,
+      "title_rank_minus_elo_rank": 3
+    },
+    {
+      "team_id": "SWE",
+      "team_name": "Sweden",
+      "group": "F",
+      "fifa_rank": 43,
+      "rating_source": "database_current",
+      "elo": 1513.19,
+      "attack_rating": 48.72,
+      "defense_rating": 53.85,
+      "shot_volume_rating": 78.75,
+      "round_of_32_probability": 0.60214,
+      "champion_probability": 0.00602,
+      "elo_rank": 41,
+      "title_probability_rank": 37,
+      "title_rank_minus_elo_rank": -4
+    },
+    {
+      "team_id": "SEN",
+      "team_name": "Senegal",
+      "group": "I",
+      "fifa_rank": 19,
+      "rating_source": "database_current",
+      "elo": 1544.49,
+      "attack_rating": 70.0,
+      "defense_rating": 56.67,
+      "shot_volume_rating": 51.25,
+      "round_of_32_probability": 0.44362,
+      "champion_probability": 0.00582,
+      "elo_rank": 29,
+      "title_probability_rank": 38,
+      "title_rank_minus_elo_rank": 9
+    },
+    {
+      "team_id": "ALG",
+      "team_name": "Algeria",
+      "group": "J",
+      "fifa_rank": 35,
+      "rating_source": "database_current",
+      "elo": 1536.27,
+      "attack_rating": 58.33,
+      "defense_rating": 91.67,
+      "shot_volume_rating": 0.0,
+      "round_of_32_probability": 0.53746,
+      "champion_probability": 0.00578,
+      "elo_rank": 34,
+      "title_probability_rank": 39,
+      "title_rank_minus_elo_rank": 5
+    },
+    {
+      "team_id": "QAT",
+      "team_name": "Qatar",
+      "group": "B",
+      "fifa_rank": 51,
+      "rating_source": "database_current",
+      "elo": 1507.46,
+      "attack_rating": 55.56,
+      "defense_rating": 44.44,
+      "shot_volume_rating": 67.5,
+      "round_of_32_probability": 0.63458,
+      "champion_probability": 0.00496,
+      "elo_rank": 43,
+      "title_probability_rank": 40,
+      "title_rank_minus_elo_rank": -3
+    },
+    {
+      "team_id": "MEX",
+      "team_name": "Mexico",
+      "group": "A",
+      "fifa_rank": 15,
+      "rating_source": "database_current",
+      "elo": 1491.03,
+      "attack_rating": 20.0,
+      "defense_rating": 66.67,
+      "shot_volume_rating": 99.375,
+      "round_of_32_probability": 0.493,
+      "champion_probability": 0.00484,
+      "elo_rank": 46,
+      "title_probability_rank": 41,
+      "title_rank_minus_elo_rank": -5
+    },
+    {
+      "team_id": "CPV",
+      "team_name": "Cape Verde",
+      "group": "H",
+      "fifa_rank": 68,
+      "rating_source": "database_current",
+      "elo": 1524.3,
+      "attack_rating": 77.78,
+      "defense_rating": 66.67,
+      "shot_volume_rating": 0.0,
+      "round_of_32_probability": 0.5131,
+      "champion_probability": 0.00442,
+      "elo_rank": 38,
+      "title_probability_rank": 42,
+      "title_rank_minus_elo_rank": 4
+    },
+    {
+      "team_id": "GHA",
+      "team_name": "Ghana",
+      "group": "L",
+      "fifa_rank": 72,
+      "rating_source": "database_current",
+      "elo": 1530.64,
+      "attack_rating": 66.67,
+      "defense_rating": 61.11,
+      "shot_volume_rating": 27.0833,
+      "round_of_32_probability": 0.42716,
+      "champion_probability": 0.00398,
+      "elo_rank": 36,
+      "title_probability_rank": 43,
+      "title_rank_minus_elo_rank": 7
+    },
+    {
+      "team_id": "USA",
+      "team_name": "United States",
+      "group": "D",
+      "fifa_rank": 14,
+      "rating_source": "database_current",
+      "elo": 1493.08,
+      "attack_rating": 28.57,
+      "defense_rating": 66.67,
+      "shot_volume_rating": 70.5357,
+      "round_of_32_probability": 0.47128,
+      "champion_probability": 0.00314,
+      "elo_rank": 45,
+      "title_probability_rank": 44,
+      "title_rank_minus_elo_rank": -1
+    },
+    {
+      "team_id": "EGY",
+      "team_name": "Egypt",
+      "group": "G",
+      "fifa_rank": 34,
+      "rating_source": "database_current",
+      "elo": 1495.53,
+      "attack_rating": 33.33,
+      "defense_rating": 66.67,
+      "shot_volume_rating": 29.1667,
+      "round_of_32_probability": 0.58616,
+      "champion_probability": 0.00288,
+      "elo_rank": 44,
+      "title_probability_rank": 45,
+      "title_rank_minus_elo_rank": 1
+    },
+    {
+      "team_id": "COD",
+      "team_name": "DR Congo",
+      "group": "K",
+      "fifa_rank": 56,
+      "rating_source": "database_current",
+      "elo": 1520.58,
+      "attack_rating": 40.0,
+      "defense_rating": 73.33,
+      "shot_volume_rating": 0.0,
+      "round_of_32_probability": 0.5226,
+      "champion_probability": 0.00282,
+      "elo_rank": 39,
+      "title_probability_rank": 46,
+      "title_rank_minus_elo_rank": 7
+    },
+    {
+      "team_id": "NZL",
+      "team_name": "New Zealand",
+      "group": "G",
+      "fifa_rank": 86,
+      "rating_source": "canonical_rank_prior",
+      "elo": 1446.0,
+      "attack_rating": 50.0,
+      "defense_rating": 50.0,
+      "shot_volume_rating": null,
+      "round_of_32_probability": 0.52306,
+      "champion_probability": 0.00188,
+      "elo_rank": 48,
+      "title_probability_rank": 47,
+      "title_rank_minus_elo_rank": -1
+    },
+    {
+      "team_id": "CAN",
+      "team_name": "Canada",
+      "group": "B",
+      "fifa_rank": 27,
+      "rating_source": "database_current",
+      "elo": 1468.99,
+      "attack_rating": 22.22,
+      "defense_rating": 48.15,
+      "shot_volume_rating": 68.0556,
+      "round_of_32_probability": 0.48484,
+      "champion_probability": 0.00172,
+      "elo_rank": 47,
+      "title_probability_rank": 48,
+      "title_rank_minus_elo_rank": 1
+    }
+  ],
+  "outliers": {
+    "shot_volume_above_95": [
+      {
+        "team_id": "MEX",
+        "team_name": "Mexico",
+        "group": "A",
+        "fifa_rank": 15,
+        "rating_source": "database_current",
+        "elo": 1491.03,
+        "attack_rating": 20.0,
+        "defense_rating": 66.67,
+        "shot_volume_rating": 99.375,
+        "round_of_32_probability": 0.493,
+        "champion_probability": 0.00484,
+        "elo_rank": 46,
+        "title_probability_rank": 41,
+        "title_rank_minus_elo_rank": -5
+      },
+      {
+        "team_id": "CZE",
+        "team_name": "Czechia",
+        "group": "A",
+        "fifa_rank": 44,
+        "rating_source": "database_current",
+        "elo": 1534.87,
+        "attack_rating": 47.5,
+        "defense_rating": 58.33,
+        "shot_volume_rating": 100.0,
+        "round_of_32_probability": 0.73618,
+        "champion_probability": 0.01198,
+        "elo_rank": 35,
+        "title_probability_rank": 26,
+        "title_rank_minus_elo_rank": -9
+      },
+      {
+        "team_id": "BIH",
+        "team_name": "Bosnia and Herzegovina",
+        "group": "B",
+        "fifa_rank": 71,
+        "rating_source": "database_current",
+        "elo": 1510.42,
+        "attack_rating": 40.62,
+        "defense_rating": 52.08,
+        "shot_volume_rating": 100.0,
+        "round_of_32_probability": 0.7831,
+        "champion_probability": 0.00888,
+        "elo_rank": 42,
+        "title_probability_rank": 30,
+        "title_rank_minus_elo_rank": -12
+      },
+      {
+        "team_id": "HAI",
+        "team_name": "Haiti",
+        "group": "C",
+        "fifa_rank": 84,
+        "rating_source": "database_current",
+        "elo": 1545.68,
+        "attack_rating": 66.67,
+        "defense_rating": 56.67,
+        "shot_volume_rating": 97.5,
+        "round_of_32_probability": 0.707,
+        "champion_probability": 0.01456,
+        "elo_rank": 27,
+        "title_probability_rank": 23,
+        "title_rank_minus_elo_rank": -4
+      },
+      {
+        "team_id": "GER",
+        "team_name": "Germany",
+        "group": "E",
+        "fifa_rank": 9,
+        "rating_source": "database_current",
+        "elo": 1617.0,
+        "attack_rating": 63.12,
+        "defense_rating": 54.61,
+        "shot_volume_rating": 100.0,
+        "round_of_32_probability": 0.7736,
+        "champion_probability": 0.02974,
+        "elo_rank": 9,
+        "title_probability_rank": 11,
+        "title_rank_minus_elo_rank": 2
+      },
+      {
+        "team_id": "CUW",
+        "team_name": "Curacao",
+        "group": "E",
+        "fifa_rank": 82,
+        "rating_source": "database_current",
+        "elo": 1592.47,
+        "attack_rating": 93.33,
+        "defense_rating": 83.33,
+        "shot_volume_rating": 100.0,
+        "round_of_32_probability": 0.81924,
+        "champion_probability": 0.0442,
+        "elo_rank": 16,
+        "title_probability_rank": 8,
+        "title_rank_minus_elo_rank": -8
+      },
+      {
+        "team_id": "NED",
+        "team_name": "Netherlands",
+        "group": "F",
+        "fifa_rank": 7,
+        "rating_source": "database_current",
+        "elo": 1651.83,
+        "attack_rating": 71.24,
+        "defense_rating": 64.71,
+        "shot_volume_rating": 100.0,
+        "round_of_32_probability": 0.8182,
+        "champion_probability": 0.05078,
+        "elo_rank": 6,
+        "title_probability_rank": 4,
+        "title_rank_minus_elo_rank": -2
+      },
+      {
+        "team_id": "BEL",
+        "team_name": "Belgium",
+        "group": "G",
+        "fifa_rank": 8,
+        "rating_source": "database_current",
+        "elo": 1599.43,
+        "attack_rating": 67.31,
+        "defense_rating": 64.74,
+        "shot_volume_rating": 100.0,
+        "round_of_32_probability": 0.8536,
+        "champion_probability": 0.03046,
+        "elo_rank": 14,
+        "title_probability_rank": 10,
+        "title_rank_minus_elo_rank": -4
+      },
+      {
+        "team_id": "IRN",
+        "team_name": "Iran",
+        "group": "G",
+        "fifa_rank": 20,
+        "rating_source": "database_current",
+        "elo": 1552.15,
+        "attack_rating": 52.08,
+        "defense_rating": 64.58,
+        "shot_volume_rating": 97.5,
+        "round_of_32_probability": 0.70642,
+        "champion_probability": 0.0151,
+        "elo_rank": 23,
+        "title_probability_rank": 21,
+        "title_rank_minus_elo_rank": -2
+      },
+      {
+        "team_id": "ESP",
+        "team_name": "Spain",
+        "group": "H",
+        "fifa_rank": 1,
+        "rating_source": "database_current",
+        "elo": 1733.55,
+        "attack_rating": 74.85,
+        "defense_rating": 67.84,
+        "shot_volume_rating": 100.0,
+        "round_of_32_probability": 0.9285,
+        "champion_probability": 0.11312,
+        "elo_rank": 1,
+        "title_probability_rank": 1,
+        "title_rank_minus_elo_rank": 0
+      },
+      {
+        "team_id": "FRA",
+        "team_name": "France",
+        "group": "I",
+        "fifa_rank": 3,
+        "rating_source": "database_current",
+        "elo": 1655.81,
+        "attack_rating": 58.76,
+        "defense_rating": 65.54,
+        "shot_volume_rating": 100.0,
+        "round_of_32_probability": 0.83546,
+        "champion_probability": 0.05016,
+        "elo_rank": 5,
+        "title_probability_rank": 5,
+        "title_rank_minus_elo_rank": 0
+      },
+      {
+        "team_id": "NOR",
+        "team_name": "Norway",
+        "group": "I",
+        "fifa_rank": 29,
+        "rating_source": "database_current",
+        "elo": 1677.64,
+        "attack_rating": 85.56,
+        "defense_rating": 73.33,
+        "shot_volume_rating": 100.0,
+        "round_of_32_probability": 0.83396,
+        "champion_probability": 0.07388,
+        "elo_rank": 3,
+        "title_probability_rank": 2,
+        "title_rank_minus_elo_rank": -1,
+        "source_audit": {
+          "matches": [
+            {
+              "match_id": "e897dc89-ff18-4108-8385-823e7d629a3c",
+              "played_at": "2025-11-16 19:45:00+00:00",
+              "opponent": "Italy",
+              "competition": "World Cup - Qualification Europe",
+              "provider": "api_football",
+              "stats_source": "api_football",
+              "source_match_key": "1366321",
+              "goals": 4,
+              "shots": 13,
+              "shots_on_target": 5,
+              "shots_inside_box": 8,
+              "shots_outside_box": 5,
+              "blocked_shots": 0
+            },
+            {
+              "match_id": "6c527ebd-de54-49b9-b7cb-292d350e201b",
+              "played_at": "2025-11-13 17:00:00+00:00",
+              "opponent": "Estonia",
+              "competition": "World Cup - Qualification Europe",
+              "provider": "api_football",
+              "stats_source": "api_football",
+              "source_match_key": "1323345",
+              "goals": 4,
+              "shots": 18,
+              "shots_on_target": 7,
+              "shots_inside_box": 15,
+              "shots_outside_box": 3,
+              "blocked_shots": 6
+            },
+            {
+              "match_id": "a4bd2157-fe91-4c6c-93ce-dd8a99d6e992",
+              "played_at": "2025-10-11 16:00:00+00:00",
+              "opponent": "Israel",
+              "competition": "World Cup - Qualification Europe",
+              "provider": "api_football",
+              "stats_source": "api_football",
+              "source_match_key": "1323324",
+              "goals": 5,
+              "shots": 16,
+              "shots_on_target": 5,
+              "shots_inside_box": 12,
+              "shots_outside_box": 4,
+              "blocked_shots": 5
+            },
+            {
+              "match_id": "da940b36-b4b8-434f-995c-c962bb120045",
+              "played_at": "2025-09-09 18:45:00+00:00",
+              "opponent": "Moldova",
+              "competition": "World Cup - Qualification Europe",
+              "provider": "api_football",
+              "stats_source": "api_football",
+              "source_match_key": "1323303",
+              "goals": 11,
+              "shots": 34,
+              "shots_on_target": 17,
+              "shots_inside_box": 29,
+              "shots_outside_box": 5,
+              "blocked_shots": 9
+            },
+            {
+              "match_id": "a528b6ff-2377-4d41-88d5-e98c77f77904",
+              "played_at": "2025-06-09 18:45:00+00:00",
+              "opponent": "Estonia",
+              "competition": "World Cup - Qualification Europe",
+              "provider": "api_football",
+              "stats_source": "api_football",
+              "source_match_key": "1323271",
+              "goals": 1,
+              "shots": 19,
+              "shots_on_target": 3,
+              "shots_inside_box": 15,
+              "shots_outside_box": 4,
+              "blocked_shots": 6
+            },
+            {
+              "match_id": "ad8fb600-ee94-4828-8ea7-ce1a018cad6b",
+              "played_at": "2025-06-06 18:45:00+00:00",
+              "opponent": "Italy",
+              "competition": "World Cup - Qualification Europe",
+              "provider": "api_football",
+              "stats_source": "api_football",
+              "source_match_key": "1366273",
+              "goals": 3,
+              "shots": 8,
+              "shots_on_target": 4,
+              "shots_inside_box": 5,
+              "shots_outside_box": 3,
+              "blocked_shots": 3
+            },
+            {
+              "match_id": "fe71daed-e157-4523-906b-c805a42ee66f",
+              "played_at": "2025-03-25 19:45:00+00:00",
+              "opponent": "Israel",
+              "competition": "World Cup - Qualification Europe",
+              "provider": "api_football",
+              "stats_source": "api_football",
+              "source_match_key": "1323255",
+              "goals": 4,
+              "shots": 23,
+              "shots_on_target": 12,
+              "shots_inside_box": 20,
+              "shots_outside_box": 3,
+              "blocked_shots": 6
+            },
+            {
+              "match_id": "69bba028-2239-43fb-b2db-fa796b3c1ab2",
+              "played_at": "2025-03-22 17:00:00+00:00",
+              "opponent": "Moldova",
+              "competition": "World Cup - Qualification Europe",
+              "provider": "api_football",
+              "stats_source": "api_football",
+              "source_match_key": "1323244",
+              "goals": 5,
+              "shots": 24,
+              "shots_on_target": 8,
+              "shots_inside_box": 17,
+              "shots_outside_box": 7,
+              "blocked_shots": 10
+            },
+            {
+              "match_id": "07486df7-194e-4abe-a74d-4c4182a6e94d",
+              "played_at": "2024-11-17 17:00:00+00:00",
+              "opponent": "Kazakhstan",
+              "competition": "UEFA Nations League",
+              "provider": "api_football",
+              "stats_source": "api_football",
+              "source_match_key": "1172934",
+              "goals": 5,
+              "shots": 24,
+              "shots_on_target": 9,
+              "shots_inside_box": 16,
+              "shots_outside_box": 8,
+              "blocked_shots": 5
+            },
+            {
+              "match_id": "543b3767-c9a1-44b5-b681-2bfed1dba02a",
+              "played_at": "2024-11-14 19:45:00+00:00",
+              "opponent": "Slovenia",
+              "competition": "UEFA Nations League",
+              "provider": "api_football",
+              "stats_source": "api_football",
+              "source_match_key": "1172926",
+              "goals": 4,
+              "shots": 14,
+              "shots_on_target": 7,
+              "shots_inside_box": 9,
+              "shots_outside_box": 5,
+              "blocked_shots": 3
+            }
+          ],
+          "match_count": 10,
+          "competitions": {
+            "World Cup - Qualification Europe": 8,
+            "UEFA Nations League": 2
+          },
+          "opponents": {
+            "Italy": 2,
+            "Estonia": 2,
+            "Israel": 2,
+            "Moldova": 2,
+            "Kazakhstan": 1,
+            "Slovenia": 1
+          },
+          "club_contamination_detected": false,
+          "weak_opponent_concentration": {
+            "moldova_estonia_israel_matches": 6,
+            "share": 0.6
+          }
+        },
+        "alternative_live_shot_volume": {
+          "current": 100.0,
+          "cap_at_90": 90.0,
+          "sample_shrinkage": 75.0
+        },
+        "assessment": {
+          "club_or_team_contamination": "No club contamination detected; all ten rows are Norway senior national-team matches from API-Football.",
+          "rolling_window": "The current feature uses exactly ten matches and averages 19.3 shots per match, which clips to the maximum rating of 100.",
+          "opponent_strength": "Six of ten matches are against Moldova, Estonia, or Israel. The 34-shot, 11-1 Moldova match is a clear schedule-strength driver.",
+          "confederation_fairness": "The production feature has no opponent- or confederation-strength normalization. The tested confederation adjustment was slightly worse than current v4 on holdout Brier, log loss, and calibration."
+        }
+      },
+      {
+        "team_id": "POR",
+        "team_name": "Portugal",
+        "group": "K",
+        "fifa_rank": 6,
+        "rating_source": "database_current",
+        "elo": 1640.09,
+        "attack_rating": 66.67,
+        "defense_rating": 67.31,
+        "shot_volume_rating": 100.0,
+        "round_of_32_probability": 0.83018,
+        "champion_probability": 0.04542,
+        "elo_rank": 8,
+        "title_probability_rank": 6,
+        "title_rank_minus_elo_rank": -2
+      },
+      {
+        "team_id": "UZB",
+        "team_name": "Uzbekistan",
+        "group": "K",
+        "fifa_rank": 50,
+        "rating_source": "database_current",
+        "elo": 1558.37,
+        "attack_rating": 48.48,
+        "defense_rating": 78.79,
+        "shot_volume_rating": 100.0,
+        "round_of_32_probability": 0.61016,
+        "champion_probability": 0.01548,
+        "elo_rank": 21,
+        "title_probability_rank": 20,
+        "title_rank_minus_elo_rank": -1
+      },
+      {
+        "team_id": "ENG",
+        "team_name": "England",
+        "group": "L",
+        "fifa_rank": 4,
+        "rating_source": "database_current",
+        "elo": 1685.63,
+        "attack_rating": 57.47,
+        "defense_rating": 74.14,
+        "shot_volume_rating": 100.0,
+        "round_of_32_probability": 0.85564,
+        "champion_probability": 0.06882,
+        "elo_rank": 2,
+        "title_probability_rank": 3,
+        "title_rank_minus_elo_rank": 1
+      },
+      {
+        "team_id": "CRO",
+        "team_name": "Croatia",
+        "group": "L",
+        "fifa_rank": 10,
+        "rating_source": "database_current",
+        "elo": 1610.16,
+        "attack_rating": 56.36,
+        "defense_rating": 52.73,
+        "shot_volume_rating": 100.0,
+        "round_of_32_probability": 0.74014,
+        "champion_probability": 0.02566,
+        "elo_rank": 11,
+        "title_probability_rank": 12,
+        "title_rank_minus_elo_rank": 1
+      },
+      {
+        "team_id": "PAN",
+        "team_name": "Panama",
+        "group": "L",
+        "fifa_rank": 30,
+        "rating_source": "database_current",
+        "elo": 1544.69,
+        "attack_rating": 52.94,
+        "defense_rating": 49.02,
+        "shot_volume_rating": 96.875,
+        "round_of_32_probability": 0.6413,
+        "champion_probability": 0.0103,
+        "elo_rank": 28,
+        "title_probability_rank": 28,
+        "title_rank_minus_elo_rank": 0
+      }
+    ],
+    "attack_or_defense_above_90": [
+      {
+        "team_id": "CUW",
+        "team_name": "Curacao",
+        "group": "E",
+        "fifa_rank": 82,
+        "rating_source": "database_current",
+        "elo": 1592.47,
+        "attack_rating": 93.33,
+        "defense_rating": 83.33,
+        "shot_volume_rating": 100.0,
+        "round_of_32_probability": 0.81924,
+        "champion_probability": 0.0442,
+        "elo_rank": 16,
+        "title_probability_rank": 8,
+        "title_rank_minus_elo_rank": -8
+      },
+      {
+        "team_id": "CIV",
+        "team_name": "Ivory Coast",
+        "group": "E",
+        "fifa_rank": 42,
+        "rating_source": "database_current",
+        "elo": 1538.8,
+        "attack_rating": 100.0,
+        "defense_rating": 100.0,
+        "shot_volume_rating": 0.0,
+        "round_of_32_probability": 0.58912,
+        "champion_probability": 0.01022,
+        "elo_rank": 31,
+        "title_probability_rank": 29,
+        "title_rank_minus_elo_rank": -2
+      },
+      {
+        "team_id": "ALG",
+        "team_name": "Algeria",
+        "group": "J",
+        "fifa_rank": 35,
+        "rating_source": "database_current",
+        "elo": 1536.27,
+        "attack_rating": 58.33,
+        "defense_rating": 91.67,
+        "shot_volume_rating": 0.0,
+        "round_of_32_probability": 0.53746,
+        "champion_probability": 0.00578,
+        "elo_rank": 34,
+        "title_probability_rank": 39,
+        "title_rank_minus_elo_rank": 5
+      }
+    ],
+    "title_rank_at_least_8_places_above_elo_rank": [
+      {
+        "team_id": "CZE",
+        "team_name": "Czechia",
+        "group": "A",
+        "fifa_rank": 44,
+        "rating_source": "database_current",
+        "elo": 1534.87,
+        "attack_rating": 47.5,
+        "defense_rating": 58.33,
+        "shot_volume_rating": 100.0,
+        "round_of_32_probability": 0.73618,
+        "champion_probability": 0.01198,
+        "elo_rank": 35,
+        "title_probability_rank": 26,
+        "title_rank_minus_elo_rank": -9
+      },
+      {
+        "team_id": "BIH",
+        "team_name": "Bosnia and Herzegovina",
+        "group": "B",
+        "fifa_rank": 71,
+        "rating_source": "database_current",
+        "elo": 1510.42,
+        "attack_rating": 40.62,
+        "defense_rating": 52.08,
+        "shot_volume_rating": 100.0,
+        "round_of_32_probability": 0.7831,
+        "champion_probability": 0.00888,
+        "elo_rank": 42,
+        "title_probability_rank": 30,
+        "title_rank_minus_elo_rank": -12
+      },
+      {
+        "team_id": "CUW",
+        "team_name": "Curacao",
+        "group": "E",
+        "fifa_rank": 82,
+        "rating_source": "database_current",
+        "elo": 1592.47,
+        "attack_rating": 93.33,
+        "defense_rating": 83.33,
+        "shot_volume_rating": 100.0,
+        "round_of_32_probability": 0.81924,
+        "champion_probability": 0.0442,
+        "elo_rank": 16,
+        "title_probability_rank": 8,
+        "title_rank_minus_elo_rank": -8
+      }
+    ]
+  },
+  "norway": {
+    "team_id": "NOR",
+    "team_name": "Norway",
+    "group": "I",
+    "fifa_rank": 29,
+    "rating_source": "database_current",
+    "elo": 1677.64,
+    "attack_rating": 85.56,
+    "defense_rating": 73.33,
+    "shot_volume_rating": 100.0,
+    "round_of_32_probability": 0.83396,
+    "champion_probability": 0.07388,
+    "elo_rank": 3,
+    "title_probability_rank": 2,
+    "title_rank_minus_elo_rank": -1,
+    "source_audit": {
+      "matches": [
+        {
+          "match_id": "e897dc89-ff18-4108-8385-823e7d629a3c",
+          "played_at": "2025-11-16 19:45:00+00:00",
+          "opponent": "Italy",
+          "competition": "World Cup - Qualification Europe",
+          "provider": "api_football",
+          "stats_source": "api_football",
+          "source_match_key": "1366321",
+          "goals": 4,
+          "shots": 13,
+          "shots_on_target": 5,
+          "shots_inside_box": 8,
+          "shots_outside_box": 5,
+          "blocked_shots": 0
+        },
+        {
+          "match_id": "6c527ebd-de54-49b9-b7cb-292d350e201b",
+          "played_at": "2025-11-13 17:00:00+00:00",
+          "opponent": "Estonia",
+          "competition": "World Cup - Qualification Europe",
+          "provider": "api_football",
+          "stats_source": "api_football",
+          "source_match_key": "1323345",
+          "goals": 4,
+          "shots": 18,
+          "shots_on_target": 7,
+          "shots_inside_box": 15,
+          "shots_outside_box": 3,
+          "blocked_shots": 6
+        },
+        {
+          "match_id": "a4bd2157-fe91-4c6c-93ce-dd8a99d6e992",
+          "played_at": "2025-10-11 16:00:00+00:00",
+          "opponent": "Israel",
+          "competition": "World Cup - Qualification Europe",
+          "provider": "api_football",
+          "stats_source": "api_football",
+          "source_match_key": "1323324",
+          "goals": 5,
+          "shots": 16,
+          "shots_on_target": 5,
+          "shots_inside_box": 12,
+          "shots_outside_box": 4,
+          "blocked_shots": 5
+        },
+        {
+          "match_id": "da940b36-b4b8-434f-995c-c962bb120045",
+          "played_at": "2025-09-09 18:45:00+00:00",
+          "opponent": "Moldova",
+          "competition": "World Cup - Qualification Europe",
+          "provider": "api_football",
+          "stats_source": "api_football",
+          "source_match_key": "1323303",
+          "goals": 11,
+          "shots": 34,
+          "shots_on_target": 17,
+          "shots_inside_box": 29,
+          "shots_outside_box": 5,
+          "blocked_shots": 9
+        },
+        {
+          "match_id": "a528b6ff-2377-4d41-88d5-e98c77f77904",
+          "played_at": "2025-06-09 18:45:00+00:00",
+          "opponent": "Estonia",
+          "competition": "World Cup - Qualification Europe",
+          "provider": "api_football",
+          "stats_source": "api_football",
+          "source_match_key": "1323271",
+          "goals": 1,
+          "shots": 19,
+          "shots_on_target": 3,
+          "shots_inside_box": 15,
+          "shots_outside_box": 4,
+          "blocked_shots": 6
+        },
+        {
+          "match_id": "ad8fb600-ee94-4828-8ea7-ce1a018cad6b",
+          "played_at": "2025-06-06 18:45:00+00:00",
+          "opponent": "Italy",
+          "competition": "World Cup - Qualification Europe",
+          "provider": "api_football",
+          "stats_source": "api_football",
+          "source_match_key": "1366273",
+          "goals": 3,
+          "shots": 8,
+          "shots_on_target": 4,
+          "shots_inside_box": 5,
+          "shots_outside_box": 3,
+          "blocked_shots": 3
+        },
+        {
+          "match_id": "fe71daed-e157-4523-906b-c805a42ee66f",
+          "played_at": "2025-03-25 19:45:00+00:00",
+          "opponent": "Israel",
+          "competition": "World Cup - Qualification Europe",
+          "provider": "api_football",
+          "stats_source": "api_football",
+          "source_match_key": "1323255",
+          "goals": 4,
+          "shots": 23,
+          "shots_on_target": 12,
+          "shots_inside_box": 20,
+          "shots_outside_box": 3,
+          "blocked_shots": 6
+        },
+        {
+          "match_id": "69bba028-2239-43fb-b2db-fa796b3c1ab2",
+          "played_at": "2025-03-22 17:00:00+00:00",
+          "opponent": "Moldova",
+          "competition": "World Cup - Qualification Europe",
+          "provider": "api_football",
+          "stats_source": "api_football",
+          "source_match_key": "1323244",
+          "goals": 5,
+          "shots": 24,
+          "shots_on_target": 8,
+          "shots_inside_box": 17,
+          "shots_outside_box": 7,
+          "blocked_shots": 10
+        },
+        {
+          "match_id": "07486df7-194e-4abe-a74d-4c4182a6e94d",
+          "played_at": "2024-11-17 17:00:00+00:00",
+          "opponent": "Kazakhstan",
+          "competition": "UEFA Nations League",
+          "provider": "api_football",
+          "stats_source": "api_football",
+          "source_match_key": "1172934",
+          "goals": 5,
+          "shots": 24,
+          "shots_on_target": 9,
+          "shots_inside_box": 16,
+          "shots_outside_box": 8,
+          "blocked_shots": 5
+        },
+        {
+          "match_id": "543b3767-c9a1-44b5-b681-2bfed1dba02a",
+          "played_at": "2024-11-14 19:45:00+00:00",
+          "opponent": "Slovenia",
+          "competition": "UEFA Nations League",
+          "provider": "api_football",
+          "stats_source": "api_football",
+          "source_match_key": "1172926",
+          "goals": 4,
+          "shots": 14,
+          "shots_on_target": 7,
+          "shots_inside_box": 9,
+          "shots_outside_box": 5,
+          "blocked_shots": 3
+        }
+      ],
+      "match_count": 10,
+      "competitions": {
+        "World Cup - Qualification Europe": 8,
+        "UEFA Nations League": 2
+      },
+      "opponents": {
+        "Italy": 2,
+        "Estonia": 2,
+        "Israel": 2,
+        "Moldova": 2,
+        "Kazakhstan": 1,
+        "Slovenia": 1
+      },
+      "club_contamination_detected": false,
+      "weak_opponent_concentration": {
+        "moldova_estonia_israel_matches": 6,
+        "share": 0.6
+      }
+    },
+    "alternative_live_shot_volume": {
+      "current": 100.0,
+      "cap_at_90": 90.0,
+      "sample_shrinkage": 75.0
+    },
+    "assessment": {
+      "club_or_team_contamination": "No club contamination detected; all ten rows are Norway senior national-team matches from API-Football.",
+      "rolling_window": "The current feature uses exactly ten matches and averages 19.3 shots per match, which clips to the maximum rating of 100.",
+      "opponent_strength": "Six of ten matches are against Moldova, Estonia, or Israel. The 34-shot, 11-1 Moldova match is a clear schedule-strength driver.",
+      "confederation_fairness": "The production feature has no opponent- or confederation-strength normalization. The tested confederation adjustment was slightly worse than current v4 on holdout Brier, log loss, and calibration."
+    }
+  },
+  "chronological_holdout": {
+    "split": {
+      "tuning_matches": 824,
+      "validation_matches": 233,
+      "validation_start": "2025-06-08",
+      "validation_end": "2026-06-09"
+    },
+    "confederation_parameters_fit_on_tuning_only": {
+      "UEFA": {
+        "mean": 89.14506511627907,
+        "std": 14.49280820885081,
+        "observations": 86
+      },
+      "CONMEBOL": {
+        "mean": 84.4580078125,
+        "std": 9.883724136853985,
+        "observations": 64
+      },
+      "_global": {
+        "mean": 87.145254,
+        "std": 12.90490997763863,
+        "observations": 150
+      }
+    },
+    "alternatives": {
+      "current_v4_weight_0_2": {
+        "weight": 0.2,
+        "tuning_metrics": {
+          "matches": 824,
+          "log_loss": 1.033281,
+          "brier_score": 0.620743,
+          "ranked_probability_score": 0.215556,
+          "accuracy": 0.501214,
+          "expected_calibration_error": 0.039024,
+          "calibration_bins": [
+            {
+              "lower": 0.0,
+              "upper": 0.1,
+              "count": 1,
+              "mean_probability": 0.095222,
+              "observed_rate": 0.0
+            },
+            {
+              "lower": 0.1,
+              "upper": 0.2,
+              "count": 45,
+              "mean_probability": 0.178914,
+              "observed_rate": 0.088889
+            },
+            {
+              "lower": 0.2,
+              "upper": 0.3,
+              "count": 1210,
+              "mean_probability": 0.272351,
+              "observed_rate": 0.239669
+            },
+            {
+              "lower": 0.3,
+              "upper": 0.4,
+              "count": 677,
+              "mean_probability": 0.349399,
+              "observed_rate": 0.342688
+            },
+            {
+              "lower": 0.4,
+              "upper": 0.5,
+              "count": 417,
+              "mean_probability": 0.44162,
+              "observed_rate": 0.515588
+            },
+            {
+              "lower": 0.5,
+              "upper": 0.6,
+              "count": 115,
+              "mean_probability": 0.532483,
+              "observed_rate": 0.678261
+            },
+            {
+              "lower": 0.6,
+              "upper": 0.7,
+              "count": 6,
+              "mean_probability": 0.611958,
+              "observed_rate": 0.666667
+            },
+            {
+              "lower": 0.7,
+              "upper": 0.8,
+              "count": 1,
+              "mean_probability": 0.702971,
+              "observed_rate": 1.0
+            },
+            {
+              "lower": 0.8,
+              "upper": 0.9,
+              "count": 0,
+              "mean_probability": 0.0,
+              "observed_rate": 0.0
+            },
+            {
+              "lower": 0.9,
+              "upper": 1.0,
+              "count": 0,
+              "mean_probability": 0.0,
+              "observed_rate": 0.0
+            }
+          ]
+        },
+        "validation_metrics": {
+          "matches": 233,
+          "log_loss": 0.945067,
+          "brier_score": 0.557889,
+          "ranked_probability_score": 0.19377,
+          "accuracy": 0.600858,
+          "expected_calibration_error": 0.088281,
+          "calibration_bins": [
+            {
+              "lower": 0.0,
+              "upper": 0.1,
+              "count": 1,
+              "mean_probability": 0.085709,
+              "observed_rate": 0.0
+            },
+            {
+              "lower": 0.1,
+              "upper": 0.2,
+              "count": 40,
+              "mean_probability": 0.166949,
+              "observed_rate": 0.05
+            },
+            {
+              "lower": 0.2,
+              "upper": 0.3,
+              "count": 337,
+              "mean_probability": 0.266394,
+              "observed_rate": 0.195846
+            },
+            {
+              "lower": 0.3,
+              "upper": 0.4,
+              "count": 150,
+              "mean_probability": 0.348772,
+              "observed_rate": 0.333333
+            },
+            {
+              "lower": 0.4,
+              "upper": 0.5,
+              "count": 102,
+              "mean_probability": 0.443983,
+              "observed_rate": 0.598039
+            },
+            {
+              "lower": 0.5,
+              "upper": 0.6,
+              "count": 52,
+              "mean_probability": 0.538351,
+              "observed_rate": 0.75
+            },
+            {
+              "lower": 0.6,
+              "upper": 0.7,
+              "count": 16,
+              "mean_probability": 0.633652,
+              "observed_rate": 0.875
+            },
+            {
+              "lower": 0.7,
+              "upper": 0.8,
+              "count": 1,
+              "mean_probability": 0.726895,
+              "observed_rate": 1.0
+            },
+            {
+              "lower": 0.8,
+              "upper": 0.9,
+              "count": 0,
+              "mean_probability": 0.0,
+              "observed_rate": 0.0
+            },
+            {
+              "lower": 0.9,
+              "upper": 1.0,
+              "count": 0,
+              "mean_probability": 0.0,
+              "observed_rate": 0.0
+            }
+          ]
+        },
+        "validation_delta_vs_current": {
+          "brier_score": 0.0,
+          "log_loss": 0.0,
+          "expected_calibration_error": 0.0
+        }
+      },
+      "cap_at_90_weight_0_2": {
+        "weight": 0.2,
+        "tuning_metrics": {
+          "matches": 824,
+          "log_loss": 1.033959,
+          "brier_score": 0.621205,
+          "ranked_probability_score": 0.215786,
+          "accuracy": 0.5,
+          "expected_calibration_error": 0.039643,
+          "calibration_bins": [
+            {
+              "lower": 0.0,
+              "upper": 0.1,
+              "count": 1,
+              "mean_probability": 0.097932,
+              "observed_rate": 0.0
+            },
+            {
+              "lower": 0.1,
+              "upper": 0.2,
+              "count": 45,
+              "mean_probability": 0.180096,
+              "observed_rate": 0.088889
+            },
+            {
+              "lower": 0.2,
+              "upper": 0.3,
+              "count": 1207,
+              "mean_probability": 0.272646,
+              "observed_rate": 0.239437
+            },
+            {
+              "lower": 0.3,
+              "upper": 0.4,
+              "count": 688,
+              "mean_probability": 0.349872,
+              "observed_rate": 0.343023
+            },
+            {
+              "lower": 0.4,
+              "upper": 0.5,
+              "count": 413,
+              "mean_probability": 0.442023,
+              "observed_rate": 0.520581
+            },
+            {
+              "lower": 0.5,
+              "upper": 0.6,
+              "count": 111,
+              "mean_probability": 0.532264,
+              "observed_rate": 0.675676
+            },
+            {
+              "lower": 0.6,
+              "upper": 0.7,
+              "count": 7,
+              "mean_probability": 0.623555,
+              "observed_rate": 0.714286
+            },
+            {
+              "lower": 0.7,
+              "upper": 0.8,
+              "count": 0,
+              "mean_probability": 0.0,
+              "observed_rate": 0.0
+            },
+            {
+              "lower": 0.8,
+              "upper": 0.9,
+              "count": 0,
+              "mean_probability": 0.0,
+              "observed_rate": 0.0
+            },
+            {
+              "lower": 0.9,
+              "upper": 1.0,
+              "count": 0,
+              "mean_probability": 0.0,
+              "observed_rate": 0.0
+            }
+          ]
+        },
+        "validation_metrics": {
+          "matches": 233,
+          "log_loss": 0.947064,
+          "brier_score": 0.559287,
+          "ranked_probability_score": 0.194415,
+          "accuracy": 0.60515,
+          "expected_calibration_error": 0.089244,
+          "calibration_bins": [
+            {
+              "lower": 0.0,
+              "upper": 0.1,
+              "count": 1,
+              "mean_probability": 0.088021,
+              "observed_rate": 0.0
+            },
+            {
+              "lower": 0.1,
+              "upper": 0.2,
+              "count": 39,
+              "mean_probability": 0.16906,
+              "observed_rate": 0.051282
+            },
+            {
+              "lower": 0.2,
+              "upper": 0.3,
+              "count": 336,
+              "mean_probability": 0.267152,
+              "observed_rate": 0.196429
+            },
+            {
+              "lower": 0.3,
+              "upper": 0.4,
+              "count": 154,
+              "mean_probability": 0.349002,
+              "observed_rate": 0.331169
+            },
+            {
+              "lower": 0.4,
+              "upper": 0.5,
+              "count": 103,
+              "mean_probability": 0.444013,
+              "observed_rate": 0.61165
+            },
+            {
+              "lower": 0.5,
+              "upper": 0.6,
+              "count": 50,
+              "mean_probability": 0.537924,
+              "observed_rate": 0.74
+            },
+            {
+              "lower": 0.6,
+              "upper": 0.7,
+              "count": 15,
+              "mean_probability": 0.630478,
+              "observed_rate": 0.866667
+            },
+            {
+              "lower": 0.7,
+              "upper": 0.8,
+              "count": 1,
+              "mean_probability": 0.72263,
+              "observed_rate": 1.0
+            },
+            {
+              "lower": 0.8,
+              "upper": 0.9,
+              "count": 0,
+              "mean_probability": 0.0,
+              "observed_rate": 0.0
+            },
+            {
+              "lower": 0.9,
+              "upper": 1.0,
+              "count": 0,
+              "mean_probability": 0.0,
+              "observed_rate": 0.0
+            }
+          ]
+        },
+        "validation_delta_vs_current": {
+          "brier_score": 0.0013980000000000103,
+          "log_loss": 0.0019970000000000265,
+          "expected_calibration_error": 0.0009630000000000055
+        }
+      },
+      "sample_shrinkage_weight_0_2": {
+        "weight": 0.2,
+        "tuning_metrics": {
+          "matches": 824,
+          "log_loss": 1.036678,
+          "brier_score": 0.623138,
+          "ranked_probability_score": 0.216718,
+          "accuracy": 0.503641,
+          "expected_calibration_error": 0.036945,
+          "calibration_bins": [
+            {
+              "lower": 0.0,
+              "upper": 0.1,
+              "count": 0,
+              "mean_probability": 0.0,
+              "observed_rate": 0.0
+            },
+            {
+              "lower": 0.1,
+              "upper": 0.2,
+              "count": 38,
+              "mean_probability": 0.180934,
+              "observed_rate": 0.078947
+            },
+            {
+              "lower": 0.2,
+              "upper": 0.3,
+              "count": 1203,
+              "mean_probability": 0.273575,
+              "observed_rate": 0.239401
+            },
+            {
+              "lower": 0.3,
+              "upper": 0.4,
+              "count": 713,
+              "mean_probability": 0.350179,
+              "observed_rate": 0.349229
+            },
+            {
+              "lower": 0.4,
+              "upper": 0.5,
+              "count": 417,
+              "mean_probability": 0.441805,
+              "observed_rate": 0.520384
+            },
+            {
+              "lower": 0.5,
+              "upper": 0.6,
+              "count": 98,
+              "mean_probability": 0.532596,
+              "observed_rate": 0.663265
+            },
+            {
+              "lower": 0.6,
+              "upper": 0.7,
+              "count": 3,
+              "mean_probability": 0.636289,
+              "observed_rate": 0.666667
+            },
+            {
+              "lower": 0.7,
+              "upper": 0.8,
+              "count": 0,
+              "mean_probability": 0.0,
+              "observed_rate": 0.0
+            },
+            {
+              "lower": 0.8,
+              "upper": 0.9,
+              "count": 0,
+              "mean_probability": 0.0,
+              "observed_rate": 0.0
+            },
+            {
+              "lower": 0.9,
+              "upper": 1.0,
+              "count": 0,
+              "mean_probability": 0.0,
+              "observed_rate": 0.0
+            }
+          ]
+        },
+        "validation_metrics": {
+          "matches": 233,
+          "log_loss": 0.95224,
+          "brier_score": 0.563011,
+          "ranked_probability_score": 0.196139,
+          "accuracy": 0.600858,
+          "expected_calibration_error": 0.091953,
+          "calibration_bins": [
+            {
+              "lower": 0.0,
+              "upper": 0.1,
+              "count": 1,
+              "mean_probability": 0.091774,
+              "observed_rate": 0.0
+            },
+            {
+              "lower": 0.1,
+              "upper": 0.2,
+              "count": 35,
+              "mean_probability": 0.170852,
+              "observed_rate": 0.057143
+            },
+            {
+              "lower": 0.2,
+              "upper": 0.3,
+              "count": 340,
+              "mean_probability": 0.268011,
+              "observed_rate": 0.197059
+            },
+            {
+              "lower": 0.3,
+              "upper": 0.4,
+              "count": 157,
+              "mean_probability": 0.349949,
+              "observed_rate": 0.324841
+            },
+            {
+              "lower": 0.4,
+              "upper": 0.5,
+              "count": 103,
+              "mean_probability": 0.444028,
+              "observed_rate": 0.631068
+            },
+            {
+              "lower": 0.5,
+              "upper": 0.6,
+              "count": 49,
+              "mean_probability": 0.536068,
+              "observed_rate": 0.734694
+            },
+            {
+              "lower": 0.6,
+              "upper": 0.7,
+              "count": 13,
+              "mean_probability": 0.6265,
+              "observed_rate": 0.846154
+            },
+            {
+              "lower": 0.7,
+              "upper": 0.8,
+              "count": 1,
+              "mean_probability": 0.715799,
+              "observed_rate": 1.0
+            },
+            {
+              "lower": 0.8,
+              "upper": 0.9,
+              "count": 0,
+              "mean_probability": 0.0,
+              "observed_rate": 0.0
+            },
+            {
+              "lower": 0.9,
+              "upper": 1.0,
+              "count": 0,
+              "mean_probability": 0.0,
+              "observed_rate": 0.0
+            }
+          ]
+        },
+        "validation_delta_vs_current": {
+          "brier_score": 0.005122000000000071,
+          "log_loss": 0.007172999999999985,
+          "expected_calibration_error": 0.0036719999999999947
+        }
+      },
+      "confederation_adjusted_weight_0_2": {
+        "weight": 0.2,
+        "tuning_metrics": {
+          "matches": 824,
+          "log_loss": 1.033296,
+          "brier_score": 0.620756,
+          "ranked_probability_score": 0.215563,
+          "accuracy": 0.501214,
+          "expected_calibration_error": 0.038892,
+          "calibration_bins": [
+            {
+              "lower": 0.0,
+              "upper": 0.1,
+              "count": 1,
+              "mean_probability": 0.09484,
+              "observed_rate": 0.0
+            },
+            {
+              "lower": 0.1,
+              "upper": 0.2,
+              "count": 45,
+              "mean_probability": 0.178677,
+              "observed_rate": 0.088889
+            },
+            {
+              "lower": 0.2,
+              "upper": 0.3,
+              "count": 1209,
+              "mean_probability": 0.272351,
+              "observed_rate": 0.239868
+            },
+            {
+              "lower": 0.3,
+              "upper": 0.4,
+              "count": 680,
+              "mean_probability": 0.349503,
+              "observed_rate": 0.342647
+            },
+            {
+              "lower": 0.4,
+              "upper": 0.5,
+              "count": 416,
+              "mean_probability": 0.441852,
+              "observed_rate": 0.516827
+            },
+            {
+              "lower": 0.5,
+              "upper": 0.6,
+              "count": 114,
+              "mean_probability": 0.532809,
+              "observed_rate": 0.675439
+            },
+            {
+              "lower": 0.6,
+              "upper": 0.7,
+              "count": 6,
+              "mean_probability": 0.6125,
+              "observed_rate": 0.666667
+            },
+            {
+              "lower": 0.7,
+              "upper": 0.8,
+              "count": 1,
+              "mean_probability": 0.70366,
+              "observed_rate": 1.0
+            },
+            {
+              "lower": 0.8,
+              "upper": 0.9,
+              "count": 0,
+              "mean_probability": 0.0,
+              "observed_rate": 0.0
+            },
+            {
+              "lower": 0.9,
+              "upper": 1.0,
+              "count": 0,
+              "mean_probability": 0.0,
+              "observed_rate": 0.0
+            }
+          ]
+        },
+        "validation_metrics": {
+          "matches": 233,
+          "log_loss": 0.945251,
+          "brier_score": 0.558008,
+          "ranked_probability_score": 0.193827,
+          "accuracy": 0.600858,
+          "expected_calibration_error": 0.088375,
+          "calibration_bins": [
+            {
+              "lower": 0.0,
+              "upper": 0.1,
+              "count": 1,
+              "mean_probability": 0.085709,
+              "observed_rate": 0.0
+            },
+            {
+              "lower": 0.1,
+              "upper": 0.2,
+              "count": 40,
+              "mean_probability": 0.167185,
+              "observed_rate": 0.05
+            },
+            {
+              "lower": 0.2,
+              "upper": 0.3,
+              "count": 337,
+              "mean_probability": 0.266455,
+              "observed_rate": 0.195846
+            },
+            {
+              "lower": 0.3,
+              "upper": 0.4,
+              "count": 150,
+              "mean_probability": 0.348791,
+              "observed_rate": 0.333333
+            },
+            {
+              "lower": 0.4,
+              "upper": 0.5,
+              "count": 102,
+              "mean_probability": 0.443877,
+              "observed_rate": 0.598039
+            },
+            {
+              "lower": 0.5,
+              "upper": 0.6,
+              "count": 52,
+              "mean_probability": 0.538142,
+              "observed_rate": 0.75
+            },
+            {
+              "lower": 0.6,
+              "upper": 0.7,
+              "count": 16,
+              "mean_probability": 0.632946,
+              "observed_rate": 0.875
+            },
+            {
+              "lower": 0.7,
+              "upper": 0.8,
+              "count": 1,
+              "mean_probability": 0.726895,
+              "observed_rate": 1.0
+            },
+            {
+              "lower": 0.8,
+              "upper": 0.9,
+              "count": 0,
+              "mean_probability": 0.0,
+              "observed_rate": 0.0
+            },
+            {
+              "lower": 0.9,
+              "upper": 1.0,
+              "count": 0,
+              "mean_probability": 0.0,
+              "observed_rate": 0.0
+            }
+          ]
+        },
+        "validation_delta_vs_current": {
+          "brier_score": 0.00011899999999998023,
+          "log_loss": 0.00018399999999996197,
+          "expected_calibration_error": 9.399999999999686e-05
+        }
+      },
+      "current_volume_weight_0_1": {
+        "weight": 0.1,
+        "tuning_metrics": {
+          "matches": 824,
+          "log_loss": 1.036745,
+          "brier_score": 0.623186,
+          "ranked_probability_score": 0.216743,
+          "accuracy": 0.501214,
+          "expected_calibration_error": 0.037254,
+          "calibration_bins": [
+            {
+              "lower": 0.0,
+              "upper": 0.1,
+              "count": 0,
+              "mean_probability": 0.0,
+              "observed_rate": 0.0
+            },
+            {
+              "lower": 0.1,
+              "upper": 0.2,
+              "count": 38,
+              "mean_probability": 0.180838,
+              "observed_rate": 0.078947
+            },
+            {
+              "lower": 0.2,
+              "upper": 0.3,
+              "count": 1203,
+              "mean_probability": 0.273554,
+              "observed_rate": 0.241064
+            },
+            {
+              "lower": 0.3,
+              "upper": 0.4,
+              "count": 714,
+              "mean_probability": 0.350264,
+              "observed_rate": 0.345938
+            },
+            {
+              "lower": 0.4,
+              "upper": 0.5,
+              "count": 416,
+              "mean_probability": 0.441954,
+              "observed_rate": 0.521635
+            },
+            {
+              "lower": 0.5,
+              "upper": 0.6,
+              "count": 98,
+              "mean_probability": 0.532573,
+              "observed_rate": 0.663265
+            },
+            {
+              "lower": 0.6,
+              "upper": 0.7,
+              "count": 3,
+              "mean_probability": 0.636455,
+              "observed_rate": 0.666667
+            },
+            {
+              "lower": 0.7,
+              "upper": 0.8,
+              "count": 0,
+              "mean_probability": 0.0,
+              "observed_rate": 0.0
+            },
+            {
+              "lower": 0.8,
+              "upper": 0.9,
+              "count": 0,
+              "mean_probability": 0.0,
+              "observed_rate": 0.0
+            },
+            {
+              "lower": 0.9,
+              "upper": 1.0,
+              "count": 0,
+              "mean_probability": 0.0,
+              "observed_rate": 0.0
+            }
+          ]
+        },
+        "validation_metrics": {
+          "matches": 233,
+          "log_loss": 0.952317,
+          "brier_score": 0.563076,
+          "ranked_probability_score": 0.196169,
+          "accuracy": 0.600858,
+          "expected_calibration_error": 0.091861,
+          "calibration_bins": [
+            {
+              "lower": 0.0,
+              "upper": 0.1,
+              "count": 1,
+              "mean_probability": 0.091774,
+              "observed_rate": 0.0
+            },
+            {
+              "lower": 0.1,
+              "upper": 0.2,
+              "count": 35,
+              "mean_probability": 0.170825,
+              "observed_rate": 0.057143
+            },
+            {
+              "lower": 0.2,
+              "upper": 0.3,
+              "count": 340,
+              "mean_probability": 0.267948,
+              "observed_rate": 0.197059
+            },
+            {
+              "lower": 0.3,
+              "upper": 0.4,
+              "count": 157,
+              "mean_probability": 0.349888,
+              "observed_rate": 0.324841
+            },
+            {
+              "lower": 0.4,
+              "upper": 0.5,
+              "count": 103,
+              "mean_probability": 0.444275,
+              "observed_rate": 0.631068
+            },
+            {
+              "lower": 0.5,
+              "upper": 0.6,
+              "count": 49,
+              "mean_probability": 0.5362,
+              "observed_rate": 0.734694
+            },
+            {
+              "lower": 0.6,
+              "upper": 0.7,
+              "count": 13,
+              "mean_probability": 0.6265,
+              "observed_rate": 0.846154
+            },
+            {
+              "lower": 0.7,
+              "upper": 0.8,
+              "count": 1,
+              "mean_probability": 0.715799,
+              "observed_rate": 1.0
+            },
+            {
+              "lower": 0.8,
+              "upper": 0.9,
+              "count": 0,
+              "mean_probability": 0.0,
+              "observed_rate": 0.0
+            },
+            {
+              "lower": 0.9,
+              "upper": 1.0,
+              "count": 0,
+              "mean_probability": 0.0,
+              "observed_rate": 0.0
+            }
+          ]
+        },
+        "validation_delta_vs_current": {
+          "brier_score": 0.005187000000000053,
+          "log_loss": 0.007249999999999979,
+          "expected_calibration_error": 0.00358
+        }
+      }
+    }
+  },
+  "decision": {
+    "current_metrics": {
+      "matches": 233,
+      "log_loss": 0.945067,
+      "brier_score": 0.557889,
+      "ranked_probability_score": 0.19377,
+      "accuracy": 0.600858,
+      "expected_calibration_error": 0.088281,
+      "calibration_bins": [
+        {
+          "lower": 0.0,
+          "upper": 0.1,
+          "count": 1,
+          "mean_probability": 0.085709,
+          "observed_rate": 0.0
+        },
+        {
+          "lower": 0.1,
+          "upper": 0.2,
+          "count": 40,
+          "mean_probability": 0.166949,
+          "observed_rate": 0.05
+        },
+        {
+          "lower": 0.2,
+          "upper": 0.3,
+          "count": 337,
+          "mean_probability": 0.266394,
+          "observed_rate": 0.195846
+        },
+        {
+          "lower": 0.3,
+          "upper": 0.4,
+          "count": 150,
+          "mean_probability": 0.348772,
+          "observed_rate": 0.333333
+        },
+        {
+          "lower": 0.4,
+          "upper": 0.5,
+          "count": 102,
+          "mean_probability": 0.443983,
+          "observed_rate": 0.598039
+        },
+        {
+          "lower": 0.5,
+          "upper": 0.6,
+          "count": 52,
+          "mean_probability": 0.538351,
+          "observed_rate": 0.75
+        },
+        {
+          "lower": 0.6,
+          "upper": 0.7,
+          "count": 16,
+          "mean_probability": 0.633652,
+          "observed_rate": 0.875
+        },
+        {
+          "lower": 0.7,
+          "upper": 0.8,
+          "count": 1,
+          "mean_probability": 0.726895,
+          "observed_rate": 1.0
+        },
+        {
+          "lower": 0.8,
+          "upper": 0.9,
+          "count": 0,
+          "mean_probability": 0.0,
+          "observed_rate": 0.0
+        },
+        {
+          "lower": 0.9,
+          "upper": 1.0,
+          "count": 0,
+          "mean_probability": 0.0,
+          "observed_rate": 0.0
+        }
+      ]
+    },
+    "best_alternative": "current_v4_weight_0_2",
+    "best_alternative_metrics": {
+      "matches": 233,
+      "log_loss": 0.945067,
+      "brier_score": 0.557889,
+      "ranked_probability_score": 0.19377,
+      "accuracy": 0.600858,
+      "expected_calibration_error": 0.088281,
+      "calibration_bins": [
+        {
+          "lower": 0.0,
+          "upper": 0.1,
+          "count": 1,
+          "mean_probability": 0.085709,
+          "observed_rate": 0.0
+        },
+        {
+          "lower": 0.1,
+          "upper": 0.2,
+          "count": 40,
+          "mean_probability": 0.166949,
+          "observed_rate": 0.05
+        },
+        {
+          "lower": 0.2,
+          "upper": 0.3,
+          "count": 337,
+          "mean_probability": 0.266394,
+          "observed_rate": 0.195846
+        },
+        {
+          "lower": 0.3,
+          "upper": 0.4,
+          "count": 150,
+          "mean_probability": 0.348772,
+          "observed_rate": 0.333333
+        },
+        {
+          "lower": 0.4,
+          "upper": 0.5,
+          "count": 102,
+          "mean_probability": 0.443983,
+          "observed_rate": 0.598039
+        },
+        {
+          "lower": 0.5,
+          "upper": 0.6,
+          "count": 52,
+          "mean_probability": 0.538351,
+          "observed_rate": 0.75
+        },
+        {
+          "lower": 0.6,
+          "upper": 0.7,
+          "count": 16,
+          "mean_probability": 0.633652,
+          "observed_rate": 0.875
+        },
+        {
+          "lower": 0.7,
+          "upper": 0.8,
+          "count": 1,
+          "mean_probability": 0.726895,
+          "observed_rate": 1.0
+        },
+        {
+          "lower": 0.8,
+          "upper": 0.9,
+          "count": 0,
+          "mean_probability": 0.0,
+          "observed_rate": 0.0
+        },
+        {
+          "lower": 0.9,
+          "upper": 1.0,
+          "count": 0,
+          "mean_probability": 0.0,
+          "observed_rate": 0.0
+        }
+      ]
+    },
+    "alternatives_beating_current_on_brier_then_log_loss": [],
+    "production_change_recommended": false,
+    "reason": "Current v4 remains the best tested holdout model (current_v4_weight_0_2). Every requested alternative worsened Brier score and log loss, so no production change was applied."
+  }
+}

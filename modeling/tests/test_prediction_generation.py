@@ -6,15 +6,22 @@ import subprocess
 import sys
 import tempfile
 import unittest
-from pathlib import Path
 from datetime import datetime, timezone
+from pathlib import Path
 
-from modeling.src.data import load_teams
+from modeling.src.data import build_fixtures, load_teams
+from scripts.database import create_database_engine
 from scripts.generate_predictions import (
     MODEL_VERSION,
+    PredictionRepository,
     SHOT_VOLUME_WEIGHT,
     calculate_prediction,
+    canonical_prior_elo,
     load_canonical_future_matches,
+)
+from scripts.run_simulations import (
+    build_knockout_prediction_provider,
+    simulate_tournaments,
 )
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -381,7 +388,9 @@ class PredictionScriptTests(unittest.TestCase):
         self.assertTrue(all(row[5] == MODEL_VERSION for row in prediction_rows))
         self.assertTrue(all(json.loads(row[6]) for row in prediction_rows))
         self.assertTrue(all(0 <= row[7] <= 100 for row in prediction_rows))
-        self.assertGreater(len({row[8] for row in prediction_rows}), 1)
+        self.assertTrue(
+            all(row[8] in {"High", "Medium", "Low"} for row in prediction_rows)
+        )
         self.assertTrue(all(row[9] for row in prediction_rows))
         self.assertEqual(runs, [(MODEL_VERSION,), (MODEL_VERSION,)])
         first_factors = json.loads(
@@ -401,10 +410,10 @@ class PredictionScriptTests(unittest.TestCase):
                 "_attack_defense_available": True,
             },
             {
-                "elo_rating": teams["RSA"].elo,
+                "elo_rating": canonical_prior_elo(teams["RSA"].rank),
                 "attack_rating": 50,
                 "defense_rating": 50,
-                "_team_rating_available": True,
+                "_team_rating_available": False,
                 "_attack_defense_available": False,
             },
             home_shot_volume_rating=90,
@@ -444,6 +453,101 @@ class PredictionScriptTests(unittest.TestCase):
                 connection.execute("select count(*) from model_runs").fetchone()[0],
                 0,
             )
+
+    def test_alias_mapping_is_unique_and_all_teams_have_rating_source(self):
+        with sqlite3.connect(self.database_path) as connection:
+            teams = json.loads((ROOT / "data/seed/teams.json").read_text())
+            database_names = {
+                "CZE": "Czech Republic",
+                "BIH": "Bosnia & Herzegovina",
+                "USA": "USA",
+                "TUR": "Türkiye",
+                "CUW": "Curaçao",
+                "CPV": "Cape Verde Islands",
+                "COD": "Congo DR",
+            }
+            database_teams = [
+                (
+                    f"db-{team['id']}",
+                    database_names.get(team["id"], team["name"]),
+                )
+                for team in teams
+                if team["id"] != "NZL"
+            ]
+            connection.executemany(
+                "insert into teams (id, name) values (?, ?)",
+                database_teams,
+            )
+            connection.executemany(
+                """
+                insert into team_ratings (
+                  team_id, model_run_id, rated_at, updated_at, elo_rating,
+                  attack_rating, defense_rating, form_rating, matches_played
+                ) values (?, null, ?, ?, ?, ?, ?, ?, ?)
+                """,
+                [
+                    (
+                        team_id,
+                        "2026-06-10",
+                        "2026-06-10",
+                        1500 + index,
+                        50,
+                        50,
+                        50,
+                        10,
+                    )
+                    for index, (team_id, _) in enumerate(database_teams)
+                ],
+            )
+
+        engine = create_database_engine(f"sqlite:///{self.database_path}")
+        try:
+            repository = PredictionRepository(engine)
+            mapping = repository.load_database_team_ids()
+            ratings = repository.load_current_team_ratings(mapping)
+        finally:
+            engine.dispose()
+
+        new_zealand = next(team for team in load_teams() if team.id == "NZL")
+        self.assertEqual(len(mapping), 48)
+        self.assertEqual(len({value for value in mapping.values() if value}), 47)
+        self.assertEqual(mapping["CZE"], "db-CZE")
+        self.assertEqual(mapping["BIH"], "db-BIH")
+        self.assertEqual(ratings["CZE"]["_rating_source"], "database_current")
+        self.assertEqual(ratings["BIH"]["_rating_source"], "database_current")
+        self.assertEqual(ratings["NZL"]["_rating_source"], "canonical_rank_prior")
+        self.assertEqual(
+            ratings["NZL"]["elo_rating"],
+            canonical_prior_elo(new_zealand.rank),
+        )
+        self.assertTrue(all(rating["_rating_source"] for rating in ratings.values()))
+        self.assertTrue(
+            all(
+                rating["elo_rating"] < 1700
+                for rating in ratings.values()
+                if rating["_rating_source"] == "canonical_rank_prior"
+            )
+        )
+
+        predictions = {}
+        for fixture in build_fixtures(load_teams()):
+            if fixture.stage != "group":
+                continue
+            predictions[fixture.id] = calculate_prediction(
+                ratings[fixture.home_team_id],
+                ratings[fixture.away_team_id],
+            )
+        simulation = {
+            row["team_id"]: row
+            for row in simulate_tournaments(
+                predictions,
+                2_000,
+                2026,
+                build_knockout_prediction_provider(ratings),
+            )
+        }
+        self.assertLess(simulation["CZE"]["champion_probability"], 0.05)
+        self.assertLess(simulation["BIH"]["champion_probability"], 0.05)
 
 
 if __name__ == "__main__":
