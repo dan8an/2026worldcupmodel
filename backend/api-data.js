@@ -436,11 +436,15 @@ const emptyPredictionContext = () => ({
 
 export const snapshotSimulation = () => {
   if (!generatedSnapshot.simulation?.teams?.length) return null;
+  const generatedAt = generatedSnapshot.generated_at ??
+    new Date(0).toISOString();
   return {
     ...generatedSnapshot.simulation,
     model_version: generatedSnapshot.model_version ?? "placeholder",
-    generated_at: generatedSnapshot.generated_at ?? new Date(0).toISOString(),
+    generated_at: generatedAt,
+    created_at: generatedAt,
     data_cutoff: generatedSnapshot.data_cutoff ?? new Date(0).toISOString(),
+    source: "fallback_static",
   };
 };
 
@@ -449,7 +453,9 @@ export const normalizeDatabaseSimulation = (run, probabilities, teams) => ({
   seed: Number(run.random_seed ?? run.seed ?? 2026),
   model_version: run.model_version ?? run.semantic_version ?? "supabase",
   generated_at: run.generated_at ?? run.created_at,
+  created_at: run.created_at ?? run.generated_at,
   data_cutoff: run.data_cutoff ?? run.generated_at ?? run.created_at,
+  source: "database_latest",
   monte_carlo_precision: {
     worst_case_standard_error: Math.sqrt(
       0.25 / Number(run.num_simulations ?? run.iterations),

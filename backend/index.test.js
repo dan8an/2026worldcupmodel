@@ -113,11 +113,15 @@ test("GET /api/simulations/latest returns the frontend simulation shape", async 
   assert.equal(response.status, 200);
   assert.equal(simulation.iterations, 50000);
   assert.equal(simulation.model_version, "elo-context-v4");
+  assert.equal(simulation.generated_at, "2026-06-10T20:00:00Z");
+  assert.equal(simulation.created_at, "2026-06-10T20:00:00Z");
+  assert.equal(simulation.source, "database_latest");
   assert.equal(simulation.teams.length, 48);
   assert.equal(typeof simulation.teams[0].champion, "number");
   assert.ok(simulation.teams.every((team) => team.champion >= 0 && team.champion <= 1));
   assert.ok(simulation.teams.every((team) => team.team_name.trim()));
   assert.ok(simulation.teams.every((team) => team.team_id.length === 3));
+  assert.equal(simulation.teams[0].champion, 0.1);
 });
 
 test("GET /api/teams returns canonical teams with names", async () => {

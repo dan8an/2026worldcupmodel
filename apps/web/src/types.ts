@@ -159,7 +159,9 @@ export type Simulation = {
   seed: number;
   model_version: string;
   generated_at: string;
+  created_at: string;
   data_cutoff: string;
+  source: "database_latest" | "fallback_static";
   monte_carlo_precision: {
     worst_case_standard_error: number;
     worst_case_95_margin: number;

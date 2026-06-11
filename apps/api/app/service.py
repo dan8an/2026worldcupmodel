@@ -123,10 +123,51 @@ class DatabasePredictionSource:
         }
 
 
+class DatabaseSimulationSource:
+    def __init__(self, engine: Engine) -> None:
+        self.engine = engine
+
+    def load_latest(self) -> dict[str, Any] | None:
+        table_prefix = "public." if self.engine.dialect.name == "postgresql" else ""
+        with self.engine.connect() as connection:
+            latest = connection.execute(
+                text(
+                    f"""
+                    select sr.*
+                    from {table_prefix}simulation_runs sr
+                    where exists (
+                      select 1
+                      from {table_prefix}team_simulation_results tsr
+                      where tsr.simulation_run_id = sr.id
+                    )
+                    order by sr.created_at desc, sr.id desc
+                    limit 1
+                    """
+                )
+            ).mappings().one_or_none()
+            if latest is None:
+                return None
+            rows = [
+                dict(row)
+                for row in connection.execute(
+                    text(
+                        f"""
+                        select *
+                        from {table_prefix}team_simulation_results
+                        where simulation_run_id = :simulation_run_id
+                        """
+                    ),
+                    {"simulation_run_id": latest["id"]},
+                ).mappings()
+            ]
+        return {"run": dict(latest), "results": rows}
+
+
 class PredictionService:
     def __init__(
         self,
         prediction_source: DatabasePredictionSource | None = None,
+        simulation_source: DatabaseSimulationSource | None = None,
         prediction_cache_seconds: float | None = None,
     ) -> None:
         self.generated_at = datetime.now(timezone.utc).isoformat()
@@ -159,6 +200,11 @@ class PredictionService:
             if prediction_source is not None
             else DatabasePredictionSource.from_environment()
         )
+        self.simulation_source = simulation_source
+        if self.simulation_source is None and self.prediction_source is not None:
+            engine = getattr(self.prediction_source, "engine", None)
+            if engine is not None:
+                self.simulation_source = DatabaseSimulationSource(engine)
         try:
             configured_cache_seconds = float(
                 os.getenv("PREDICTION_READ_CACHE_SECONDS", "30")
@@ -376,6 +422,96 @@ class PredictionService:
         }
 
     def latest_simulation(self) -> dict:
+        if self.simulation_source is not None:
+            try:
+                database_simulation = self.simulation_source.load_latest()
+            except Exception:
+                LOGGER.warning(
+                    "Latest database simulation is unavailable; serving static "
+                    "simulation fallback",
+                    exc_info=True,
+                )
+            else:
+                if database_simulation is not None:
+                    run = database_simulation["run"]
+                    generated_at = run.get("generated_at") or run.get("created_at")
+                    iterations = int(
+                        run.get("num_simulations") or run.get("iterations") or 0
+                    )
+                    teams = []
+                    for row in database_simulation["results"]:
+                        team_id = str(row["team_id"])
+                        team = self.teams_by_id.get(team_id)
+                        if team is None:
+                            LOGGER.warning(
+                                "Skipping simulation result for unknown team %s",
+                                team_id,
+                            )
+                            continue
+                        teams.append(
+                            {
+                                "team_id": team_id,
+                                "team_name": team.name,
+                                "flag": flag_for_team(team_id),
+                                "group": team.group,
+                                "group_stage_exit": float(
+                                    row.get("group_stage_exit_probability")
+                                    or row.get("group_stage_exit")
+                                    or 0
+                                ),
+                                "round_of_32": float(
+                                    row.get("round_of_32_probability")
+                                    or row.get("round_of_32")
+                                    or 0
+                                ),
+                                "round_of_16": float(
+                                    row.get("round_of_16_probability")
+                                    or row.get("round_of_16")
+                                    or 0
+                                ),
+                                "quarterfinal": float(
+                                    row.get("quarterfinal_probability")
+                                    or row.get("quarterfinal")
+                                    or 0
+                                ),
+                                "semifinal": float(
+                                    row.get("semifinal_probability")
+                                    or row.get("semifinal")
+                                    or 0
+                                ),
+                                "final": float(
+                                    row.get("final_probability")
+                                    or row.get("final")
+                                    or 0
+                                ),
+                                "champion": float(
+                                    row.get("champion_probability")
+                                    or row.get("champion")
+                                    or 0
+                                ),
+                            }
+                        )
+                    return {
+                        "iterations": iterations,
+                        "seed": int(run.get("random_seed") or run.get("seed") or 2026),
+                        "model_version": run.get("model_version") or "unknown",
+                        "generated_at": str(generated_at),
+                        "created_at": str(run.get("created_at") or generated_at),
+                        "data_cutoff": str(run.get("data_cutoff") or generated_at),
+                        "source": "database_latest",
+                        "monte_carlo_precision": {
+                            "worst_case_standard_error": (
+                                (0.25 / iterations) ** 0.5 if iterations else 0.0
+                            ),
+                            "worst_case_95_margin": (
+                                1.96 * (0.25 / iterations) ** 0.5
+                                if iterations
+                                else 0.0
+                            ),
+                        },
+                        "teams": teams,
+                    }
+
         if self._simulation is None:
             snapshot_path = ROOT / "data" / "generated" / "latest.json"
             if snapshot_path.exists():
@@ -399,7 +535,9 @@ class PredictionService:
             **self._simulation,
             "model_version": MODEL_VERSION,
             "generated_at": self._simulation_generated_at,
+            "created_at": self._simulation_generated_at,
             "data_cutoff": self._simulation_data_cutoff,
+            "source": "fallback_static",
         }
 
     def team_profile_payload(self, team_id: str) -> dict:

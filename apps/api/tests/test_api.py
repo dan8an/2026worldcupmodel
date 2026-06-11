@@ -3,7 +3,12 @@ from sqlalchemy import create_engine, text
 
 from apps.api.app import main as main_module
 from apps.api.app.main import app
-from apps.api.app.service import DatabasePredictionSource, PredictionService
+from apps.api.app.service import (
+    DatabasePredictionSource,
+    DatabaseSimulationSource,
+    PredictionService,
+)
+from modeling.src.data import load_teams
 
 client = TestClient(app)
 
@@ -52,6 +57,43 @@ class LatestV4PredictionSource:
 def use_v4_database_service(monkeypatch):
     service = PredictionService(
         prediction_source=LatestV4PredictionSource(),
+        prediction_cache_seconds=0,
+    )
+    monkeypatch.setattr(main_module, "service", service)
+    return service
+
+
+class LatestV4SimulationSource:
+    def load_latest(self):
+        return {
+            "run": {
+                "id": "v4-simulation",
+                "model_version": "elo-context-v4",
+                "num_simulations": 50000,
+                "random_seed": 2026,
+                "created_at": "2026-06-11T06:05:00+00:00",
+            },
+            "results": [
+                {
+                    "simulation_run_id": "v4-simulation",
+                    "team_id": team.id,
+                    "group_stage_exit_probability": 0.25,
+                    "round_of_32_probability": 0.75,
+                    "round_of_16_probability": 0.5,
+                    "quarterfinal_probability": 0.3,
+                    "semifinal_probability": 0.2,
+                    "final_probability": 0.1,
+                    "champion_probability": 0.314 if team.id == "ARG" else 0.01,
+                }
+                for team in load_teams()
+            ],
+        }
+
+
+def use_v4_simulation_service(monkeypatch):
+    service = PredictionService(
+        prediction_source=LatestV4PredictionSource(),
+        simulation_source=LatestV4SimulationSource(),
         prediction_cache_seconds=0,
     )
     monkeypatch.setattr(main_module, "service", service)
@@ -259,6 +301,44 @@ def test_latest_database_prediction_run_wins_over_static(monkeypatch):
     assert prediction["source"] == "database_latest"
 
 
+def test_latest_database_simulation_wins_over_static(monkeypatch):
+    use_v4_simulation_service(monkeypatch)
+
+    for path in ("/v1/simulations/latest", "/api/simulations/latest"):
+        response = client.get(path)
+        payload = response.json()
+
+        assert response.status_code == 200
+        assert payload["model_version"] == "elo-context-v4"
+        assert payload["generated_at"] == "2026-06-11T06:05:00+00:00"
+        assert payload["created_at"] == "2026-06-11T06:05:00+00:00"
+        assert payload["source"] == "database_latest"
+        argentina = next(
+            team for team in payload["teams"] if team["team_id"] == "ARG"
+        )
+        assert argentina["team_name"] == "Argentina"
+        assert argentina["champion"] == 0.314
+
+
+def test_database_simulation_failure_uses_labeled_static_fallback():
+    class FailingSimulationSource:
+        def load_latest(self):
+            raise RuntimeError("database unavailable")
+
+    service = PredictionService(
+        prediction_source=LatestV4PredictionSource(),
+        simulation_source=FailingSimulationSource(),
+        prediction_cache_seconds=0,
+    )
+
+    payload = service.latest_simulation()
+
+    assert payload["source"] == "fallback_static"
+    assert payload["model_version"] == "context-0.2.0"
+    assert payload["created_at"] == payload["generated_at"]
+    assert len(payload["teams"]) == 48
+
+
 def test_api_matches_use_v4_probabilities_and_canonical_fixture(monkeypatch):
     use_v4_database_service(monkeypatch)
 
@@ -372,3 +452,64 @@ def test_database_source_selects_newest_prediction_run():
     assert latest["model_run_id"] == "v4-run"
     assert latest["model_version"] == "elo-context-v4"
     assert latest["predictions"]["WC26-001"]["home_win_probability"] == 0.61
+
+
+def test_database_source_selects_newest_simulation_run_and_team_results():
+    engine = create_engine("sqlite://")
+    with engine.begin() as connection:
+        connection.execute(
+            text(
+                """
+                create table simulation_runs (
+                  id text primary key,
+                  model_version text,
+                  num_simulations integer,
+                  random_seed integer,
+                  created_at text
+                )
+                """
+            )
+        )
+        connection.execute(
+            text(
+                """
+                create table team_simulation_results (
+                  simulation_run_id text,
+                  team_id text,
+                  champion_probability real
+                )
+                """
+            )
+        )
+        connection.execute(
+            text(
+                """
+                insert into simulation_runs values
+                  ('old-simulation', 'context-0.2.0', 1000, 2026,
+                   '2026-06-10T00:46:29+00:00'),
+                  ('v4-simulation', 'elo-context-v4', 50000, 2026,
+                   '2026-06-11T06:05:00+00:00')
+                """
+            )
+        )
+        connection.execute(
+            text(
+                """
+                insert into team_simulation_results values
+                  ('old-simulation', 'ARG', 0.11),
+                  ('v4-simulation', 'ARG', 0.314)
+                """
+            )
+        )
+
+    latest = DatabaseSimulationSource(engine).load_latest()
+
+    assert latest["run"]["id"] == "v4-simulation"
+    assert latest["run"]["model_version"] == "elo-context-v4"
+    assert latest["results"] == [
+        {
+            "simulation_run_id": "v4-simulation",
+            "team_id": "ARG",
+            "champion_probability": 0.314,
+        }
+    ]

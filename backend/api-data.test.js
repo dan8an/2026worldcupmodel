@@ -46,6 +46,8 @@ test("simulation snapshot satisfies the expected response shape", () => {
   assert.equal(simulation.teams.length, 48);
   assert.equal(typeof simulation.model_version, "string");
   assert.equal(typeof simulation.monte_carlo_precision.worst_case_95_margin, "number");
+  assert.equal(simulation.source, "fallback_static");
+  assert.equal(simulation.created_at, simulation.generated_at);
 });
 
 test("provider matches do not replace the World Cup forecast catalog", () => {
