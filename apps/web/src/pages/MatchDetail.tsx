@@ -9,10 +9,12 @@ import {
   ProbabilityBar,
 } from "../components";
 import {
+  additionalFactors,
+  confidenceExplanation,
   confidenceLevel,
-  displayFactors,
   eloBaseProbabilities,
   finalProbabilities,
+  primaryFactors,
   predictionSummary,
 } from "../prediction-display";
 
@@ -26,9 +28,10 @@ export function MatchDetail() {
   if (!prediction) return <ErrorState />;
   const final = finalProbabilities(prediction);
   const eloBase = eloBaseProbabilities(prediction);
-  const confidence =
-    prediction.confidence_tier ?? confidenceLevel(prediction.confidence_score);
-  const factors = displayFactors(prediction);
+  const confidence = confidenceLevel(prediction.confidence_score);
+  const confidenceCopy = confidenceExplanation(prediction.confidence_score);
+  const factors = primaryFactors(prediction);
+  const additional = additionalFactors(prediction);
   return (
     <section>
       <div className="match-hero">
@@ -50,12 +53,12 @@ export function MatchDetail() {
         <ProbabilityBar match={match} />
         <div className="match-meta">
           <span>{new Date(match.kickoff).toLocaleString()}</span>
-          <span className={`confidence-pill ${confidence.toLowerCase()}`}>
+          <span className={`confidence-pill ${confidence.toLowerCase().replace(" ", "-")}`}>
             {confidence} confidence
             {prediction.confidence_score != null &&
               ` · ${Math.round(prediction.confidence_score)}/100`}
           </span>
-          <span>{prediction.model_version}</span>
+          <span>Model: {prediction.model_version}</span>
         </div>
       </div>
       <div className="outcome-grid" aria-label="Final result probabilities">
@@ -76,11 +79,9 @@ export function MatchDetail() {
           <span className="eyebrow">Model interpretation</span>
           <h2>How the forecast moved</h2>
           <p className="explanation-summary">{predictionSummary(match)}</p>
-          {prediction.confidence_explanation && (
-            <p className="confidence-explanation">
-              <strong>Confidence:</strong> {prediction.confidence_explanation}
-            </p>
-          )}
+          <p className="confidence-explanation">
+            <strong>{confidence} confidence:</strong> {confidenceCopy}
+          </p>
           <div className="probability-comparison">
             <div className="comparison-heading">
               <span>Outcome</span>
@@ -109,8 +110,8 @@ export function MatchDetail() {
           </div>
         </article>
         <article className="panel factor-panel">
-          <span className="eyebrow">Top model factors</span>
-          <h2>Why the probabilities changed</h2>
+          <span className="eyebrow">Primary factors</span>
+          <h2>Strongest model signals</h2>
           {factors.length ? (
             <ol className="factor-list">
               {factors.map((factor) => (
@@ -131,6 +132,19 @@ export function MatchDetail() {
                 <li key={factor}>{factor}</li>
               ))}
             </ol>
+          )}
+          {additional.length > 0 && (
+            <div className="additional-factors">
+              <h3>Additional context</h3>
+              <ul>
+                {additional.map((factor) => (
+                  <li key={`${factor.factor}-${factor.team}`}>
+                    <span>{factor.factor} · {factor.team}</span>
+                    <b className={factor.direction}>{factor.impact}</b>
+                  </li>
+                ))}
+              </ul>
+            </div>
           )}
         </article>
         <article className="panel">

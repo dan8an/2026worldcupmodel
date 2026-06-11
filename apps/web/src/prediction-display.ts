@@ -6,7 +6,8 @@ export type OutcomeProbabilities = {
   away: number;
 };
 
-export type ConfidenceLevel = "High" | "Medium" | "Low";
+export type ConfidenceLevel = "Very High" | "High" | "Medium" | "Low";
+export type FactorImportance = "high" | "medium" | "low";
 
 export type DisplayFactor = {
   factor: string;
@@ -14,6 +15,7 @@ export type DisplayFactor = {
   impact: string;
   value: number;
   direction: "positive" | "negative" | "neutral";
+  importance: FactorImportance;
 };
 
 export const finalProbabilities = (
@@ -45,9 +47,26 @@ export const eloBaseProbabilities = (
 
 export const confidenceLevel = (score: number | null | undefined): ConfidenceLevel => {
   if (score == null) return "Low";
+  if (score >= 85) return "Very High";
   if (score >= 71) return "High";
   if (score >= 55) return "Medium";
   return "Low";
+};
+
+export const confidenceExplanation = (
+  score: number | null | undefined,
+): string => {
+  const level = confidenceLevel(score);
+  if (level === "Very High") {
+    return "The leading outcome is clearly separated and the model inputs are highly consistent.";
+  }
+  if (level === "High") {
+    return "The model shows a meaningful edge with generally stable supporting inputs.";
+  }
+  if (level === "Medium") {
+    return "The model identifies an edge, but competing outcomes remain plausible.";
+  }
+  return "The outcomes are closely matched or the available evidence is limited.";
 };
 
 const impactValue = (impact: string) => {
@@ -55,15 +74,70 @@ const impactValue = (impact: string) => {
   return Number.isFinite(parsed) ? parsed : 0;
 };
 
+const normalizedFactorName = (factor: string) => {
+  if (factor === "Rest context") return "Rest-day edge";
+  if (factor === "Shot volume") return "Shot-volume edge";
+  return factor;
+};
+
+const factorImportance = (factor: string): FactorImportance => {
+  const label = factor.toLowerCase();
+  if (
+    label.includes("elo") ||
+    label.includes("attack") ||
+    label.includes("defense") ||
+    label.includes("shot-volume") ||
+    label.includes("draw calibration")
+  ) {
+    return "high";
+  }
+  if (
+    label.includes("home") ||
+    label.includes("venue") ||
+    label.includes("confederation")
+  ) {
+    return "medium";
+  }
+  return "low";
+};
+
+const shouldHideFactor = (factor: string, value: number) => {
+  const label = factor.toLowerCase();
+  return (
+    (label.includes("rest") || label.includes("travel")) &&
+    Math.abs(value) < 0.3
+  );
+};
+
+const importanceRank: Record<FactorImportance, number> = {
+  high: 0,
+  medium: 1,
+  low: 2,
+};
+
 export const displayFactors = (prediction: Prediction): DisplayFactor[] =>
-  (prediction.top_factors ?? []).slice(0, 3).map((factor) => {
+  (prediction.top_factors ?? []).map((factor): DisplayFactor => {
+    const name = normalizedFactorName(factor.factor);
     const value = impactValue(factor.impact);
     return {
       ...factor,
+      factor: name,
       value,
       direction: value > 0 ? "positive" : value < 0 ? "negative" : "neutral",
+      importance: factorImportance(name),
     };
-  });
+  }).filter((factor) => !shouldHideFactor(factor.factor, factor.value))
+    .sort(
+      (left, right) =>
+        importanceRank[left.importance] - importanceRank[right.importance] ||
+        Math.abs(right.value) - Math.abs(left.value),
+    );
+
+export const primaryFactors = (prediction: Prediction): DisplayFactor[] =>
+  displayFactors(prediction).slice(0, 3);
+
+export const additionalFactors = (prediction: Prediction): DisplayFactor[] =>
+  displayFactors(prediction).slice(3);
 
 const factorPhrase = (factor: DisplayFactor) => {
   const label = factor.factor.toLowerCase();
@@ -74,7 +148,10 @@ const factorPhrase = (factor: DisplayFactor) => {
     return `${factor.direction === "negative" ? "draw calibration reduces" : "draw calibration increases"} the likelihood of a stalemate`;
   }
   if (label.includes("rest")) {
-    return `rest context favors ${factor.team}`;
+    return `the rest-day edge favors ${factor.team}`;
+  }
+  if (label.includes("shot-volume")) {
+    return `sustained shot volume favors ${factor.team}`;
   }
   if (label.includes("elo")) {
     return `the Elo baseline favors ${factor.team}`;
@@ -87,7 +164,7 @@ export const predictionSummary = (match: Match): string => {
   if (!prediction) return "A model explanation is not available for this match.";
   const final = finalProbabilities(prediction);
   const base = eloBaseProbabilities(prediction);
-  const factors = displayFactors(prediction);
+  const factors = primaryFactors(prediction);
   const homeName = match.home_team?.name ?? "The home team";
   const awayName = match.away_team?.name ?? "The away team";
   const finalFavorite = final.home >= final.away ? homeName : awayName;

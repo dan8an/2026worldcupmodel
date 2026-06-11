@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
 import {
+  confidenceExplanation,
   confidenceLevel,
   displayFactors,
   finalProbabilities,
@@ -43,8 +44,7 @@ export function ProbabilityBar({ match }: { match: Match }) {
 
 export function MatchCard({ match }: { match: Match }) {
   const confidence = match.prediction
-    ? match.prediction.confidence_tier ??
-      confidenceLevel(match.prediction.confidence_score)
+    ? confidenceLevel(match.prediction.confidence_score)
     : null;
   const leadFactor = match.prediction ? displayFactors(match.prediction)[0] : null;
   return (
@@ -70,7 +70,10 @@ export function MatchCard({ match }: { match: Match }) {
             <span>
               xG {match.prediction.home_xg.toFixed(2)} - {match.prediction.away_xg.toFixed(2)}
             </span>
-            <span className={`confidence-pill ${confidence?.toLowerCase()}`}>
+            <span
+              className={`confidence-pill ${confidence?.toLowerCase().replace(" ", "-")}`}
+              title={confidenceExplanation(match.prediction.confidence_score)}
+            >
               {confidence} confidence
             </span>
           </div>

@@ -75,6 +75,7 @@ p { color: var(--muted); line-height: 1.65; }
 .probability-bar .away { background: var(--blue); }
 .match-meta { display: flex; justify-content: space-between; color: var(--muted); font-size: 11px; margin-top: 13px; gap: 15px; }
 .confidence-pill { display: inline-flex; align-items: center; width: fit-content; border: 1px solid var(--line); border-radius: 99px; padding: 4px 8px; color: var(--muted); white-space: nowrap; }
+.confidence-pill.very-high { color: #b8ffdc; border-color: rgba(85,230,159,.55); background: rgba(85,230,159,.16); }
 .confidence-pill.high { color: var(--green); border-color: rgba(85,230,159,.28); background: rgba(85,230,159,.08); }
 .confidence-pill.medium { color: var(--gold); border-color: rgba(229,198,107,.3); background: rgba(229,198,107,.08); }
 .confidence-pill.low { color: #ff9c9c; border-color: rgba(255,142,142,.28); background: rgba(255,100,100,.07); }
@@ -142,6 +143,11 @@ input, select { background: var(--panel); color: var(--ink); border: 1px solid v
 .factor-impact { min-width: 76px; border-radius: 8px; padding: 8px 9px; background: rgba(85,230,159,.08); font: 700 12px "Manrope"; text-align: center; white-space: nowrap; }
 .factor-impact.negative { background: rgba(255,100,100,.08); }
 .factor-list.legacy li { color: var(--muted); font-size: 13px; }
+.additional-factors { margin-top: 24px; padding-top: 20px; border-top: 1px solid var(--line); }
+.additional-factors h3 { margin: 0 0 10px; font-size: 14px; letter-spacing: -.01em; }
+.additional-factors ul { margin: 0; padding: 0; list-style: none; }
+.additional-factors li { display: flex; justify-content: space-between; gap: 16px; padding: 9px 0; color: var(--muted); font-size: 12px; }
+.additional-factors b { white-space: nowrap; }
 .methodology-panel .disclosure { padding-top: 10px; border-top: 1px solid var(--line); }
 .disclosure { font-size: 12px; }
 .sim-controls { align-items: end; padding: 20px; border: 1px solid var(--line); border-radius: 12px; background: var(--panel); }
