@@ -104,6 +104,17 @@ The rating update is deterministic and repeat-safe. It maintains one current
 rating row per team and player while preserving model-run-specific rating rows
 for future prediction snapshots. An empty raw-statistics database exits
 successfully so the command can run immediately after ingestion in a cron job.
+Database waits are bounded by these optional environment variables:
+
+```text
+RATING_DATABASE_CONNECT_TIMEOUT_SECONDS=15
+RATING_DATABASE_STATEMENT_TIMEOUT_SECONDS=120
+RATING_DATABASE_LOCK_TIMEOUT_SECONDS=10
+```
+
+The command logs each schema, load, calculation, lock, upsert, and commit step.
+If another rating update holds the advisory lock, the new run fails immediately
+instead of waiting indefinitely.
 
 After applying `supabase/migrations/202606100003_prediction_generation.sql`,
 generate current predictions for future matches:

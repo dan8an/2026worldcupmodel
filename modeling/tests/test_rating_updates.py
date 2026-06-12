@@ -6,6 +6,8 @@ import tempfile
 import unittest
 from pathlib import Path
 
+from scripts.update_ratings import _positive_timeout
+
 ROOT = Path(__file__).resolve().parents[2]
 
 
@@ -135,6 +137,8 @@ class RatingUpdateTests(unittest.TestCase):
 
         first = self.run_script()
         self.assertEqual(first.returncode, 0, first.stderr)
+        self.assertIn("[step 1/7] Validating rating pipeline schema", first.stderr)
+        self.assertIn("[step 7/7] Rating transaction committed", first.stderr)
         with sqlite3.connect(self.database_path) as connection:
             team_rows = connection.execute(
                 """
@@ -196,6 +200,16 @@ class RatingUpdateTests(unittest.TestCase):
 
         self.assertEqual(result.returncode, 0, result.stderr)
         self.assertIn("no team or player match data yet", result.stderr)
+
+    def test_timeout_configuration_requires_positive_integers(self):
+        self.assertEqual(_positive_timeout({}, "TIMEOUT", 15), 15)
+        self.assertEqual(_positive_timeout({"TIMEOUT": "30"}, "TIMEOUT", 15), 30)
+        for value in ("0", "-1", "nope"):
+            with self.assertRaisesRegex(
+                ValueError,
+                "TIMEOUT must be a positive integer",
+            ):
+                _positive_timeout({"TIMEOUT": value}, "TIMEOUT", 15)
 
 
 if __name__ == "__main__":

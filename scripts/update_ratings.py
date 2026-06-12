@@ -29,7 +29,11 @@ ROOT = Path(__file__).resolve().parents[1]
 if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
-from scripts.database import create_database_engine
+from scripts.database import configure_database_timeouts, create_database_engine
+
+DEFAULT_CONNECT_TIMEOUT_SECONDS = 15
+DEFAULT_STATEMENT_TIMEOUT_SECONDS = 120
+DEFAULT_LOCK_TIMEOUT_SECONDS = 10
 
 TEAM_REQUIRED_COLUMNS = {
     "team_id",
@@ -66,6 +70,19 @@ def load_environment() -> dict[str, str]:
     load_dotenv(ROOT / ".env", override=False)
     load_dotenv(ROOT / "backend" / ".env", override=False)
     return dict(os.environ)
+
+
+def _positive_timeout(env: dict[str, str], name: str, default: int) -> int:
+    raw = env.get(name)
+    if raw is None:
+        return default
+    try:
+        value = int(raw)
+    except ValueError as error:
+        raise ValueError(f"{name} must be a positive integer") from error
+    if value < 1:
+        raise ValueError(f"{name} must be a positive integer")
+    return value
 
 
 def _number(value: Any) -> float:
@@ -227,8 +244,13 @@ def calculate_player_ratings(rows: list[dict[str, Any]]) -> list[dict[str, Any]]
 
 
 class RatingRepository:
-    def __init__(self, engine: Engine) -> None:
+    def __init__(
+        self,
+        engine: Engine,
+        logger: logging.Logger | None = None,
+    ) -> None:
         self.engine = engine
+        self.logger = logger or logging.getLogger(__name__)
         self.schema = None if engine.dialect.name == "sqlite" else "public"
         self.metadata = MetaData()
         self.tables: dict[str, Table] = {}
@@ -312,8 +334,24 @@ class RatingRepository:
         now = datetime.now(timezone.utc)
         with self.engine.begin() as connection:
             if self.engine.dialect.name == "postgresql":
-                connection.execute(text("select pg_advisory_xact_lock(hashtext('rating-update'))"))
-            for rating in team_ratings:
+                self.logger.info("[rating-update] Acquiring advisory transaction lock")
+                acquired = connection.execute(
+                    text(
+                        "select pg_try_advisory_xact_lock("
+                        "hashtext('rating-update'))"
+                    )
+                ).scalar_one()
+                if not acquired:
+                    raise RuntimeError(
+                        "Another rating-update transaction holds the advisory lock"
+                    )
+                self.logger.info("[rating-update] Advisory transaction lock acquired")
+
+            self.logger.info(
+                "[rating-update] Upserting %d team ratings",
+                len(team_ratings),
+            )
+            for index, rating in enumerate(team_ratings, start=1):
                 self._upsert_current(
                     connection,
                     team_table,
@@ -329,7 +367,18 @@ class RatingRepository:
                         },
                     },
                 )
-            for rating in player_ratings:
+                if index % 100 == 0:
+                    self.logger.info(
+                        "[rating-update] Team upsert progress: %d/%d",
+                        index,
+                        len(team_ratings),
+                    )
+
+            self.logger.info(
+                "[rating-update] Upserting %d player ratings",
+                len(player_ratings),
+            )
+            for index, rating in enumerate(player_ratings, start=1):
                 self._upsert_current(
                     connection,
                     player_table,
@@ -351,6 +400,13 @@ class RatingRepository:
                         },
                     },
                 )
+                if index % 250 == 0:
+                    self.logger.info(
+                        "[rating-update] Player upsert progress: %d/%d",
+                        index,
+                        len(player_ratings),
+                    )
+            self.logger.info("[rating-update] Rating upserts complete; committing")
 
     @staticmethod
     def _upsert_current(
@@ -395,30 +451,79 @@ class RatingRepository:
 def main() -> int:
     logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(message)s")
     logger = logging.getLogger("update_ratings")
-    database_url = load_environment().get("DATABASE_URL")
+    env = load_environment()
+    database_url = env.get("DATABASE_URL")
     if not database_url:
         logger.error("[rating-update] FAILED: DATABASE_URL is required")
         return 2
 
     try:
-        engine = create_database_engine(database_url)
+        connect_timeout = _positive_timeout(
+            env,
+            "RATING_DATABASE_CONNECT_TIMEOUT_SECONDS",
+            DEFAULT_CONNECT_TIMEOUT_SECONDS,
+        )
+        statement_timeout = _positive_timeout(
+            env,
+            "RATING_DATABASE_STATEMENT_TIMEOUT_SECONDS",
+            DEFAULT_STATEMENT_TIMEOUT_SECONDS,
+        )
+        lock_timeout = _positive_timeout(
+            env,
+            "RATING_DATABASE_LOCK_TIMEOUT_SECONDS",
+            DEFAULT_LOCK_TIMEOUT_SECONDS,
+        )
+        logger.info(
+            "[rating-update] Initializing database "
+            "(connect_timeout=%ds statement_timeout=%ds lock_timeout=%ds)",
+            connect_timeout,
+            statement_timeout,
+            lock_timeout,
+        )
+        engine = create_database_engine(
+            database_url,
+            connect_timeout_seconds=connect_timeout,
+        )
+        configure_database_timeouts(
+            engine,
+            statement_timeout_seconds=statement_timeout,
+            lock_timeout_seconds=lock_timeout,
+        )
+    except (TypeError, ValueError) as error:
+        logger.error("[rating-update] FAILED: %s", error)
+        return 2
     except Exception:
         logger.exception("[rating-update] FAILED: could not initialize database")
         return 1
 
     try:
         logger.info("[rating-update] START")
-        repository = RatingRepository(engine)
+        repository = RatingRepository(engine, logger)
+        logger.info("[step 1/7] Validating rating pipeline schema")
         repository.assert_schema()
+
+        logger.info("[step 2/7] Loading team match statistics")
         team_rows = repository.load_team_stats()
+        logger.info("[rating-update] Loaded %d team-stat rows", len(team_rows))
+
+        logger.info("[step 3/7] Loading player match statistics")
         player_rows = repository.load_player_stats()
+        logger.info("[rating-update] Loaded %d player-stat rows", len(player_rows))
         if not team_rows and not player_rows:
             logger.info("[rating-update] SUCCESS: no team or player match data yet")
             return 0
 
+        logger.info("[step 4/7] Calculating team ratings")
         team_ratings = calculate_team_ratings(team_rows)
+        logger.info("[rating-update] Calculated %d team ratings", len(team_ratings))
+
+        logger.info("[step 5/7] Calculating player ratings")
         player_ratings = calculate_player_ratings(player_rows)
+        logger.info("[rating-update] Calculated %d player ratings", len(player_ratings))
+
+        logger.info("[step 6/7] Persisting current ratings")
         repository.upsert_ratings(team_ratings, player_ratings)
+        logger.info("[step 7/7] Rating transaction committed")
         logger.info(
             "[rating-update] SUCCESS: %d team ratings and %d player ratings updated",
             len(team_ratings),

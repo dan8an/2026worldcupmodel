@@ -2,7 +2,7 @@ import unittest
 from email.message import Message
 from io import BytesIO
 from urllib.error import HTTPError
-from unittest.mock import patch
+from unittest.mock import Mock, patch
 
 from sqlalchemy.pool import NullPool
 
@@ -12,7 +12,11 @@ from scripts.data_ingestion.providers import (
     SampleSportsProvider,
     create_sports_provider,
 )
-from scripts.database import create_database_engine, sqlalchemy_database_url
+from scripts.database import (
+    configure_database_timeouts,
+    create_database_engine,
+    sqlalchemy_database_url,
+)
 from scripts.update_data import main, parse_args
 
 
@@ -271,6 +275,46 @@ class DataIngestionTests(unittest.TestCase):
             connect_args={"prepare_threshold": None},
         )
         self.assertEqual(listen.call_args.args[1], "connect")
+
+    def test_postgres_engine_accepts_connect_timeout(self):
+        with (
+            patch("scripts.database.create_engine") as create_engine,
+            patch("scripts.database.event.listen"),
+        ):
+            create_database_engine(
+                "postgresql://host/database",
+                connect_timeout_seconds=15,
+            )
+
+        create_engine.assert_called_once_with(
+            "postgresql+psycopg://host/database",
+            pool_pre_ping=True,
+            connect_args={
+                "prepare_threshold": None,
+                "connect_timeout": 15,
+            },
+        )
+
+    def test_postgres_transaction_timeouts_are_registered(self):
+        engine = Mock()
+        engine.dialect.name = "postgresql"
+        with patch("scripts.database.event.listen") as listen:
+            configure_database_timeouts(
+                engine,
+                statement_timeout_seconds=120,
+                lock_timeout_seconds=10,
+            )
+
+        callback = listen.call_args.args[2]
+        connection = Mock()
+        callback(connection)
+        self.assertEqual(
+            [call.args[0] for call in connection.exec_driver_sql.call_args_list],
+            [
+                "SET LOCAL statement_timeout = 120000",
+                "SET LOCAL lock_timeout = 10000",
+            ],
+        )
 
     def test_supabase_pooler_uses_null_pool(self):
         with (
