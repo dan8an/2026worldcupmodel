@@ -183,18 +183,23 @@ def load_canonical_future_matches(
     database_matches: list[dict[str, Any]] | None = None,
     database_team_ids: dict[str, Any] | None = None,
 ) -> list[dict[str, Any]]:
-    """Load the same canonical fixtures used by /v1/matches, then enrich them."""
+    """Load the complete active group-stage catalog, then enrich it.
+
+    Tournament simulations require all 72 group fixtures. Keep already-started
+    group matches in prediction snapshots until the group stage is complete.
+    """
     teams = load_teams()
     fixtures = build_fixtures(teams)
     validate_tournament(teams, fixtures)
+    group_fixtures = [fixture for fixture in fixtures if fixture.stage == "group"]
+    if all(fixture.kickoff <= now for fixture in group_fixtures):
+        return []
     database_matches = database_matches or []
     database_team_ids = database_team_ids or {}
 
     by_id = {str(row["id"]): row for row in database_matches}
     enriched = []
-    for fixture in fixtures:
-        if fixture.kickoff <= now:
-            continue
+    for fixture in group_fixtures:
         if fixture.home_team_id is None or fixture.away_team_id is None:
             continue
 
@@ -228,6 +233,32 @@ def load_canonical_future_matches(
             }
         )
     return enriched
+
+
+def missing_canonical_group_fixtures(
+    prediction_ids: set[str],
+) -> list[str]:
+    teams = {team.id: team.name for team in load_teams()}
+    return [
+        (
+            f"{fixture.id} "
+            f"({teams[fixture.home_team_id]} vs {teams[fixture.away_team_id]})"
+        )
+        for fixture in build_fixtures()
+        if fixture.stage == "group" and fixture.id not in prediction_ids
+    ]
+
+
+def assert_complete_group_predictions(predictions: list[dict[str, Any]]) -> None:
+    prediction_ids = {
+        prediction["canonical_match_id"] for prediction in predictions
+    }
+    missing = missing_canonical_group_fixtures(prediction_ids)
+    if missing:
+        raise RuntimeError(
+            f"Prediction generation is missing {len(missing)} canonical group "
+            f"fixtures: {', '.join(missing)}"
+        )
 
 
 def poisson_probability(expected_goals: float, goals: int) -> float:
@@ -1123,6 +1154,7 @@ def main() -> int:
                 "[prediction-generation] SUCCESS: no future matches have both team ratings"
             )
             return 0
+        assert_complete_group_predictions(predictions)
         run_id = repository.store_predictions(predictions, generated_at)
         logger.info(
             "[prediction-generation] SUCCESS: run=%s predictions=%d",

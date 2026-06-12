@@ -173,6 +173,26 @@ class SimulationCalculationTests(unittest.TestCase):
         for field, expected in expected_totals.items():
             self.assertAlmostEqual(sum(row[field] for row in first), expected)
 
+    def test_incomplete_predictions_report_exact_missing_fixtures(self):
+        predictions = canonical_predictions()
+        del predictions["WC26-001"]
+        del predictions["WC26-002"]
+
+        with self.assertRaisesRegex(
+            ValueError,
+            (
+                r"missing 2 group fixtures: "
+                r"WC26-001 \(Mexico vs South Africa\), "
+                r"WC26-002 \(South Korea vs Czechia\)"
+            ),
+        ):
+            simulate_tournaments(
+                predictions,
+                1,
+                7,
+                canonical_knockout_prediction(),
+            )
+
     def test_knockout_winner_uses_pair_specific_regulation_probabilities(self):
         prediction = {
             "home_win_probability": 1.0,

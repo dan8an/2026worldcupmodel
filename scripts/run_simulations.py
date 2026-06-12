@@ -25,7 +25,11 @@ if str(ROOT) not in sys.path:
 
 from modeling.src.data import build_fixtures, load_teams, validate_tournament
 from scripts.database import create_database_engine
-from scripts.generate_predictions import PredictionRepository, calculate_prediction
+from scripts.generate_predictions import (
+    PredictionRepository,
+    calculate_prediction,
+    missing_canonical_group_fixtures,
+)
 
 DEFAULT_SIMULATIONS = 50_000
 DEFAULT_SEED = 2026
@@ -302,10 +306,11 @@ def simulate_tournaments(
     fixtures = build_fixtures(teams)
     validate_tournament(teams, fixtures)
     group_fixtures = [fixture for fixture in fixtures if fixture.stage == "group"]
-    missing = [fixture.id for fixture in group_fixtures if fixture.id not in predictions]
+    missing = missing_canonical_group_fixtures(set(predictions))
     if missing:
         raise ValueError(
-            f"Latest prediction run is missing {len(missing)} group fixtures"
+            f"Latest prediction run is missing {len(missing)} group fixtures: "
+            f"{', '.join(missing)}"
         )
 
     team_groups = {team.id: team.group for team in teams}

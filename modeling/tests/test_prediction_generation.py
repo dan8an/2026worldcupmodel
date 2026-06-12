@@ -15,6 +15,7 @@ from scripts.generate_predictions import (
     MODEL_VERSION,
     PredictionRepository,
     SHOT_VOLUME_WEIGHT,
+    assert_complete_group_predictions,
     calculate_prediction,
     canonical_prior_elo,
     load_canonical_future_matches,
@@ -389,6 +390,30 @@ class PredictionScriptTests(unittest.TestCase):
         self.assertEqual(len(matches), 72)
         self.assertEqual(matches[0]["canonical_match_id"], "WC26-001")
         self.assertTrue(all(match["stage"] == "group" for match in matches))
+
+    def test_canonical_source_keeps_all_72_matches_during_group_stage(self):
+        matches = load_canonical_future_matches(
+            datetime(2026, 6, 12, 12, tzinfo=timezone.utc)
+        )
+
+        self.assertEqual(len(matches), 72)
+        self.assertEqual(matches[0]["canonical_match_id"], "WC26-001")
+
+    def test_incomplete_generation_reports_exact_missing_fixtures(self):
+        predictions = [
+            {"canonical_match_id": f"WC26-{number:03d}"}
+            for number in range(3, 73)
+        ]
+
+        with self.assertRaisesRegex(
+            RuntimeError,
+            (
+                r"missing 2 canonical group fixtures: "
+                r"WC26-001 \(Mexico vs South Africa\), "
+                r"WC26-002 \(South Korea vs Czechia\)"
+            ),
+        ):
+            assert_complete_group_predictions(predictions)
 
     def test_script_updates_without_duplicate_prediction_rows(self):
         self.insert_sample_data()
