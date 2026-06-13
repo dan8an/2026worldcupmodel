@@ -772,6 +772,10 @@ class SquadAvailabilityCommandTests(unittest.TestCase):
         self.assertIn("rows_written=0", output)
 
     def test_main_exits_cleanly_when_request_limit_is_reached(self):
+        future_kickoff = (
+            datetime.now(timezone.utc) + timedelta(days=1)
+        ).isoformat()
+
         class Engine:
             def dispose(self):
                 pass
@@ -790,7 +794,7 @@ class SquadAvailabilityCommandTests(unittest.TestCase):
                 return [
                     {
                         "provider_fixture_id": 100,
-                        "date": "2026-06-12T19:00:00+00:00",
+                        "date": future_kickoff,
                         "status": "NS",
                         "home_team": {
                             "provider_id": 16,
