@@ -4,6 +4,7 @@ from sqlalchemy import create_engine, text
 from apps.api.app import main as main_module
 from apps.api.app.main import app
 from apps.api.app.service import (
+    DatabaseMatchResultSource,
     DatabasePredictionSource,
     DatabaseSimulationSource,
     PredictionService,
@@ -281,6 +282,85 @@ def test_match_teams_include_flags():
     payload = response.json()
     assert payload["home_team"]["flag"] == "🇲🇽"
     assert payload["away_team"]["flag"] == "🇿🇦"
+    assert payload["status"] == "scheduled"
+    assert payload["home_score"] is None
+    assert payload["away_score"] is None
+
+
+def test_completed_match_results_are_merged_into_canonical_fixtures(monkeypatch):
+    class MatchResultSource:
+        def load(self):
+            return [
+                {
+                    "match_date": "2026-06-11T17:00:00+00:00",
+                    "home_team_name": "Mexico",
+                    "away_team_name": "South Africa",
+                    "status": "finished",
+                    "home_score": 2,
+                    "away_score": 1,
+                }
+            ]
+
+    service = PredictionService(
+        prediction_source=LatestV4PredictionSource(),
+        match_result_source=MatchResultSource(),
+        prediction_cache_seconds=0,
+    )
+    monkeypatch.setattr(main_module, "service", service)
+
+    payload = client.get("/v1/matches/WC26-001").json()
+
+    assert payload["status"] == "finished"
+    assert payload["home_score"] == 2
+    assert payload["away_score"] == 1
+    assert payload["prediction"]["model_version"] == "elo-context-v4.1"
+
+
+def test_database_match_result_source_loads_team_names():
+    engine = create_engine("sqlite://")
+    with engine.begin() as connection:
+        connection.execute(
+            text("create table teams (id text primary key, name text)")
+        )
+        connection.execute(
+            text(
+                """
+                create table matches (
+                  id text primary key,
+                  match_date text,
+                  home_team_id text,
+                  away_team_id text,
+                  home_score integer,
+                  away_score integer,
+                  completed boolean
+                )
+                """
+            )
+        )
+        connection.execute(
+            text(
+                """
+                insert into teams values
+                  ('mex', 'Mexico'),
+                  ('rsa', 'South Africa')
+                """
+            )
+        )
+        connection.execute(
+            text(
+                """
+                insert into matches values
+                  ('match-1', '2026-06-11T17:00:00+00:00',
+                   'mex', 'rsa', 2, 1, true)
+                """
+            )
+        )
+
+    [row] = DatabaseMatchResultSource(engine).load()
+
+    assert row["home_team_name"] == "Mexico"
+    assert row["away_team_name"] == "South Africa"
+    assert row["home_score"] == 2
 
 
 def test_latest_database_prediction_run_wins_over_static(monkeypatch):

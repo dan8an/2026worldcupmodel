@@ -3,6 +3,7 @@ import { Dashboard } from "./pages/Dashboard";
 import { MatchDetail } from "./pages/MatchDetail";
 import { Matches } from "./pages/Matches";
 import { Methodology } from "./pages/Methodology";
+import { Results } from "./pages/Results";
 import { Simulator } from "./pages/Simulator";
 import { TeamDetail } from "./pages/TeamDetail";
 import { Teams } from "./pages/Teams";
@@ -10,6 +11,7 @@ import { Teams } from "./pages/Teams";
 const links = [
   ["/", "Dashboard"],
   ["/matches", "Matches"],
+  ["/results", "Results"],
   ["/teams", "Teams"],
   ["/simulator", "Simulator"],
   ["/model-explainer", "Model"],
@@ -38,6 +40,7 @@ export default function App() {
         <Routes>
           <Route path="/" element={<Dashboard />} />
           <Route path="/matches" element={<Matches />} />
+          <Route path="/results" element={<Results />} />
           <Route path="/match/:id" element={<MatchDetail />} />
           <Route path="/teams" element={<Teams />} />
           <Route path="/teams/:id" element={<TeamDetail />} />

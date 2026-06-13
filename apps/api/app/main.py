@@ -89,8 +89,9 @@ def matches(
             if team_id in (match.home_team_id, match.away_team_id)
         ]
     prediction_run = service.current_prediction_run()
+    match_results = service.current_match_results()
     return [
-        service.match_payload(match.id, prediction_run)
+        service.match_payload(match.id, prediction_run, match_results)
         for match in fixtures
     ]
 
@@ -104,7 +105,10 @@ def matches(
 def match(match_id: str) -> dict:
     if not any(fixture.id == match_id for fixture in service.fixtures):
         raise HTTPException(status_code=404, detail="Match not found")
-    return service.match_payload(match_id)
+    return service.match_payload(
+        match_id,
+        match_results=service.current_match_results(),
+    )
 
 
 @app.get("/v1/predictions/latest")

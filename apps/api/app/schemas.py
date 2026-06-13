@@ -79,6 +79,9 @@ class MatchResponse(BaseModel):
     away_team: TeamResponse | None
     home_slot: str | None
     away_slot: str | None
+    status: str
+    home_score: int | None
+    away_score: int | None
     prediction: PredictionResponse | None
 
 

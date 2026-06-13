@@ -7,6 +7,7 @@ import {
   simulationDriverLabels,
   simulationSignalBadges,
 } from "../simulation-display";
+import { upcomingMatches } from "../match-status";
 
 export function Dashboard() {
   const matches = useQuery({ queryKey: ["matches"], queryFn: api.matches });
@@ -17,6 +18,7 @@ export function Dashboard() {
   if (matches.isError || simulation.isError || teams.isError) return <ErrorState />;
 
   const matchData = matches.data ?? [];
+  const upcoming = upcomingMatches(matchData);
   const simulationData = simulation.data;
   if (!simulationData) return <ErrorState />;
   const favorites = championshipOutlookTeams(
@@ -54,8 +56,15 @@ export function Dashboard() {
           <Link to="/matches">View all 72 group matches</Link>
         </div>
         <div className="card-grid">
-          {matchData.slice(0, 6).map((match) => <MatchCard key={match.id} match={match} />)}
+          {upcoming.slice(0, 6).map((match) => (
+            <MatchCard key={match.id} match={match} />
+          ))}
         </div>
+        {upcoming.length === 0 && (
+          <div className="state-card empty-state">
+            No upcoming matches are available. Completed matches are listed in Results.
+          </div>
+        )}
       </section>
 
       <section>

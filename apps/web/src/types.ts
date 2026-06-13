@@ -137,6 +137,9 @@ export type Match = {
   away_team: Team | null;
   home_slot: string | null;
   away_slot: string | null;
+  status: string;
+  home_score: number | null;
+  away_score: number | null;
   prediction: Prediction | null;
 };
 

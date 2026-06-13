@@ -7,7 +7,7 @@ from datetime import datetime, timezone
 from typing import Any
 
 from dotenv import load_dotenv
-from sqlalchemy import Engine, text
+from sqlalchemy import Engine, MetaData, Table, inspect, select, text
 
 from modeling.src.data import ROOT, build_fixtures, load_teams, load_venues, validate_tournament
 from modeling.src.features.context import ContextRepository
@@ -28,7 +28,10 @@ from modeling.src.team_profiles import (
     team_analysis,
 )
 from scripts.database import create_database_engine
-from scripts.generate_predictions import PredictionRepository
+from scripts.generate_predictions import (
+    PredictionRepository,
+    load_team_aliases,
+)
 
 STATIC_MODEL_VERSION = "context-0.2.0"
 MODEL_VERSION = STATIC_MODEL_VERSION
@@ -212,11 +215,61 @@ class DatabaseSimulationSource:
         }
 
 
+class DatabaseMatchResultSource:
+    def __init__(self, engine: Engine) -> None:
+        self.engine = engine
+
+    def load(self) -> list[dict[str, Any]]:
+        schema = None if self.engine.dialect.name == "sqlite" else "public"
+        inspector = inspect(self.engine)
+        if "matches" not in inspector.get_table_names(schema=schema):
+            return []
+
+        metadata = MetaData()
+        matches = Table("matches", metadata, schema=schema, autoload_with=self.engine)
+        teams = (
+            Table("teams", metadata, schema=schema, autoload_with=self.engine)
+            if "teams" in inspector.get_table_names(schema=schema)
+            else None
+        )
+        with self.engine.connect() as connection:
+            match_rows = [
+                dict(row)
+                for row in connection.execute(select(matches)).mappings()
+            ]
+            team_names = (
+                {
+                    row["id"]: row["name"]
+                    for row in connection.execute(
+                        select(teams.c.id, teams.c.name)
+                    ).mappings()
+                }
+                if teams is not None
+                else {}
+            )
+
+        return [
+            {
+                **row,
+                "home_team_name": (
+                    row.get("home_team")
+                    or team_names.get(row.get("home_team_id"))
+                ),
+                "away_team_name": (
+                    row.get("away_team")
+                    or team_names.get(row.get("away_team_id"))
+                ),
+            }
+            for row in match_rows
+        ]
+
+
 class PredictionService:
     def __init__(
         self,
         prediction_source: DatabasePredictionSource | None = None,
         simulation_source: DatabaseSimulationSource | None = None,
+        match_result_source: DatabaseMatchResultSource | None = None,
         prediction_cache_seconds: float | None = None,
     ) -> None:
         self.generated_at = datetime.now(timezone.utc).isoformat()
@@ -254,6 +307,17 @@ class PredictionService:
             engine = getattr(self.prediction_source, "engine", None)
             if engine is not None:
                 self.simulation_source = DatabaseSimulationSource(engine)
+        self.match_result_source = match_result_source
+        if self.match_result_source is None and self.prediction_source is not None:
+            engine = getattr(self.prediction_source, "engine", None)
+            if engine is not None:
+                self.match_result_source = DatabaseMatchResultSource(engine)
+        aliases = load_team_aliases()
+        alias_lookup = {}
+        for team in self.teams:
+            for name in (team.name, *aliases[team.id]):
+                alias_lookup[self._normalize_name(name)] = team.id
+        self.team_alias_lookup = alias_lookup
         try:
             configured_cache_seconds = float(
                 os.getenv("PREDICTION_READ_CACHE_SECONDS", "30")
@@ -274,6 +338,68 @@ class PredictionService:
         self._simulation: dict | None = None
         self._simulation_generated_at = self.generated_at
         self._simulation_data_cutoff = self.data_cutoff
+
+    @staticmethod
+    def _normalize_name(value: Any) -> str:
+        return "".join(
+            character
+            for character in str(value or "").lower()
+            if character.isalnum()
+        )
+
+    def current_match_results(self) -> dict[str, dict[str, Any]]:
+        if self.match_result_source is None:
+            return {}
+        try:
+            rows = self.match_result_source.load()
+        except Exception:
+            LOGGER.warning("Database match results are unavailable", exc_info=True)
+            return {}
+
+        fixtures_by_key = {
+            (
+                fixture.kickoff.date().isoformat(),
+                fixture.home_team_id,
+                fixture.away_team_id,
+            ): fixture.id
+            for fixture in self.fixtures
+            if fixture.home_team_id and fixture.away_team_id
+        }
+        results = {}
+        for row in rows:
+            played_at = row.get("match_date") or row.get("kickoff")
+            if played_at is None:
+                continue
+            try:
+                played_on = datetime.fromisoformat(
+                    str(played_at).replace("Z", "+00:00")
+                ).date().isoformat()
+            except ValueError:
+                continue
+            home_id = self.team_alias_lookup.get(
+                self._normalize_name(row.get("home_team_name"))
+            )
+            away_id = self.team_alias_lookup.get(
+                self._normalize_name(row.get("away_team_name"))
+            )
+            fixture_id = fixtures_by_key.get((played_on, home_id, away_id))
+            if fixture_id is None:
+                continue
+            home_score = row.get("home_score")
+            away_score = row.get("away_score")
+            status = str(row.get("status") or "").strip()
+            if not status and row.get("completed"):
+                status = "completed"
+            results[fixture_id] = {
+                "status": status or "scheduled",
+                "home_score": (
+                    int(home_score) if home_score is not None else None
+                ),
+                "away_score": (
+                    int(away_score) if away_score is not None else None
+                ),
+            }
+        return results
 
     def team_payload(self, team_id: str) -> dict:
         team = self.teams_by_id[team_id]
@@ -427,8 +553,10 @@ class PredictionService:
         self,
         match_id: str,
         prediction_run: dict[str, Any] | None = None,
+        match_results: dict[str, dict[str, Any]] | None = None,
     ) -> dict:
         match = next(match for match in self.fixtures if match.id == match_id)
+        result = (match_results or {}).get(match.id, {})
         return {
             "id": match.id,
             "number": match.number,
@@ -444,6 +572,9 @@ class PredictionService:
             ),
             "home_slot": match.home_slot,
             "away_slot": match.away_slot,
+            "status": result.get("status", "scheduled"),
+            "home_score": result.get("home_score"),
+            "away_score": result.get("away_score"),
             "prediction": self.prediction_payload(match.id, prediction_run),
         }
 
