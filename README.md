@@ -152,10 +152,12 @@ indexes make repeated runs update existing records instead of duplicating
 them. If `API_FOOTBALL_KEY` is absent, the command clearly reports sample mode
 and reads `backend/ingestion/sample-data/api-football.json`.
 
-It defaults to yesterday's date. For a specific date:
+By default it checks completed fixtures from yesterday through today in UTC.
+For a specific date or date range:
 
 ```bash
 python scripts/update_data.py --date 2026-06-09
+python scripts/update_data.py --date 2026-06-09 --date-to 2026-06-10
 python scripts/update_data.py --date 2026-06-09 --max-fixtures 3
 python scripts/update_data.py --sample
 ```
@@ -241,10 +243,11 @@ Render sets `RENDER=true`; in that environment a missing API key is a
 configuration failure, not an automatic sample run. Set
 `INGESTION_USE_SAMPLE=true` only when intentionally testing sample ingestion.
 Leave it unset or set it to `false` for the production cron. The default
-ingestion date is yesterday in UTC. Normal empty-match days and HTTP 429
-responses exit successfully so the next scheduled run can continue. Database,
-schema, or fixture-processing errors exit nonzero and appear as failed cron
-runs.
+ingestion window is yesterday through today in UTC, so late North American
+matches that finish after midnight UTC are still discovered. Normal
+empty-match days and HTTP 429 responses exit successfully so the next scheduled
+run can continue. Database, schema, or fixture-processing errors exit nonzero
+and appear as failed cron runs.
 
 ## Evaluate the model
 

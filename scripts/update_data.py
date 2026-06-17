@@ -41,8 +41,19 @@ def parse_args() -> argparse.Namespace:
     )
     parser.add_argument(
         "--date",
-        default=(datetime.now(timezone.utc).date() - timedelta(days=1)).isoformat(),
-        help="Completed-match date in YYYY-MM-DD format (default: yesterday UTC).",
+        default=None,
+        help=(
+            "First completed-match date in YYYY-MM-DD format. By default the "
+            "cron checks yesterday through today UTC."
+        ),
+    )
+    parser.add_argument(
+        "--date-to",
+        default=None,
+        help=(
+            "Last completed-match date in YYYY-MM-DD format. Defaults to the "
+            "same day when --date is explicit, otherwise today UTC."
+        ),
     )
     parser.add_argument(
         "--max-fixtures",
@@ -58,7 +69,14 @@ def parse_args() -> argparse.Namespace:
             "API-Football."
         ),
     )
-    return parser.parse_args()
+    args = parser.parse_args()
+    today = datetime.now(timezone.utc).date()
+    if args.date is None:
+        args.date = (today - timedelta(days=1)).isoformat()
+        args.date_to = args.date_to or today.isoformat()
+    else:
+        args.date_to = args.date_to or args.date
+    return args
 
 
 def main() -> int:
@@ -72,9 +90,13 @@ def main() -> int:
         logger.error("--max-fixtures must be at least 1")
         return 2
     try:
-        date.fromisoformat(args.date)
+        date_from = date.fromisoformat(args.date)
+        date_to = date.fromisoformat(args.date_to)
     except ValueError:
-        logger.error("--date must use YYYY-MM-DD format")
+        logger.error("--date and --date-to must use YYYY-MM-DD format")
+        return 2
+    if date_to < date_from:
+        logger.error("--date-to must be on or after --date")
         return 2
 
     env = load_environment()
@@ -97,8 +119,9 @@ def main() -> int:
 
     try:
         logger.info(
-            "[daily-ingestion] START date=%s provider=%s max_fixtures=%d",
+            "[daily-ingestion] START dates=%s..%s provider=%s max_fixtures=%d",
             args.date,
+            args.date_to,
             provider.name,
             args.max_fixtures,
         )
@@ -107,7 +130,11 @@ def main() -> int:
 
         logger.info(
             "[step 2/6] Loading completed matches for %s from %s",
-            "the local sample dataset" if args.sample else args.date,
+            (
+                "the local sample dataset"
+                if args.sample
+                else f"{args.date} through {args.date_to}"
+            ),
             provider.name,
         )
         if not args.sample:
@@ -116,7 +143,15 @@ def main() -> int:
                 args.max_fixtures,
             )
         try:
-            completed_matches = provider.get_completed_matches(args.date)
+            if args.sample:
+                completed_matches = provider.get_completed_matches(args.date)
+            else:
+                completed_matches = provider.get_completed_matches_range(
+                    args.date,
+                    args.date_to,
+                    getattr(provider, "league_id", 1),
+                    getattr(provider, "season", None) or date_to.year,
+                )
         except RateLimitError as error:
             logger.warning(
                 "[daily-ingestion] RATE LIMITED during fixture discovery: %s. "
@@ -128,7 +163,11 @@ def main() -> int:
         if not completed_matches:
             logger.info(
                 "[daily-ingestion] SUCCESS: no completed matches found for %s",
-                args.date,
+                (
+                    args.date
+                    if args.date == args.date_to
+                    else f"{args.date} through {args.date_to}"
+                ),
             )
             return 0
 

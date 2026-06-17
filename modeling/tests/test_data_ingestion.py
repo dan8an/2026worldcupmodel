@@ -1,4 +1,5 @@
 import unittest
+from argparse import Namespace
 from email.message import Message
 from io import BytesIO
 from urllib.error import HTTPError
@@ -12,6 +13,7 @@ from scripts.data_ingestion.providers import (
     SampleSportsProvider,
     create_sports_provider,
 )
+from scripts.data_ingestion.repository import DataIngestionRepository
 from scripts.database import (
     configure_database_timeouts,
     create_database_engine,
@@ -102,6 +104,37 @@ class DataIngestionTests(unittest.TestCase):
         self.assertEqual(matches[0]["home_team"]["name"], "Argentina")
         self.assertEqual(captured["league"], 1)
         self.assertEqual(captured["season"], 2026)
+
+    def test_api_provider_normalizes_all_final_statuses(self):
+        provider = ApiFootballProvider("test-key")
+        provider._request = lambda path, **params: [
+            {
+                "fixture": {
+                    "id": index,
+                    "date": "2026-06-13T01:00:00+00:00",
+                    "status": {"short": status},
+                },
+                "league": {"id": 1},
+                "teams": {
+                    "home": {"id": 1, "name": "USA"},
+                    "away": {"id": 2, "name": "Paraguay"},
+                },
+                "goals": {"home": 1, "away": 0},
+            }
+            for index, status in enumerate(("FT", "AET", "PEN", "NS"), start=1)
+        ]
+
+        matches = provider.get_completed_matches_range(
+            "2026-06-12",
+            "2026-06-13",
+            1,
+            2026,
+        )
+
+        self.assertEqual(
+            [match["status"] for match in matches],
+            ["FT", "AET", "PEN"],
+        )
 
     def test_api_provider_loads_completed_matches_for_range(self):
         provider = ApiFootballProvider("test-key")
@@ -243,6 +276,7 @@ class DataIngestionTests(unittest.TestCase):
             sys.argv = ["update_data.py"]
             self.assertEqual(parse_args().max_fixtures, 5)
             self.assertFalse(parse_args().sample)
+            self.assertLess(parse_args().date, parse_args().date_to)
         finally:
             sys.argv = original
 
@@ -344,8 +378,10 @@ class DataIngestionTests(unittest.TestCase):
     def test_main_exits_zero_when_no_completed_matches_exist(self):
         class Provider:
             name = "api_football"
+            league_id = 1
+            season = 2026
 
-            def get_completed_matches(self, date):
+            def get_completed_matches_range(self, date_from, date_to, league_id, season):
                 return []
 
         class Engine:
@@ -374,8 +410,10 @@ class DataIngestionTests(unittest.TestCase):
     def test_main_exits_zero_when_fixture_discovery_is_rate_limited(self):
         class Provider:
             name = "api_football"
+            league_id = 1
+            season = 2026
 
-            def get_completed_matches(self, date):
+            def get_completed_matches_range(self, date_from, date_to, league_id, season):
                 raise RateLimitError("60")
 
         class Engine:
@@ -400,6 +438,108 @@ class DataIngestionTests(unittest.TestCase):
             patch("sys.argv", ["update_data.py"]),
         ):
             self.assertEqual(main(), 0)
+
+    def test_default_cron_window_includes_late_night_fixture_on_today_utc(self):
+        fixture = {
+            "provider_fixture_id": 1489370,
+            "date": "2026-06-13T01:00:00+00:00",
+            "status": "FT",
+            "home_team": {"provider_id": 2384, "name": "USA"},
+            "away_team": {"provider_id": 2380, "name": "Paraguay"},
+            "home_score": 4,
+            "away_score": 1,
+        }
+
+        class Provider:
+            name = "api_football"
+            league_id = 1
+            season = 2026
+
+            def __init__(self):
+                self.window = None
+
+            def get_completed_matches_range(
+                self,
+                date_from,
+                date_to,
+                league_id,
+                season,
+            ):
+                self.window = (date_from, date_to, league_id, season)
+                return [fixture]
+
+        class Engine:
+            def dispose(self):
+                pass
+
+        class Repository:
+            stored = []
+
+            def __init__(self, engine, logger):
+                pass
+
+            def assert_schema(self):
+                pass
+
+            def upsert_provider_matches(self, matches):
+                self.stored.extend(matches)
+
+            def find_completed_matches_missing_stats(self, fixture_ids):
+                return []
+
+        provider = Provider()
+        with (
+            patch(
+                "scripts.update_data.parse_args",
+                return_value=Namespace(
+                    date="2026-06-12",
+                    date_to="2026-06-13",
+                    max_fixtures=5,
+                    sample=False,
+                ),
+            ),
+            patch(
+                "scripts.update_data.load_environment",
+                return_value={"DATABASE_URL": "postgresql://example/database"},
+            ),
+            patch("scripts.update_data.create_sports_provider", return_value=provider),
+            patch("scripts.update_data.create_database_engine", return_value=Engine()),
+            patch("scripts.update_data.DataIngestionRepository", Repository),
+        ):
+            self.assertEqual(main(), 0)
+
+        self.assertEqual(
+            provider.window,
+            ("2026-06-12", "2026-06-13", 1, 2026),
+        )
+        self.assertEqual(Repository.stored, [fixture])
+
+    def test_completed_upsert_updates_existing_provider_fixture(self):
+        connection = Mock()
+        DataIngestionRepository._upsert_match(
+            connection,
+            {
+                "provider_fixture_id": 1489370,
+                "date": "2026-06-13T01:00:00+00:00",
+                "round": "Group Stage - 1",
+                "home_team": {"name": "USA"},
+                "away_team": {"name": "Paraguay"},
+                "home_score": 4,
+                "away_score": 1,
+                "raw": {},
+            },
+            "usa-id",
+            "paraguay-id",
+        )
+
+        statement, parameters = connection.execute.call_args.args
+        sql = str(statement)
+        self.assertIn("on conflict (api_football_fixture_id)", sql)
+        self.assertIn("do update set", sql)
+        self.assertIn("completed = true", sql)
+        self.assertEqual(parameters["fixture_id"], 1489370)
+        self.assertEqual(parameters["home_score"], 4)
+        self.assertEqual(parameters["away_score"], 1)
 
 
 if __name__ == "__main__":

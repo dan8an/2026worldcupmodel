@@ -356,41 +356,53 @@ class PredictionService:
             LOGGER.warning("Database match results are unavailable", exc_info=True)
             return {}
 
-        fixtures_by_key = {
-            (
-                fixture.kickoff.date().isoformat(),
-                fixture.home_team_id,
-                fixture.away_team_id,
-            ): fixture.id
-            for fixture in self.fixtures
-            if fixture.home_team_id and fixture.away_team_id
-        }
+        fixtures_by_teams: dict[
+            tuple[str, str],
+            list[Any],
+        ] = {}
+        for fixture in self.fixtures:
+            if fixture.home_team_id and fixture.away_team_id:
+                fixtures_by_teams.setdefault(
+                    (fixture.home_team_id, fixture.away_team_id),
+                    [],
+                ).append(fixture)
         results = {}
         for row in rows:
             played_at = row.get("match_date") or row.get("kickoff")
             if played_at is None:
                 continue
             try:
-                played_on = datetime.fromisoformat(
+                played_at = datetime.fromisoformat(
                     str(played_at).replace("Z", "+00:00")
-                ).date().isoformat()
+                )
             except ValueError:
                 continue
+            if played_at.tzinfo is None:
+                played_at = played_at.replace(tzinfo=timezone.utc)
             home_id = self.team_alias_lookup.get(
                 self._normalize_name(row.get("home_team_name"))
             )
             away_id = self.team_alias_lookup.get(
                 self._normalize_name(row.get("away_team_name"))
             )
-            fixture_id = fixtures_by_key.get((played_on, home_id, away_id))
-            if fixture_id is None:
+            candidates = fixtures_by_teams.get((home_id, away_id), [])
+            if not candidates:
+                continue
+            fixture = min(
+                candidates,
+                key=lambda candidate: abs(
+                    (candidate.kickoff - played_at).total_seconds()
+                ),
+            )
+            kickoff_gap = abs((fixture.kickoff - played_at).total_seconds())
+            if kickoff_gap > 36 * 60 * 60:
                 continue
             home_score = row.get("home_score")
             away_score = row.get("away_score")
             status = str(row.get("status") or "").strip()
             if not status and row.get("completed"):
                 status = "completed"
-            results[fixture_id] = {
+            results[fixture.id] = {
                 "status": status or "scheduled",
                 "home_score": (
                     int(home_score) if home_score is not None else None

@@ -316,6 +316,35 @@ def test_completed_match_results_are_merged_into_canonical_fixtures(monkeypatch)
     assert payload["prediction"]["model_version"] == "elo-context-v4.1"
 
 
+def test_late_night_result_matches_canonical_fixture_across_utc_date(monkeypatch):
+    class MatchResultSource:
+        def load(self):
+            return [
+                {
+                    "match_date": "2026-06-13T01:00:00+00:00",
+                    "home_team_name": "USA",
+                    "away_team_name": "Paraguay",
+                    "completed": True,
+                    "home_score": 4,
+                    "away_score": 1,
+                }
+            ]
+
+    service = PredictionService(
+        prediction_source=LatestV4PredictionSource(),
+        match_result_source=MatchResultSource(),
+        prediction_cache_seconds=0,
+    )
+    monkeypatch.setattr(main_module, "service", service)
+
+    matches = client.get("/v1/matches?stage=group").json()
+    payload = next(match for match in matches if match["id"] == "WC26-019")
+
+    assert payload["status"] == "completed"
+    assert payload["home_score"] == 4
+    assert payload["away_score"] == 1
+
+
 def test_database_match_result_source_loads_team_names():
     engine = create_engine("sqlite://")
     with engine.begin() as connection:

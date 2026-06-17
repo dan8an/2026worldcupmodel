@@ -135,6 +135,72 @@ test("matching database predictions enrich canonical fixtures without losing det
   assert.ok(match.prediction.key_factors.length > 0);
 });
 
+test("provider result near a UTC boundary merges into the canonical USA-Paraguay fixture", () => {
+  const teams = mergeTeams();
+  const canonicalMatches = buildPlaceholderMatches(teams);
+  const databaseTeams = [
+    { id: "usa-uuid", name: "United States" },
+    { id: "paraguay-uuid", name: "Paraguay" },
+  ];
+  const databaseMatches = normalizeDatabaseMatches(
+    [
+      {
+        id: "provider-match-uuid",
+        home_team_id: "usa-uuid",
+        away_team_id: "paraguay-uuid",
+        match_date: "2026-06-13T01:00:00Z",
+        tournament_stage: "Group Stage - 1",
+        home_score: 4,
+        away_score: 1,
+        completed: true,
+      },
+    ],
+    [],
+    teams,
+    databaseTeams,
+  );
+
+  const match = mergeDatabaseMatches(canonicalMatches, databaseMatches)
+    .find((candidate) => candidate.id === "WC26-019");
+
+  assert.equal(match.status, "completed");
+  assert.equal(match.home_score, 4);
+  assert.equal(match.away_score, 1);
+});
+
+test("provider timestamp still matches Korea-Czechia canonical fixture by kickoff proximity", () => {
+  const teams = mergeTeams();
+  const canonicalMatches = buildPlaceholderMatches(teams);
+  const databaseTeams = [
+    { id: "korea-uuid", name: "South Korea" },
+    { id: "czechia-uuid", name: "Czechia" },
+  ];
+  const databaseMatches = normalizeDatabaseMatches(
+    [
+      {
+        id: "provider-match-uuid",
+        home_team_id: "korea-uuid",
+        away_team_id: "czechia-uuid",
+        match_date: "2026-06-12T01:00:00Z",
+        tournament_stage: "Group Stage - 1",
+        home_score: 2,
+        away_score: 0,
+        completed: true,
+      },
+    ],
+    [],
+    teams,
+    databaseTeams,
+  );
+
+  const match = mergeDatabaseMatches(canonicalMatches, databaseMatches)
+    .find((candidate) => candidate.id === "WC26-002");
+
+  assert.equal(match.status, "completed");
+  assert.equal(match.home_score, 2);
+  assert.equal(match.away_score, 0);
+});
+
 test("canonical predictions attach without database match rows", () => {
   const [match] = mergeCanonicalPredictions(buildPlaceholderMatches(), [
       {

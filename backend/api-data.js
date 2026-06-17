@@ -324,6 +324,9 @@ export const normalizeDatabaseMatches = (
       away_team: awayTeam,
       home_slot: row.home_slot ?? null,
       away_slot: row.away_slot ?? null,
+      status: row.status ?? (row.completed ? "completed" : "scheduled"),
+      home_score: row.home_score ?? null,
+      away_score: row.away_score ?? null,
       prediction,
     };
   }).sort((a, b) =>
@@ -331,15 +334,15 @@ export const normalizeDatabaseMatches = (
   );
 };
 
-const sameUtcDate = (left, right) =>
-  left.slice(0, 10) === right.slice(0, 10);
+const hoursBetween = (left, right) =>
+  Math.abs(new Date(left).getTime() - new Date(right).getTime()) / (60 * 60 * 1000);
 
 const matchesCanonicalFixture = (canonical, databaseMatch) => {
   if (canonical.id === databaseMatch.id) return true;
   if (!canonical.home_team || !canonical.away_team) return false;
   return databaseMatch.home_team?.id === canonical.home_team.id &&
     databaseMatch.away_team?.id === canonical.away_team.id &&
-    sameUtcDate(databaseMatch.kickoff, canonical.kickoff);
+    hoursBetween(databaseMatch.kickoff, canonical.kickoff) <= 36;
 };
 
 export const mergeDatabaseMatches = (canonicalMatches, databaseMatches) =>
@@ -377,6 +380,9 @@ export const mergeDatabaseMatches = (canonicalMatches, databaseMatches) =>
         : databaseMatch.venue_id || canonical.venue_id,
       home_team: databaseMatch.home_team ?? canonical.home_team,
       away_team: databaseMatch.away_team ?? canonical.away_team,
+      status: databaseMatch.status ?? canonical.status,
+      home_score: databaseMatch.home_score ?? canonical.home_score ?? null,
+      away_score: databaseMatch.away_score ?? canonical.away_score ?? null,
       prediction,
     };
   });
