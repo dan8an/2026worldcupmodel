@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
 import {
+  chronologicalMatchNumbers,
   completedMatches,
   isMatchCompleted,
   upcomingMatches,
@@ -26,23 +27,50 @@ const match = (overrides: Partial<Match>): Match => ({
 
 describe("match completion filtering", () => {
   it("keeps completed matches off the dashboard", () => {
+    const now = new Date("2026-06-11T16:00:00+00:00");
     const upcoming = upcomingMatches([
       match({ id: "finished", status: "finished" }),
       match({ id: "scored", home_score: 2, away_score: 1 }),
       match({ id: "upcoming", kickoff: "2026-06-12T17:00:00+00:00" }),
-    ]);
+    ], now);
 
     expect(upcoming.map((item) => item.id)).toEqual(["upcoming"]);
   });
 
-  it("shows status-complete and score-complete matches in Results", () => {
+  it("keeps already-kicked-off matches off the dashboard until scores arrive", () => {
+    const now = new Date("2026-06-12T18:00:00+00:00");
+    const upcoming = upcomingMatches([
+      match({ id: "past-unscored", kickoff: "2026-06-12T17:00:00+00:00" }),
+      match({ id: "future", kickoff: "2026-06-12T20:00:00+00:00" }),
+    ], now);
+
+    expect(upcoming.map((item) => item.id)).toEqual(["future"]);
+  });
+
+  it("shows status-complete, score-complete, and already-kicked-off matches in Results", () => {
+    const now = new Date("2026-06-12T18:00:00+00:00");
     const results = completedMatches([
       match({ id: "completed", status: "completed" }),
       match({ id: "scored", status: "scheduled", home_score: 0, away_score: 0 }),
-      match({ id: "upcoming" }),
+      match({ id: "past-unscored", kickoff: "2026-06-12T17:00:00+00:00" }),
+      match({ id: "upcoming", kickoff: "2026-06-12T20:00:00+00:00" }),
+    ], now);
+
+    expect(results.map((item) => item.id)).toEqual([
+      "past-unscored",
+      "completed",
+      "scored",
+    ]);
+    expect(isMatchCompleted(match({ status: "FT" }))).toBe(true);
+  });
+
+  it("maps display match numbers by chronological order", () => {
+    const numbers = chronologicalMatchNumbers([
+      match({ id: "group-order-1", number: 1, kickoff: "2026-06-11T17:00:00+00:00" }),
+      match({ id: "group-order-9", number: 9, kickoff: "2026-06-12T17:00:00+00:00" }),
     ]);
 
-    expect(results.map((item) => item.id)).toEqual(["completed", "scored"]);
-    expect(isMatchCompleted(match({ status: "FT" }))).toBe(true);
+    expect(numbers.get("group-order-1")).toBe(1);
+    expect(numbers.get("group-order-9")).toBe(2);
   });
 });

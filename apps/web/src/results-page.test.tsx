@@ -1,7 +1,7 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { renderToString } from "react-dom/server";
 import { MemoryRouter } from "react-router-dom";
-import { describe, expect, it, vi } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import App from "./App";
 import type { Match } from "./types";
 
@@ -25,6 +25,15 @@ const completedMatch = {
 } as Match;
 
 describe("Results page", () => {
+  beforeEach(() => {
+    vi.useFakeTimers();
+    vi.setSystemTime(new Date("2026-06-12T18:00:00+00:00"));
+  });
+
+  afterEach(() => {
+    vi.useRealTimers();
+  });
+
   it("is routed and displays completed match scores", () => {
     const queryClient = new QueryClient({
       defaultOptions: { queries: { staleTime: Infinity } },
@@ -45,6 +54,56 @@ describe("Results page", () => {
     expect(html).toContain("2");
     expect(html).toContain("1");
     expect(html).toContain('href="/results"');
+  });
+
+  it("shows already-kicked-off matches with chronological match numbers", () => {
+    const queryClient = new QueryClient({
+      defaultOptions: { queries: { staleTime: Infinity } },
+    });
+    queryClient.setQueryData(["matches"], [
+      completedMatch,
+      {
+        ...completedMatch,
+        id: "past-unscored",
+        number: 9,
+        kickoff: "2026-06-12T17:00:00+00:00",
+        status: "scheduled",
+        home_score: null,
+        away_score: null,
+        group: "B",
+        home_slot: "Past Home",
+        away_slot: "Past Away",
+        home_team: null,
+        away_team: null,
+      },
+      {
+        ...completedMatch,
+        id: "future",
+        number: 3,
+        kickoff: "2026-06-12T20:00:00+00:00",
+        status: "scheduled",
+        home_score: null,
+        away_score: null,
+        home_slot: "Future Home",
+        away_slot: "Future Away",
+        home_team: null,
+        away_team: null,
+      },
+    ]);
+
+    const html = renderToString(
+      <QueryClientProvider client={queryClient}>
+        <MemoryRouter initialEntries={["/results"]}>
+          <App />
+        </MemoryRouter>
+      </QueryClientProvider>,
+    );
+    const normalizedHtml = html.replaceAll("<!-- -->", "");
+
+    expect(normalizedHtml).toContain("Match 2");
+    expect(normalizedHtml).toContain("Past Home");
+    expect(normalizedHtml).toContain("Awaiting final score.");
+    expect(normalizedHtml).not.toContain("Future Home");
   });
 
   it("shows an empty state when no results are available", () => {

@@ -1,7 +1,7 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { renderToString } from "react-dom/server";
 import { MemoryRouter } from "react-router-dom";
-import { describe, expect, it, vi } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import App from "./App";
 import type { Match } from "./types";
 
@@ -26,6 +26,15 @@ const matchFixture = (overrides: Partial<Match>): Match => ({
 });
 
 describe("Matches page", () => {
+  beforeEach(() => {
+    vi.useFakeTimers();
+    vi.setSystemTime(new Date("2026-06-11T16:00:00+00:00"));
+  });
+
+  afterEach(() => {
+    vi.useRealTimers();
+  });
+
   it("numbers matches by chronological order instead of canonical group order", () => {
     const queryClient = new QueryClient({
       defaultOptions: { queries: { staleTime: Infinity } },
@@ -65,5 +74,39 @@ describe("Matches page", () => {
     expect(normalizedHtml).toContain("Group B · Match 2");
     expect(normalizedHtml).toContain("Group A · Match 3");
     expect(normalizedHtml).not.toContain("Group B · Match 9");
+  });
+
+  it("hides already-kicked-off matches", () => {
+    vi.setSystemTime(new Date("2026-06-12T18:00:00+00:00"));
+    const queryClient = new QueryClient({
+      defaultOptions: { queries: { staleTime: Infinity } },
+    });
+    queryClient.setQueryData(["matches"], [
+      matchFixture({
+        id: "past",
+        number: 1,
+        kickoff: "2026-06-12T17:00:00+00:00",
+        group: "A",
+        home_slot: "Past Home",
+      }),
+      matchFixture({
+        id: "future",
+        number: 2,
+        kickoff: "2026-06-12T20:00:00+00:00",
+        group: "B",
+        home_slot: "Future Home",
+      }),
+    ]);
+
+    const html = renderToString(
+      <QueryClientProvider client={queryClient}>
+        <MemoryRouter initialEntries={["/matches"]}>
+          <App />
+        </MemoryRouter>
+      </QueryClientProvider>,
+    );
+
+    expect(html).not.toContain("Past Home");
+    expect(html).toContain("Future Home");
   });
 });

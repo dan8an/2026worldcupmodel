@@ -1,7 +1,7 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { renderToString } from "react-dom/server";
 import { MemoryRouter } from "react-router-dom";
-import { describe, expect, it, vi } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import App from "./App";
 import type { Match, Simulation } from "./types";
 
@@ -40,6 +40,15 @@ const simulation = {
 } as Simulation;
 
 describe("Dashboard match filtering", () => {
+  beforeEach(() => {
+    vi.useFakeTimers();
+    vi.setSystemTime(new Date("2026-06-11T16:00:00+00:00"));
+  });
+
+  afterEach(() => {
+    vi.useRealTimers();
+  });
+
   it("hides completed matches and shows the upcoming empty state", () => {
     const queryClient = new QueryClient({
       defaultOptions: { queries: { staleTime: Infinity } },
@@ -59,5 +68,53 @@ describe("Dashboard match filtering", () => {
     expect(html).toContain("No upcoming matches are available.");
     expect(html).not.toContain("Mexico<!-- -->");
     expect(html).not.toContain("South Africa<!-- -->");
+  });
+
+  it("hides already-kicked-off matches and uses chronological match numbers", () => {
+    vi.setSystemTime(new Date("2026-06-12T18:00:00+00:00"));
+    const queryClient = new QueryClient({
+      defaultOptions: { queries: { staleTime: Infinity } },
+    });
+    queryClient.setQueryData(["matches"], [
+      {
+        ...completedMatch,
+        id: "past",
+        number: 1,
+        kickoff: "2026-06-12T17:00:00+00:00",
+        status: "scheduled",
+        home_score: null,
+        away_score: null,
+        home_slot: "Past Home",
+        away_slot: "Past Away",
+      },
+      {
+        ...completedMatch,
+        id: "future",
+        number: 9,
+        kickoff: "2026-06-12T20:00:00+00:00",
+        status: "scheduled",
+        home_score: null,
+        away_score: null,
+        group: "B",
+        home_slot: "Future Home",
+        away_slot: "Future Away",
+      },
+    ]);
+    queryClient.setQueryData(["simulation"], simulation);
+    queryClient.setQueryData(["teams"], []);
+
+    const html = renderToString(
+      <QueryClientProvider client={queryClient}>
+        <MemoryRouter initialEntries={["/"]}>
+          <App />
+        </MemoryRouter>
+      </QueryClientProvider>,
+    );
+    const normalizedHtml = html.replaceAll("<!-- -->", "");
+
+    expect(normalizedHtml).not.toContain("Past Home");
+    expect(normalizedHtml).toContain("Future Home");
+    expect(normalizedHtml).toContain("Group B · Match 2");
+    expect(normalizedHtml).not.toContain("Group B · Match 9");
   });
 });

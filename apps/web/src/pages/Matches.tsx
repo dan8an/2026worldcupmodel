@@ -2,26 +2,20 @@ import { useQuery } from "@tanstack/react-query";
 import { useMemo, useState } from "react";
 import { api } from "../api";
 import { ErrorState, Loading, MatchCard } from "../components";
+import { chronologicalMatchNumbers, upcomingMatches } from "../match-status";
 
 export function Matches() {
   const query = useQuery({ queryKey: ["matches"], queryFn: api.matches });
   const [group, setGroup] = useState("ALL");
   const [search, setSearch] = useState("");
-  const chronologicalMatchNumbers = useMemo(
+  const displayNumbers = useMemo(
     () =>
-      new Map(
-        [...(query.data ?? [])]
-          .sort((a, b) => {
-            const kickoffOrder = new Date(a.kickoff).getTime() - new Date(b.kickoff).getTime();
-            return kickoffOrder || a.number - b.number;
-          })
-          .map((match, index) => [match.id, index + 1]),
-      ),
+      chronologicalMatchNumbers(query.data ?? []),
     [query.data],
   );
   const filtered = useMemo(
     () =>
-      (query.data ?? []).filter((match) => {
+      upcomingMatches(query.data ?? []).filter((match) => {
         const names = `${match.home_team?.name} ${match.away_team?.name}`.toLowerCase();
         return (group === "ALL" || match.group === group) && names.includes(search.toLowerCase());
       }),
@@ -32,7 +26,7 @@ export function Matches() {
   return (
     <section>
       <div className="page-heading">
-        <span className="eyebrow">72 group fixtures</span>
+        <span className="eyebrow">Upcoming group fixtures</span>
         <h1>Match forecasts</h1>
         <p>Filter by group or team. Probabilities are frozen by model snapshot.</p>
       </div>
@@ -55,10 +49,15 @@ export function Matches() {
           <MatchCard
             key={match.id}
             match={match}
-            displayNumber={chronologicalMatchNumbers.get(match.id)}
+            displayNumber={displayNumbers.get(match.id)}
           />
         ))}
       </div>
+      {filtered.length === 0 && (
+        <div className="state-card empty-state">
+          No upcoming matches match these filters. Completed and in-progress fixtures are listed in Results.
+        </div>
+      )}
     </section>
   );
 }

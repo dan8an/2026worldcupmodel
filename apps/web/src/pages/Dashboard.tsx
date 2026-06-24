@@ -7,7 +7,7 @@ import {
   simulationDriverLabels,
   simulationSignalBadges,
 } from "../simulation-display";
-import { upcomingMatches } from "../match-status";
+import { chronologicalMatchNumbers, upcomingMatches } from "../match-status";
 
 export function Dashboard() {
   const matches = useQuery({ queryKey: ["matches"], queryFn: api.matches });
@@ -19,6 +19,7 @@ export function Dashboard() {
 
   const matchData = matches.data ?? [];
   const upcoming = upcomingMatches(matchData);
+  const displayNumbers = chronologicalMatchNumbers(matchData);
   const simulationData = simulation.data;
   if (!simulationData) return <ErrorState />;
   const favorites = championshipOutlookTeams(
@@ -53,11 +54,15 @@ export function Dashboard() {
       <section>
         <div className="section-heading">
           <div><span className="eyebrow">Opening slate</span><h2>Next matches</h2></div>
-          <Link to="/matches">View all 72 group matches</Link>
+          <Link to="/matches">View upcoming matches</Link>
         </div>
         <div className="card-grid">
           {upcoming.slice(0, 6).map((match) => (
-            <MatchCard key={match.id} match={match} />
+            <MatchCard
+              key={match.id}
+              match={match}
+              displayNumber={displayNumbers.get(match.id)}
+            />
           ))}
         </div>
         {upcoming.length === 0 && (

@@ -2,20 +2,30 @@ import { useQuery } from "@tanstack/react-query";
 import { Link } from "react-router-dom";
 import { api } from "../api";
 import { ErrorState, Loading, ProbabilityBar } from "../components";
-import { completedMatches } from "../match-status";
+import { chronologicalMatchNumbers, completedMatches, isMatchCompleted } from "../match-status";
 import type { Match } from "../types";
 
-function ResultCard({ match }: { match: Match }) {
+function ResultCard({
+  match,
+  displayNumber,
+}: {
+  match: Match;
+  displayNumber?: number;
+}) {
+  const hasScore = match.home_score != null && match.away_score != null;
   return (
     <Link className="match-card result-card" to={`/match/${match.id}`}>
       <div className="eyebrow">
-        {new Date(match.kickoff).toLocaleDateString()} · Group {match.group}
+        Match {displayNumber ?? match.number} · {new Date(match.kickoff).toLocaleDateString()} · Group {match.group}
       </div>
       <div className="result-score">
         <span>{match.home_team?.name ?? match.home_slot}</span>
         <strong>{match.home_score ?? "–"} - {match.away_score ?? "–"}</strong>
         <span>{match.away_team?.name ?? match.away_slot}</span>
       </div>
+      {!hasScore && !isMatchCompleted(match) && (
+        <p className="muted">Awaiting final score.</p>
+      )}
       {match.prediction ? (
         <>
           <small className="result-prediction-label">Pre-match prediction</small>
@@ -33,7 +43,9 @@ export function Results() {
   if (query.isLoading) return <Loading label="Loading results" />;
   if (query.isError) return <ErrorState />;
 
-  const results = completedMatches(query.data ?? []);
+  const matchData = query.data ?? [];
+  const results = completedMatches(matchData);
+  const displayNumbers = chronologicalMatchNumbers(matchData);
   return (
     <section>
       <div className="page-heading">
@@ -43,7 +55,13 @@ export function Results() {
       </div>
       {results.length > 0 ? (
         <div className="card-grid">
-          {results.map((match) => <ResultCard key={match.id} match={match} />)}
+          {results.map((match) => (
+            <ResultCard
+              key={match.id}
+              match={match}
+              displayNumber={displayNumbers.get(match.id)}
+            />
+          ))}
         </div>
       ) : (
         <div className="state-card empty-state">
