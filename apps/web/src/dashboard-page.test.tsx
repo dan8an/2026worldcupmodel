@@ -70,7 +70,7 @@ describe("Dashboard match filtering", () => {
     expect(html).not.toContain("South Africa<!-- -->");
   });
 
-  it("hides already-kicked-off matches and uses chronological match numbers", () => {
+  it("hides past/completed matches and keeps full-schedule chronological numbers", () => {
     vi.setSystemTime(new Date("2026-06-12T18:00:00+00:00"));
     const queryClient = new QueryClient({
       defaultOptions: { queries: { staleTime: Infinity } },
@@ -78,8 +78,17 @@ describe("Dashboard match filtering", () => {
     queryClient.setQueryData(["matches"], [
       {
         ...completedMatch,
-        id: "past",
+        id: "completed",
         number: 1,
+        kickoff: "2026-06-11T17:00:00+00:00",
+        status: "completed",
+        home_slot: "Completed Home",
+        away_slot: "Completed Away",
+      },
+      {
+        ...completedMatch,
+        id: "past-unscored",
+        number: 2,
         kickoff: "2026-06-12T17:00:00+00:00",
         status: "scheduled",
         home_score: null,
@@ -112,9 +121,10 @@ describe("Dashboard match filtering", () => {
     );
     const normalizedHtml = html.replaceAll("<!-- -->", "");
 
+    expect(normalizedHtml).not.toContain("Completed Home");
     expect(normalizedHtml).not.toContain("Past Home");
     expect(normalizedHtml).toContain("Future Home");
-    expect(normalizedHtml).toContain("Group B · Match 2");
+    expect(normalizedHtml).toContain("Group B · Match 3");
     expect(normalizedHtml).not.toContain("Group B · Match 9");
   });
 });

@@ -76,22 +76,32 @@ describe("Matches page", () => {
     expect(normalizedHtml).not.toContain("Group B · Match 9");
   });
 
-  it("hides already-kicked-off matches", () => {
+  it("hides past/completed matches and keeps full-schedule chronological numbers", () => {
     vi.setSystemTime(new Date("2026-06-12T18:00:00+00:00"));
     const queryClient = new QueryClient({
       defaultOptions: { queries: { staleTime: Infinity } },
     });
     queryClient.setQueryData(["matches"], [
       matchFixture({
-        id: "past",
+        id: "completed",
         number: 1,
+        kickoff: "2026-06-11T17:00:00+00:00",
+        group: "A",
+        status: "completed",
+        home_score: 2,
+        away_score: 0,
+        home_slot: "Completed Home",
+      }),
+      matchFixture({
+        id: "past",
+        number: 2,
         kickoff: "2026-06-12T17:00:00+00:00",
         group: "A",
         home_slot: "Past Home",
       }),
       matchFixture({
         id: "future",
-        number: 2,
+        number: 9,
         kickoff: "2026-06-12T20:00:00+00:00",
         group: "B",
         home_slot: "Future Home",
@@ -105,8 +115,12 @@ describe("Matches page", () => {
         </MemoryRouter>
       </QueryClientProvider>,
     );
+    const normalizedHtml = html.replaceAll("<!-- -->", "");
 
-    expect(html).not.toContain("Past Home");
-    expect(html).toContain("Future Home");
+    expect(normalizedHtml).not.toContain("Completed Home");
+    expect(normalizedHtml).not.toContain("Past Home");
+    expect(normalizedHtml).toContain("Future Home");
+    expect(normalizedHtml).toContain("Group B · Match 3");
+    expect(normalizedHtml).not.toContain("Group B · Match 9");
   });
 });

@@ -7,7 +7,7 @@ import {
   simulationDriverLabels,
   simulationSignalBadges,
 } from "../simulation-display";
-import { chronologicalMatchNumbers, upcomingMatches } from "../match-status";
+import { matchSchedule } from "../match-status";
 
 export function Dashboard() {
   const matches = useQuery({ queryKey: ["matches"], queryFn: api.matches });
@@ -18,8 +18,7 @@ export function Dashboard() {
   if (matches.isError || simulation.isError || teams.isError) return <ErrorState />;
 
   const matchData = matches.data ?? [];
-  const upcoming = upcomingMatches(matchData);
-  const displayNumbers = chronologicalMatchNumbers(matchData);
+  const schedule = matchSchedule(matchData);
   const simulationData = simulation.data;
   if (!simulationData) return <ErrorState />;
   const favorites = championshipOutlookTeams(
@@ -57,15 +56,15 @@ export function Dashboard() {
           <Link to="/matches">View upcoming matches</Link>
         </div>
         <div className="card-grid">
-          {upcoming.slice(0, 6).map((match) => (
+          {schedule.upcoming.slice(0, 6).map((match) => (
             <MatchCard
               key={match.id}
               match={match}
-              displayNumber={displayNumbers.get(match.id)}
+              displayNumber={schedule.numberById.get(match.id)}
             />
           ))}
         </div>
-        {upcoming.length === 0 && (
+        {schedule.upcoming.length === 0 && (
           <div className="state-card empty-state">
             No upcoming matches are available. Completed matches are listed in Results.
           </div>

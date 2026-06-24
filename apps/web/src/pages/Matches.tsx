@@ -2,24 +2,20 @@ import { useQuery } from "@tanstack/react-query";
 import { useMemo, useState } from "react";
 import { api } from "../api";
 import { ErrorState, Loading, MatchCard } from "../components";
-import { chronologicalMatchNumbers, upcomingMatches } from "../match-status";
+import { matchSchedule } from "../match-status";
 
 export function Matches() {
   const query = useQuery({ queryKey: ["matches"], queryFn: api.matches });
   const [group, setGroup] = useState("ALL");
   const [search, setSearch] = useState("");
-  const displayNumbers = useMemo(
-    () =>
-      chronologicalMatchNumbers(query.data ?? []),
-    [query.data],
-  );
+  const schedule = useMemo(() => matchSchedule(query.data ?? []), [query.data]);
   const filtered = useMemo(
     () =>
-      upcomingMatches(query.data ?? []).filter((match) => {
+      schedule.upcoming.filter((match) => {
         const names = `${match.home_team?.name} ${match.away_team?.name}`.toLowerCase();
         return (group === "ALL" || match.group === group) && names.includes(search.toLowerCase());
       }),
-    [group, query.data, search],
+    [group, schedule.upcoming, search],
   );
   if (query.isLoading) return <Loading label="Loading matches" />;
   if (query.isError) return <ErrorState />;
@@ -49,7 +45,7 @@ export function Matches() {
           <MatchCard
             key={match.id}
             match={match}
-            displayNumber={displayNumbers.get(match.id)}
+            displayNumber={schedule.numberById.get(match.id)}
           />
         ))}
       </div>
