@@ -42,15 +42,22 @@ export function ProbabilityBar({ match }: { match: Match }) {
   );
 }
 
-export function MatchCard({ match }: { match: Match }) {
+export function MatchCard({
+  match,
+  displayNumber,
+}: {
+  match: Match;
+  displayNumber?: number;
+}) {
   const confidence = match.prediction
     ? confidenceLevel(match.prediction.confidence_score)
     : null;
   const leadFactor = match.prediction ? displayFactors(match.prediction)[0] : null;
+  const matchNumber = displayNumber ?? match.number;
   return (
     <Link className="match-card" to={`/match/${match.id}`}>
       <div className="eyebrow">
-        Group {match.group} · Match {match.number}
+        Group {match.group} · Match {matchNumber}
       </div>
       <div className="teams-row">
         <strong>

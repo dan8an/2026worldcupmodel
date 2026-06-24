@@ -7,6 +7,18 @@ export function Matches() {
   const query = useQuery({ queryKey: ["matches"], queryFn: api.matches });
   const [group, setGroup] = useState("ALL");
   const [search, setSearch] = useState("");
+  const chronologicalMatchNumbers = useMemo(
+    () =>
+      new Map(
+        [...(query.data ?? [])]
+          .sort((a, b) => {
+            const kickoffOrder = new Date(a.kickoff).getTime() - new Date(b.kickoff).getTime();
+            return kickoffOrder || a.number - b.number;
+          })
+          .map((match, index) => [match.id, index + 1]),
+      ),
+    [query.data],
+  );
   const filtered = useMemo(
     () =>
       (query.data ?? []).filter((match) => {
@@ -39,9 +51,14 @@ export function Matches() {
         </select>
       </div>
       <div className="card-grid">
-        {filtered.map((match) => <MatchCard key={match.id} match={match} />)}
+        {filtered.map((match) => (
+          <MatchCard
+            key={match.id}
+            match={match}
+            displayNumber={chronologicalMatchNumbers.get(match.id)}
+          />
+        ))}
       </div>
     </section>
   );
 }
-
