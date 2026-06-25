@@ -12,11 +12,13 @@ from pathlib import Path
 from modeling.src.data import build_fixtures, load_teams
 from scripts.database import create_database_engine
 from scripts.generate_predictions import (
+    DrawCalibrationFeatures,
     MODEL_VERSION,
     PredictionRepository,
     SHOT_VOLUME_WEIGHT,
     assert_complete_group_predictions,
     calculate_prediction,
+    calibrate_draw_probability,
     canonical_prior_elo,
     load_canonical_future_matches,
 )
@@ -142,19 +144,19 @@ class PredictionCalculationTests(unittest.TestCase):
             away_team_name="Morocco",
         )
         tilt = ((90 - 40) / 100) * SHOT_VOLUME_WEIGHT
-        expected_raw = (
-            v3["home_win_probability"] * math.exp(tilt),
-            v3["draw_probability"],
-            v3["away_win_probability"] * math.exp(-tilt),
-        )
-        expected_total = sum(expected_raw)
 
-        self.assertEqual(MODEL_VERSION, "elo-context-v4.1")
+        self.assertEqual(MODEL_VERSION, "elo-context-v4.2.1")
+        self.assertGreater(v4["home_win_probability"], v3["home_win_probability"])
+        self.assertLess(v4["away_win_probability"], v3["away_win_probability"])
+        self.assertLessEqual(v4["draw_probability"], v3["draw_probability"])
         self.assertAlmostEqual(
-            v4["home_win_probability"],
-            expected_raw[0] / expected_total,
+            v4["home_win_probability"]
+            + v4["draw_probability"]
+            + v4["away_win_probability"],
+            1.0,
             places=12,
         )
+        self.assertAlmostEqual(tilt, 0.5 * SHOT_VOLUME_WEIGHT)
         self.assertTrue(
             any(
                 factor["factor"] == "Shot volume"
@@ -272,7 +274,7 @@ class PredictionCalculationTests(unittest.TestCase):
         ):
             self.assertEqual(with_context[field], without_form_or_players[field])
 
-    def test_v41_ignores_rest_inputs(self):
+    def test_v42_ignores_rest_inputs(self):
         home = {
             "elo_rating": 1510,
             "attack_rating": 55,
@@ -305,6 +307,80 @@ class PredictionCalculationTests(unittest.TestCase):
                 for factor in stale_gap["top_factors"]
             )
         )
+
+    def test_draw_calibration_elevates_even_low_goal_fixture(self):
+        prediction = calculate_prediction(
+            {"elo_rating": 1500, "attack_rating": 42, "defense_rating": 78},
+            {"elo_rating": 1503, "attack_rating": 43, "defense_rating": 76},
+        )
+
+        self.assertGreater(prediction["draw_probability"], 0.31)
+        self.assertLess(prediction["draw_probability"], 0.40)
+        self.assertGreater(
+            prediction["draw_probability"],
+            prediction["legacy_v41_draw_probability"],
+        )
+        self.assertAlmostEqual(
+            prediction["home_win_probability"]
+            + prediction["draw_probability"]
+            + prediction["away_win_probability"],
+            1.0,
+            places=12,
+        )
+
+    def test_draw_calibration_reduces_mismatch_fixture(self):
+        prediction = calculate_prediction(
+            {"elo_rating": 1690, "attack_rating": 82, "defense_rating": 78},
+            {"elo_rating": 1390, "attack_rating": 43, "defense_rating": 45},
+        )
+
+        self.assertGreaterEqual(prediction["draw_probability"], 0.18)
+        self.assertLess(prediction["draw_probability"], 0.20)
+        self.assertLess(
+            prediction["draw_probability"],
+            prediction["legacy_v41_draw_probability"],
+        )
+
+    def test_draw_calibration_does_not_overboost_high_goal_even_fixture(self):
+        prediction = calculate_prediction(
+            {"elo_rating": 1500, "attack_rating": 82, "defense_rating": 42},
+            {"elo_rating": 1500, "attack_rating": 80, "defense_rating": 44},
+        )
+
+        self.assertLess(prediction["draw_probability"], 0.30)
+        self.assertLessEqual(
+            prediction["draw_probability"],
+            prediction["legacy_v41_draw_probability"],
+        )
+
+    def test_draw_calibration_has_wider_spread_than_legacy_multiplier(self):
+        scenarios = [
+            DrawCalibrationFeatures(0, 2.2, 42, 43, 78, 76),
+            DrawCalibrationFeatures(25, 2.6, 54, 52, 58, 57),
+            DrawCalibrationFeatures(180, 2.9, 78, 50, 72, 48),
+            DrawCalibrationFeatures(0, 3.3, 82, 80, 42, 44),
+            DrawCalibrationFeatures(-320, 3.6, 35, 85, 40, 80, -80),
+        ]
+        base = (0.36, 0.28, 0.36)
+        calibrated_draws = [
+            calibrate_draw_probability(base, scenario)[1]
+            for scenario in scenarios
+        ]
+        legacy_draws = [
+            (
+                base[1] * 1.15
+                / (base[0] + base[1] * 1.15 + base[2])
+            )
+            for _ in scenarios
+        ]
+
+        calibrated_spread = max(calibrated_draws) - min(calibrated_draws)
+        legacy_spread = max(legacy_draws) - min(legacy_draws)
+
+        self.assertGreater(calibrated_spread, 0.15)
+        self.assertGreater(calibrated_spread, legacy_spread)
+        self.assertGreater(max(calibrated_draws), 0.32)
+        self.assertLess(min(calibrated_draws), 0.19)
 
 
 class PredictionScriptTests(unittest.TestCase):

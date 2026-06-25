@@ -7,6 +7,7 @@ import math
 import os
 import sys
 from collections import Counter, defaultdict
+from dataclasses import dataclass
 from datetime import date, datetime, timezone
 from pathlib import Path
 from typing import Any
@@ -30,8 +31,11 @@ from scripts.confidence_v1 import (
 )
 from scripts.database import create_database_engine
 
-MODEL_VERSION = "elo-context-v4.1"
-MODEL_DESCRIPTION = "v4 shot-volume model with rest/context component removed."
+MODEL_VERSION = "elo-context-v4.2.1"
+MODEL_DESCRIPTION = (
+    "v4 shot-volume model with v4.2.1 matchup-specific draw calibration and "
+    "rest/context component removed."
+)
 LEGACY_MODEL_VERSION = "poisson-ratings-v1"
 CHANCE_QUALITY_MODEL_VERSION = "xg-proxy-v4"
 PROMOTION_CONFIG_PATH = (
@@ -42,6 +46,13 @@ MAX_GOALS = 6
 V3_ATTACK_WEIGHT = 0.15
 V3_DEFENSE_WEIGHT = 0.30
 V3_DRAW_MULTIPLIER = 1.15
+DRAW_MIN_PROBABILITY = 0.185
+DRAW_MAX_PROBABILITY = 0.40
+DRAW_CLOSE_MATCH_BOOST_WEIGHT = 0.041
+DRAW_LOW_TOTAL_BOOST_WEIGHT = 0.0565
+DRAW_CLEAR_EDGE_PENALTY_WEIGHT = 0.060
+DRAW_HIGH_TOTAL_PENALTY_WEIGHT = 0.040
+DRAW_HIGH_ATTACK_PENALTY_WEIGHT = 0.020
 SHOT_VOLUME_FACTOR_MINIMUM_IMPACT = 0.0005
 PREDICTION_REQUIRED_COLUMNS = {
     "canonical_match_id",
@@ -408,6 +419,107 @@ def _rating_difference(home: Any, away: Any, scale: float) -> float:
     return _clamp((_number(home) - _number(away)) / scale, -1.0, 1.0)
 
 
+@dataclass(frozen=True)
+class DrawCalibrationFeatures:
+    elo_gap: float
+    projected_total_goals: float
+    home_attack_rating: float
+    away_attack_rating: float
+    home_defense_rating: float
+    away_defense_rating: float
+    shot_volume_gap: float = 0.0
+
+
+def projected_total_goals_proxy(
+    home_xg: float,
+    away_xg: float,
+    home_rating: dict[str, Any],
+    away_rating: dict[str, Any],
+) -> float:
+    """Estimate the goal environment used only by draw calibration."""
+    home_attack = _number(home_rating.get("attack_rating"), 50.0)
+    away_attack = _number(away_rating.get("attack_rating"), 50.0)
+    home_defense = _number(home_rating.get("defense_rating"), 50.0)
+    away_defense = _number(away_rating.get("defense_rating"), 50.0)
+    attack_pressure = ((home_attack + away_attack) / 2.0 - 50.0) / 55.0
+    defensive_pressure = ((home_defense + away_defense) / 2.0 - 50.0) / 60.0
+    edge_goals = abs(home_attack - away_attack) / 140.0
+    multiplier = 1.0 + 0.28 * attack_pressure - 0.22 * defensive_pressure + edge_goals
+    return round(_clamp((home_xg + away_xg) * multiplier, 1.45, 3.85), 4)
+
+
+def calibrate_draw_probability(
+    base_probabilities: tuple[float, float, float],
+    features: DrawCalibrationFeatures,
+) -> tuple[float, float, float]:
+    """Spread draw risk by matchup shape while preserving side-win direction."""
+    home, draw, away = _normalize_probabilities(base_probabilities)
+    elo_edge = abs(features.elo_gap)
+    attack_edge = abs(features.home_attack_rating - features.away_attack_rating)
+    defense_average = (features.home_defense_rating + features.away_defense_rating) / 2.0
+    attack_average = (features.home_attack_rating + features.away_attack_rating) / 2.0
+
+    closeness = 1.0 - _clamp(elo_edge / 260.0, 0.0, 1.0)
+    no_attack_edge = 1.0 - _clamp(attack_edge / 35.0, 0.0, 1.0)
+    defensive_profile = _clamp((defense_average - 55.0) / 25.0, 0.0, 1.0)
+    low_total = _clamp((2.70 - features.projected_total_goals) / 0.80, 0.0, 1.0)
+    high_total = _clamp((features.projected_total_goals - 2.85) / 0.75, 0.0, 1.0)
+    clear_edge = max(
+        _clamp((elo_edge - 110.0) / 240.0, 0.0, 1.0),
+        _clamp((attack_edge - 16.0) / 42.0, 0.0, 1.0),
+        _clamp((abs(features.shot_volume_gap) - 25.0) / 130.0, 0.0, 1.0),
+    )
+    high_attack_environment = _clamp((attack_average - 62.0) / 28.0, 0.0, 1.0)
+
+    boost = (
+        DRAW_CLOSE_MATCH_BOOST_WEIGHT * closeness * no_attack_edge
+        + DRAW_LOW_TOTAL_BOOST_WEIGHT
+        * closeness
+        * low_total
+        * (0.55 + 0.45 * defensive_profile)
+    )
+    penalty = (
+        DRAW_CLEAR_EDGE_PENALTY_WEIGHT * clear_edge
+        + DRAW_HIGH_TOTAL_PENALTY_WEIGHT * high_total
+        + DRAW_HIGH_ATTACK_PENALTY_WEIGHT
+        * high_attack_environment
+        * (1.0 - defensive_profile)
+    )
+    target_draw = _clamp(
+        draw + boost - penalty,
+        DRAW_MIN_PROBABILITY,
+        DRAW_MAX_PROBABILITY,
+    )
+    side_total = home + away
+    if side_total <= 0:
+        return (0.5 * (1.0 - target_draw), target_draw, 0.5 * (1.0 - target_draw))
+    remaining = 1.0 - target_draw
+    return (remaining * home / side_total, target_draw, remaining * away / side_total)
+
+
+def draw_probability_distribution(
+    predictions: list[dict[str, Any]],
+) -> dict[str, float | int]:
+    draws = [float(prediction["draw_probability"]) for prediction in predictions]
+    if not draws:
+        return {
+            "min": 0.0,
+            "max": 0.0,
+            "mean": 0.0,
+            "standard_deviation": 0.0,
+            "above_30_percent": 0,
+        }
+    mean = sum(draws) / len(draws)
+    variance = sum((draw - mean) ** 2 for draw in draws) / len(draws)
+    return {
+        "min": min(draws),
+        "max": max(draws),
+        "mean": mean,
+        "standard_deviation": math.sqrt(variance),
+        "above_30_percent": sum(draw > 0.30 for draw in draws),
+    }
+
+
 def _calibrate_score_probabilities(
     scores: list[dict[str, float | int]],
     target: tuple[float, float, float],
@@ -541,10 +653,10 @@ def calculate_prediction(
     home_shot_volume_rating: float | None = None,
     away_shot_volume_rating: float | None = None,
 ) -> dict[str, Any]:
-    """Calculate production v4.1 without a rest/context contribution.
+    """Calculate production v4.2.1 without a rest/context contribution.
 
     The rest arguments remain accepted so historical research scripts can
-    replay older ablations, but production v4.1 intentionally ignores them.
+    replay older ablations, but production v4.2.1 intentionally ignores them.
     """
     home_elo = _number(home_rating.get("elo_rating"), 1500.0)
     away_elo = _number(away_rating.get("elo_rating"), 1500.0)
@@ -611,15 +723,33 @@ def calculate_prediction(
         away_shot_volume_rating,
         100.0,
     )
+    draw_features = DrawCalibrationFeatures(
+        elo_gap=elo_gap,
+        projected_total_goals=projected_total_goals_proxy(
+            home_xg,
+            away_xg,
+            home_rating,
+            away_rating,
+        ),
+        home_attack_rating=_number(home_rating.get("attack_rating"), 50.0),
+        away_attack_rating=_number(away_rating.get("attack_rating"), 50.0),
+        home_defense_rating=_number(home_rating.get("defense_rating"), 50.0),
+        away_defense_rating=_number(away_rating.get("defense_rating"), 50.0),
+        shot_volume_gap=shot_volume_signal * 100.0,
+    )
     shot_volume_tilt = shot_volume_signal * SHOT_VOLUME_WEIGHT
-    probabilities = _normalize_probabilities(
+    shot_volume_probabilities = _normalize_probabilities(
         (
-            v3_probabilities[0] * math.exp(shot_volume_tilt),
-            v3_probabilities[1],
-            v3_probabilities[2] * math.exp(-shot_volume_tilt),
+            attack_defense_probabilities[0] * math.exp(shot_volume_tilt),
+            attack_defense_probabilities[1],
+            attack_defense_probabilities[2] * math.exp(-shot_volume_tilt),
         )
     )
-    shot_volume_impact = probabilities[0] - v3_probabilities[0]
+    probabilities = calibrate_draw_probability(
+        shot_volume_probabilities,
+        draw_features,
+    )
+    shot_volume_impact = shot_volume_probabilities[0] - attack_defense_probabilities[0]
     scores = _calibrate_score_probabilities(base_scores, probabilities)
     most_likely = max(scores, key=lambda score: float(score["probability"]))
     expected_total = sum(
@@ -665,7 +795,7 @@ def calculate_prediction(
         elo_probabilities,
         attack_probabilities,
         attack_defense_probabilities,
-        v3_probabilities,
+        probabilities,
         home_team_name,
         away_team_name,
         shot_volume_impact,
@@ -681,7 +811,7 @@ def calculate_prediction(
             attack_defense_probabilities[0] - elo_probabilities[0]
         ),
         "draw_calibration_adjustment": (
-            v3_probabilities[1] - attack_defense_probabilities[1]
+            probabilities[1] - shot_volume_probabilities[1]
         ),
         "context_adjustment_total": (
             attack_defense_probabilities[0] - elo_probabilities[0]
@@ -689,6 +819,7 @@ def calculate_prediction(
         "final_home_probability": probabilities[0],
         "final_draw_probability": probabilities[1],
         "final_away_probability": probabilities[2],
+        "legacy_v41_draw_probability": v3_probabilities[1],
         "home_win_probability": probabilities[0],
         "draw_probability": probabilities[1],
         "away_win_probability": probabilities[2],
@@ -974,7 +1105,15 @@ class PredictionRepository:
                 "base_model": "walk-forward Elo probabilities",
                 "attack_weight": V3_ATTACK_WEIGHT,
                 "defense_weight": V3_DEFENSE_WEIGHT,
-                "draw_multiplier": V3_DRAW_MULTIPLIER,
+                "legacy_v41_draw_multiplier": V3_DRAW_MULTIPLIER,
+                "draw_calibration": "v4.2.1 matchup-specific bounded additive calibration",
+                "draw_min_probability": DRAW_MIN_PROBABILITY,
+                "draw_max_probability": DRAW_MAX_PROBABILITY,
+                "draw_close_match_boost_weight": DRAW_CLOSE_MATCH_BOOST_WEIGHT,
+                "draw_low_total_boost_weight": DRAW_LOW_TOTAL_BOOST_WEIGHT,
+                "draw_clear_edge_penalty_weight": DRAW_CLEAR_EDGE_PENALTY_WEIGHT,
+                "draw_high_total_penalty_weight": DRAW_HIGH_TOTAL_PENALTY_WEIGHT,
+                "draw_high_attack_penalty_weight": DRAW_HIGH_ATTACK_PENALTY_WEIGHT,
                 "selected_ablation": PROMOTION_CONFIG["selected_ablation"],
                 "shot_volume_weight": SHOT_VOLUME_WEIGHT,
                 "xg_proxy_features_used": PROMOTION_CONFIG["features_used"],
@@ -1120,6 +1259,7 @@ def main() -> int:
             database_team_ids
         )
         predictions = []
+        legacy_draw_predictions = []
         team_names = {team.id: team.name for team in load_teams()}
         for match in matches:
             home_rating = team_ratings.get(match["home_team_id"])
@@ -1130,23 +1270,27 @@ def main() -> int:
                     match["id"],
                 )
                 continue
+            prediction = calculate_prediction(
+                home_rating,
+                away_rating,
+                home_team_name=team_names[match["home_team_id"]],
+                away_team_name=team_names[match["away_team_id"]],
+                home_shot_volume_rating=shot_volume_ratings.get(
+                    match["home_team_id"]
+                ),
+                away_shot_volume_rating=shot_volume_ratings.get(
+                    match["away_team_id"]
+                ),
+            )
             predictions.append(
                 {
                     "canonical_match_id": match["canonical_match_id"],
                     "database_match_id": match["database_match_id"],
-                    **calculate_prediction(
-                        home_rating,
-                        away_rating,
-                        home_team_name=team_names[match["home_team_id"]],
-                        away_team_name=team_names[match["away_team_id"]],
-                        home_shot_volume_rating=shot_volume_ratings.get(
-                            match["home_team_id"]
-                        ),
-                        away_shot_volume_rating=shot_volume_ratings.get(
-                            match["away_team_id"]
-                        ),
-                    ),
+                    **prediction,
                 }
+            )
+            legacy_draw_predictions.append(
+                {"draw_probability": prediction["legacy_v41_draw_probability"]}
             )
 
         if not predictions:
@@ -1155,6 +1299,14 @@ def main() -> int:
             )
             return 0
         assert_complete_group_predictions(predictions)
+        logger.info(
+            "[prediction-generation] Legacy v4.1 draw distribution: %s",
+            draw_probability_distribution(legacy_draw_predictions),
+        )
+        logger.info(
+            "[prediction-generation] v4.2.1 draw distribution: %s",
+            draw_probability_distribution(predictions),
+        )
         run_id = repository.store_predictions(predictions, generated_at)
         logger.info(
             "[prediction-generation] SUCCESS: run=%s predictions=%d",

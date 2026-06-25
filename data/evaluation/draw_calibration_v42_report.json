@@ -1,0 +1,190 @@
+{
+  "model_version": "elo-context-v4.2",
+  "generated_from": "/private/tmp/worldcup_v42_rebuild.sqlite3",
+  "matches": 72,
+  "legacy_v41_draw_distribution": {
+    "min": 0.24087697665557736,
+    "max": 0.28609839972950485,
+    "mean": 0.27154999758550513,
+    "standard_deviation": 0.013184108715753966,
+    "above_30_percent": 0
+  },
+  "v42_draw_distribution": {
+    "min": 0.12,
+    "max": 0.3097506624384314,
+    "mean": 0.21087897931299768,
+    "standard_deviation": 0.060419909330042244,
+    "above_30_percent": 5
+  },
+  "largest_draw_probability_changes": [
+    {
+      "match_id": "WC26-063",
+      "home_team": "Portugal",
+      "away_team": "Uzbekistan",
+      "legacy_v41_draw_probability": 0.255499,
+      "v42_draw_probability": 0.121328,
+      "change": -0.134171
+    },
+    {
+      "match_id": "WC26-061",
+      "home_team": "Portugal",
+      "away_team": "DR Congo",
+      "legacy_v41_draw_probability": 0.253316,
+      "v42_draw_probability": 0.12,
+      "change": -0.133316
+    },
+    {
+      "match_id": "WC26-051",
+      "home_team": "France",
+      "away_team": "Iraq",
+      "legacy_v41_draw_probability": 0.248522,
+      "v42_draw_probability": 0.12,
+      "change": -0.128522
+    },
+    {
+      "match_id": "WC26-025",
+      "home_team": "Germany",
+      "away_team": "Curacao",
+      "legacy_v41_draw_probability": 0.24744,
+      "v42_draw_probability": 0.12,
+      "change": -0.12744
+    },
+    {
+      "match_id": "WC26-045",
+      "home_team": "Spain",
+      "away_team": "Saudi Arabia",
+      "legacy_v41_draw_probability": 0.245025,
+      "v42_draw_probability": 0.12,
+      "change": -0.125025
+    },
+    {
+      "match_id": "WC26-072",
+      "home_team": "Croatia",
+      "away_team": "Ghana",
+      "legacy_v41_draw_probability": 0.252643,
+      "v42_draw_probability": 0.127963,
+      "change": -0.124681
+    },
+    {
+      "match_id": "WC26-041",
+      "home_team": "New Zealand",
+      "away_team": "Belgium",
+      "legacy_v41_draw_probability": 0.24442,
+      "v42_draw_probability": 0.12,
+      "change": -0.12442
+    },
+    {
+      "match_id": "WC26-069",
+      "home_team": "England",
+      "away_team": "Ghana",
+      "legacy_v41_draw_probability": 0.244366,
+      "v42_draw_probability": 0.12,
+      "change": -0.124366
+    },
+    {
+      "match_id": "WC26-059",
+      "home_team": "Jordan",
+      "away_team": "Argentina",
+      "legacy_v41_draw_probability": 0.243929,
+      "v42_draw_probability": 0.12,
+      "change": -0.123929
+    },
+    {
+      "match_id": "WC26-018",
+      "home_team": "Morocco",
+      "away_team": "Haiti",
+      "legacy_v41_draw_probability": 0.249424,
+      "v42_draw_probability": 0.126792,
+      "change": -0.122633
+    }
+  ],
+  "largest_draw_probability_increases": [
+    {
+      "match_id": "WC26-066",
+      "home_team": "DR Congo",
+      "away_team": "Uzbekistan",
+      "legacy_v41_draw_probability": 0.286068,
+      "v42_draw_probability": 0.309751,
+      "change": 0.023682
+    },
+    {
+      "match_id": "WC26-048",
+      "home_team": "Cape Verde",
+      "away_team": "Saudi Arabia",
+      "legacy_v41_draw_probability": 0.286032,
+      "v42_draw_probability": 0.309094,
+      "change": 0.023062
+    },
+    {
+      "match_id": "WC26-012",
+      "home_team": "Bosnia and Herzegovina",
+      "away_team": "Qatar",
+      "legacy_v41_draw_probability": 0.285599,
+      "v42_draw_probability": 0.304941,
+      "change": 0.019343
+    },
+    {
+      "match_id": "WC26-020",
+      "home_team": "Australia",
+      "away_team": "Turkey",
+      "legacy_v41_draw_probability": 0.286098,
+      "v42_draw_probability": 0.303676,
+      "change": 0.017578
+    },
+    {
+      "match_id": "WC26-032",
+      "home_team": "Sweden",
+      "away_team": "Tunisia",
+      "legacy_v41_draw_probability": 0.285968,
+      "v42_draw_probability": 0.302481,
+      "change": 0.016513
+    }
+  ],
+  "largest_draw_probability_decreases": [
+    {
+      "match_id": "WC26-063",
+      "home_team": "Portugal",
+      "away_team": "Uzbekistan",
+      "legacy_v41_draw_probability": 0.255499,
+      "v42_draw_probability": 0.121328,
+      "change": -0.134171
+    },
+    {
+      "match_id": "WC26-061",
+      "home_team": "Portugal",
+      "away_team": "DR Congo",
+      "legacy_v41_draw_probability": 0.253316,
+      "v42_draw_probability": 0.12,
+      "change": -0.133316
+    },
+    {
+      "match_id": "WC26-051",
+      "home_team": "France",
+      "away_team": "Iraq",
+      "legacy_v41_draw_probability": 0.248522,
+      "v42_draw_probability": 0.12,
+      "change": -0.128522
+    },
+    {
+      "match_id": "WC26-025",
+      "home_team": "Germany",
+      "away_team": "Curacao",
+      "legacy_v41_draw_probability": 0.24744,
+      "v42_draw_probability": 0.12,
+      "change": -0.12744
+    },
+    {
+      "match_id": "WC26-045",
+      "home_team": "Spain",
+      "away_team": "Saudi Arabia",
+      "legacy_v41_draw_probability": 0.245025,
+      "v42_draw_probability": 0.12,
+      "change": -0.125025
+    }
+  ],
+  "normalization": {
+    "all_probability_triples_sum_to_one": true,
+    "tolerance": 1e-12,
+    "failures": []
+  }
+}

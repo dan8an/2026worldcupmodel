@@ -1,0 +1,534 @@
+{
+  "generated_at": "2026-06-24T19:17:06.075923+00:00",
+  "report_version": "v421_draw_backtest_v1",
+  "comparison": "elo-context-v4.1 vs elo-context-v4.2 vs elo-context-v4.2.1",
+  "completed_match_source": "database matches joined to team_match_stats",
+  "protocol": {
+    "matches_loaded": 1600,
+    "eligible_completed_matches": 1098,
+    "actual_draws": 270,
+    "actual_draw_rate": 0.245902,
+    "minimum_prior_matches_per_team": 5,
+    "minimum_prior_stat_rows_per_team": 5,
+    "same_day_updates": "batched after predictions",
+    "v41_definition": "v4 no-rest probabilities plus the promoted shot-volume tilt at weight 0.2",
+    "v42_definition": "frozen v4.2 production calculation with 12% draw floor",
+    "v421_definition": "elo-context-v4.2.1 production calculation with 18.5% draw floor and softened mismatch/high-goals penalties",
+    "high_draw_threshold": 0.3,
+    "draw_recall_definition": "actual draws with predicted draw probability >= high_draw_threshold",
+    "draw_precision_definition": "matches with predicted draw probability >= high_draw_threshold that actually drew",
+    "source_coverage": {
+      "matches_with_two_team_stat_rows": 1600,
+      "team_stat_rows": 3200,
+      "fields": {
+        "shots": {
+          "available_in_schema": true,
+          "non_null_rows": 3028
+        },
+        "shots_on_target": {
+          "available_in_schema": true,
+          "non_null_rows": 3026
+        },
+        "shots_inside_box": {
+          "available_in_schema": true,
+          "non_null_rows": 2814
+        },
+        "shots_outside_box": {
+          "available_in_schema": true,
+          "non_null_rows": 2814
+        },
+        "blocked_shots": {
+          "available_in_schema": true,
+          "non_null_rows": 2844
+        },
+        "goalkeeper_saves": {
+          "available_in_schema": true,
+          "non_null_rows": 3000
+        },
+        "pass_accuracy": {
+          "available_in_schema": true,
+          "non_null_rows": 2811
+        },
+        "corners": {
+          "available_in_schema": true,
+          "non_null_rows": 3036
+        },
+        "possession": {
+          "available_in_schema": true,
+          "non_null_rows": 3016
+        },
+        "passes_attempted": {
+          "available_in_schema": true,
+          "non_null_rows": 2813
+        },
+        "passes_completed": {
+          "available_in_schema": true,
+          "non_null_rows": 2813
+        },
+        "yellow_cards": {
+          "available_in_schema": true,
+          "non_null_rows": 3066
+        },
+        "red_cards": {
+          "available_in_schema": true,
+          "non_null_rows": 764
+        }
+      }
+    }
+  },
+  "v4_1": {
+    "model_version": "elo-context-v4.1",
+    "matches": 1098,
+    "overall_accuracy": 0.519126,
+    "winner_only_accuracy": 0.688406,
+    "draw_recall": 0.0,
+    "draw_precision": null,
+    "high_draw_threshold": 0.3,
+    "draw_threshold_counts": {
+      "threshold": 0.3,
+      "actual_draws": 270,
+      "high_draw_predictions": 0,
+      "identified_actual_draws": 0,
+      "true_high_draw_predictions": 0,
+      "draw_recall": 0.0,
+      "draw_precision": null
+    },
+    "draw_threshold_sensitivity_25_percent": {
+      "threshold": 0.25,
+      "actual_draws": 270,
+      "high_draw_predictions": 1066,
+      "identified_actual_draws": 268,
+      "true_high_draw_predictions": 268,
+      "draw_recall": 0.992593,
+      "draw_precision": 0.251407
+    },
+    "average_predicted_draw_probability": {
+      "actual_draws": 0.279319,
+      "non_draws": 0.277469,
+      "separation": 0.00185
+    },
+    "brier_score": 0.608594,
+    "log_loss": 1.016144,
+    "draw_probability_distribution": {
+      "min": 0.205338,
+      "max": 0.286115,
+      "mean": 0.277924,
+      "standard_deviation": 0.011111,
+      "above_30_percent": 0
+    },
+    "draw_calibration_buckets": [
+      {
+        "bucket": "0-15%",
+        "lower": 0.0,
+        "upper": 0.15,
+        "matches": 0,
+        "mean_draw_probability": null,
+        "actual_draw_rate": null,
+        "actual_draws": 0
+      },
+      {
+        "bucket": "15-20%",
+        "lower": 0.15,
+        "upper": 0.2,
+        "matches": 0,
+        "mean_draw_probability": null,
+        "actual_draw_rate": null,
+        "actual_draws": 0
+      },
+      {
+        "bucket": "20-25%",
+        "lower": 0.2,
+        "upper": 0.25,
+        "matches": 32,
+        "mean_draw_probability": 0.235746,
+        "actual_draw_rate": 0.0625,
+        "actual_draws": 2
+      },
+      {
+        "bucket": "25-30%",
+        "lower": 0.25,
+        "upper": 0.3,
+        "matches": 1066,
+        "mean_draw_probability": 0.27919,
+        "actual_draw_rate": 0.251407,
+        "actual_draws": 268
+      },
+      {
+        "bucket": "30%+",
+        "lower": 0.3,
+        "upper": null,
+        "matches": 0,
+        "mean_draw_probability": null,
+        "actual_draw_rate": null,
+        "actual_draws": 0
+      }
+    ]
+  },
+  "v4_2": {
+    "model_version": "elo-context-v4.2",
+    "matches": 1098,
+    "overall_accuracy": 0.518215,
+    "winner_only_accuracy": 0.688406,
+    "draw_recall": 0.218519,
+    "draw_precision": 0.287805,
+    "high_draw_threshold": 0.3,
+    "draw_threshold_counts": {
+      "threshold": 0.3,
+      "actual_draws": 270,
+      "high_draw_predictions": 205,
+      "identified_actual_draws": 59,
+      "true_high_draw_predictions": 59,
+      "draw_recall": 0.218519,
+      "draw_precision": 0.287805
+    },
+    "draw_threshold_sensitivity_25_percent": {
+      "threshold": 0.25,
+      "actual_draws": 270,
+      "high_draw_predictions": 735,
+      "identified_actual_draws": 189,
+      "true_high_draw_predictions": 189,
+      "draw_recall": 0.7,
+      "draw_precision": 0.257143
+    },
+    "average_predicted_draw_probability": {
+      "actual_draws": 0.263008,
+      "non_draws": 0.258442,
+      "separation": 0.004567
+    },
+    "brier_score": 0.607209,
+    "log_loss": 1.017531,
+    "draw_probability_distribution": {
+      "min": 0.12,
+      "max": 0.348513,
+      "mean": 0.259565,
+      "standard_deviation": 0.04876,
+      "above_30_percent": 205
+    },
+    "draw_calibration_buckets": [
+      {
+        "bucket": "0-15%",
+        "lower": 0.0,
+        "upper": 0.15,
+        "matches": 46,
+        "mean_draw_probability": 0.131952,
+        "actual_draw_rate": 0.195652,
+        "actual_draws": 9
+      },
+      {
+        "bucket": "15-20%",
+        "lower": 0.15,
+        "upper": 0.2,
+        "matches": 109,
+        "mean_draw_probability": 0.17999,
+        "actual_draw_rate": 0.238532,
+        "actual_draws": 26
+      },
+      {
+        "bucket": "20-25%",
+        "lower": 0.2,
+        "upper": 0.25,
+        "matches": 208,
+        "mean_draw_probability": 0.226853,
+        "actual_draw_rate": 0.221154,
+        "actual_draws": 46
+      },
+      {
+        "bucket": "25-30%",
+        "lower": 0.25,
+        "upper": 0.3,
+        "matches": 530,
+        "mean_draw_probability": 0.279576,
+        "actual_draw_rate": 0.245283,
+        "actual_draws": 130
+      },
+      {
+        "bucket": "30%+",
+        "lower": 0.3,
+        "upper": null,
+        "matches": 205,
+        "mean_draw_probability": 0.311965,
+        "actual_draw_rate": 0.287805,
+        "actual_draws": 59
+      }
+    ]
+  },
+  "v4_2_1": {
+    "model_version": "elo-context-v4.2.1",
+    "matches": 1098,
+    "overall_accuracy": 0.519126,
+    "winner_only_accuracy": 0.688406,
+    "draw_recall": 0.114815,
+    "draw_precision": 0.274336,
+    "high_draw_threshold": 0.3,
+    "draw_threshold_counts": {
+      "threshold": 0.3,
+      "actual_draws": 270,
+      "high_draw_predictions": 113,
+      "identified_actual_draws": 31,
+      "true_high_draw_predictions": 31,
+      "draw_recall": 0.114815,
+      "draw_precision": 0.274336
+    },
+    "draw_threshold_sensitivity_25_percent": {
+      "threshold": 0.25,
+      "actual_draws": 270,
+      "high_draw_predictions": 738,
+      "identified_actual_draws": 189,
+      "true_high_draw_predictions": 189,
+      "draw_recall": 0.7,
+      "draw_precision": 0.256098
+    },
+    "average_predicted_draw_probability": {
+      "actual_draws": 0.262938,
+      "non_draws": 0.259522,
+      "separation": 0.003416
+    },
+    "brier_score": 0.606814,
+    "log_loss": 1.015709,
+    "draw_probability_distribution": {
+      "min": 0.185,
+      "max": 0.331768,
+      "mean": 0.260362,
+      "standard_deviation": 0.036483,
+      "above_30_percent": 113
+    },
+    "draw_calibration_buckets": [
+      {
+        "bucket": "0-15%",
+        "lower": 0.0,
+        "upper": 0.15,
+        "matches": 0,
+        "mean_draw_probability": null,
+        "actual_draw_rate": null,
+        "actual_draws": 0
+      },
+      {
+        "bucket": "15-20%",
+        "lower": 0.15,
+        "upper": 0.2,
+        "matches": 113,
+        "mean_draw_probability": 0.18818,
+        "actual_draw_rate": 0.230088,
+        "actual_draws": 26
+      },
+      {
+        "bucket": "20-25%",
+        "lower": 0.2,
+        "upper": 0.25,
+        "matches": 247,
+        "mean_draw_probability": 0.227106,
+        "actual_draw_rate": 0.222672,
+        "actual_draws": 55
+      },
+      {
+        "bucket": "25-30%",
+        "lower": 0.25,
+        "upper": 0.3,
+        "matches": 625,
+        "mean_draw_probability": 0.27809,
+        "actual_draw_rate": 0.2528,
+        "actual_draws": 158
+      },
+      {
+        "bucket": "30%+",
+        "lower": 0.3,
+        "upper": null,
+        "matches": 113,
+        "mean_draw_probability": 0.307183,
+        "actual_draw_rate": 0.274336,
+        "actual_draws": 31
+      }
+    ]
+  },
+  "delta_v42_minus_v41": {
+    "overall_accuracy": -0.000911,
+    "winner_only_accuracy": 0.0,
+    "draw_recall": 0.218519,
+    "draw_precision": null,
+    "brier_score": -0.001385,
+    "log_loss": 0.001387
+  },
+  "delta_v421_minus_v42": {
+    "overall_accuracy": 0.000911,
+    "winner_only_accuracy": 0.0,
+    "draw_recall": -0.103704,
+    "draw_precision": -0.013469,
+    "brier_score": -0.000394,
+    "log_loss": -0.001822
+  },
+  "delta_v421_minus_v41": {
+    "overall_accuracy": 0.0,
+    "winner_only_accuracy": 0.0,
+    "draw_recall": 0.114815,
+    "draw_precision": null,
+    "brier_score": -0.001779,
+    "log_loss": -0.000435
+  },
+  "lowered_draw_probability_assessment": {
+    "lowered_too_aggressively": false,
+    "summary": "No clear evidence. The candidate lowered some mismatches, but the aggregate draw level is not materially below the observed draw rate.",
+    "actual_draw_rate": 0.245902,
+    "v41_mean_draw_probability": 0.277924,
+    "candidate_mean_draw_probability": 0.260362,
+    "candidate_minus_v41_mean_draw_probability": -0.017562,
+    "v41_actual_draw_average": 0.279319,
+    "candidate_actual_draw_average": 0.262938
+  },
+  "normalization": {
+    "tolerance": "1e-12",
+    "v4_1": {
+      "all_probability_triples_sum_to_one": true,
+      "max_abs_deviation": 0.0
+    },
+    "v4_2": {
+      "all_probability_triples_sum_to_one": true,
+      "max_abs_deviation": 0.0
+    },
+    "v4_2_1": {
+      "all_probability_triples_sum_to_one": true,
+      "max_abs_deviation": 0.0
+    }
+  },
+  "sample_matches": [
+    {
+      "match_id": "ce4fde3d-1864-4655-a5d1-9832bff4a5d7",
+      "played_on": "2018-10-15",
+      "home_team_id": "5297c94f-9e92-42e2-af9c-0bc0bba0fd42",
+      "home_team": "Iceland",
+      "away_team_id": "d1e96be1-2783-4de5-8d87-b11d3a4ea456",
+      "away_team": "Switzerland",
+      "outcome": "away",
+      "v41_draw_probability": 0.265277,
+      "v42_draw_probability": 0.12,
+      "v421_draw_probability": 0.185,
+      "v421_minus_v42_draw_probability": 0.065,
+      "v421_minus_v41_draw_probability": -0.080277
+    },
+    {
+      "match_id": "dedb000a-446a-444f-b4a3-ba29652dbaeb",
+      "played_on": "2018-11-15",
+      "home_team_id": "d2316d87-ff2d-40ca-959f-ab09d47e5144",
+      "home_team": "Belgium",
+      "away_team_id": "5297c94f-9e92-42e2-af9c-0bc0bba0fd42",
+      "away_team": "Iceland",
+      "outcome": "home",
+      "v41_draw_probability": 0.244991,
+      "v42_draw_probability": 0.12,
+      "v421_draw_probability": 0.185,
+      "v421_minus_v42_draw_probability": 0.065,
+      "v421_minus_v41_draw_probability": -0.059991
+    },
+    {
+      "match_id": "f200abcd-f57f-485c-bfa8-cd36f368df32",
+      "played_on": "2020-09-08",
+      "home_team_id": "d2316d87-ff2d-40ca-959f-ab09d47e5144",
+      "home_team": "Belgium",
+      "away_team_id": "5297c94f-9e92-42e2-af9c-0bc0bba0fd42",
+      "away_team": "Iceland",
+      "outcome": "home",
+      "v41_draw_probability": 0.247176,
+      "v42_draw_probability": 0.12,
+      "v421_draw_probability": 0.185,
+      "v421_minus_v42_draw_probability": 0.065,
+      "v421_minus_v41_draw_probability": -0.062176
+    },
+    {
+      "match_id": "0378f3be-bc4f-4b4c-bd76-9ce9183e096a",
+      "played_on": "2020-10-14",
+      "home_team_id": "5297c94f-9e92-42e2-af9c-0bc0bba0fd42",
+      "home_team": "Iceland",
+      "away_team_id": "d2316d87-ff2d-40ca-959f-ab09d47e5144",
+      "away_team": "Belgium",
+      "outcome": "away",
+      "v41_draw_probability": 0.239642,
+      "v42_draw_probability": 0.12,
+      "v421_draw_probability": 0.185,
+      "v421_minus_v42_draw_probability": 0.065,
+      "v421_minus_v41_draw_probability": -0.054642
+    },
+    {
+      "match_id": "639b57b9-0546-4be1-ab96-d3f74198545e",
+      "played_on": "2023-09-09",
+      "home_team_id": "c1329187-e8cb-4bc1-87a9-b84b8eb2b89d",
+      "home_team": "Brazil",
+      "away_team_id": "8348de24-f770-40c0-914f-fce58cbe39a4",
+      "away_team": "Bolivia",
+      "outcome": "home",
+      "v41_draw_probability": 0.219955,
+      "v42_draw_probability": 0.12,
+      "v421_draw_probability": 0.185,
+      "v421_minus_v42_draw_probability": 0.065,
+      "v421_minus_v41_draw_probability": -0.034955
+    },
+    {
+      "match_id": "3e8059d8-4e23-4336-b48a-8f8011b7b19a",
+      "played_on": "2025-03-20",
+      "home_team_id": "7f170561-e42c-45d0-a4fd-6b69dd4a225d",
+      "home_team": "Japan",
+      "away_team_id": "fbbe9b0e-7d04-486c-8945-372dac455b4f",
+      "away_team": "Bahrain",
+      "outcome": "home",
+      "v41_draw_probability": 0.254673,
+      "v42_draw_probability": 0.12,
+      "v421_draw_probability": 0.185,
+      "v421_minus_v42_draw_probability": 0.065,
+      "v421_minus_v41_draw_probability": -0.069673
+    },
+    {
+      "match_id": "904d44b7-7cef-4458-b49e-cf6002b2126d",
+      "played_on": "2025-09-07",
+      "home_team_id": "5aceea39-e999-4c41-9249-4aad7c93e16a",
+      "home_team": "Lithuania",
+      "away_team_id": "8f5326b5-dff9-4d8f-aa6c-ac47615ca3f9",
+      "away_team": "Netherlands",
+      "outcome": "away",
+      "v41_draw_probability": 0.220558,
+      "v42_draw_probability": 0.12,
+      "v421_draw_probability": 0.185,
+      "v421_minus_v42_draw_probability": 0.065,
+      "v421_minus_v41_draw_probability": -0.035558
+    },
+    {
+      "match_id": "e7582a72-a028-412a-98ff-103700d46ef4",
+      "played_on": "2025-10-14",
+      "home_team_id": "d31139a6-7e9f-48bf-8631-0a9cc0feef33",
+      "home_team": "Spain",
+      "away_team_id": "e8fab0c3-b915-4f82-8804-ea29f85a725d",
+      "away_team": "Bulgaria",
+      "outcome": "home",
+      "v41_draw_probability": 0.215243,
+      "v42_draw_probability": 0.12,
+      "v421_draw_probability": 0.185,
+      "v421_minus_v42_draw_probability": 0.065,
+      "v421_minus_v41_draw_probability": -0.030243
+    },
+    {
+      "match_id": "6c527ebd-de54-49b9-b7cb-292d350e201b",
+      "played_on": "2025-11-13",
+      "home_team_id": "c171c185-2d2c-4126-b6f3-028aa05c18cc",
+      "home_team": "Norway",
+      "away_team_id": "2632e1d7-b2e7-462a-976f-a674a0c8390d",
+      "away_team": "Estonia",
+      "outcome": "home",
+      "v41_draw_probability": 0.230275,
+      "v42_draw_probability": 0.12,
+      "v421_draw_probability": 0.185,
+      "v421_minus_v42_draw_probability": 0.065,
+      "v421_minus_v41_draw_probability": -0.045275
+    },
+    {
+      "match_id": "67cf2b4d-c361-49ed-a791-77e78af2e285",
+      "played_on": "2025-11-16",
+      "home_team_id": "86ee642d-2835-4557-a66d-2adeb7ca7eae",
+      "home_team": "Azerbaijan",
+      "away_team_id": "f4ca3ccb-1bbe-4de1-8d79-cc79e9ad260e",
+      "away_team": "France",
+      "outcome": "away",
+      "v41_draw_probability": 0.220735,
+      "v42_draw_probability": 0.12,
+      "v421_draw_probability": 0.185,
+      "v421_minus_v42_draw_probability": 0.065,
+      "v421_minus_v41_draw_probability": -0.035735
+    }
+  ]
+}

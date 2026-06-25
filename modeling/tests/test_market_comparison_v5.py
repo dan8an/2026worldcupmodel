@@ -243,7 +243,7 @@ class MarketSchemaAndIsolationTests(unittest.TestCase):
     def test_production_prediction_generation_has_no_market_dependency(self):
         source = (ROOT / "scripts" / "generate_predictions.py").read_text()
 
-        self.assertIn('MODEL_VERSION = "elo-context-v4.1"', source)
+        self.assertIn('MODEL_VERSION = "elo-context-v4.2.1"', source)
         self.assertNotIn("market_odds_snapshots", source)
         self.assertNotIn("market_implied_probabilities", source)
         self.assertNotIn("evaluate_market_comparison", source)
