@@ -56,7 +56,7 @@ describe("Results page", () => {
     expect(html).toContain('href="/results"');
   });
 
-  it("shows already-kicked-off matches with chronological match numbers", () => {
+  it("hides kicked-off scheduled matches without final scores", () => {
     const queryClient = new QueryClient({
       defaultOptions: { queries: { staleTime: Infinity } },
     });
@@ -100,10 +100,11 @@ describe("Results page", () => {
     );
     const normalizedHtml = html.replaceAll("<!-- -->", "");
 
-    expect(normalizedHtml).toContain("Match 2");
-    expect(normalizedHtml).toContain("Past Home");
-    expect(normalizedHtml).toContain("Awaiting final score.");
+    expect(normalizedHtml).not.toContain("Match 2");
+    expect(normalizedHtml).not.toContain("Past Home");
+    expect(normalizedHtml).not.toContain("Awaiting final score.");
     expect(normalizedHtml).not.toContain("Future Home");
+    expect(normalizedHtml).toContain("Mexico");
   });
 
   it("shows an empty state when no results are available", () => {

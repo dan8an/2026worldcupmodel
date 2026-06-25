@@ -1,8 +1,9 @@
 import { describe, expect, it } from "vitest";
 import {
-  classifyMatch,
   hasFinalScore,
+  hasMatchKickedOff,
   isCompletedOrPast,
+  isMatchInProgress,
   isMatchCompleted,
   isUpcoming,
   matchSchedule,
@@ -68,18 +69,58 @@ describe("match completion filtering", () => {
       },
     } as Match;
     const schedule = matchSchedule([liveScheduledMatch], now);
-    const classification = schedule.classificationById.get("WC26-024");
 
-    expect(classification).toMatchObject({
-      chronologicalMatchNumber: 1,
-      hasRealFinalScore: false,
-      hasStarted: false,
-      isCompleted: false,
-      belongsOnResults: false,
-      belongsOnUpcomingPages: true,
-    });
+    expect(hasFinalScore(liveScheduledMatch)).toBe(false);
+    expect(hasMatchKickedOff(liveScheduledMatch, now)).toBe(false);
+    expect(isMatchCompleted(liveScheduledMatch)).toBe(false);
+    expect(isCompletedOrPast(liveScheduledMatch, now)).toBe(false);
+    expect(isUpcoming(liveScheduledMatch, now)).toBe(true);
     expect(schedule.results).toEqual([]);
     expect(schedule.upcoming.map((item) => item.id)).toEqual(["WC26-024"]);
+  });
+
+  it("keeps all future scheduled matches from a live-like payload out of Results", () => {
+    const now = new Date("2026-06-25T20:06:51+00:00");
+    const liveFutureMatches = [
+      match({
+        id: "WC26-041",
+        number: 41,
+        kickoff: "2026-06-26T17:00:00+00:00",
+        status: "scheduled",
+        home_score: null,
+        away_score: null,
+        home_slot: "New Zealand",
+        away_slot: "Belgium",
+      }),
+      match({
+        id: "WC26-047",
+        number: 47,
+        kickoff: "2026-06-26T17:00:00+00:00",
+        status: "scheduled",
+        home_score: null,
+        away_score: null,
+        home_slot: "Uruguay",
+        away_slot: "Spain",
+      }),
+      match({
+        id: "WC26-054",
+        number: 54,
+        kickoff: "2026-06-26T20:00:00+00:00",
+        status: "scheduled",
+        home_score: null,
+        away_score: null,
+        home_slot: "Senegal",
+        away_slot: "Iraq",
+      }),
+    ];
+    const schedule = matchSchedule(liveFutureMatches, now);
+
+    expect(schedule.results).toEqual([]);
+    expect(schedule.upcoming.map((item) => item.id)).toEqual([
+      "WC26-041",
+      "WC26-047",
+      "WC26-054",
+    ]);
   });
 
   it("does not mistake prediction probabilities or projected scores for final scores", () => {
@@ -97,11 +138,10 @@ describe("match completion filtering", () => {
       projected_home_score: 2,
       projected_away_score: 1,
     } as Match;
-    const classification = classifyMatch(probabilityOnlyMatch, 1, now);
 
-    expect(classification.hasRealFinalScore).toBe(false);
-    expect(classification.belongsOnResults).toBe(false);
-    expect(classification.belongsOnUpcomingPages).toBe(true);
+    expect(hasFinalScore(probabilityOnlyMatch)).toBe(false);
+    expect(isCompletedOrPast(probabilityOnlyMatch, now)).toBe(false);
+    expect(isUpcoming(probabilityOnlyMatch, now)).toBe(true);
   });
 
   it("shows a completed match with a final score in Results", () => {
@@ -120,7 +160,7 @@ describe("match completion filtering", () => {
     expect(schedule.results.map((item) => item.id)).toEqual(["completed-scored"]);
   });
 
-  it("shows a just-kicked-off match with no score in Results", () => {
+  it("keeps a just-kicked-off match with no score on active match pages", () => {
     const now = new Date("2026-06-12T20:00:01+00:00");
     const schedule = matchSchedule([
       match({
@@ -132,8 +172,10 @@ describe("match completion filtering", () => {
       }),
     ], now);
 
-    expect(hasFinalScore(schedule.results[0])).toBe(false);
-    expect(schedule.results.map((item) => item.id)).toEqual(["awaiting-final-score"]);
+    expect(hasFinalScore(schedule.upcoming[0])).toBe(false);
+    expect(isMatchInProgress(schedule.upcoming[0], now)).toBe(true);
+    expect(schedule.upcoming.map((item) => item.id)).toEqual(["awaiting-final-score"]);
+    expect(schedule.results).toEqual([]);
   });
 
   it("handles UTC timestamps near midnight without local calendar-date classification", () => {
@@ -143,7 +185,11 @@ describe("match completion filtering", () => {
       match({ id: "future-midnight", kickoff: "2026-06-12T00:30:00+00:00" }),
       now,
     )).toBe(true);
-    expect(isCompletedOrPast(
+    expect(hasMatchKickedOff(
+      match({ id: "past-midnight", kickoff: "2026-06-11T23:00:00+00:00" }),
+      now,
+    )).toBe(true);
+    expect(isMatchInProgress(
       match({ id: "past-midnight", kickoff: "2026-06-11T23:00:00+00:00" }),
       now,
     )).toBe(true);
@@ -159,34 +205,26 @@ describe("match completion filtering", () => {
   it("keeps missing or invalid kickoff matches upcoming unless explicitly completed", () => {
     const now = new Date("2026-06-12T18:00:00+00:00");
 
-    expect(classifyMatch(match({ kickoff: "" }), 1, now)).toMatchObject({
-      hasStarted: false,
-      belongsOnResults: false,
-      belongsOnUpcomingPages: true,
-    });
-    expect(classifyMatch(match({ kickoff: "TBD" }), 1, now)).toMatchObject({
-      hasStarted: false,
-      belongsOnResults: false,
-      belongsOnUpcomingPages: true,
-    });
-    expect(classifyMatch(match({ kickoff: "", status: "finished" }), 1, now)).toMatchObject({
-      isCompleted: true,
-      belongsOnResults: true,
-      belongsOnUpcomingPages: false,
-    });
+    expect(hasMatchKickedOff(match({ kickoff: "" }), now)).toBe(false);
+    expect(isCompletedOrPast(match({ kickoff: "" }), now)).toBe(false);
+    expect(isUpcoming(match({ kickoff: "" }), now)).toBe(true);
+    expect(hasMatchKickedOff(match({ kickoff: "TBD" }), now)).toBe(false);
+    expect(isCompletedOrPast(match({ kickoff: "TBD" }), now)).toBe(false);
+    expect(isUpcoming(match({ kickoff: "TBD" }), now)).toBe(true);
+    expect(isMatchCompleted(match({ kickoff: "", status: "finished" }))).toBe(true);
+    expect(isCompletedOrPast(match({ kickoff: "", status: "finished" }), now)).toBe(true);
+    expect(isUpcoming(match({ kickoff: "", status: "finished" }), now)).toBe(false);
   });
 
   it("keeps scheduled provider statuses upcoming before kickoff", () => {
     const now = new Date("2026-06-12T18:00:00+00:00");
 
     for (const status of ["scheduled", "NS", "TBD"]) {
-      expect(classifyMatch(match({ kickoff: "2026-06-12T20:00:00+00:00", status }), 1, now))
-        .toMatchObject({
-          isCompleted: false,
-          hasStarted: false,
-          belongsOnResults: false,
-          belongsOnUpcomingPages: true,
-        });
+      const scheduledMatch = match({ kickoff: "2026-06-12T20:00:00+00:00", status });
+      expect(isMatchCompleted(scheduledMatch)).toBe(false);
+      expect(hasMatchKickedOff(scheduledMatch, now)).toBe(false);
+      expect(isCompletedOrPast(scheduledMatch, now)).toBe(false);
+      expect(isUpcoming(scheduledMatch, now)).toBe(true);
     }
   });
 
@@ -207,17 +245,18 @@ describe("match completion filtering", () => {
     expect(schedule.upcoming.map((item) => item.id)).toEqual(["upcoming"]);
   });
 
-  it("keeps already-kicked-off matches off the dashboard until scores arrive", () => {
+  it("keeps already-kicked-off matches on active match pages until scores arrive", () => {
     const now = new Date("2026-06-12T18:00:00+00:00");
     const schedule = matchSchedule([
       match({ id: "past-unscored", kickoff: "2026-06-12T17:00:00+00:00" }),
       match({ id: "future", kickoff: "2026-06-12T20:00:00+00:00" }),
     ], now);
 
-    expect(schedule.upcoming.map((item) => item.id)).toEqual(["future"]);
+    expect(schedule.upcoming.map((item) => item.id)).toEqual(["past-unscored", "future"]);
+    expect(isMatchInProgress(schedule.upcoming[0], now)).toBe(true);
   });
 
-  it("shows status-complete, score-complete, and already-kicked-off matches in Results", () => {
+  it("shows only final results in Results", () => {
     const now = new Date("2026-06-12T18:00:00+00:00");
     const schedule = matchSchedule([
       match({ id: "completed", status: "completed" }),
@@ -227,9 +266,12 @@ describe("match completion filtering", () => {
     ], now);
 
     expect(schedule.results.map((item) => item.id)).toEqual([
-      "past-unscored",
       "completed",
       "scored",
+    ]);
+    expect(schedule.upcoming.map((item) => item.id)).toEqual([
+      "past-unscored",
+      "upcoming",
     ]);
     expect(isMatchCompleted(match({ status: "FT" }))).toBe(true);
   });
@@ -252,7 +294,8 @@ describe("match completion filtering", () => {
       match({ id: "match-3", number: 9, status: "scheduled", kickoff: "2026-06-12T20:00:00+00:00" }),
     ], now);
 
-    expect(schedule.upcoming.map((item) => item.id)).toEqual(["match-3"]);
+    expect(schedule.upcoming.map((item) => item.id)).toEqual(["match-2", "match-3"]);
+    expect(schedule.numberById.get("match-2")).toBe(2);
     expect(schedule.numberById.get("match-3")).toBe(3);
   });
 
@@ -275,7 +318,8 @@ describe("match completion filtering", () => {
 
     expect(isMatchCompleted(completedFlagMatch)).toBe(true);
     expect(hasFinalScore(camelScoreMatch)).toBe(true);
-    expect(isCompletedOrPast(matchDateMatch, now)).toBe(true);
+    expect(isCompletedOrPast(matchDateMatch, now)).toBe(false);
+    expect(isMatchInProgress(matchDateMatch, now)).toBe(true);
     expect(isUpcoming(match({ kickoff: "2026-06-12T20:00:00+00:00" }), now)).toBe(true);
   });
 });

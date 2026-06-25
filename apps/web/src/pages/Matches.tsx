@@ -51,7 +51,7 @@ export function Matches() {
       </div>
       {filtered.length === 0 && (
         <div className="state-card empty-state">
-          No upcoming matches match these filters. Completed and in-progress fixtures are listed in Results.
+          No active matches match these filters. Final scores are listed in Results.
         </div>
       )}
     </section>

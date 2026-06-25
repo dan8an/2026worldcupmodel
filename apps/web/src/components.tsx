@@ -5,6 +5,7 @@ import {
   displayFactors,
   finalProbabilities,
 } from "./prediction-display";
+import { isMatchInProgress } from "./match-status";
 import type { Match } from "./types";
 
 export const percent = (value: number) => `${Math.round(value * 100)}%`;
@@ -54,11 +55,15 @@ export function MatchCard({
     : null;
   const leadFactor = match.prediction ? displayFactors(match.prediction)[0] : null;
   const matchNumber = displayNumber ?? match.number;
+  const inProgress = isMatchInProgress(match);
   return (
     <Link className="match-card" to={`/match/${match.id}`}>
       <div className="eyebrow">
         Group {match.group} · Match {matchNumber}
       </div>
+      {inProgress && (
+        <span className="match-state-badge">In progress · Awaiting score</span>
+      )}
       <div className="teams-row">
         <strong>
           {match.home_team && <span className="flag small-flag" aria-hidden="true">{match.home_team.flag}</span>}

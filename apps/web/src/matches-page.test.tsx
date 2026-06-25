@@ -76,7 +76,7 @@ describe("Matches page", () => {
     expect(normalizedHtml).not.toContain("Group B · Match 9");
   });
 
-  it("hides past/completed matches and keeps full-schedule chronological numbers", () => {
+  it("shows future and in-progress matches, hides final results, and keeps full-schedule chronological numbers", () => {
     vi.setSystemTime(new Date("2026-06-12T18:00:00+00:00"));
     const queryClient = new QueryClient({
       defaultOptions: { queries: { staleTime: Infinity } },
@@ -118,8 +118,10 @@ describe("Matches page", () => {
     const normalizedHtml = html.replaceAll("<!-- -->", "");
 
     expect(normalizedHtml).not.toContain("Completed Home");
-    expect(normalizedHtml).not.toContain("Past Home");
+    expect(normalizedHtml).toContain("Past Home");
+    expect(normalizedHtml).toContain("In progress");
     expect(normalizedHtml).toContain("Future Home");
+    expect(normalizedHtml).toContain("Group A · Match 2");
     expect(normalizedHtml).toContain("Group B · Match 3");
     expect(normalizedHtml).not.toContain("Group B · Match 9");
   });

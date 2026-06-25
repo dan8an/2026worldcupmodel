@@ -2,15 +2,6 @@ import type { Match } from "./types";
 
 type MatchPayload = Match & Record<string, unknown>;
 
-export type MatchClassification = {
-  chronologicalMatchNumber: number;
-  hasRealFinalScore: boolean;
-  hasStarted: boolean;
-  isCompleted: boolean;
-  belongsOnResults: boolean;
-  belongsOnUpcomingPages: boolean;
-};
-
 const COMPLETED_STATUSES = new Set([
   "completed",
   "finished",
@@ -102,6 +93,10 @@ export function isMatchCompleted(match: Match): boolean {
   );
 }
 
+export function isFinalResult(match: Match): boolean {
+  return isMatchCompleted(match);
+}
+
 export function chronologicalMatches(matches: Match[]): Match[] {
   return [...matches].sort((left, right) => {
     const kickoffOrder = matchKickoffTime(left) - matchKickoffTime(right);
@@ -119,46 +114,36 @@ export function hasMatchKickedOff(
   match: Match,
   now: Date = new Date(),
 ): boolean {
-  return matchKickoffTime(match) <= now.getTime();
+  const kickoffTime = matchKickoffTime(match);
+  return Number.isFinite(kickoffTime) && kickoffTime <= now.getTime();
 }
 
-export function classifyMatch(
+export function isMatchInProgress(
   match: Match,
-  chronologicalMatchNumber = match.number,
   now: Date = new Date(),
-): MatchClassification {
-  const kickoffTime = matchKickoffTime(match);
-  const hasStarted = Number.isFinite(kickoffTime) && kickoffTime <= now.getTime();
-  const hasRealFinalScore = hasFinalScore(match);
-  const status = stringField(match as MatchPayload, ["status", "state"])?.trim().toLowerCase();
-  const isCompleted =
-    booleanField(match as MatchPayload, ["completed", "is_completed", "isCompleted"]) ||
-    (status != null && COMPLETED_STATUSES.has(status)) ||
-    hasRealFinalScore;
-  const belongsOnResults = isCompleted || hasStarted;
-
-  return {
-    chronologicalMatchNumber,
-    hasRealFinalScore,
-    hasStarted,
-    isCompleted,
-    belongsOnResults,
-    belongsOnUpcomingPages: !belongsOnResults,
-  };
+): boolean {
+  return hasMatchKickedOff(match, now) && !isFinalResult(match);
 }
 
 export function isCompletedOrPast(
   match: Match,
-  now: Date = new Date(),
+  _now: Date = new Date(),
 ): boolean {
-  return classifyMatch(match, match.number, now).belongsOnResults;
+  return isFinalResult(match);
 }
 
 export function isUpcoming(
   match: Match,
   now: Date = new Date(),
 ): boolean {
-  return classifyMatch(match, match.number, now).belongsOnUpcomingPages;
+  return !isFinalResult(match) && !isMatchInProgress(match, now);
+}
+
+export function belongsOnActiveMatchPages(
+  match: Match,
+  _now: Date = new Date(),
+): boolean {
+  return !isFinalResult(match);
 }
 
 export function upcomingMatches(
@@ -166,7 +151,7 @@ export function upcomingMatches(
   now: Date = new Date(),
 ): Match[] {
   return matches
-    .filter((match) => isUpcoming(match, now))
+    .filter((match) => belongsOnActiveMatchPages(match, now))
     .sort((left, right) => matchKickoffTime(left) - matchKickoffTime(right) || left.number - right.number);
 }
 
@@ -184,7 +169,6 @@ export function completedMatches(
 
 export function matchSchedule(matches: Match[], now: Date = new Date()): {
   numberById: Map<string, number>;
-  classificationById: Map<string, MatchClassification>;
   upcoming: Match[];
   results: Match[];
 } {
@@ -192,20 +176,11 @@ export function matchSchedule(matches: Match[], now: Date = new Date()): {
   const numberById = new Map(
     ordered.map((match, index) => [match.id, index + 1]),
   );
-  const classificationById = new Map(
-    ordered.map((match) => [
-      match.id,
-      classifyMatch(match, numberById.get(match.id) ?? match.number, now),
-    ]),
-  );
   return {
     numberById,
-    classificationById,
-    upcoming: ordered.filter(
-      (match) => classificationById.get(match.id)?.belongsOnUpcomingPages,
-    ),
+    upcoming: ordered.filter((match) => belongsOnActiveMatchPages(match, now)),
     results: ordered
-      .filter((match) => classificationById.get(match.id)?.belongsOnResults)
+      .filter((match) => isFinalResult(match))
       .sort((left, right) => matchKickoffTime(right) - matchKickoffTime(left) || right.number - left.number),
   };
 }

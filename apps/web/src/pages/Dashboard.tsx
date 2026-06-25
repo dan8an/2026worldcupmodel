@@ -66,7 +66,7 @@ export function Dashboard() {
         </div>
         {schedule.upcoming.length === 0 && (
           <div className="state-card empty-state">
-            No upcoming matches are available. Completed matches are listed in Results.
+            No active matches are available. Final scores are listed in Results.
           </div>
         )}
       </section>

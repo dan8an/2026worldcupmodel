@@ -49,7 +49,7 @@ describe("Dashboard match filtering", () => {
     vi.useRealTimers();
   });
 
-  it("hides completed matches and shows the upcoming empty state", () => {
+  it("hides completed matches and shows the active-match empty state", () => {
     const queryClient = new QueryClient({
       defaultOptions: { queries: { staleTime: Infinity } },
     });
@@ -65,12 +65,12 @@ describe("Dashboard match filtering", () => {
       </QueryClientProvider>,
     );
 
-    expect(html).toContain("No upcoming matches are available.");
+    expect(html).toContain("No active matches are available.");
     expect(html).not.toContain("Mexico<!-- -->");
     expect(html).not.toContain("South Africa<!-- -->");
   });
 
-  it("hides past/completed matches and keeps full-schedule chronological numbers", () => {
+  it("shows future and in-progress matches, hides final results, and keeps full-schedule chronological numbers", () => {
     vi.setSystemTime(new Date("2026-06-12T18:00:00+00:00"));
     const queryClient = new QueryClient({
       defaultOptions: { queries: { staleTime: Infinity } },
@@ -122,8 +122,10 @@ describe("Dashboard match filtering", () => {
     const normalizedHtml = html.replaceAll("<!-- -->", "");
 
     expect(normalizedHtml).not.toContain("Completed Home");
-    expect(normalizedHtml).not.toContain("Past Home");
+    expect(normalizedHtml).toContain("Past Home");
+    expect(normalizedHtml).toContain("In progress");
     expect(normalizedHtml).toContain("Future Home");
+    expect(normalizedHtml).toContain("Group A · Match 2");
     expect(normalizedHtml).toContain("Group B · Match 3");
     expect(normalizedHtml).not.toContain("Group B · Match 9");
   });
