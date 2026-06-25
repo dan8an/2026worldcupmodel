@@ -2,6 +2,15 @@ import type { Match } from "./types";
 
 type MatchPayload = Match & Record<string, unknown>;
 
+export type MatchClassification = {
+  chronologicalMatchNumber: number;
+  hasRealFinalScore: boolean;
+  hasStarted: boolean;
+  isCompleted: boolean;
+  belongsOnResults: boolean;
+  belongsOnUpcomingPages: boolean;
+};
+
 const COMPLETED_STATUSES = new Set([
   "completed",
   "finished",
@@ -20,10 +29,6 @@ function stringField(match: MatchPayload, keys: string[]): string | null {
 
 function booleanField(match: MatchPayload, keys: string[]): boolean {
   return keys.some((key) => match[key] === true);
-}
-
-function presentField(match: MatchPayload, keys: string[]): boolean {
-  return keys.some((key) => match[key] != null);
 }
 
 function numberField(match: MatchPayload, keys: string[]): number | null {
@@ -84,13 +89,8 @@ export function matchScores(match: Match): {
 }
 
 export function hasFinalScore(match: Match): boolean {
-  const payload = match as MatchPayload;
   const score = matchScores(match);
-  return (
-    (score.home != null && score.away != null) ||
-    (presentField(payload, ["home_score", "homeScore", "home_goals", "homeGoals"]) &&
-      presentField(payload, ["away_score", "awayScore", "away_goals", "awayGoals"]))
-  );
+  return score.home != null && score.away != null;
 }
 
 export function isMatchCompleted(match: Match): boolean {
@@ -122,18 +122,43 @@ export function hasMatchKickedOff(
   return matchKickoffTime(match) <= now.getTime();
 }
 
+export function classifyMatch(
+  match: Match,
+  chronologicalMatchNumber = match.number,
+  now: Date = new Date(),
+): MatchClassification {
+  const kickoffTime = matchKickoffTime(match);
+  const hasStarted = Number.isFinite(kickoffTime) && kickoffTime <= now.getTime();
+  const hasRealFinalScore = hasFinalScore(match);
+  const status = stringField(match as MatchPayload, ["status", "state"])?.trim().toLowerCase();
+  const isCompleted =
+    booleanField(match as MatchPayload, ["completed", "is_completed", "isCompleted"]) ||
+    (status != null && COMPLETED_STATUSES.has(status)) ||
+    hasRealFinalScore;
+  const belongsOnResults = isCompleted || hasStarted;
+
+  return {
+    chronologicalMatchNumber,
+    hasRealFinalScore,
+    hasStarted,
+    isCompleted,
+    belongsOnResults,
+    belongsOnUpcomingPages: !belongsOnResults,
+  };
+}
+
 export function isCompletedOrPast(
   match: Match,
   now: Date = new Date(),
 ): boolean {
-  return isMatchCompleted(match) || hasMatchKickedOff(match, now);
+  return classifyMatch(match, match.number, now).belongsOnResults;
 }
 
 export function isUpcoming(
   match: Match,
   now: Date = new Date(),
 ): boolean {
-  return !isCompletedOrPast(match, now);
+  return classifyMatch(match, match.number, now).belongsOnUpcomingPages;
 }
 
 export function upcomingMatches(
@@ -159,6 +184,7 @@ export function completedMatches(
 
 export function matchSchedule(matches: Match[], now: Date = new Date()): {
   numberById: Map<string, number>;
+  classificationById: Map<string, MatchClassification>;
   upcoming: Match[];
   results: Match[];
 } {
@@ -166,11 +192,20 @@ export function matchSchedule(matches: Match[], now: Date = new Date()): {
   const numberById = new Map(
     ordered.map((match, index) => [match.id, index + 1]),
   );
+  const classificationById = new Map(
+    ordered.map((match) => [
+      match.id,
+      classifyMatch(match, numberById.get(match.id) ?? match.number, now),
+    ]),
+  );
   return {
     numberById,
-    upcoming: ordered.filter((match) => isUpcoming(match, now)),
+    classificationById,
+    upcoming: ordered.filter(
+      (match) => classificationById.get(match.id)?.belongsOnUpcomingPages,
+    ),
     results: ordered
-      .filter((match) => isCompletedOrPast(match, now))
+      .filter((match) => classificationById.get(match.id)?.belongsOnResults)
       .sort((left, right) => matchKickoffTime(right) - matchKickoffTime(left) || right.number - left.number),
   };
 }

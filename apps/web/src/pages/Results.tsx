@@ -2,17 +2,19 @@ import { useQuery } from "@tanstack/react-query";
 import { Link } from "react-router-dom";
 import { api } from "../api";
 import { ErrorState, Loading, ProbabilityBar } from "../components";
-import { hasFinalScore, matchSchedule, matchScores } from "../match-status";
+import { matchSchedule, matchScores, type MatchClassification } from "../match-status";
 import type { Match } from "../types";
 
 function ResultCard({
   match,
+  classification,
   displayNumber,
 }: {
   match: Match;
+  classification?: MatchClassification;
   displayNumber?: number;
 }) {
-  const hasScore = hasFinalScore(match);
+  const hasScore = classification?.hasRealFinalScore ?? false;
   const score = matchScores(match);
   return (
     <Link className="match-card result-card" to={`/match/${match.id}`}>
@@ -59,6 +61,7 @@ export function Results() {
             <ResultCard
               key={match.id}
               match={match}
+              classification={schedule.classificationById.get(match.id)}
               displayNumber={schedule.numberById.get(match.id)}
             />
           ))}

@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
 import {
+  classifyMatch,
   hasFinalScore,
   isCompletedOrPast,
   isMatchCompleted,
@@ -36,6 +37,71 @@ describe("match completion filtering", () => {
 
     expect(schedule.upcoming.map((item) => item.id)).toEqual(["future-later-today"]);
     expect(schedule.results).toEqual([]);
+  });
+
+  it("keeps the live scheduled WC26-024 payload out of Results before kickoff", () => {
+    const now = new Date("2026-06-25T19:59:59+00:00");
+    const liveScheduledMatch = {
+      ...match({
+        id: "WC26-024",
+        number: 24,
+        kickoff: "2026-06-25T20:00:00+00:00",
+        status: "scheduled",
+        home_score: null,
+        away_score: null,
+      }),
+      home_team: { id: "PAR", name: "Paraguay" },
+      away_team: { id: "AUS", name: "Australia" },
+      prediction: {
+        probabilities: {
+          home_win: 0.281031460666646,
+          draw: 0.280061343572901,
+          away_win: 0.438907195760453,
+        },
+        final_home_probability: 0.281031460666646,
+        final_draw_probability: 0.280061343572901,
+        final_away_probability: 0.438907195760453,
+        top_scores: [
+          { home: 1, away: 1, probability: 0.12940329485773233 },
+          { home: 0, away: 1, probability: 0.11785436651834981 },
+        ],
+      },
+    } as Match;
+    const schedule = matchSchedule([liveScheduledMatch], now);
+    const classification = schedule.classificationById.get("WC26-024");
+
+    expect(classification).toMatchObject({
+      chronologicalMatchNumber: 1,
+      hasRealFinalScore: false,
+      hasStarted: false,
+      isCompleted: false,
+      belongsOnResults: false,
+      belongsOnUpcomingPages: true,
+    });
+    expect(schedule.results).toEqual([]);
+    expect(schedule.upcoming.map((item) => item.id)).toEqual(["WC26-024"]);
+  });
+
+  it("does not mistake prediction probabilities or projected scores for final scores", () => {
+    const now = new Date("2026-06-12T18:00:00+00:00");
+    const probabilityOnlyMatch = {
+      ...match({
+        id: "probability-only",
+        kickoff: "2026-06-12T20:00:00+00:00",
+        status: "scheduled",
+      }),
+      home_win_probability: 0.62,
+      away_win_probability: 0.18,
+      final_home_probability: 0.62,
+      final_away_probability: 0.18,
+      projected_home_score: 2,
+      projected_away_score: 1,
+    } as Match;
+    const classification = classifyMatch(probabilityOnlyMatch, 1, now);
+
+    expect(classification.hasRealFinalScore).toBe(false);
+    expect(classification.belongsOnResults).toBe(false);
+    expect(classification.belongsOnUpcomingPages).toBe(true);
   });
 
   it("shows a completed match with a final score in Results", () => {
@@ -88,6 +154,40 @@ describe("match completion filtering", () => {
 
     expect(isUpcoming(match({ kickoff: "2026-06-12" }), now)).toBe(true);
     expect(isCompletedOrPast(match({ kickoff: "2026-06-12" }), now)).toBe(false);
+  });
+
+  it("keeps missing or invalid kickoff matches upcoming unless explicitly completed", () => {
+    const now = new Date("2026-06-12T18:00:00+00:00");
+
+    expect(classifyMatch(match({ kickoff: "" }), 1, now)).toMatchObject({
+      hasStarted: false,
+      belongsOnResults: false,
+      belongsOnUpcomingPages: true,
+    });
+    expect(classifyMatch(match({ kickoff: "TBD" }), 1, now)).toMatchObject({
+      hasStarted: false,
+      belongsOnResults: false,
+      belongsOnUpcomingPages: true,
+    });
+    expect(classifyMatch(match({ kickoff: "", status: "finished" }), 1, now)).toMatchObject({
+      isCompleted: true,
+      belongsOnResults: true,
+      belongsOnUpcomingPages: false,
+    });
+  });
+
+  it("keeps scheduled provider statuses upcoming before kickoff", () => {
+    const now = new Date("2026-06-12T18:00:00+00:00");
+
+    for (const status of ["scheduled", "NS", "TBD"]) {
+      expect(classifyMatch(match({ kickoff: "2026-06-12T20:00:00+00:00", status }), 1, now))
+        .toMatchObject({
+          isCompleted: false,
+          hasStarted: false,
+          belongsOnResults: false,
+          belongsOnUpcomingPages: true,
+        });
+    }
   });
 
   it("normalizes timezone-less date-time kickoff fields as UTC instants", () => {
