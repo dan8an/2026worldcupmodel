@@ -37,6 +37,22 @@ function numberField(match: MatchPayload, keys: string[]): number | null {
   return null;
 }
 
+const DATE_ONLY_PATTERN = /^\d{4}-\d{2}-\d{2}$/;
+const ISO_DATE_TIME_PATTERN =
+  /^\d{4}-\d{2}-\d{2}[T\s]\d{2}:\d{2}(?::\d{2}(?:\.\d+)?)?(?:Z|[+-]\d{2}:?\d{2})?$/i;
+const TIMEZONE_PATTERN = /(Z|[+-]\d{2}:?\d{2})$/i;
+
+export function parseKickoffInstant(value: string | null): number {
+  const kickoff = value?.trim();
+  if (!kickoff || DATE_ONLY_PATTERN.test(kickoff) || !ISO_DATE_TIME_PATTERN.test(kickoff)) {
+    return Number.POSITIVE_INFINITY;
+  }
+
+  const normalized = TIMEZONE_PATTERN.test(kickoff) ? kickoff : `${kickoff}Z`;
+  const time = new Date(normalized).getTime();
+  return Number.isNaN(time) ? Number.POSITIVE_INFINITY : time;
+}
+
 export function matchKickoffTime(match: Match): number {
   const kickoff = stringField(match as MatchPayload, [
     "kickoff",
@@ -44,8 +60,7 @@ export function matchKickoffTime(match: Match): number {
     "matchDate",
     "date",
   ]);
-  const time = kickoff ? new Date(kickoff).getTime() : Number.NaN;
-  return Number.isNaN(time) ? Number.POSITIVE_INFINITY : time;
+  return parseKickoffInstant(kickoff);
 }
 
 export function matchScores(match: Match): {

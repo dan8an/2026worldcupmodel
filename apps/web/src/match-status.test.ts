@@ -5,6 +5,7 @@ import {
   isMatchCompleted,
   isUpcoming,
   matchSchedule,
+  parseKickoffInstant,
 } from "./match-status";
 import type { Match } from "./types";
 
@@ -27,6 +28,74 @@ const match = (overrides: Partial<Match>): Match => ({
 });
 
 describe("match completion filtering", () => {
+  it("keeps a future match later today out of Results", () => {
+    const now = new Date("2026-06-12T18:00:00+00:00");
+    const schedule = matchSchedule([
+      match({ id: "future-later-today", kickoff: "2026-06-12T20:00:00+00:00" }),
+    ], now);
+
+    expect(schedule.upcoming.map((item) => item.id)).toEqual(["future-later-today"]);
+    expect(schedule.results).toEqual([]);
+  });
+
+  it("shows a completed match with a final score in Results", () => {
+    const now = new Date("2026-06-12T18:00:00+00:00");
+    const schedule = matchSchedule([
+      match({
+        id: "completed-scored",
+        kickoff: "2026-06-12T20:00:00+00:00",
+        status: "completed",
+        home_score: 2,
+        away_score: 1,
+      }),
+    ], now);
+
+    expect(schedule.upcoming).toEqual([]);
+    expect(schedule.results.map((item) => item.id)).toEqual(["completed-scored"]);
+  });
+
+  it("shows a just-kicked-off match with no score in Results", () => {
+    const now = new Date("2026-06-12T20:00:01+00:00");
+    const schedule = matchSchedule([
+      match({
+        id: "awaiting-final-score",
+        kickoff: "2026-06-12T20:00:00+00:00",
+        status: "scheduled",
+        home_score: null,
+        away_score: null,
+      }),
+    ], now);
+
+    expect(hasFinalScore(schedule.results[0])).toBe(false);
+    expect(schedule.results.map((item) => item.id)).toEqual(["awaiting-final-score"]);
+  });
+
+  it("handles UTC timestamps near midnight without local calendar-date classification", () => {
+    const now = new Date("2026-06-11T23:30:00+00:00");
+
+    expect(isUpcoming(
+      match({ id: "future-midnight", kickoff: "2026-06-12T00:30:00+00:00" }),
+      now,
+    )).toBe(true);
+    expect(isCompletedOrPast(
+      match({ id: "past-midnight", kickoff: "2026-06-11T23:00:00+00:00" }),
+      now,
+    )).toBe(true);
+  });
+
+  it("does not treat date-only kickoff fields as midnight instants", () => {
+    const now = new Date("2026-06-12T18:00:00+00:00");
+
+    expect(isUpcoming(match({ kickoff: "2026-06-12" }), now)).toBe(true);
+    expect(isCompletedOrPast(match({ kickoff: "2026-06-12" }), now)).toBe(false);
+  });
+
+  it("normalizes timezone-less date-time kickoff fields as UTC instants", () => {
+    expect(parseKickoffInstant("2026-06-12T20:00:00")).toBe(
+      Date.parse("2026-06-12T20:00:00Z"),
+    );
+  });
+
   it("keeps completed matches off the dashboard", () => {
     const now = new Date("2026-06-11T16:00:00+00:00");
     const schedule = matchSchedule([
