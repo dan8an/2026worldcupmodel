@@ -22,7 +22,7 @@ async function request<T>(path: string, options?: RequestInit): Promise<T> {
 }
 
 export const api = {
-  matches: () => request<Match[]>("/matches?stage=group"),
+  matches: () => request<Match[]>("/matches"),
   match: (id: string) => request<Match>(`/matches/${id}`),
   teams: () => request<Team[]>("/teams"),
   team: (id: string) => request<TeamProfile>(`/teams/${id}`),

@@ -10,6 +10,21 @@ const COMPLETED_STATUSES = new Set([
   "pen",
 ]);
 
+const IN_PROGRESS_STATUSES = new Set([
+  "live",
+  "in progress",
+  "in_progress",
+  "in-progress",
+  "playing",
+  "1h",
+  "ht",
+  "2h",
+  "et",
+  "bt",
+  "p",
+  "int",
+]);
+
 function stringField(match: MatchPayload, keys: string[]): string | null {
   for (const key of keys) {
     const value = match[key];
@@ -20,6 +35,10 @@ function stringField(match: MatchPayload, keys: string[]): string | null {
 
 function booleanField(match: MatchPayload, keys: string[]): boolean {
   return keys.some((key) => match[key] === true);
+}
+
+function matchStatus(match: Match): string | null {
+  return stringField(match as MatchPayload, ["status", "state"])?.trim().toLowerCase() ?? null;
 }
 
 function numberField(match: MatchPayload, keys: string[]): number | null {
@@ -85,7 +104,7 @@ export function hasFinalScore(match: Match): boolean {
 }
 
 export function isMatchCompleted(match: Match): boolean {
-  const status = stringField(match as MatchPayload, ["status", "state"])?.trim().toLowerCase();
+  const status = matchStatus(match);
   return (
     booleanField(match as MatchPayload, ["completed", "is_completed", "isCompleted"]) ||
     (status != null && COMPLETED_STATUSES.has(status)) ||
@@ -122,13 +141,19 @@ export function isMatchInProgress(
   match: Match,
   now: Date = new Date(),
 ): boolean {
-  return hasMatchKickedOff(match, now) && !isFinalResult(match);
+  if (isFinalResult(match)) return false;
+  const status = matchStatus(match);
+  return (
+    (status != null && IN_PROGRESS_STATUSES.has(status)) ||
+    hasMatchKickedOff(match, now)
+  );
 }
 
 export function isCompletedOrPast(
   match: Match,
   _now: Date = new Date(),
 ): boolean {
+  void _now;
   return isFinalResult(match);
 }
 
@@ -143,6 +168,7 @@ export function belongsOnActiveMatchPages(
   match: Match,
   _now: Date = new Date(),
 ): boolean {
+  void _now;
   return !isFinalResult(match);
 }
 
