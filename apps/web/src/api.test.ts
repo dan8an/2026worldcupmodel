@@ -20,7 +20,7 @@ describe("API client routes", () => {
 
     expect(fetchMock.mock.calls.map(([url]) => url)).toEqual([
       "https://two026worldcupmodel.onrender.com/v1/teams",
-      "https://two026worldcupmodel.onrender.com/v1/matches?stage=group",
+      "https://two026worldcupmodel.onrender.com/v1/matches",
       "https://two026worldcupmodel.onrender.com/v1/simulations/latest",
     ]);
   });

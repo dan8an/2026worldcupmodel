@@ -2,6 +2,7 @@ import json
 import logging
 import os
 import time
+import re
 from dataclasses import asdict
 from datetime import datetime, timezone
 from typing import Any
@@ -248,16 +249,20 @@ class DatabaseMatchResultSource:
                 else {}
             )
 
+        def display_name(value: Any, team_id: Any) -> str | None:
+            text_value = str(value or "").strip()
+            if text_value and not text_value.isdigit():
+                return text_value
+            return team_names.get(team_id)
+
         return [
             {
                 **row,
-                "home_team_name": (
-                    row.get("home_team")
-                    or team_names.get(row.get("home_team_id"))
+                "home_team_name": display_name(
+                    row.get("home_team"), row.get("home_team_id")
                 ),
-                "away_team_name": (
-                    row.get("away_team")
-                    or team_names.get(row.get("away_team_id"))
+                "away_team_name": display_name(
+                    row.get("away_team"), row.get("away_team_id")
                 ),
             }
             for row in match_rows
@@ -368,35 +373,48 @@ class PredictionService:
                 ).append(fixture)
         results = {}
         for row in rows:
+            raw_match_id = row.get("canonical_match_id") or row.get("match_id") or row.get("id")
+            direct_fixture = next(
+                (
+                    fixture
+                    for fixture in self.fixtures
+                    if str(raw_match_id) == fixture.id
+                    or str(row.get("match_number") or row.get("number") or "")
+                    == str(fixture.number)
+                ),
+                None,
+            )
             played_at = row.get("match_date") or row.get("kickoff")
-            if played_at is None:
+            if played_at is None and direct_fixture is None:
                 continue
-            try:
-                played_at = datetime.fromisoformat(
-                    str(played_at).replace("Z", "+00:00")
-                )
-            except ValueError:
-                continue
-            if played_at.tzinfo is None:
-                played_at = played_at.replace(tzinfo=timezone.utc)
+            if played_at is not None:
+                try:
+                    played_at = datetime.fromisoformat(
+                        str(played_at).replace("Z", "+00:00")
+                    )
+                except ValueError:
+                    continue
+                if played_at.tzinfo is None:
+                    played_at = played_at.replace(tzinfo=timezone.utc)
             home_id = self.team_alias_lookup.get(
                 self._normalize_name(row.get("home_team_name"))
             )
             away_id = self.team_alias_lookup.get(
                 self._normalize_name(row.get("away_team_name"))
             )
-            candidates = fixtures_by_teams.get((home_id, away_id), [])
-            if not candidates:
-                continue
-            fixture = min(
-                candidates,
-                key=lambda candidate: abs(
-                    (candidate.kickoff - played_at).total_seconds()
-                ),
-            )
-            kickoff_gap = abs((fixture.kickoff - played_at).total_seconds())
-            if kickoff_gap > 36 * 60 * 60:
-                continue
+            fixture = direct_fixture
+            if fixture is None:
+                candidates = fixtures_by_teams.get((home_id, away_id), [])
+                if not candidates:
+                    continue
+                fixture = min(
+                    candidates,
+                    key=lambda candidate: abs(
+                        (candidate.kickoff - played_at).total_seconds()
+                    ),
+                )
+                if abs((fixture.kickoff - played_at).total_seconds()) > 36 * 60 * 60:
+                    continue
             home_score = row.get("home_score")
             away_score = row.get("away_score")
             status = str(row.get("status") or "").strip()
@@ -410,8 +428,152 @@ class PredictionService:
                 "away_score": (
                     int(away_score) if away_score is not None else None
                 ),
+                "home_team_id": home_id,
+                "away_team_id": away_id,
+                "winner_team_id": self.team_alias_lookup.get(
+                    self._normalize_name(
+                        row.get("winner_team_name") or row.get("winner")
+                    )
+                ),
             }
         return results
+
+    @staticmethod
+    def _friendly_slot(slot: str | None) -> str | None:
+        if not slot:
+            return None
+        match = re.fullmatch(r"(Winner|Loser) M(?:atch )?(\d+)", slot, re.I)
+        if match:
+            number = int(match.group(2))
+            stage = (
+                "Round of 32" if number <= 88 else
+                "Round of 16" if number <= 96 else
+                "Quarterfinal" if number <= 100 else "Semifinal"
+            )
+            first = 73 if number <= 88 else 89 if number <= 96 else 97 if number <= 100 else 101
+            return f"{match.group(1).title()} {stage} Match {number - first + 1}"
+        match = re.fullmatch(r"R32-([HA])(\d+)", slot, re.I)
+        if match:
+            side = "home" if match.group(1).upper() == "H" else "away"
+            return f"Round of 32 {side} qualifier {int(match.group(2))}"
+        # A numeric provider/team identifier must never become UI copy.
+        return "Team to be determined" if str(slot).strip().isdigit() else slot
+
+    def resolve_match_participants(
+        self, match_results: dict[str, dict[str, Any]]
+    ) -> dict[str, tuple[str | None, str | None]]:
+        """Resolve the bracket from completed results, never from forecast data."""
+        def is_complete(result: dict[str, Any] | None) -> bool:
+            return str((result or {}).get("status", "")).lower() in {
+                "completed", "finished", "full_time", "ft",
+            }
+
+        resolved: dict[str, tuple[str | None, str | None]] = {}
+        standings: dict[str, list[str]] = {}
+        standings_rows: dict[str, dict[str, dict[str, int]]] = {}
+        for group in "ABCDEFGHIJKL":
+            fixtures = [m for m in self.fixtures if m.stage == "group" and m.group == group]
+            if not all(
+                (result := match_results.get(m.id))
+                and is_complete(result)
+                and result.get("home_score") is not None
+                and result.get("away_score") is not None
+                for m in fixtures
+            ):
+                continue
+            table = {
+                team.id: {"points": 0, "gd": 0, "gf": 0}
+                for team in self.teams if team.group == group
+            }
+            for fixture in fixtures:
+                result = match_results[fixture.id]
+                home = fixture.home_team_id
+                away = fixture.away_team_id
+                hs, aws = result["home_score"], result["away_score"]
+                table[home]["gf"] += hs; table[home]["gd"] += hs - aws
+                table[away]["gf"] += aws; table[away]["gd"] += aws - hs
+                if hs == aws:
+                    table[home]["points"] += 1; table[away]["points"] += 1
+                else:
+                    table[home if hs > aws else away]["points"] += 3
+            standings[group] = sorted(
+                table, key=lambda team_id: (
+                    -table[team_id]["points"], -table[team_id]["gd"],
+                    -table[team_id]["gf"], team_id,
+                )
+            )
+            standings_rows[group] = table
+
+        round_of_32: list[tuple[str, str]] = []
+        if len(standings) == 12:
+            qualification_key = lambda team_id: (
+                -standings_rows[self.teams_by_id[team_id].group][team_id]["points"],
+                -standings_rows[self.teams_by_id[team_id].group][team_id]["gd"],
+                -standings_rows[self.teams_by_id[team_id].group][team_id]["gf"],
+                team_id,
+            )
+            winners = [standings[group][0] for group in "ABCDEFGHIJKL"]
+            runners = [standings[group][1] for group in "ABCDEFGHIJKL"]
+            best_thirds = sorted(
+                (standings[group][2] for group in "ABCDEFGHIJKL"),
+                key=qualification_key,
+            )[:8]
+            ranked_runners = sorted(runners, key=qualification_key)
+            seeded = winners + ranked_runners[:4]
+            unseeded = ranked_runners[4:] + best_thirds
+            for seeded_team in seeded:
+                opponent_index = next(
+                    (
+                        index for index, opponent in enumerate(unseeded)
+                        if self.teams_by_id[opponent].group
+                        != self.teams_by_id[seeded_team].group
+                    ),
+                    0,
+                )
+                round_of_32.append((seeded_team, unseeded.pop(opponent_index)))
+
+        def slot_team(slot: str | None) -> str | None:
+            match = re.fullmatch(
+                r"(Winner|Runner-up|Third(?:-place)?) Group ([A-L])",
+                slot or "", re.I,
+            )
+            if match and match.group(2).upper() in standings:
+                rank = 0 if match.group(1).lower() == "winner" else 1 if match.group(1).lower() == "runner-up" else 2
+                return standings[match.group(2).upper()][rank]
+            match = re.fullmatch(r"(Winner|Loser) M(?:atch )?(\d+)", slot or "", re.I)
+            if not match:
+                return None
+            parent_id = f"WC26-{int(match.group(2)):03d}"
+            parent = next((m for m in self.fixtures if m.id == parent_id), None)
+            result = match_results.get(parent_id, {})
+            home, away = resolved.get(parent_id, (None, None))
+            if not parent or not is_complete(result) or not home or not away:
+                return None
+            winner = result.get("winner_team_id")
+            if not winner and result.get("home_score") != result.get("away_score"):
+                winner = home if result.get("home_score") > result.get("away_score") else away
+            if not winner:
+                return None
+            return winner if match.group(1).lower() == "winner" else (away if winner == home else home)
+
+        for match in sorted(self.fixtures, key=lambda item: item.number):
+            result = match_results.get(match.id, {})
+            r32_pair = (
+                round_of_32[match.number - 73]
+                if match.stage == "round_of_32" and round_of_32
+                else (None, None)
+            )
+            known_group_winner = (
+                standings[chr(ord("A") + match.number - 73)][0]
+                if match.stage == "round_of_32"
+                and 73 <= match.number <= 84
+                and chr(ord("A") + match.number - 73) in standings
+                else None
+            )
+            home = match.home_team_id or result.get("home_team_id") or slot_team(match.home_slot) or known_group_winner or r32_pair[0]
+            away = match.away_team_id or result.get("away_team_id") or slot_team(match.away_slot) or r32_pair[1]
+            resolved[match.id] = (home, away)
+        return resolved
 
     def team_payload(self, team_id: str) -> dict:
         team = self.teams_by_id[team_id]
@@ -568,7 +730,9 @@ class PredictionService:
         match_results: dict[str, dict[str, Any]] | None = None,
     ) -> dict:
         match = next(match for match in self.fixtures if match.id == match_id)
-        result = (match_results or {}).get(match.id, {})
+        match_results = match_results or {}
+        result = match_results.get(match.id, {})
+        home_id, away_id = self.resolve_match_participants(match_results)[match.id]
         return {
             "id": match.id,
             "number": match.number,
@@ -577,13 +741,13 @@ class PredictionService:
             "venue_id": match.venue_id,
             "group": match.group,
             "home_team": (
-                self.team_payload(match.home_team_id) if match.home_team_id else None
+                self.team_payload(home_id) if home_id in self.teams_by_id else None
             ),
             "away_team": (
-                self.team_payload(match.away_team_id) if match.away_team_id else None
+                self.team_payload(away_id) if away_id in self.teams_by_id else None
             ),
-            "home_slot": match.home_slot,
-            "away_slot": match.away_slot,
+            "home_slot": None if home_id else self._friendly_slot(match.home_slot),
+            "away_slot": None if away_id else self._friendly_slot(match.away_slot),
             "status": result.get("status", "scheduled"),
             "home_score": result.get("home_score"),
             "away_score": result.get("away_score"),

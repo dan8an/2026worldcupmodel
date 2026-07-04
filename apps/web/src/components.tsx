@@ -6,10 +6,20 @@ import {
   finalProbabilities,
 } from "./prediction-display";
 import { isMatchInProgress } from "./match-status";
-import type { Match } from "./types";
+import type { Match, Team } from "./types";
 
 export const percent = (value: number) => `${Math.round(value * 100)}%`;
 export const precisePercent = (value: number) => `${(value * 100).toFixed(1)}%`;
+
+export function TeamLabel({ team, placeholder }: { team: Team | null; placeholder: string | null }) {
+  if (!team) return <>{placeholder ?? "Team to be determined"}</>;
+  return (
+    <>
+      <span className="flag small-flag" aria-hidden="true">{team.flag}</span>
+      {team.name} <small className="team-code">{team.id}</small>
+    </>
+  );
+}
 
 export function Loading({ label = "Loading forecast" }: { label?: string }) {
   return <div className="state-card">{label}...</div>;
@@ -66,13 +76,11 @@ export function MatchCard({
       )}
       <div className="teams-row">
         <strong>
-          {match.home_team && <span className="flag small-flag" aria-hidden="true">{match.home_team.flag}</span>}
-          {match.home_team?.name ?? match.home_slot}
+          <TeamLabel team={match.home_team} placeholder={match.home_slot} />
         </strong>
         <span>vs</span>
         <strong>
-          {match.away_team && <span className="flag small-flag" aria-hidden="true">{match.away_team.flag}</span>}
-          {match.away_team?.name ?? match.away_slot}
+          <TeamLabel team={match.away_team} placeholder={match.away_slot} />
         </strong>
       </div>
       {match.prediction && (

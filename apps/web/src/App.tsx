@@ -7,11 +7,13 @@ import { Results } from "./pages/Results";
 import { Simulator } from "./pages/Simulator";
 import { TeamDetail } from "./pages/TeamDetail";
 import { Teams } from "./pages/Teams";
+import { Bracket } from "./pages/Bracket";
 
 const links = [
   ["/", "Dashboard"],
   ["/matches", "Matches"],
   ["/results", "Results"],
+  ["/bracket", "Bracket"],
   ["/teams", "Teams"],
   ["/simulator", "Simulator"],
   ["/model-explainer", "Model"],
@@ -41,6 +43,7 @@ export default function App() {
           <Route path="/" element={<Dashboard />} />
           <Route path="/matches" element={<Matches />} />
           <Route path="/results" element={<Results />} />
+          <Route path="/bracket" element={<Bracket />} />
           <Route path="/match/:id" element={<MatchDetail />} />
           <Route path="/teams" element={<Teams />} />
           <Route path="/teams/:id" element={<TeamDetail />} />

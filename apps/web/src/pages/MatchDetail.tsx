@@ -40,6 +40,7 @@ export function MatchDetail() {
           <Link to={`/teams/${match.home_team?.id}`}>
             <span className="flag match-flag" aria-hidden="true">{match.home_team?.flag}</span>
             <span>{match.home_team?.name}</span>
+            {match.home_team && <small className="team-code">{match.home_team.id}</small>}
           </Link>
           <div>
             <span>Expected goals</span>
@@ -48,6 +49,7 @@ export function MatchDetail() {
           <Link to={`/teams/${match.away_team?.id}`}>
             <span className="flag match-flag" aria-hidden="true">{match.away_team?.flag}</span>
             <span>{match.away_team?.name}</span>
+            {match.away_team && <small className="team-code">{match.away_team.id}</small>}
           </Link>
         </div>
         <ProbabilityBar match={match} />

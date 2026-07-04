@@ -12,7 +12,7 @@ export function Matches() {
   const filtered = useMemo(
     () =>
       schedule.upcoming.filter((match) => {
-        const names = `${match.home_team?.name} ${match.away_team?.name}`.toLowerCase();
+        const names = `${match.home_team?.name ?? match.home_slot ?? ""} ${match.home_team?.id ?? ""} ${match.away_team?.name ?? match.away_slot ?? ""} ${match.away_team?.id ?? ""}`.toLowerCase();
         return (group === "ALL" || match.group === group) && names.includes(search.toLowerCase());
       }),
     [group, schedule.upcoming, search],

@@ -287,6 +287,68 @@ def test_match_teams_include_flags():
     assert payload["away_score"] is None
 
 
+def _completed_group_results(service):
+    return {
+        match.id: {
+            "status": "completed",
+            "home_score": 2,
+            "away_score": 0,
+        }
+        for match in service.fixtures
+        if match.stage == "group"
+    }
+
+
+def test_completed_group_stage_resolves_round_of_32_teams():
+    service = PredictionService(match_result_source=None)
+    results = _completed_group_results(service)
+
+    payload = service.match_payload("WC26-073", match_results=results)
+
+    assert payload["home_team"]["name"]
+    assert payload["home_team"]["flag"]
+    assert payload["away_team"]["id"].isalpha()
+    assert payload["home_slot"] is None
+    assert payload["away_slot"] is None
+
+
+def test_partial_group_stage_resolves_known_team_and_keeps_friendly_unknown_slot():
+    service = PredictionService(match_result_source=None)
+    results = {
+        match.id: {"status": "completed", "home_score": 1, "away_score": 0}
+        for match in service.fixtures
+        if match.stage == "group" and match.group == "A"
+    }
+
+    payload = service.match_payload("WC26-073", match_results=results)
+
+    assert payload["home_team"]["name"]
+    assert payload["home_slot"] is None
+    assert payload["away_team"] is None
+    assert payload["away_slot"] == "Round of 32 away qualifier 1"
+    assert not payload["away_slot"].isdigit()
+
+
+def test_later_knockout_round_inherits_completed_match_winner():
+    service = PredictionService(match_result_source=None)
+    results = _completed_group_results(service)
+    home, away = service.resolve_match_participants(results)["WC26-073"]
+    results["WC26-073"] = {
+        "status": "completed",
+        "home_score": 3,
+        "away_score": 1,
+        "home_team_id": home,
+        "away_team_id": away,
+    }
+
+    payload = service.match_payload("WC26-089", match_results=results)
+
+    assert payload["home_team"]["id"] == home
+    assert payload["home_slot"] is None
+    assert payload["away_team"] is None
+    assert payload["away_slot"] == "Winner Round of 32 Match 2"
+
+
 def test_completed_match_results_are_merged_into_canonical_fixtures(monkeypatch):
     class MatchResultSource:
         def load(self):

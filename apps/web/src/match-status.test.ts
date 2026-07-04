@@ -228,6 +228,43 @@ describe("match completion filtering", () => {
     }
   });
 
+  it("treats explicit live statuses as active and in progress", () => {
+    const now = new Date("2026-06-12T18:00:00+00:00");
+
+    for (const status of ["live", "in_progress", "In Progress", "1H", "HT", "2H"]) {
+      const liveMatch = match({
+        id: `live-${status}`,
+        kickoff: "2026-06-12T20:00:00+00:00",
+        status,
+      });
+      const schedule = matchSchedule([liveMatch], now);
+
+      expect(isMatchInProgress(liveMatch, now)).toBe(true);
+      expect(schedule.upcoming).toEqual([liveMatch]);
+      expect(schedule.results).toEqual([]);
+    }
+  });
+
+  it("assigns every match to exactly one side of the active/results partition", () => {
+    const now = new Date("2026-06-12T18:00:00+00:00");
+    const matches = [
+      match({ id: "future", kickoff: "2026-06-12T20:00:00+00:00" }),
+      match({ id: "past-unscored", kickoff: "2026-06-12T17:00:00+00:00" }),
+      match({ id: "explicit-live", kickoff: "TBD", status: "live" }),
+      match({ id: "ambiguous", kickoff: "TBD", status: "unknown" }),
+      match({ id: "completed", status: "completed", home_score: 2, away_score: 1 }),
+    ];
+    const schedule = matchSchedule(matches, now);
+    const classifiedIds = [
+      ...schedule.upcoming.map((item) => item.id),
+      ...schedule.results.map((item) => item.id),
+    ];
+
+    expect(new Set(classifiedIds)).toEqual(new Set(matches.map((item) => item.id)));
+    expect(classifiedIds).toHaveLength(matches.length);
+    expect(schedule.upcoming.map((item) => item.id)).toContain("ambiguous");
+  });
+
   it("normalizes timezone-less date-time kickoff fields as UTC instants", () => {
     expect(parseKickoffInstant("2026-06-12T20:00:00")).toBe(
       Date.parse("2026-06-12T20:00:00Z"),

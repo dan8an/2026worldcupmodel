@@ -1,7 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { Link } from "react-router-dom";
 import { api } from "../api";
-import { ErrorState, Loading, ProbabilityBar } from "../components";
+import { ErrorState, Loading, ProbabilityBar, TeamLabel } from "../components";
 import { hasFinalScore, matchSchedule, matchScores } from "../match-status";
 import type { Match } from "../types";
 
@@ -20,9 +20,9 @@ function ResultCard({
         Match {displayNumber ?? match.number} · {new Date(match.kickoff).toLocaleDateString()} · Group {match.group}
       </div>
       <div className="result-score">
-        <span>{match.home_team?.name ?? match.home_slot}</span>
+        <span><TeamLabel team={match.home_team} placeholder={match.home_slot} /></span>
         <strong>{score.home ?? "–"} - {score.away ?? "–"}</strong>
-        <span>{match.away_team?.name ?? match.away_slot}</span>
+        <span><TeamLabel team={match.away_team} placeholder={match.away_slot} /></span>
       </div>
       {!hasScore && (
         <p className="muted">Awaiting final score.</p>
