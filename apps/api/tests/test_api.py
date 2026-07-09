@@ -246,6 +246,16 @@ def test_group_matches_are_chronological():
     assert [match["group"] for match in matches[:5]] == ["A", "A", "B", "D", "B"]
 
 
+def test_api_exposes_full_104_match_tournament_catalog():
+    response = client.get("/v1/matches")
+    matches = response.json()
+
+    assert response.status_code == 200
+    assert len(matches) == 104
+    assert sum(match["stage"] == "group" for match in matches) == 72
+    assert any(match["stage"] == "round_of_32" for match in matches)
+
+
 def test_model_performance_is_published():
     response = client.get("/v1/model/performance")
     assert response.status_code == 200
@@ -347,6 +357,26 @@ def test_later_knockout_round_inherits_completed_match_winner():
     assert payload["home_slot"] is None
     assert payload["away_team"] is None
     assert payload["away_slot"] == "Winner Round of 32 Match 2"
+
+
+def test_team_match_filter_includes_resolved_knockout_fixtures(monkeypatch):
+    service = PredictionService(match_result_source=None, prediction_cache_seconds=0)
+    results = _completed_group_results(service)
+    resolved_home, _ = service.resolve_match_participants(results)["WC26-073"]
+    monkeypatch.setattr(main_module, "service", service)
+    monkeypatch.setattr(service, "current_match_results", lambda: results)
+
+    response = client.get(f"/v1/matches?team_id={resolved_home}")
+    payload = response.json()
+
+    assert response.status_code == 200
+    assert any(match["id"] == "WC26-073" for match in payload)
+    knockout = next(match for match in payload if match["id"] == "WC26-073")
+    assert resolved_home in (
+        knockout["home_team"]["id"],
+        knockout["away_team"]["id"],
+    )
+    assert knockout["home_slot"] is None or knockout["away_slot"] is None
 
 
 def test_completed_match_results_are_merged_into_canonical_fixtures(monkeypatch):

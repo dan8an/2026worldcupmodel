@@ -82,18 +82,23 @@ def matches(
         fixtures = [match for match in fixtures if match.stage == stage]
     if group:
         fixtures = [match for match in fixtures if match.group == group.upper()]
-    if team_id:
-        fixtures = [
-            match
-            for match in fixtures
-            if team_id in (match.home_team_id, match.away_team_id)
-        ]
     prediction_run = service.current_prediction_run()
     match_results = service.current_match_results()
-    return [
+    payload = [
         service.match_payload(match.id, prediction_run, match_results)
         for match in fixtures
     ]
+    if team_id:
+        payload = [
+            match
+            for match in payload
+            if team_id
+            in (
+                (match["home_team"] or {}).get("id"),
+                (match["away_team"] or {}).get("id"),
+            )
+        ]
+    return payload
 
 
 @app.get(

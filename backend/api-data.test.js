@@ -7,20 +7,24 @@ import {
   mergeTeams,
   normalizeDatabaseMatches,
   normalizeDatabaseSimulation,
+  resolveKnockoutParticipants,
   snapshotSimulation,
 } from "./api-data.js";
 
-test("placeholder group fixtures match the frontend contract", () => {
+test("placeholder tournament fixtures match the frontend contract", () => {
   const matches = buildPlaceholderMatches();
 
-  assert.equal(matches.length, 72);
-  assert.ok(matches.every((match) => match.stage === "group"));
-  assert.ok(matches.every((match) => match.home_team && match.away_team));
+  assert.equal(matches.length, 104);
+  assert.equal(matches.filter((match) => match.stage === "group").length, 72);
+  assert.equal(matches.filter((match) => match.stage !== "group").length, 32);
+  assert.ok(matches.filter((match) => match.stage === "group").every((match) => match.home_team && match.away_team));
+  assert.ok(matches.filter((match) => match.stage !== "group").every((match) => !match.home_team && !match.away_team));
   assert.deepEqual(
     matches.map((match) => match.kickoff),
     [...matches].map((match) => match.kickoff).sort(),
   );
   assert.equal(matches[0].prediction?.match_id, matches[0].id);
+  assert.equal(matches.find((match) => match.id === "WC26-089").home_slot, "Winner Round of 32 Match 1");
 });
 
 test("database team ratings are merged into canonical tournament teams", () => {
@@ -74,8 +78,8 @@ test("provider matches do not replace the World Cup forecast catalog", () => {
 
   const matches = mergeDatabaseMatches(canonicalMatches, databaseMatches);
 
-  assert.equal(matches.length, 72);
-  assert.ok(matches.every((match) => match.stage === "group"));
+  assert.equal(matches.length, 104);
+  assert.equal(matches.filter((match) => match.stage === "group").length, 72);
   assert.equal(matches[0].id, "WC26-001");
   assert.equal(typeof matches[0].prediction.home_xg, "number");
   assert.equal(typeof matches[0].prediction.probabilities.home_win, "number");
@@ -199,6 +203,104 @@ test("provider timestamp still matches Korea-Czechia canonical fixture by kickof
   assert.equal(match.status, "completed");
   assert.equal(match.home_score, 2);
   assert.equal(match.away_score, 0);
+});
+
+test("unresolved knockout fixtures remain visible with friendly placeholders", () => {
+  const match = buildPlaceholderMatches().find((candidate) => candidate.id === "WC26-073");
+
+  assert.equal(match.stage, "round_of_32");
+  assert.equal(match.home_team, null);
+  assert.equal(match.away_team, null);
+  assert.equal(match.home_slot, "Round of 32 home qualifier 1");
+  assert.equal(match.away_slot, "Round of 32 away qualifier 1");
+});
+
+test("completed group stage resolves round of 32 teams instead of placeholder numbers", () => {
+  const matches = buildPlaceholderMatches().map((match) =>
+    match.stage === "group"
+      ? { ...match, status: "finished", home_score: 2, away_score: 0 }
+      : match
+  );
+
+  const resolved = resolveKnockoutParticipants(matches);
+  const firstKnockout = resolved.find((match) => match.id === "WC26-073");
+
+  assert.equal(typeof firstKnockout.home_team.name, "string");
+  assert.equal(firstKnockout.home_team.flag.length > 0, true);
+  assert.equal(firstKnockout.home_slot, null);
+  assert.equal(/^\d+$/.test(firstKnockout.home_team.name), false);
+});
+
+test("completed knockout winners feed later rounds", () => {
+  const teams = mergeTeams();
+  const matches = buildPlaceholderMatches(teams).map((match) => {
+    if (match.id === "WC26-073") {
+      return {
+        ...match,
+        home_team: teams.find((team) => team.id === "MEX"),
+        away_team: teams.find((team) => team.id === "RSA"),
+        home_slot: null,
+        away_slot: null,
+        status: "finished",
+        home_score: 3,
+        away_score: 1,
+      };
+    }
+    return match;
+  });
+
+  const roundOf16 = resolveKnockoutParticipants(matches)
+    .find((match) => match.id === "WC26-089");
+
+  assert.equal(roundOf16.home_team.name, "Mexico");
+  assert.equal(roundOf16.away_team, null);
+  assert.equal(roundOf16.away_slot, "Winner Round of 32 Match 2");
+});
+
+test("scheduled and completed knockout database rows merge into canonical fixtures", () => {
+  const teams = mergeTeams();
+  const canonicalMatches = buildPlaceholderMatches(teams);
+  const databaseTeams = [
+    { id: "mexico-uuid", name: "Mexico" },
+    { id: "south-africa-uuid", name: "South Africa" },
+  ];
+  const databaseMatches = normalizeDatabaseMatches(
+    [
+      {
+        id: "provider-knockout",
+        match_number: 73,
+        home_team_id: "mexico-uuid",
+        away_team_id: "south-africa-uuid",
+        match_date: "2026-06-28T16:00:00Z",
+        tournament_stage: "Round of 32",
+        status: "scheduled",
+      },
+      {
+        id: "provider-knockout-final",
+        match_number: 89,
+        home_team_id: "mexico-uuid",
+        away_team_id: "south-africa-uuid",
+        match_date: "2026-07-04T16:00:00Z",
+        tournament_stage: "Round of 16",
+        completed: true,
+        home_score: 1,
+        away_score: 0,
+      },
+    ],
+    [],
+    teams,
+    databaseTeams,
+  );
+
+  const merged = mergeDatabaseMatches(canonicalMatches, databaseMatches);
+  const scheduled = merged.find((match) => match.id === "WC26-073");
+  const completed = merged.find((match) => match.id === "WC26-089");
+
+  assert.equal(scheduled.status, "scheduled");
+  assert.equal(scheduled.home_team.name, "Mexico");
+  assert.equal(completed.status, "completed");
+  assert.equal(completed.home_score, 1);
+  assert.equal(completed.home_team.name, "Mexico");
 });
 
 test("canonical predictions attach without database match rows", () => {

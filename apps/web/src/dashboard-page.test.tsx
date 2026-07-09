@@ -129,4 +129,41 @@ describe("Dashboard match filtering", () => {
     expect(normalizedHtml).toContain("Group B · Match 3");
     expect(normalizedHtml).not.toContain("Group B · Match 9");
   });
+
+  it("shows scheduled knockout fixtures on the active dashboard slate", () => {
+    vi.setSystemTime(new Date("2026-06-28T15:00:00+00:00"));
+    const queryClient = new QueryClient({
+      defaultOptions: { queries: { staleTime: Infinity } },
+    });
+    queryClient.setQueryData(["matches"], [
+      {
+        ...completedMatch,
+        id: "WC26-073",
+        number: 73,
+        stage: "round_of_32",
+        kickoff: "2026-06-28T16:00:00+00:00",
+        group: null,
+        status: "scheduled",
+        home_score: null,
+        away_score: null,
+        home_slot: "Winner Group A",
+        away_slot: "Runner-up Group B",
+      },
+    ]);
+    queryClient.setQueryData(["simulation"], simulation);
+    queryClient.setQueryData(["teams"], []);
+
+    const html = renderToString(
+      <QueryClientProvider client={queryClient}>
+        <MemoryRouter initialEntries={["/"]}>
+          <App />
+        </MemoryRouter>
+      </QueryClientProvider>,
+    ).replaceAll("<!-- -->", "");
+
+    expect(html).toContain("Round of 32 · Match 1");
+    expect(html).toContain("Winner Group A");
+    expect(html).toContain("Runner-up Group B");
+    expect(html).not.toContain("Group null");
+  });
 });

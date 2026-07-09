@@ -514,6 +514,79 @@ class DataIngestionTests(unittest.TestCase):
         )
         self.assertEqual(Repository.stored, [fixture])
 
+    def test_update_data_does_not_wait_on_nonexistent_placeholder_fixtures(self):
+        real_fixture = {
+            "provider_fixture_id": 90073,
+            "date": "2026-06-28T16:00:00+00:00",
+            "competition": "FIFA World Cup",
+            "round": "Round of 32",
+            "home_team": {"provider_id": 1, "name": "Mexico"},
+            "away_team": {"provider_id": 2, "name": "South Africa"},
+            "home_score": 2,
+            "away_score": 0,
+        }
+
+        class Provider:
+            name = "api_football"
+            league_id = 1
+            season = 2026
+
+            def get_completed_matches_range(self, *_args):
+                return [real_fixture]
+
+            def get_fixture_statistics(self, fixture_id):
+                raise AssertionError(f"unexpected stats fetch for {fixture_id}")
+
+            def get_fixture_players(self, fixture_id):
+                raise AssertionError(f"unexpected player fetch for {fixture_id}")
+
+            def get_lineups(self, fixture_id):
+                raise AssertionError(f"unexpected lineup fetch for {fixture_id}")
+
+        class Engine:
+            def dispose(self):
+                pass
+
+        class Repository:
+            stored = []
+            missing_stats_requests = []
+
+            def __init__(self, engine, logger):
+                pass
+
+            def assert_schema(self):
+                pass
+
+            def upsert_provider_matches(self, matches):
+                self.stored.extend(matches)
+
+            def find_completed_matches_missing_stats(self, fixture_ids):
+                self.missing_stats_requests.append(list(fixture_ids))
+                return []
+
+        with (
+            patch(
+                "scripts.update_data.parse_args",
+                return_value=Namespace(
+                    date="2026-06-28",
+                    date_to="2026-06-28",
+                    max_fixtures=5,
+                    sample=False,
+                ),
+            ),
+            patch(
+                "scripts.update_data.load_environment",
+                return_value={"DATABASE_URL": "postgresql://example/database"},
+            ),
+            patch("scripts.update_data.create_sports_provider", return_value=Provider()),
+            patch("scripts.update_data.create_database_engine", return_value=Engine()),
+            patch("scripts.update_data.DataIngestionRepository", Repository),
+        ):
+            self.assertEqual(main(), 0)
+
+        self.assertEqual(Repository.stored, [real_fixture])
+        self.assertEqual(Repository.missing_stats_requests, [[90073]])
+
     def test_completed_upsert_updates_existing_provider_fixture(self):
         connection = Mock()
         DataIngestionRepository._upsert_match(

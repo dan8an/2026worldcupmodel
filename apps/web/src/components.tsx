@@ -21,6 +21,23 @@ export function TeamLabel({ team, placeholder }: { team: Team | null; placeholde
   );
 }
 
+export function matchStageLabel(match: Match) {
+  if (match.group) return `Group ${match.group}`;
+  const labels: Record<string, string> = {
+    round_of_32: "Round of 32",
+    round_of_16: "Round of 16",
+    quarterfinal: "Quarterfinal",
+    semifinal: "Semifinal",
+    third_place: "Third-place Match",
+    final: "Final",
+  };
+  if (labels[match.stage]) return labels[match.stage];
+  return match.stage
+    .split("_")
+    .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+    .join(" ");
+}
+
 export function Loading({ label = "Loading forecast" }: { label?: string }) {
   return <div className="state-card">{label}...</div>;
 }
@@ -69,7 +86,7 @@ export function MatchCard({
   return (
     <Link className="match-card" to={`/match/${match.id}`}>
       <div className="eyebrow">
-        Group {match.group} · Match {matchNumber}
+        {matchStageLabel(match)} · Match {matchNumber}
       </div>
       {inProgress && (
         <span className="match-state-badge">In progress · Awaiting score</span>

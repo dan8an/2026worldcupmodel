@@ -22,9 +22,9 @@ export function Matches() {
   return (
     <section>
       <div className="page-heading">
-        <span className="eyebrow">Upcoming group fixtures</span>
+        <span className="eyebrow">Upcoming fixtures</span>
         <h1>Match forecasts</h1>
-        <p>Filter by group or team. Probabilities are frozen by model snapshot.</p>
+        <p>Filter by group or team. Knockout slots resolve as teams qualify.</p>
       </div>
       <div className="filters">
         <input

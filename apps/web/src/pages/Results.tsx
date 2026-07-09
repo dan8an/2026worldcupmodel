@@ -1,7 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { Link } from "react-router-dom";
 import { api } from "../api";
-import { ErrorState, Loading, ProbabilityBar, TeamLabel } from "../components";
+import { ErrorState, Loading, matchStageLabel, ProbabilityBar, TeamLabel } from "../components";
 import { hasFinalScore, matchSchedule, matchScores } from "../match-status";
 import type { Match } from "../types";
 
@@ -17,7 +17,7 @@ function ResultCard({
   return (
     <Link className="match-card result-card" to={`/match/${match.id}`}>
       <div className="eyebrow">
-        Match {displayNumber ?? match.number} · {new Date(match.kickoff).toLocaleDateString()} · Group {match.group}
+        Match {displayNumber ?? match.number} · {new Date(match.kickoff).toLocaleDateString()} · {matchStageLabel(match)}
       </div>
       <div className="result-score">
         <span><TeamLabel team={match.home_team} placeholder={match.home_slot} /></span>

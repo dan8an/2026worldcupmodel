@@ -125,4 +125,86 @@ describe("Matches page", () => {
     expect(normalizedHtml).toContain("Group B · Match 3");
     expect(normalizedHtml).not.toContain("Group B · Match 9");
   });
+
+  it("keeps scheduled knockout fixtures visible with friendly placeholders", () => {
+    vi.setSystemTime(new Date("2026-06-28T15:00:00+00:00"));
+    const queryClient = new QueryClient({
+      defaultOptions: { queries: { staleTime: Infinity } },
+    });
+    queryClient.setQueryData(["matches"], [
+      matchFixture({
+        id: "WC26-073",
+        number: 73,
+        stage: "round_of_32",
+        kickoff: "2026-06-28T16:00:00+00:00",
+        group: null,
+        home_slot: "Winner Group A",
+        away_slot: "Runner-up Group B",
+      }),
+    ]);
+
+    const html = renderToString(
+      <QueryClientProvider client={queryClient}>
+        <MemoryRouter initialEntries={["/matches"]}>
+          <App />
+        </MemoryRouter>
+      </QueryClientProvider>,
+    ).replaceAll("<!-- -->", "");
+
+    expect(html).toContain("Round of 32 · Match 1");
+    expect(html).toContain("Winner Group A");
+    expect(html).toContain("Runner-up Group B");
+    expect(html).not.toContain("Group null");
+  });
+
+  it("renders resolved knockout teams with flags and FIFA codes", () => {
+    vi.setSystemTime(new Date("2026-06-28T15:00:00+00:00"));
+    const queryClient = new QueryClient({
+      defaultOptions: { queries: { staleTime: Infinity } },
+    });
+    queryClient.setQueryData(["matches"], [
+      matchFixture({
+        id: "WC26-073",
+        number: 73,
+        stage: "round_of_32",
+        kickoff: "2026-06-28T16:00:00+00:00",
+        group: null,
+        home_team: {
+          id: "MEX",
+          name: "Mexico",
+          flag: "🇲🇽",
+          group: "A",
+          position: 1,
+          rank: 14,
+          host: true,
+          elo: 1900,
+        },
+        away_team: {
+          id: "RSA",
+          name: "South Africa",
+          flag: "🇿🇦",
+          group: "A",
+          position: 2,
+          rank: 55,
+          host: false,
+          elo: 1700,
+        },
+        home_slot: null,
+        away_slot: null,
+      }),
+    ]);
+
+    const html = renderToString(
+      <QueryClientProvider client={queryClient}>
+        <MemoryRouter initialEntries={["/matches"]}>
+          <App />
+        </MemoryRouter>
+      </QueryClientProvider>,
+    );
+
+    expect(html).toContain("🇲🇽");
+    expect(html).toContain("Mexico");
+    expect(html).toContain("MEX");
+    expect(html).not.toContain("Winner Group A");
+  });
 });

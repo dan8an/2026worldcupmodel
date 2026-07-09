@@ -123,4 +123,36 @@ describe("Results page", () => {
 
     expect(html).toContain("No completed matches are available yet.");
   });
+
+  it("shows completed knockout matches in Results with resolved team labels", () => {
+    const queryClient = new QueryClient({
+      defaultOptions: { queries: { staleTime: Infinity } },
+    });
+    queryClient.setQueryData(["matches"], [
+      {
+        ...completedMatch,
+        id: "WC26-073",
+        number: 73,
+        stage: "round_of_32",
+        group: null,
+        kickoff: "2026-06-28T16:00:00+00:00",
+        status: "finished",
+        home_score: 3,
+        away_score: 1,
+      },
+    ]);
+
+    const html = renderToString(
+      <QueryClientProvider client={queryClient}>
+        <MemoryRouter initialEntries={["/results"]}>
+          <App />
+        </MemoryRouter>
+      </QueryClientProvider>,
+    ).replaceAll("<!-- -->", "");
+
+    expect(html).toContain("Round of 32");
+    expect(html).toContain("Mexico");
+    expect(html).toContain("MEX");
+    expect(html).not.toContain("Group null");
+  });
 });
