@@ -6,6 +6,7 @@ import subprocess
 import sys
 import tempfile
 import unittest
+from collections import defaultdict
 from pathlib import Path
 
 from modeling.src.data import build_fixtures, load_teams
@@ -15,7 +16,9 @@ from scripts.generate_predictions import (
     canonical_prior_elo,
 )
 from scripts.run_simulations import (
+    MatchState,
     build_knockout_prediction_provider,
+    build_round_of_32,
     knockout_winner,
     rank_group,
     simulate_tournaments,
@@ -44,6 +47,22 @@ create table predictions (
 create table teams (
   id text primary key,
   name text not null
+);
+create table matches (
+  id text primary key,
+  match_number integer,
+  stage text,
+  tournament_stage text,
+  kickoff text,
+  match_date text,
+  home_team_id text,
+  away_team_id text,
+  home_score integer,
+  away_score integer,
+  completed boolean,
+  status text,
+  provider_payload text,
+  api_football_fixture_id integer
 );
 create table team_ratings (
   team_id text not null,
@@ -135,6 +154,103 @@ def canonical_knockout_prediction():
     return build_knockout_prediction_provider(ratings)
 
 
+def certain_home_win_prediction():
+    return {
+        "home_win_probability": 1.0,
+        "draw_probability": 0.0,
+        "away_win_probability": 0.0,
+        "home_xg": 2.0,
+        "away_xg": 0.2,
+        "score_probabilities": [
+            {"home_goals": 1, "away_goals": 0, "probability": 1.0},
+        ],
+    }
+
+
+def completed_group_states(home_score=0, away_score=0):
+    return [
+        MatchState(
+            id=fixture.id,
+            stage="group",
+            home_team_id=fixture.home_team_id,
+            away_team_id=fixture.away_team_id,
+            completed=True,
+            home_score=home_score,
+            away_score=away_score,
+            match_number=fixture.number,
+            kickoff=fixture.kickoff,
+        )
+        for fixture in build_fixtures(load_teams())
+    ]
+
+
+def july_9_knockout_state():
+    teams = load_teams()
+    team_groups = {team.id: team.group for team in teams}
+    results_by_group = defaultdict(list)
+    for fixture in build_fixtures(teams):
+        results_by_group[fixture.group].append(
+            (fixture.home_team_id, fixture.away_team_id, 0, 0)
+        )
+    group_tables = {
+        group: rank_group(
+            [team.id for team in teams if team.group == group],
+            results_by_group[group],
+        )
+        for group in "ABCDEFGHIJKL"
+    }
+    round_of_32 = build_round_of_32(group_tables, team_groups)
+    r32_winners = [home_id for home_id, _away_id in round_of_32]
+    round_of_16 = [
+        (r32_winners[index], r32_winners[index + 1])
+        for index in range(0, len(r32_winners), 2)
+    ]
+    r16_winners = [home_id for home_id, _away_id in round_of_16]
+    quarterfinals = [
+        (r16_winners[index], r16_winners[index + 1])
+        for index in range(0, len(r16_winners), 2)
+    ]
+    states = completed_group_states()
+    states.extend(
+        MatchState(
+            id=f"r32-{index}",
+            stage="round_of_32",
+            home_team_id=home_id,
+            away_team_id=away_id,
+            completed=True,
+            home_score=1,
+            away_score=0,
+            match_number=72 + index,
+        )
+        for index, (home_id, away_id) in enumerate(round_of_32, start=1)
+    )
+    states.extend(
+        MatchState(
+            id=f"r16-{index}",
+            stage="round_of_16",
+            home_team_id=home_id,
+            away_team_id=away_id,
+            completed=True,
+            home_score=1,
+            away_score=0,
+            match_number=88 + index,
+        )
+        for index, (home_id, away_id) in enumerate(round_of_16, start=1)
+    )
+    states.extend(
+        MatchState(
+            id=f"qf-{index}",
+            stage="quarterfinal",
+            home_team_id=home_id,
+            away_team_id=away_id,
+            completed=False,
+            match_number=96 + index,
+        )
+        for index, (home_id, away_id) in enumerate(quarterfinals, start=1)
+    )
+    return states, quarterfinals
+
+
 class SimulationCalculationTests(unittest.TestCase):
     def test_group_tiebreaker_is_deterministic(self):
         table = rank_group(
@@ -173,6 +289,66 @@ class SimulationCalculationTests(unittest.TestCase):
         for field, expected in expected_totals.items():
             self.assertAlmostEqual(sum(row[field] for row in first), expected)
 
+    def test_completed_group_stage_allows_only_upcoming_knockout_predictions(self):
+        match_states, quarterfinals = july_9_knockout_state()
+        predictions = {
+            f"qf-{index}": certain_home_win_prediction()
+            for index in range(1, 5)
+        }
+
+        results = {
+            row["team_id"]: row
+            for row in simulate_tournaments(
+                predictions,
+                20,
+                7,
+                canonical_knockout_prediction(),
+                match_states,
+            )
+        }
+
+        quarterfinalists = {team_id for pairing in quarterfinals for team_id in pairing}
+        self.assertTrue(quarterfinalists)
+        for team_id in quarterfinalists:
+            self.assertEqual(results[team_id]["quarterfinal_probability"], 1.0)
+        self.assertAlmostEqual(
+            sum(row["quarterfinal_probability"] for row in results.values()),
+            8,
+        )
+
+    def test_completed_knockout_fixture_is_fixed_not_resimulated(self):
+        match_states = completed_group_states()
+        match_states.append(
+            MatchState(
+                id="final-actual",
+                stage="final",
+                home_team_id="MEX",
+                away_team_id="CAN",
+                completed=True,
+                home_score=1,
+                away_score=1,
+                home_penalty_score=5,
+                away_penalty_score=4,
+                match_number=104,
+            )
+        )
+
+        results = {
+            row["team_id"]: row
+            for row in simulate_tournaments(
+                {},
+                20,
+                7,
+                canonical_knockout_prediction(),
+                match_states,
+            )
+        }
+
+        self.assertEqual(results["MEX"]["final_probability"], 1.0)
+        self.assertEqual(results["CAN"]["final_probability"], 1.0)
+        self.assertEqual(results["MEX"]["champion_probability"], 1.0)
+        self.assertEqual(results["CAN"]["champion_probability"], 0.0)
+
     def test_incomplete_predictions_report_exact_missing_fixtures(self):
         predictions = canonical_predictions()
         del predictions["WC26-001"]
@@ -192,6 +368,20 @@ class SimulationCalculationTests(unittest.TestCase):
                 7,
                 canonical_knockout_prediction(),
             )
+
+    def test_pre_tournament_still_requires_all_group_predictions(self):
+        results = simulate_tournaments(
+            canonical_predictions(),
+            5,
+            7,
+            canonical_knockout_prediction(),
+            [],
+        )
+
+        self.assertAlmostEqual(
+            sum(row["round_of_32_probability"] for row in results),
+            32,
+        )
 
     def test_knockout_winner_uses_pair_specific_regulation_probabilities(self):
         prediction = {

@@ -10,6 +10,7 @@ import os
 import random
 import sys
 from collections import Counter, defaultdict
+from dataclasses import dataclass
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, Callable
@@ -28,7 +29,6 @@ from scripts.database import create_database_engine
 from scripts.generate_predictions import (
     PredictionRepository,
     calculate_prediction,
-    missing_canonical_group_fixtures,
 )
 
 DEFAULT_SIMULATIONS = 50_000
@@ -42,6 +42,29 @@ STAGES = (
     "final",
     "champion",
 )
+COMPLETED_MATCH_STATUSES = {"completed", "finished", "ft", "aet", "pen"}
+KNOCKOUT_STAGES = (
+    "round_of_32",
+    "round_of_16",
+    "quarterfinal",
+    "semifinal",
+    "final",
+)
+
+
+@dataclass(frozen=True)
+class MatchState:
+    id: str
+    stage: str
+    home_team_id: str
+    away_team_id: str
+    completed: bool
+    home_score: int | None = None
+    away_score: int | None = None
+    home_penalty_score: int | None = None
+    away_penalty_score: int | None = None
+    match_number: int | None = None
+    kickoff: datetime | None = None
 
 
 def load_environment() -> dict[str, str]:
@@ -87,6 +110,86 @@ def _json_value(value: Any) -> Any:
         except json.JSONDecodeError:
             return None
     return value
+
+
+def _integer(value: Any) -> int | None:
+    if value is None:
+        return None
+    try:
+        number = int(value)
+    except (TypeError, ValueError):
+        return None
+    return number
+
+
+def _parse_timestamp(value: Any) -> datetime | None:
+    if value is None or isinstance(value, datetime):
+        return value
+    try:
+        return datetime.fromisoformat(str(value).replace("Z", "+00:00"))
+    except ValueError:
+        return None
+
+
+def _stage_from_value(value: Any) -> str:
+    raw = str(value or "").lower()
+    if "round of 32" in raw or "round_of_32" in raw:
+        return "round_of_32"
+    if "round of 16" in raw or "round_of_16" in raw:
+        return "round_of_16"
+    if "quarter" in raw:
+        return "quarterfinal"
+    if "semi" in raw:
+        return "semifinal"
+    if "third" in raw or "3rd" in raw:
+        return "third_place"
+    if "final" in raw:
+        return "final"
+    return "group" if "group" in raw else raw
+
+
+def _is_completed_match(row: dict[str, Any]) -> bool:
+    status = str(row.get("status") or "").strip().lower()
+    return bool(row.get("completed")) or status in COMPLETED_MATCH_STATUSES
+
+
+def _penalty_scores(row: dict[str, Any]) -> tuple[int | None, int | None]:
+    home = _integer(row.get("home_penalty_score"))
+    away = _integer(row.get("away_penalty_score"))
+    if home is not None or away is not None:
+        return home, away
+    payload = _json_value(row.get("provider_payload")) or _json_value(row.get("raw")) or {}
+    if isinstance(payload, dict):
+        penalty = (
+            payload.get("score", {}).get("penalty", {})
+            if isinstance(payload.get("score"), dict)
+            else {}
+        )
+        if isinstance(penalty, dict):
+            return _integer(penalty.get("home")), _integer(penalty.get("away"))
+    return None, None
+
+
+def _completed_winner(match: MatchState) -> str:
+    if match.home_score is None or match.away_score is None:
+        raise ValueError(f"Completed fixture {match.id} is missing a final score")
+    if match.home_score > match.away_score:
+        return match.home_team_id
+    if match.away_score > match.home_score:
+        return match.away_team_id
+    if (
+        match.home_penalty_score is not None
+        and match.away_penalty_score is not None
+        and match.home_penalty_score != match.away_penalty_score
+    ):
+        return (
+            match.home_team_id
+            if match.home_penalty_score > match.away_penalty_score
+            else match.away_team_id
+        )
+    raise ValueError(
+        f"Completed knockout fixture {match.id} is tied without penalty winner data"
+    )
 
 
 def _cumulative_weights(weights: list[float]) -> list[float]:
@@ -299,6 +402,7 @@ def simulate_tournaments(
     num_simulations: int,
     seed: int,
     knockout_prediction: KnockoutPrediction,
+    match_states: list[MatchState] | None = None,
 ) -> list[dict[str, Any]]:
     if num_simulations < 1:
         raise ValueError("num_simulations must be at least 1")
@@ -306,28 +410,94 @@ def simulate_tournaments(
     fixtures = build_fixtures(teams)
     validate_tournament(teams, fixtures)
     group_fixtures = [fixture for fixture in fixtures if fixture.stage == "group"]
-    missing = missing_canonical_group_fixtures(set(predictions))
+    match_states = match_states or []
+    completed_groups = {
+        match.id: match
+        for match in match_states
+        if match.stage == "group" and match.completed
+    }
+    missing = [
+        fixture
+        for fixture in group_fixtures
+        if fixture.id not in completed_groups and fixture.id not in predictions
+    ]
     if missing:
+        teams_by_id = {team.id: team.name for team in teams}
         raise ValueError(
             f"Latest prediction run is missing {len(missing)} group fixtures: "
-            f"{', '.join(missing)}"
+            + ", ".join(
+                (
+                    f"{fixture.id} "
+                    f"({teams_by_id[fixture.home_team_id]} vs "
+                    f"{teams_by_id[fixture.away_team_id]})"
+                )
+                for fixture in missing
+            )
         )
 
     team_groups = {team.id: team.group for team in teams}
     score_samplers = {
         fixture.id: compile_score_sampler(predictions[fixture.id])
         for fixture in group_fixtures
+        if fixture.id not in completed_groups
+    }
+    known_knockouts = {
+        stage: sorted(
+            (match for match in match_states if match.stage == stage),
+            key=lambda match: (
+                match.match_number is None,
+                match.match_number or 999,
+                match.kickoff or datetime.max.replace(tzinfo=timezone.utc),
+                match.id,
+            ),
+        )
+        for stage in KNOCKOUT_STAGES
     }
     counts = {stage: Counter() for stage in STAGES}
     rng = random.Random(seed)
 
+    def resolve_knockout_stage(
+        stage: str,
+        pairings: list[tuple[str, str]],
+    ) -> list[str]:
+        winners = []
+        known_by_pair = {
+            (match.home_team_id, match.away_team_id): match
+            for match in known_knockouts[stage]
+        }
+        for home_id, away_id in pairings:
+            known = known_by_pair.get((home_id, away_id))
+            if known and known.completed:
+                winners.append(_completed_winner(known))
+                continue
+            prediction_id = known.id if known else None
+            if known and prediction_id not in predictions:
+                raise ValueError(
+                    "Latest prediction run is missing future knockout fixture "
+                    f"{known.id} ({known.home_team_id} vs {known.away_team_id})"
+                )
+            prediction = (
+                predictions[prediction_id]
+                if prediction_id is not None and prediction_id in predictions
+                else knockout_prediction(home_id, away_id)
+            )
+            winners.append(knockout_winner(home_id, away_id, prediction, rng))
+        return winners
+
     for _ in range(num_simulations):
         results_by_group: dict[str, list[tuple[str, str, int, int]]] = defaultdict(list)
         for fixture in group_fixtures:
-            home_goals, away_goals = sample_group_score(
-                score_samplers[fixture.id],
-                rng,
-            )
+            completed = completed_groups.get(fixture.id)
+            if completed is not None:
+                home_goals = completed.home_score
+                away_goals = completed.away_score
+                if home_goals is None or away_goals is None:
+                    raise ValueError(f"Completed group fixture {fixture.id} is missing a score")
+            else:
+                home_goals, away_goals = sample_group_score(
+                    score_samplers[fixture.id],
+                    rng,
+                )
             results_by_group[fixture.group].append(
                 (
                     fixture.home_team_id,
@@ -344,40 +514,33 @@ def simulate_tournaments(
             )
             for group in "ABCDEFGHIJKL"
         }
-        pairings = build_round_of_32(group_tables, team_groups)
-        qualified = {team_id for pairing in pairings for team_id in pairing}
-        counts["round_of_32"].update(qualified)
+        round_of_32_matches = known_knockouts["round_of_32"]
+        pairings = (
+            [(match.home_team_id, match.away_team_id) for match in round_of_32_matches]
+            if round_of_32_matches
+            else build_round_of_32(group_tables, team_groups)
+        )
+        round_of_32_teams = {team_id for pairing in pairings for team_id in pairing}
+        counts["round_of_32"].update(round_of_32_teams)
         counts["group_stage_exit"].update(
-            team.id for team in teams if team.id not in qualified
+            team.id for team in teams if team.id not in round_of_32_teams
         )
 
-        current = [
-            knockout_winner(
-                home_id,
-                away_id,
-                knockout_prediction(home_id, away_id),
-                rng,
+        current = resolve_knockout_stage("round_of_32", pairings)
+        for stage in ("round_of_16", "quarterfinal", "semifinal", "final"):
+            stage_matches = known_knockouts[stage]
+            pairings = (
+                [(match.home_team_id, match.away_team_id) for match in stage_matches]
+                if stage_matches
+                else [
+                    (current[index], current[index + 1])
+                    for index in range(0, len(current), 2)
+                ]
             )
-            for home_id, away_id in pairings
-        ]
-        counts["round_of_16"].update(current)
-        for stage in ("quarterfinal", "semifinal", "final"):
-            current = [
-                knockout_winner(
-                    current[index],
-                    current[index + 1],
-                    knockout_prediction(current[index], current[index + 1]),
-                    rng,
-                )
-                for index in range(0, len(current), 2)
-            ]
-            counts[stage].update(current)
-        champion = knockout_winner(
-            current[0],
-            current[1],
-            knockout_prediction(current[0], current[1]),
-            rng,
-        )
+            stage_teams = {team_id for pairing in pairings for team_id in pairing}
+            counts[stage].update(stage_teams)
+            current = resolve_knockout_stage(stage, pairings)
+        champion = current[0]
         counts["champion"].update([champion])
 
     return [
@@ -412,6 +575,7 @@ class SimulationRepository:
     def assert_schema(self) -> None:
         inspector = inspect(self.engine)
         required = {
+            "matches",
             "model_runs",
             "predictions",
             "simulation_runs",
@@ -424,6 +588,88 @@ class SimulationRepository:
                 f"Simulation pipeline tables are missing: {sorted(missing)}. Apply "
                 "supabase/migrations/202606100005_tournament_simulation.sql first."
             )
+
+    def load_match_states(
+        self,
+        database_team_ids: dict[str, Any],
+    ) -> list[MatchState]:
+        matches = self._table("matches")
+        database_to_canonical_team = {
+            str(database_id): team_id
+            for team_id, database_id in database_team_ids.items()
+            if database_id is not None
+        }
+        fixtures = build_fixtures()
+        fixture_ids = {fixture.id for fixture in fixtures}
+        fixtures_by_number = {fixture.number: fixture for fixture in fixtures}
+        fixtures_by_key = {
+            (
+                fixture.kickoff,
+                fixture.home_team_id,
+                fixture.away_team_id,
+            ): fixture
+            for fixture in fixtures
+        }
+        with self.engine.connect() as connection:
+            rows = [dict(row) for row in connection.execute(select(matches)).mappings()]
+
+        states = []
+        for index, row in enumerate(rows, start=1):
+            stage = _stage_from_value(row.get("stage") or row.get("tournament_stage"))
+            if stage == "third_place":
+                continue
+            home_team_id = database_to_canonical_team.get(str(row.get("home_team_id")))
+            away_team_id = database_to_canonical_team.get(str(row.get("away_team_id")))
+            if home_team_id is None or away_team_id is None:
+                continue
+            completed = _is_completed_match(row)
+            home_score = _integer(row.get("home_score"))
+            away_score = _integer(row.get("away_score"))
+            if completed and (home_score is None or away_score is None):
+                continue
+            match_number = _integer(row.get("match_number") or row.get("number"))
+            kickoff = _parse_timestamp(row.get("kickoff") or row.get("match_date"))
+            if stage == "group":
+                fixture = None
+                row_id = str(row.get("id") or "")
+                if row_id in fixture_ids:
+                    fixture = next(item for item in fixtures if item.id == row_id)
+                if fixture is None and match_number is not None:
+                    fixture = fixtures_by_number.get(match_number)
+                if fixture is None and kickoff is not None:
+                    fixture = fixtures_by_key.get((kickoff, home_team_id, away_team_id))
+                if fixture is None:
+                    continue
+                match_id = fixture.id
+                match_number = fixture.number
+            elif stage in KNOCKOUT_STAGES:
+                match_id = str(
+                    row.get("id")
+                    or row.get("api_football_fixture_id")
+                    or row.get("provider_fixture_id")
+                    or row.get("canonical_match_id")
+                    or f"provider-knockout-{index}"
+                )
+            else:
+                continue
+
+            home_penalty_score, away_penalty_score = _penalty_scores(row)
+            states.append(
+                MatchState(
+                    id=match_id,
+                    stage=stage,
+                    home_team_id=home_team_id,
+                    away_team_id=away_team_id,
+                    completed=completed,
+                    home_score=home_score,
+                    away_score=away_score,
+                    home_penalty_score=home_penalty_score,
+                    away_penalty_score=away_penalty_score,
+                    match_number=match_number,
+                    kickoff=kickoff,
+                )
+            )
+        return states
 
     def load_latest_predictions(
         self,
@@ -549,6 +795,23 @@ def main() -> int:
         model_run_id, model_version, predictions = latest
         prediction_repository = PredictionRepository(engine)
         database_team_ids = prediction_repository.load_database_team_ids()
+        match_states = repository.load_match_states(database_team_ids)
+        completed_groups = sum(
+            1 for match in match_states if match.stage == "group" and match.completed
+        )
+        completed_knockouts = sum(
+            1 for match in match_states if match.stage in KNOCKOUT_STAGES and match.completed
+        )
+        upcoming_knockouts = sum(
+            1 for match in match_states if match.stage in KNOCKOUT_STAGES and not match.completed
+        )
+        logger.info(
+            "[simulation] Loaded tournament state: completed_group=%d "
+            "completed_knockout=%d upcoming_knockout=%d",
+            completed_groups,
+            completed_knockouts,
+            upcoming_knockouts,
+        )
         team_ratings = prediction_repository.load_current_team_ratings(
             database_team_ids
         )
@@ -567,6 +830,7 @@ def main() -> int:
             args.simulations,
             args.seed,
             knockout_prediction,
+            match_states,
         )
         logger.info("[simulation] Updating team probabilities")
         run_id = repository.store_results(
