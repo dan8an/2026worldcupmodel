@@ -36,6 +36,25 @@ from scripts.generate_predictions import (
 STATIC_MODEL_VERSION = "context-0.2.0"
 MODEL_VERSION = STATIC_MODEL_VERSION
 LOGGER = logging.getLogger(__name__)
+KNOCKOUT_STAGE_LIMITS = {
+    "round_of_32": 16,
+    "round_of_16": 8,
+    "quarterfinal": 4,
+    "semifinal": 2,
+    "final": 1,
+    "third_place": 1,
+}
+KNOCKOUT_MATCH_NUMBER_RANGES = {
+    "round_of_32": range(73, 89),
+    "round_of_16": range(89, 97),
+    "quarterfinal": range(97, 101),
+    "semifinal": range(101, 103),
+    "third_place": range(103, 104),
+    "final": range(104, 105),
+}
+COMPLETED_MATCH_STATUSES = {"completed", "finished", "ft", "aet", "pen"}
+KNOCKOUT_WINDOW_START = datetime(2026, 6, 28, tzinfo=timezone.utc)
+KNOCKOUT_WINDOW_END = datetime(2026, 7, 20, tzinfo=timezone.utc)
 
 
 def _json_value(value: Any, default: Any) -> Any:
@@ -47,6 +66,15 @@ def _json_value(value: Any, default: Any) -> Any:
         return json.loads(value)
     except (TypeError, ValueError):
         return default
+
+
+def _integer_value(value: Any) -> int | None:
+    if value is None or value == "":
+        return None
+    try:
+        return int(value)
+    except (TypeError, ValueError):
+        return None
 
 
 class DatabasePredictionSource:
@@ -468,6 +496,177 @@ class PredictionService:
             return "final"
         return "group" if "group" in raw else str(row.get("stage") or "group")
 
+    @staticmethod
+    def _row_payload(row: dict[str, Any]) -> dict[str, Any]:
+        payload = _json_value(
+            row.get("provider_payload") or row.get("raw_payload") or row.get("raw"),
+            {},
+        )
+        return payload if isinstance(payload, dict) else {}
+
+    @staticmethod
+    def _official_match_number(row: dict[str, Any], stage: str) -> int | None:
+        number = _integer_value(row.get("match_number") or row.get("number"))
+        if number is not None and number in KNOCKOUT_MATCH_NUMBER_RANGES.get(stage, ()):
+            return number
+        return None
+
+    @staticmethod
+    def _is_world_cup_2026_provider_row(row: dict[str, Any]) -> bool:
+        payload = PredictionService._row_payload(row)
+        league = payload.get("league") if isinstance(payload.get("league"), dict) else {}
+        return (
+            str(row.get("provider_name") or "").lower() == "api_football"
+            and str(league.get("id") or "") == "1"
+            and str(league.get("season") or "") == "2026"
+        )
+
+    @staticmethod
+    def _knockout_status(row: dict[str, Any]) -> str:
+        status = str(row.get("status") or "").strip()
+        if not status and row.get("completed"):
+            status = "completed"
+        return status or "scheduled"
+
+    @staticmethod
+    def _has_score(row: dict[str, Any]) -> bool:
+        return row.get("home_score") is not None and row.get("away_score") is not None
+
+    @staticmethod
+    def _is_completed_row(row: dict[str, Any]) -> bool:
+        return (
+            PredictionService._knockout_status(row).lower() in COMPLETED_MATCH_STATUSES
+            or bool(row.get("completed"))
+            or PredictionService._has_score(row)
+        )
+
+    @staticmethod
+    def _updated_at(row: dict[str, Any]) -> datetime:
+        value = row.get("updated_at") or row.get("created_at")
+        if value is None:
+            return datetime.min.replace(tzinfo=timezone.utc)
+        if isinstance(value, datetime):
+            parsed = value
+        else:
+            try:
+                parsed = datetime.fromisoformat(str(value).replace("Z", "+00:00"))
+            except ValueError:
+                return datetime.min.replace(tzinfo=timezone.utc)
+        return parsed if parsed.tzinfo else parsed.replace(tzinfo=timezone.utc)
+
+    @staticmethod
+    def _knockout_logical_key(
+        row: dict[str, Any],
+        stage: str,
+        number: int | None,
+        kickoff: datetime,
+        home_id: str,
+        away_id: str,
+    ) -> tuple[Any, ...]:
+        if number is not None:
+            return ("number", stage, number)
+        provider_fixture_id = row.get("api_football_fixture_id") or row.get("provider_fixture_id")
+        if provider_fixture_id is not None:
+            return ("provider", str(provider_fixture_id))
+        return ("teams", stage, kickoff.isoformat(), home_id, away_id)
+
+    @staticmethod
+    def _knockout_row_rank(row: dict[str, Any], number: int | None) -> tuple[Any, ...]:
+        return (
+            PredictionService._is_completed_row(row),
+            PredictionService._has_score(row),
+            number is not None,
+            PredictionService._updated_at(row),
+        )
+
+    def _official_knockout_rows(
+        self,
+        rows: list[dict[str, Any]],
+    ) -> list[dict[str, Any]]:
+        selected: dict[tuple[Any, ...], dict[str, Any]] = {}
+        selected_numbers: dict[tuple[Any, ...], int | None] = {}
+        selected_kickoffs: dict[tuple[Any, ...], datetime] = {}
+        selected_home_ids: dict[tuple[Any, ...], str] = {}
+        selected_away_ids: dict[tuple[Any, ...], str] = {}
+
+        for index, row in enumerate(rows, start=1):
+            stage = self._stage_from_row(row)
+            if stage not in KNOCKOUT_STAGE_LIMITS:
+                continue
+            home_id = self._row_team_id(row, "home")
+            away_id = self._row_team_id(row, "away")
+            if home_id not in self.teams_by_id or away_id not in self.teams_by_id:
+                continue
+            kickoff = row.get("kickoff") or row.get("match_date")
+            if kickoff is None:
+                continue
+            try:
+                kickoff_dt = datetime.fromisoformat(str(kickoff).replace("Z", "+00:00"))
+            except ValueError:
+                continue
+            if kickoff_dt.tzinfo is None:
+                kickoff_dt = kickoff_dt.replace(tzinfo=timezone.utc)
+            if not (KNOCKOUT_WINDOW_START <= kickoff_dt < KNOCKOUT_WINDOW_END):
+                continue
+            number = self._official_match_number(row, stage)
+            if number is None and not self._is_world_cup_2026_provider_row(row):
+                continue
+            key = self._knockout_logical_key(row, stage, number, kickoff_dt, home_id, away_id)
+            existing = selected.get(key)
+            if existing is None or self._knockout_row_rank(row, number) > self._knockout_row_rank(
+                existing,
+                selected_numbers[key],
+            ):
+                selected[key] = {**row, "_knockout_stage": stage, "_knockout_index": index}
+                selected_numbers[key] = number
+                selected_kickoffs[key] = kickoff_dt
+                selected_home_ids[key] = home_id
+                selected_away_ids[key] = away_id
+
+        rows_by_stage: dict[str, list[tuple[dict[str, Any], int | None, datetime, str, str]]] = {
+            stage: [] for stage in KNOCKOUT_STAGE_LIMITS
+        }
+        for key, row in selected.items():
+            rows_by_stage[row["_knockout_stage"]].append(
+                (
+                    row,
+                    selected_numbers[key],
+                    selected_kickoffs[key],
+                    selected_home_ids[key],
+                    selected_away_ids[key],
+                )
+            )
+
+        official_rows: list[dict[str, Any]] = []
+        for stage, stage_rows in rows_by_stage.items():
+            ordered = sorted(
+                stage_rows,
+                key=lambda item: (
+                    item[1] is None,
+                    item[1] if item[1] is not None else 999,
+                    item[2],
+                ),
+            )
+            for row, number, kickoff, home_id, away_id in ordered[: KNOCKOUT_STAGE_LIMITS[stage]]:
+                official_rows.append(
+                    {
+                        **row,
+                        "_knockout_stage": stage,
+                        "_official_match_number": number,
+                        "_kickoff_dt": kickoff,
+                        "_home_id": home_id,
+                        "_away_id": away_id,
+                    }
+                )
+        return sorted(
+            official_rows,
+            key=lambda row: (
+                row["_official_match_number"] is None,
+                row["_official_match_number"] or 999,
+                row["_kickoff_dt"],
+            ),
+        )
+
     def _row_team_id(self, row: dict[str, Any], side: str) -> str | None:
         direct = row.get(f"{side}_team_id")
         if direct in self.teams_by_id:
@@ -680,14 +879,10 @@ class PredictionService:
         prediction_run = prediction_run or self.current_prediction_run()
         payloads = []
         seen_ids = {fixture.id for fixture in self.fixtures}
-        for index, row in enumerate(rows, start=1):
-            stage = self._stage_from_row(row)
-            if stage == "group":
-                continue
-            home_id = self._row_team_id(row, "home")
-            away_id = self._row_team_id(row, "away")
-            if home_id not in self.teams_by_id or away_id not in self.teams_by_id:
-                continue
+        for row in self._official_knockout_rows(rows):
+            stage = row["_knockout_stage"]
+            home_id = row["_home_id"]
+            away_id = row["_away_id"]
             raw_id = (
                 row.get("id")
                 or row.get("api_football_fixture_id")
@@ -696,28 +891,18 @@ class PredictionService:
                 or row.get("match_id")
             )
             if raw_id is None:
-                raw_id = f"provider-knockout-{index}"
+                raw_id = f"provider-knockout-{stage}-{row['_official_match_number'] or row['_knockout_index']}"
             match_id = str(raw_id)
             if match_id in seen_ids:
                 continue
             seen_ids.add(match_id)
-            kickoff = row.get("kickoff") or row.get("match_date")
-            if kickoff is None:
-                continue
-            try:
-                kickoff_dt = datetime.fromisoformat(str(kickoff).replace("Z", "+00:00"))
-            except ValueError:
-                continue
-            if kickoff_dt.tzinfo is None:
-                kickoff_dt = kickoff_dt.replace(tzinfo=timezone.utc)
-            status = str(row.get("status") or "").strip()
-            if not status and row.get("completed"):
-                status = "completed"
-            number = row.get("match_number") or row.get("number")
+            kickoff_dt = row["_kickoff_dt"]
+            status = self._knockout_status(row)
+            number = row["_official_match_number"]
             payloads.append(
                 {
                     "id": match_id,
-                    "number": int(number) if number is not None else 72 + index,
+                    "number": number if number is not None else 0,
                     "stage": stage,
                     "kickoff": kickoff_dt.isoformat(),
                     "venue_id": row.get("venue_id") or "TBD",

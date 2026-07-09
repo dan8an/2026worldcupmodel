@@ -289,6 +289,101 @@ test("provider knockout fixture does not duplicate a generated placeholder", () 
   assert.equal(knockouts[0].id, "provider-knockout");
 });
 
+test("official knockout matches are filtered, deduped, and capped by stage", () => {
+  const teams = mergeTeams();
+  const databaseTeams = [
+    { id: "mexico-uuid", name: "Mexico" },
+    { id: "south-africa-uuid", name: "South Africa" },
+  ];
+  const rows = [];
+  const stageNumbers = {
+    "Round of 32": [73, 88],
+    "Round of 16": [89, 96],
+    "Quarter-finals": [97, 100],
+    "Semi-finals": [101, 102],
+    "Third-place": [103, 103],
+    Final: [104, 104],
+  };
+  for (const [stage, [start, end]] of Object.entries(stageNumbers)) {
+    for (let number = start; number <= end; number += 1) {
+      rows.push({
+        id: `provider-${number}`,
+        match_number: number,
+        home_team_id: "mexico-uuid",
+        away_team_id: "south-africa-uuid",
+        match_date: `2026-07-${String(Math.min(19, Math.max(1, number - 72))).padStart(2, "0")}T16:00:00Z`,
+        tournament_stage: stage,
+        status: "scheduled",
+      });
+    }
+  }
+  rows.push(
+    {
+      id: "scheduled-duplicate-73",
+      match_number: 73,
+      home_team_id: "mexico-uuid",
+      away_team_id: "south-africa-uuid",
+      match_date: "2026-06-28T16:00:00Z",
+      tournament_stage: "Round of 32",
+      status: "scheduled",
+    },
+    {
+      id: "completed-duplicate-73",
+      match_number: 73,
+      home_team_id: "mexico-uuid",
+      away_team_id: "south-africa-uuid",
+      match_date: "2026-06-28T16:00:00Z",
+      tournament_stage: "Round of 32",
+      status: "finished",
+      home_score: 2,
+      away_score: 1,
+      updated_at: "2026-06-28T20:00:00Z",
+    },
+    {
+      id: "2148",
+      home_team_id: "mexico-uuid",
+      away_team_id: "south-africa-uuid",
+      match_date: "2026-07-09T20:00:00Z",
+      tournament_stage: "Quarter-finals",
+      status: "scheduled",
+    },
+    {
+      id: "historical-89",
+      match_number: 89,
+      home_team_id: "mexico-uuid",
+      away_team_id: "south-africa-uuid",
+      match_date: "2022-12-03T16:00:00Z",
+      tournament_stage: "Round of 16",
+      status: "finished",
+      home_score: 1,
+      away_score: 0,
+    },
+  );
+
+  const merged = mergeDatabaseMatches(
+    buildPlaceholderMatches(teams),
+    normalizeDatabaseMatches(rows, [], teams, databaseTeams),
+  );
+  const knockouts = merged.filter((match) => match.stage !== "group");
+  const counts = knockouts.reduce((accumulator, match) => {
+    accumulator[match.stage] = (accumulator[match.stage] ?? 0) + 1;
+    return accumulator;
+  }, {});
+
+  assert.equal(counts.round_of_32, 16);
+  assert.equal(counts.round_of_16, 8);
+  assert.equal(counts.quarterfinal, 4);
+  assert.equal(counts.semifinal, 2);
+  assert.equal(counts.third_place, 1);
+  assert.equal(counts.final, 1);
+  assert.equal(knockouts.find((match) => match.id === "2148"), undefined);
+  assert.equal(knockouts.find((match) => match.id === "historical-89"), undefined);
+  const match73 = knockouts.find((match) => match.number === 73);
+  assert.equal(match73.id, "completed-duplicate-73");
+  assert.equal(match73.home_score, 2);
+  assert.equal(match73.away_score, 1);
+});
+
 test("canonical predictions attach without database match rows", () => {
   const [match] = mergeCanonicalPredictions(buildPlaceholderMatches(), [
       {

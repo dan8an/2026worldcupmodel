@@ -483,6 +483,107 @@ def test_completed_real_knockout_fixture_is_available_as_result(monkeypatch):
     assert payload["away_score"] == 1
 
 
+def test_bracket_rows_are_official_deduped_and_scoreful(monkeypatch):
+    stage_numbers = {
+        "Round of 32": range(73, 89),
+        "Round of 16": range(89, 97),
+        "Quarter-finals": range(97, 101),
+        "Semi-finals": range(101, 103),
+        "Third-place": range(103, 104),
+        "Final": range(104, 105),
+    }
+
+    class MatchResultSource:
+        def load(self):
+            rows = []
+            for label, numbers in stage_numbers.items():
+                for number in numbers:
+                    rows.append(
+                        {
+                            "id": f"provider-{number}",
+                            "match_number": number,
+                            "match_date": f"2026-07-{min(19, max(1, number - 72)):02d}T16:00:00+00:00",
+                            "tournament_stage": label,
+                            "home_team_name": "Mexico",
+                            "away_team_name": "South Africa",
+                            "status": "scheduled",
+                        }
+                    )
+            rows.extend(
+                [
+                    {
+                        "id": "scheduled-duplicate-73",
+                        "match_number": 73,
+                        "match_date": "2026-06-28T16:00:00+00:00",
+                        "tournament_stage": "Round of 32",
+                        "home_team_name": "Mexico",
+                        "away_team_name": "South Africa",
+                        "status": "scheduled",
+                    },
+                    {
+                        "id": "completed-duplicate-73",
+                        "match_number": 73,
+                        "match_date": "2026-06-28T16:00:00+00:00",
+                        "tournament_stage": "Round of 32",
+                        "home_team_name": "Mexico",
+                        "away_team_name": "South Africa",
+                        "status": "finished",
+                        "home_score": 2,
+                        "away_score": 1,
+                        "updated_at": "2026-06-28T20:00:00+00:00",
+                    },
+                    {
+                        "id": "2148",
+                        "match_date": "2026-07-09T20:00:00+00:00",
+                        "tournament_stage": "Quarter-finals",
+                        "home_team_name": "Mexico",
+                        "away_team_name": "South Africa",
+                        "status": "scheduled",
+                    },
+                    {
+                        "id": "historical-89",
+                        "match_number": 89,
+                        "match_date": "2022-12-03T16:00:00+00:00",
+                        "tournament_stage": "Round of 16",
+                        "home_team_name": "Mexico",
+                        "away_team_name": "South Africa",
+                        "status": "finished",
+                        "home_score": 1,
+                        "away_score": 0,
+                    },
+                ]
+            )
+            return rows
+
+    service = PredictionService(
+        match_result_source=MatchResultSource(),
+        prediction_cache_seconds=0,
+    )
+    monkeypatch.setattr(main_module, "service", service)
+
+    payload = client.get("/v1/matches").json()
+    knockouts = [match for match in payload if match["stage"] != "group"]
+    counts = {}
+    for match in knockouts:
+        counts[match["stage"]] = counts.get(match["stage"], 0) + 1
+
+    assert counts == {
+        "round_of_32": 16,
+        "round_of_16": 8,
+        "quarterfinal": 4,
+        "semifinal": 2,
+        "third_place": 1,
+        "final": 1,
+    }
+    assert not any(match["id"] in {"2148", "historical-89"} for match in knockouts)
+    assert not any(match["number"] in {2148, 680, 1192} for match in knockouts)
+    match_73 = next(match for match in knockouts if match["number"] == 73)
+    assert match_73["id"] == "completed-duplicate-73"
+    assert match_73["status"] == "finished"
+    assert match_73["home_score"] == 2
+    assert match_73["away_score"] == 1
+
+
 def test_team_match_filter_includes_real_provider_knockout_only(monkeypatch):
     class MatchResultSource:
         def load(self):

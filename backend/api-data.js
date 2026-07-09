@@ -101,11 +101,126 @@ const KNOCKOUT_STAGES = new Set([
   "final",
 ]);
 
+const KNOCKOUT_STAGE_LIMITS = {
+  round_of_32: 16,
+  round_of_16: 8,
+  quarterfinal: 4,
+  semifinal: 2,
+  final: 1,
+  third_place: 1,
+};
+
+const KNOCKOUT_MATCH_NUMBER_RANGES = {
+  round_of_32: [73, 88],
+  round_of_16: [89, 96],
+  quarterfinal: [97, 100],
+  semifinal: [101, 102],
+  third_place: [103, 103],
+  final: [104, 104],
+};
+
+const COMPLETED_MATCH_STATUSES = new Set(["completed", "finished", "ft", "aet", "pen"]);
+const KNOCKOUT_WINDOW_START = Date.parse("2026-06-28T00:00:00Z");
+const KNOCKOUT_WINDOW_END = Date.parse("2026-07-20T00:00:00Z");
+
 const friendlySlot = (slot) => {
   if (slot == null || slot === "") return "TBD";
   const raw = String(slot).trim();
   if (/^\d+$/.test(raw)) return "TBD";
   return raw;
+};
+
+const officialMatchNumber = (match) => {
+  const number = Number(match.number);
+  const range = KNOCKOUT_MATCH_NUMBER_RANGES[match.stage];
+  if (!Number.isFinite(number) || !range) return null;
+  return number >= range[0] && number <= range[1] ? number : null;
+};
+
+const providerPayload = (match) =>
+  jsonValue(match.provider_payload ?? match.raw_payload ?? match.raw, {});
+
+const isWorldCup2026ProviderMatch = (match) => {
+  const payload = providerPayload(match);
+  const league = payload?.league ?? {};
+  return String(match.provider_name ?? "").toLowerCase() === "api_football" &&
+    String(league.id ?? "") === "1" &&
+    String(league.season ?? "") === "2026";
+};
+
+const hasScore = (match) => match.home_score != null && match.away_score != null;
+
+const isCompletedMatch = (match) =>
+  Boolean(match.completed) ||
+  COMPLETED_MATCH_STATUSES.has(String(match.status ?? "").toLowerCase()) ||
+  hasScore(match);
+
+const knockoutSortTime = (match) => {
+  const value = Date.parse(match.kickoff);
+  return Number.isNaN(value) ? Number.POSITIVE_INFINITY : value;
+};
+
+const knockoutLogicalKey = (match, officialNumber) => {
+  if (officialNumber != null) return `number:${match.stage}:${officialNumber}`;
+  if (match.provider_fixture_id != null) return `provider:${match.provider_fixture_id}`;
+  return [
+    "teams",
+    match.stage,
+    match.kickoff,
+    match.home_team?.id,
+    match.away_team?.id,
+  ].join(":");
+};
+
+const knockoutRank = (match, officialNumber) => [
+  isCompletedMatch(match) ? 1 : 0,
+  hasScore(match) ? 1 : 0,
+  officialNumber != null ? 1 : 0,
+  Date.parse(match.updated_at ?? match.created_at ?? "") || 0,
+];
+
+const compareRank = (left, right) => {
+  for (let index = 0; index < left.length; index += 1) {
+    if (left[index] !== right[index]) return left[index] - right[index];
+  }
+  return 0;
+};
+
+export const officialKnockoutMatches = (matches) => {
+  const selected = new Map();
+  matches.forEach((match) => {
+    if (!KNOCKOUT_STAGES.has(match.stage)) return;
+    if (!match.home_team || !match.away_team) return;
+    const kickoff = knockoutSortTime(match);
+    if (kickoff < KNOCKOUT_WINDOW_START || kickoff >= KNOCKOUT_WINDOW_END) return;
+    const number = officialMatchNumber(match);
+    if (number == null && !isWorldCup2026ProviderMatch(match)) return;
+    const key = knockoutLogicalKey(match, number);
+    const ranked = { match, number, rank: knockoutRank(match, number) };
+    const current = selected.get(key);
+    if (!current || compareRank(ranked.rank, current.rank) > 0) {
+      selected.set(key, ranked);
+    }
+  });
+
+  return Object.entries(KNOCKOUT_STAGE_LIMITS).flatMap(([stage, limit]) =>
+    [...selected.values()]
+      .filter((item) => item.match.stage === stage)
+      .sort((left, right) =>
+        (left.number == null) - (right.number == null) ||
+        (left.number ?? 999) - (right.number ?? 999) ||
+        knockoutSortTime(left.match) - knockoutSortTime(right.match)
+      )
+      .slice(0, limit)
+      .map(({ match, number }) => ({
+        ...match,
+        number: number ?? 0,
+      }))
+  ).sort((left, right) =>
+    (left.number === 0) - (right.number === 0) ||
+    (left.number || 999) - (right.number || 999) ||
+    knockoutSortTime(left) - knockoutSortTime(right)
+  );
 };
 
 const explanationFields = (prediction = {}) => ({
@@ -353,6 +468,9 @@ export const normalizeDatabaseMatches = (
       id,
       number: matchNumber,
       provider_fixture_id: row.api_football_fixture_id ?? row.provider_fixture_id ?? null,
+      provider_name: row.provider_name ?? null,
+      provider_payload: row.provider_payload ?? row.raw_payload ?? row.raw ?? null,
+      updated_at: row.updated_at ?? row.created_at ?? null,
       stage,
       kickoff: new Date(row.kickoff ?? row.match_date).toISOString(),
       venue_id: row.venue_id ?? "TBD",
@@ -426,11 +544,8 @@ export const mergeDatabaseMatches = (canonicalMatches, databaseMatches) => {
     };
   });
   const usedIds = new Set(merged.map((match) => match.id));
-  const providerKnockouts = databaseMatches.filter((match) =>
-    KNOCKOUT_STAGES.has(match.stage) &&
-    match.home_team &&
-    match.away_team &&
-    !usedIds.has(match.id)
+  const providerKnockouts = officialKnockoutMatches(
+    databaseMatches.filter((match) => !usedIds.has(match.id)),
   );
   return [...merged, ...providerKnockouts].sort((a, b) =>
     a.kickoff.localeCompare(b.kickoff) || a.number - b.number
