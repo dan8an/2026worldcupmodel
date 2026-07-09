@@ -18,7 +18,24 @@ from scripts.data_ingestion import (
     RateLimitError,
     create_sports_provider,
 )
-from scripts.database import create_database_engine, sqlalchemy_database_url
+from scripts.database import create_database_engine
+
+KNOCKOUT_STAGE_KEYWORDS = {
+    "round of 32",
+    "round_of_32",
+    "round of 16",
+    "round_of_16",
+    "quarter",
+    "semi",
+    "third",
+    "3rd",
+    "final",
+}
+
+
+def is_knockout_fixture(match: dict) -> bool:
+    stage = str(match.get("round") or match.get("tournament_stage") or "").lower()
+    return any(keyword in stage for keyword in KNOCKOUT_STAGE_KEYWORDS)
 
 
 def load_environment() -> dict[str, str]:
@@ -160,9 +177,57 @@ def main() -> int:
             )
             return 0
         logger.info("Provider returned %d completed matches", len(completed_matches))
-        if not completed_matches:
+        logger.info("[step 3/6] Loading real provider knockout fixtures")
+        if hasattr(provider, "get_fixtures"):
+            try:
+                provider_fixtures = provider.get_fixtures(
+                    league_id=getattr(provider, "league_id", 1),
+                    season=getattr(provider, "season", None) or date_to.year,
+                )
+            except RateLimitError as error:
+                logger.warning(
+                    "[daily-ingestion] RATE LIMITED during knockout fixture discovery: %s. "
+                    "Proceeding with completed fixtures already discovered.",
+                    error,
+                )
+                provider_fixtures = []
+        else:
             logger.info(
-                "[daily-ingestion] SUCCESS: no completed matches found for %s",
+                "Provider %s does not expose fixture listing; skipping upcoming knockout discovery",
+                provider.name,
+            )
+            provider_fixtures = []
+        real_knockout_fixtures = [
+            match for match in provider_fixtures if is_knockout_fixture(match)
+        ]
+        upcoming_knockouts = [
+            match
+            for match in real_knockout_fixtures
+            if str(match.get("status") or "").strip().upper()
+            not in {"FT", "AET", "PEN"}
+        ]
+        skipped_non_knockout = len(provider_fixtures) - len(real_knockout_fixtures)
+        logger.info(
+            "Real knockout fixtures loaded=%d upcoming=%d skipped_non_knockout=%d",
+            len(real_knockout_fixtures),
+            len(upcoming_knockouts),
+            skipped_non_knockout,
+        )
+        if upcoming_knockouts:
+            logger.info(
+                "Real upcoming knockout fixture IDs: %s",
+                ", ".join(str(match["provider_fixture_id"]) for match in upcoming_knockouts),
+            )
+
+        logger.info("[step 4/6] Upserting provider teams and real fixtures")
+        fixtures_to_upsert = {
+            match["provider_fixture_id"]: match
+            for match in [*completed_matches, *real_knockout_fixtures]
+        }
+        if not fixtures_to_upsert:
+            logger.info(
+                "[daily-ingestion] SUCCESS: no completed matches or real "
+                "knockout fixtures found for %s",
                 (
                     args.date
                     if args.date == args.date_to
@@ -170,14 +235,12 @@ def main() -> int:
                 ),
             )
             return 0
-
-        logger.info("[step 3/6] Upserting provider teams and completed matches")
-        repository.upsert_provider_matches(completed_matches)
+        repository.upsert_provider_matches(list(fixtures_to_upsert.values()))
         fixtures_by_id = {
             match["provider_fixture_id"]: match for match in completed_matches
         }
 
-        logger.info("[step 4/6] Identifying completed matches missing raw stats")
+        logger.info("[step 5/6] Identifying completed matches missing raw stats")
         missing = repository.find_completed_matches_missing_stats(
             list(fixtures_by_id)
         )
@@ -191,8 +254,9 @@ def main() -> int:
         if not missing:
             logger.info(
                 "[daily-ingestion] SUCCESS: all %d completed matches already "
-                "have team and player stats",
+                "have team and player stats; real knockout fixtures upserted=%d",
                 len(completed_matches),
+                len(real_knockout_fixtures),
             )
             return 0
 
@@ -240,10 +304,12 @@ def main() -> int:
                 logger.exception("Fixture %s failed", fixture_id)
 
         logger.info(
-            "[step 6/6] Finished: %d fixtures updated, %d failed, rate_limited=%s",
+            "[step 6/6] Finished: %d completed fixtures updated, %d failed, "
+            "rate_limited=%s, real_knockout_fixtures=%d",
             succeeded,
             failed,
             rate_limited,
+            len(real_knockout_fixtures),
         )
         if failed:
             logger.error(

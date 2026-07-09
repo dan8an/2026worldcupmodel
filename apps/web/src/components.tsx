@@ -42,17 +42,21 @@ export function Loading({ label = "Loading forecast" }: { label?: string }) {
   return <div className="state-card">{label}...</div>;
 }
 
-export function ErrorState() {
+export function ErrorState({
+  message = "The forecast API is unavailable. Start FastAPI on port 8000 and retry.",
+}: {
+  message?: string;
+}) {
   return (
     <div className="state-card error">
-      The forecast API is unavailable. Start FastAPI on port 8000 and retry.
+      {message}
     </div>
   );
 }
 
 export function ProbabilityBar({ match }: { match: Match }) {
   const prediction = match.prediction;
-  if (!prediction) return <p className="muted">Prediction available after teams qualify.</p>;
+  if (!prediction) return <p className="muted">Prediction not available yet.</p>;
   const probabilities = finalProbabilities(prediction);
   return (
     <div className="probability-visual">
@@ -123,6 +127,9 @@ export function MatchCard({
             </div>
           )}
         </>
+      )}
+      {!match.prediction && (
+        <p className="muted">Prediction not available yet.</p>
       )}
     </Link>
   );

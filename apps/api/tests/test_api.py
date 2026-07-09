@@ -55,6 +55,32 @@ class LatestV4PredictionSource:
         }
 
 
+class LatestV4KnockoutPredictionSource:
+    def load_latest(self):
+        return {
+            "model_run_id": "v4-knockout-run",
+            "model_version": "elo-context-v4.2.1",
+            "generated_at": "2026-07-04T06:00:00+00:00",
+            "data_cutoff": "2026-07-04T05:59:00+00:00",
+            "source": "database_latest",
+            "predictions": {
+                "provider-r16-90089": {
+                    "match_id": "provider-r16-90089",
+                    "model_version": "elo-context-v4.2.1",
+                    "home_win_probability": 0.52,
+                    "draw_probability": 0.27,
+                    "away_win_probability": 0.21,
+                    "final_home_probability": 0.52,
+                    "final_draw_probability": 0.27,
+                    "final_away_probability": 0.21,
+                    "confidence_score": 61.0,
+                    "confidence_tier": "Medium",
+                    "top_factors": [],
+                }
+            },
+        }
+
+
 def use_v4_database_service(monkeypatch):
     service = PredictionService(
         prediction_source=LatestV4PredictionSource(),
@@ -356,6 +382,72 @@ def test_provider_round_of_32_fixture_appears_exactly_as_provided(monkeypatch):
     assert payload[0]["away_team"]["name"] == "South Africa"
     assert payload[0]["home_slot"] is None
     assert payload[0]["away_slot"] is None
+
+
+def test_upcoming_real_quarterfinal_appears_without_prediction(monkeypatch):
+    class MatchResultSource:
+        def load(self):
+            return [
+                {
+                    "id": "provider-qf-90101",
+                    "api_football_fixture_id": 90101,
+                    "match_number": 97,
+                    "match_date": "2026-07-09T20:00:00+00:00",
+                    "tournament_stage": "Quarter-finals",
+                    "home_team_name": "Mexico",
+                    "away_team_name": "South Africa",
+                    "status": "scheduled",
+                }
+            ]
+
+    service = PredictionService(
+        match_result_source=MatchResultSource(),
+        prediction_cache_seconds=0,
+    )
+    monkeypatch.setattr(main_module, "service", service)
+
+    response = client.get("/v1/matches?stage=quarterfinal")
+    payload = response.json()
+
+    assert response.status_code == 200
+    assert len(payload) == 1
+    assert payload[0]["id"] == "provider-qf-90101"
+    assert payload[0]["prediction"] is None
+
+
+def test_real_round_of_16_forecast_opens_when_database_prediction_exists(monkeypatch):
+    class MatchResultSource:
+        def load(self):
+            return [
+                {
+                    "id": "provider-r16-90089",
+                    "match_number": 89,
+                    "match_date": "2026-07-04T16:00:00+00:00",
+                    "tournament_stage": "Round of 16",
+                    "home_team_name": "Mexico",
+                    "away_team_name": "South Africa",
+                    "status": "scheduled",
+                }
+            ]
+
+    service = PredictionService(
+        prediction_source=LatestV4KnockoutPredictionSource(),
+        match_result_source=MatchResultSource(),
+        prediction_cache_seconds=0,
+    )
+    monkeypatch.setattr(main_module, "service", service)
+
+    response = client.get("/v1/matches/provider-r16-90089")
+    payload = response.json()
+
+    assert response.status_code == 200
+    assert payload["stage"] == "round_of_16"
+    assert payload["prediction"]["source"] == "database_latest"
+    assert payload["prediction"]["probabilities"] == {
+        "home_win": 0.52,
+        "draw": 0.27,
+        "away_win": 0.21,
+    }
 
 
 def test_completed_real_knockout_fixture_is_available_as_result(monkeypatch):
@@ -721,6 +813,65 @@ def test_database_source_selects_newest_prediction_run():
     assert latest["model_run_id"] == "v4-run"
     assert latest["model_version"] == "elo-context-v4.1"
     assert latest["predictions"]["WC26-001"]["home_win_probability"] == 0.61
+
+
+def test_database_source_indexes_knockout_predictions_by_match_id():
+    engine = create_engine("sqlite://")
+    with engine.begin() as connection:
+        connection.execute(
+            text(
+                """
+                create table predictions (
+                  canonical_match_id text,
+                  match_id text,
+                  model_run_id text,
+                  model_version text,
+                  prediction_timestamp text,
+                  data_cutoff text,
+                  home_win_probability real,
+                  draw_probability real,
+                  away_win_probability real
+                )
+                """
+            )
+        )
+        connection.execute(
+            text(
+                """
+                create table model_runs (
+                  id text primary key,
+                  model_version text,
+                  status text,
+                  generated_at text,
+                  data_cutoff text
+                )
+                """
+            )
+        )
+        connection.execute(
+            text(
+                """
+                insert into model_runs values
+                  ('v4-run', 'elo-context-v4.2.1', 'completed',
+                   '2026-07-04T00:00:00+00:00',
+                   '2026-07-04T00:00:00+00:00')
+                """
+            )
+        )
+        connection.execute(
+            text(
+                """
+                insert into predictions values
+                  (null, 'provider-r16-90089', 'v4-run', 'elo-context-v4.2.1',
+                   '2026-07-04T00:00:00+00:00',
+                   '2026-07-04T00:00:00+00:00', 0.52, 0.27, 0.21)
+                """
+            )
+        )
+
+    latest = DatabasePredictionSource(engine).load_latest()
+
+    assert latest["predictions"]["provider-r16-90089"]["home_win_probability"] == 0.52
 
 
 def test_database_source_selects_newest_simulation_run_and_team_results():

@@ -90,7 +90,6 @@ class DatabasePredictionSource:
                         select 1
                         from {table_prefix}predictions p
                         where p.model_run_id = mr.id
-                          and p.canonical_match_id is not null
                       )
                     order by mr.generated_at desc nulls last, mr.id desc
                     limit 1
@@ -107,7 +106,6 @@ class DatabasePredictionSource:
                         select *
                         from {table_prefix}predictions
                         where model_run_id = :model_run_id
-                          and canonical_match_id is not null
                         """
                     ),
                     {"model_run_id": latest["model_run_id"]},
@@ -119,12 +117,21 @@ class DatabasePredictionSource:
             "generated_at": latest["generated_at"],
             "data_cutoff": latest.get("data_cutoff")
             or latest["generated_at"],
-            "predictions": {
-                str(row["canonical_match_id"]): row
-                for row in rows
-                if row.get("canonical_match_id")
-            },
+            "predictions": self._prediction_lookup(rows),
         }
+
+    @staticmethod
+    def _prediction_lookup(rows: list[dict[str, Any]]) -> dict[str, dict[str, Any]]:
+        predictions = {}
+        for row in rows:
+            for key in (
+                row.get("canonical_match_id"),
+                row.get("match_id"),
+                row.get("provider_fixture_id"),
+            ):
+                if key is not None:
+                    predictions[str(key)] = row
+        return predictions
 
 
 class DatabaseSimulationSource:
@@ -733,6 +740,13 @@ class PredictionService:
                     "prediction": self.prediction_payload(match_id, prediction_run),
                 }
             )
+            if payloads[-1]["prediction"] is None:
+                LOGGER.info(
+                    "Showing real knockout match without prediction: id=%s stage=%s status=%s",
+                    match_id,
+                    stage,
+                    payloads[-1]["status"],
+                )
         return sorted(payloads, key=lambda match: (match["kickoff"], match["number"]))
 
     def match_payload(

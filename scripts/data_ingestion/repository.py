@@ -27,6 +27,9 @@ def _stat(stats: dict[str, Any], *names: str) -> Any:
     return next((stats[name] for name in names if stats.get(name) is not None), None)
 
 
+COMPLETED_STATUSES = {"FT", "AET", "PEN", "completed", "finished"}
+
+
 class DataIngestionRepository:
     def __init__(self, engine: Engine, logger: logging.Logger | None = None) -> None:
         self.engine = engine
@@ -346,6 +349,14 @@ class DataIngestionRepository:
         home_team_id: Any,
         away_team_id: Any,
     ) -> None:
+        status = str(match.get("status") or "").strip()
+        completed = (
+            status in COMPLETED_STATUSES
+            or (
+                match.get("home_score") is not None
+                and match.get("away_score") is not None
+            )
+        )
         connection.execute(
             text(
                 """
@@ -356,7 +367,7 @@ class DataIngestionRepository:
                 )
                 values (
                   :home_name, :away_name, :match_date, :stage,
-                  :home_score, :away_score, true, :home_team_id, :away_team_id,
+                  :home_score, :away_score, :completed, :home_team_id, :away_team_id,
                   :fixture_id, 'api_football', cast(:raw as jsonb), now()
                 )
                 on conflict (api_football_fixture_id)
@@ -368,7 +379,7 @@ class DataIngestionRepository:
                   tournament_stage = excluded.tournament_stage,
                   home_score = excluded.home_score,
                   away_score = excluded.away_score,
-                  completed = true,
+                  completed = excluded.completed,
                   home_team_id = excluded.home_team_id,
                   away_team_id = excluded.away_team_id,
                   provider_payload = excluded.provider_payload,
@@ -382,6 +393,7 @@ class DataIngestionRepository:
                 "stage": match.get("round") or match.get("competition"),
                 "home_score": match.get("home_score"),
                 "away_score": match.get("away_score"),
+                "completed": completed,
                 "home_team_id": home_team_id,
                 "away_team_id": away_team_id,
                 "fixture_id": match["provider_fixture_id"],

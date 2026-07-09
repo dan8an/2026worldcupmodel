@@ -33,8 +33,10 @@ SCHEMA = """
 create table matches (
   id text primary key,
   kickoff text not null,
+  tournament_stage text,
   home_team_id text,
   away_team_id text,
+  api_football_fixture_id integer,
   status text
 );
 create table teams (
@@ -393,14 +395,14 @@ class PredictionScriptTests(unittest.TestCase):
     def tearDown(self):
         self.temp_dir.cleanup()
 
-    def run_script(self):
+    def run_script(self, generation_time: str = "2026-06-10T12:00:00+00:00"):
         return subprocess.run(
             [sys.executable, "scripts/generate_predictions.py"],
             cwd=ROOT,
             env={
                 **os.environ,
                 "DATABASE_URL": f"sqlite:///{self.database_path}",
-                "PREDICTION_GENERATION_TIME": "2026-06-10T12:00:00+00:00",
+                "PREDICTION_GENERATION_TIME": generation_time,
             },
             capture_output=True,
             text=True,
@@ -506,6 +508,33 @@ class PredictionScriptTests(unittest.TestCase):
         self.assertEqual(matches[0]["stage"], "round_of_32")
         self.assertEqual(matches[0]["home_team_id"], "MEX")
         self.assertEqual(matches[0]["away_team_id"], "RSA")
+
+    def test_canonical_source_includes_real_known_upcoming_quarterfinal(self):
+        matches = load_canonical_future_matches(
+            datetime(2026, 7, 8, 12, tzinfo=timezone.utc),
+            database_matches=[
+                {
+                    "id": "provider-qf",
+                    "match_number": 97,
+                    "match_date": "2026-07-09T20:00:00+00:00",
+                    "tournament_stage": "Quarter-finals",
+                    "home_team_id": "mexico-db",
+                    "away_team_id": "south-africa-db",
+                    "api_football_fixture_id": 90101,
+                    "status": "scheduled",
+                }
+            ],
+            database_team_ids={
+                "MEX": "mexico-db",
+                "RSA": "south-africa-db",
+            },
+        )
+
+        self.assertEqual(len(matches), 1)
+        self.assertEqual(matches[0]["canonical_match_id"], "provider-qf")
+        self.assertEqual(matches[0]["database_match_id"], "provider-qf")
+        self.assertEqual(matches[0]["provider_fixture_id"], 90101)
+        self.assertEqual(matches[0]["stage"], "quarterfinal")
 
     def test_canonical_source_skips_unknown_knockout_placeholders(self):
         matches = load_canonical_future_matches(
@@ -615,6 +644,45 @@ class PredictionScriptTests(unittest.TestCase):
             ),
         ):
             self.assertAlmostEqual(actual, expected[field], places=12)
+
+    def test_script_supports_knockout_only_future_fixture_run(self):
+        self.insert_sample_data()
+        with sqlite3.connect(self.database_path) as connection:
+            connection.execute(
+                """
+                insert into matches (
+                  id, kickoff, tournament_stage, home_team_id, away_team_id,
+                  api_football_fixture_id, status
+                ) values (?, ?, ?, ?, ?, ?, ?)
+                """,
+                (
+                    "provider-qf-90101",
+                    "2026-07-09T20:00:00+00:00",
+                    "Quarter-finals",
+                    "MEX",
+                    "RSA",
+                    90101,
+                    "scheduled",
+                ),
+            )
+
+        result = self.run_script("2026-07-08T12:00:00+00:00")
+
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertIn("Knockout predictions generated=1", result.stderr)
+        with sqlite3.connect(self.database_path) as connection:
+            prediction_rows = connection.execute(
+                """
+                select canonical_match_id, match_id, home_win_probability,
+                       draw_probability, away_win_probability
+                from predictions
+                """
+            ).fetchall()
+
+        self.assertEqual(len(prediction_rows), 1)
+        self.assertEqual(prediction_rows[0][0], "provider-qf-90101")
+        self.assertEqual(prediction_rows[0][1], "provider-qf-90101")
+        self.assertAlmostEqual(sum(prediction_rows[0][2:5]), 1.0, places=12)
 
     def test_no_future_matches_exits_successfully_without_a_run(self):
         env = {

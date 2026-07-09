@@ -609,10 +609,33 @@ class DataIngestionTests(unittest.TestCase):
         sql = str(statement)
         self.assertIn("on conflict (api_football_fixture_id)", sql)
         self.assertIn("do update set", sql)
-        self.assertIn("completed = true", sql)
+        self.assertIn("completed = excluded.completed", sql)
+        self.assertIs(parameters["completed"], True)
         self.assertEqual(parameters["fixture_id"], 1489370)
         self.assertEqual(parameters["home_score"], 4)
         self.assertEqual(parameters["away_score"], 1)
+
+    def test_scheduled_upsert_preserves_incomplete_provider_fixture(self):
+        connection = Mock()
+        DataIngestionRepository._upsert_match(
+            connection,
+            {
+                "provider_fixture_id": 90101,
+                "date": "2026-07-09T20:00:00+00:00",
+                "status": "NS",
+                "round": "Quarter-finals",
+                "home_team": {"name": "Mexico"},
+                "away_team": {"name": "South Africa"},
+                "raw": {},
+            },
+            "mexico-id",
+            "south-africa-id",
+        )
+
+        _statement, parameters = connection.execute.call_args.args
+        self.assertIs(parameters["completed"], False)
+        self.assertIsNone(parameters["home_score"])
+        self.assertIsNone(parameters["away_score"])
 
 
 if __name__ == "__main__":

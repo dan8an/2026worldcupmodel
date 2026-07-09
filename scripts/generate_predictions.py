@@ -264,6 +264,9 @@ def load_canonical_future_matches(
         kickoff = _parse_timestamp(row.get("kickoff") or row.get("match_date"))
         if kickoff is None or kickoff <= now:
             continue
+        status = str(row.get("status") or "").strip().lower()
+        if status in {"completed", "finished", "ft", "aet", "pen"} or row.get("completed"):
+            continue
         home_team_id = database_to_canonical_team.get(str(row.get("home_team_id")))
         away_team_id = database_to_canonical_team.get(str(row.get("away_team_id")))
         if home_team_id is None or away_team_id is None:
@@ -285,6 +288,8 @@ def load_canonical_future_matches(
                 "home_team_id": home_team_id,
                 "away_team_id": away_team_id,
                 "database_match_id": row.get("id"),
+                "provider_fixture_id": row.get("api_football_fixture_id")
+                or row.get("provider_fixture_id"),
             }
         )
     return enriched
@@ -1224,6 +1229,7 @@ class PredictionRepository:
             "id": str(uuid4()),
             "canonical_match_id": prediction["canonical_match_id"],
             "match_id": prediction.get("database_match_id"),
+            "provider_fixture_id": prediction.get("provider_fixture_id"),
             "model_run_id": run_id,
             "prediction_timestamp": timestamp,
             "model_version": MODEL_VERSION,
@@ -1244,13 +1250,23 @@ class PredictionRepository:
             ],
         }
         values = self._compatible_values(table, values)
-        existing_ids = list(
-            connection.execute(
-                select(table.c.id).where(
-                    table.c.canonical_match_id == prediction["canonical_match_id"]
-                )
-            ).scalars()
-        )
+        existing_ids = []
+        if prediction.get("database_match_id") is not None and "match_id" in table.c:
+            existing_ids = list(
+                connection.execute(
+                    select(table.c.id).where(
+                        table.c.match_id == prediction["database_match_id"]
+                    )
+                ).scalars()
+            )
+        if not existing_ids and prediction.get("canonical_match_id") is not None:
+            existing_ids = list(
+                connection.execute(
+                    select(table.c.id).where(
+                        table.c.canonical_match_id == prediction["canonical_match_id"]
+                    )
+                ).scalars()
+            )
         if existing_ids:
             values.pop("id", None)
             connection.execute(update(table).where(table.c.id == existing_ids[0]).values(**values))
@@ -1298,6 +1314,16 @@ def main() -> int:
             generated_at,
             repository.load_database_matches(),
             database_team_ids,
+        )
+        stage_counts = Counter(match["stage"] for match in matches)
+        logger.info(
+            "[prediction-generation] Real upcoming knockout fixtures found=%d stages=%s",
+            sum(count for stage, count in stage_counts.items() if stage != "group"),
+            {
+                stage: count
+                for stage, count in sorted(stage_counts.items())
+                if stage != "group"
+            },
         )
         if not matches:
             logger.info("[prediction-generation] SUCCESS: no future matches found")
@@ -1347,6 +1373,8 @@ def main() -> int:
                 {
                     "canonical_match_id": match["canonical_match_id"],
                     "database_match_id": match["database_match_id"],
+                    "provider_fixture_id": match.get("provider_fixture_id"),
+                    "stage": match["stage"],
                     **prediction,
                 }
             )
@@ -1369,6 +1397,20 @@ def main() -> int:
             "[prediction-generation] v4.2.1 draw distribution: %s",
             draw_probability_distribution(predictions),
         )
+        knockout_predictions = [
+            prediction
+            for prediction in predictions
+            if prediction["stage"] != "group"
+        ]
+        if knockout_predictions:
+            logger.info(
+                "[prediction-generation] Knockout predictions generated=%d ids=%s",
+                len(knockout_predictions),
+                ", ".join(
+                    str(prediction["canonical_match_id"])
+                    for prediction in knockout_predictions
+                ),
+            )
         run_id = repository.store_predictions(predictions, generated_at)
         logger.info(
             "[prediction-generation] SUCCESS: run=%s predictions=%d",

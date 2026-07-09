@@ -4,6 +4,7 @@ import { api } from "../api";
 import {
   ErrorState,
   Loading,
+  matchStageLabel,
   percent,
   precisePercent,
   ProbabilityBar,
@@ -22,10 +23,39 @@ export function MatchDetail() {
   const { id = "" } = useParams();
   const query = useQuery({ queryKey: ["match", id], queryFn: () => api.match(id) });
   if (query.isLoading) return <Loading label="Loading match" />;
-  if (query.isError || !query.data) return <ErrorState />;
+  if (query.isError || !query.data) {
+    return <ErrorState message="This match forecast failed to load. Please retry in a moment." />;
+  }
   const match = query.data;
   const prediction = match.prediction;
-  if (!prediction) return <ErrorState />;
+  if (!prediction) {
+    return (
+      <section>
+        <div className="match-hero">
+          <div className="eyebrow">{matchStageLabel(match)} · Match {match.number}</div>
+          <div className="versus">
+            <div>
+              <span className="flag match-flag" aria-hidden="true">{match.home_team?.flag}</span>
+              <span>{match.home_team?.name ?? match.home_slot ?? "Team to be determined"}</span>
+              {match.home_team && <small className="team-code">{match.home_team.id}</small>}
+            </div>
+            <div>
+              <span>Kickoff</span>
+              <strong>{new Date(match.kickoff).toLocaleString()}</strong>
+            </div>
+            <div>
+              <span className="flag match-flag" aria-hidden="true">{match.away_team?.flag}</span>
+              <span>{match.away_team?.name ?? match.away_slot ?? "Team to be determined"}</span>
+              {match.away_team && <small className="team-code">{match.away_team.id}</small>}
+            </div>
+          </div>
+          <div className="state-card empty-state">
+            Prediction not available yet.
+          </div>
+        </div>
+      </section>
+    );
+  }
   const final = finalProbabilities(prediction);
   const eloBase = eloBaseProbabilities(prediction);
   const confidence = confidenceLevel(prediction.confidence_score);
@@ -35,7 +65,7 @@ export function MatchDetail() {
   return (
     <section>
       <div className="match-hero">
-        <div className="eyebrow">Group {match.group} · Match {match.number}</div>
+        <div className="eyebrow">{matchStageLabel(match)} · Match {match.number}</div>
         <div className="versus">
           <Link to={`/teams/${match.home_team?.id}`}>
             <span className="flag match-flag" aria-hidden="true">{match.home_team?.flag}</span>
