@@ -15,8 +15,10 @@ from scripts.generate_predictions import (
     calculate_prediction,
     canonical_prior_elo,
 )
+from scripts.database import create_database_engine
 from scripts.run_simulations import (
     MatchState,
+    SimulationRepository,
     build_knockout_prediction_provider,
     build_round_of_32,
     knockout_winner,
@@ -61,8 +63,12 @@ create table matches (
   away_score integer,
   completed boolean,
   status text,
+  provider_name text,
   provider_payload text,
-  api_football_fixture_id integer
+  provider_fixture_id integer,
+  api_football_fixture_id integer,
+  updated_at text,
+  created_at text
 );
 create table team_ratings (
   team_id text not null,
@@ -165,6 +171,10 @@ def certain_home_win_prediction():
             {"home_goals": 1, "away_goals": 0, "probability": 1.0},
         ],
     }
+
+
+def world_cup_provider_payload():
+    return json.dumps({"league": {"id": 1, "season": 2026}})
 
 
 def completed_group_states(home_score=0, away_score=0):
@@ -507,7 +517,7 @@ class SimulationScriptTests(unittest.TestCase):
             check=False,
         )
 
-    def insert_predictions(self):
+    def insert_teams_and_ratings(self):
         with sqlite3.connect(self.database_path) as connection:
             teams = load_teams()
             connection.executemany(
@@ -535,17 +545,24 @@ class SimulationScriptTests(unittest.TestCase):
                     for team in teams
                 ],
             )
+
+    def insert_prediction_rows(
+        self,
+        predictions: dict[str, dict],
+        model_run_id: str = "run-1",
+    ):
+        with sqlite3.connect(self.database_path) as connection:
             connection.execute(
                 "insert into model_runs (id, model_version) values (?, ?)",
-                ("run-1", MODEL_VERSION),
+                (model_run_id, MODEL_VERSION),
             )
             rows = []
-            for fixture_id, prediction in canonical_predictions().items():
+            for fixture_id, prediction in predictions.items():
                 rows.append(
                     (
                         fixture_id,
                         fixture_id,
-                        "run-1",
+                        model_run_id,
                         MODEL_VERSION,
                         "2026-06-10T12:00:00+00:00",
                         prediction["home_xg"],
@@ -567,6 +584,214 @@ class SimulationScriptTests(unittest.TestCase):
                 """,
                 rows,
             )
+
+    def insert_predictions(self):
+        self.insert_teams_and_ratings()
+        self.insert_prediction_rows(canonical_predictions())
+
+    def repository(self):
+        engine = create_database_engine(f"sqlite:///{self.database_path}")
+        self.addCleanup(engine.dispose)
+        return SimulationRepository(engine)
+
+    def database_team_ids(self):
+        return {team.id: team.id for team in load_teams()}
+
+    def insert_match_rows(self, rows):
+        columns = [
+            "id",
+            "match_number",
+            "stage",
+            "tournament_stage",
+            "kickoff",
+            "match_date",
+            "home_team_id",
+            "away_team_id",
+            "home_score",
+            "away_score",
+            "completed",
+            "status",
+            "provider_name",
+            "provider_payload",
+            "provider_fixture_id",
+            "api_football_fixture_id",
+            "updated_at",
+            "created_at",
+        ]
+        with sqlite3.connect(self.database_path) as connection:
+            connection.executemany(
+                f"""
+                insert into matches ({', '.join(columns)})
+                values ({', '.join('?' for _ in columns)})
+                """,
+                [tuple(row.get(column) for column in columns) for row in rows],
+            )
+
+    def test_loader_normalizes_group_stage_variants(self):
+        fixtures = build_fixtures(load_teams())[:4]
+        labels = ["group", "Group", "group_stage", "First Round"]
+        self.insert_match_rows(
+            [
+                {
+                    "id": fixture.id,
+                    "match_number": fixture.number,
+                    "tournament_stage": label,
+                    "kickoff": fixture.kickoff.isoformat(),
+                    "home_team_id": fixture.home_team_id,
+                    "away_team_id": fixture.away_team_id,
+                    "home_score": 1,
+                    "away_score": 0,
+                    "status": "FT",
+                }
+                for fixture, label in zip(fixtures, labels)
+            ]
+        )
+
+        states = self.repository().load_match_states(self.database_team_ids())
+
+        completed_groups = [
+            state for state in states if state.stage == "group" and state.completed
+        ]
+        self.assertEqual(
+            [state.id for state in completed_groups],
+            [fixture.id for fixture in fixtures],
+        )
+
+    def test_duplicate_knockout_rows_do_not_inflate_completed_count(self):
+        self.insert_match_rows(
+            [
+                {
+                    "id": "official-73",
+                    "match_number": 73,
+                    "tournament_stage": "Round of 32",
+                    "kickoff": "2026-06-28T17:00:00+00:00",
+                    "home_team_id": "MEX",
+                    "away_team_id": "CAN",
+                    "home_score": 1,
+                    "away_score": 0,
+                    "status": "FT",
+                    "updated_at": "2026-06-28T20:00:00+00:00",
+                },
+                {
+                    "id": "duplicate-73",
+                    "match_number": 73,
+                    "tournament_stage": "Round of 32",
+                    "kickoff": "2026-06-28T17:00:00+00:00",
+                    "home_team_id": "MEX",
+                    "away_team_id": "CAN",
+                    "home_score": 1,
+                    "away_score": 0,
+                    "status": "FT",
+                    "updated_at": "2026-06-28T19:00:00+00:00",
+                },
+                {
+                    "id": "historical-final",
+                    "match_number": 104,
+                    "tournament_stage": "Final",
+                    "kickoff": "2022-12-18T15:00:00+00:00",
+                    "home_team_id": "ARG",
+                    "away_team_id": "FRA",
+                    "home_score": 3,
+                    "away_score": 3,
+                    "status": "PEN",
+                },
+            ]
+        )
+
+        states = self.repository().load_match_states(self.database_team_ids())
+
+        completed_knockouts = [
+            state
+            for state in states
+            if state.stage in {"round_of_32", "final"} and state.completed
+        ]
+        self.assertEqual(len(completed_knockouts), 1)
+        self.assertEqual(completed_knockouts[0].id, "official-73")
+
+    def test_completed_scored_knockout_row_wins_over_scheduled_duplicate(self):
+        self.insert_match_rows(
+            [
+                {
+                    "id": "scheduled-qf",
+                    "match_number": 97,
+                    "tournament_stage": "Quarter-finals",
+                    "kickoff": "2026-07-09T20:00:00+00:00",
+                    "home_team_id": "MEX",
+                    "away_team_id": "CAN",
+                    "status": "NS",
+                    "updated_at": "2026-07-09T18:00:00+00:00",
+                },
+                {
+                    "id": "completed-qf",
+                    "match_number": 97,
+                    "tournament_stage": "Quarter-finals",
+                    "kickoff": "2026-07-09T20:00:00+00:00",
+                    "home_team_id": "MEX",
+                    "away_team_id": "CAN",
+                    "home_score": 2,
+                    "away_score": 0,
+                    "status": "FT",
+                    "updated_at": "2026-07-09T17:00:00+00:00",
+                },
+            ]
+        )
+
+        states = self.repository().load_match_states(self.database_team_ids())
+
+        [quarterfinal] = [state for state in states if state.stage == "quarterfinal"]
+        self.assertEqual(quarterfinal.id, "completed-qf")
+        self.assertTrue(quarterfinal.completed)
+        self.assertEqual((quarterfinal.home_score, quarterfinal.away_score), (2, 0))
+
+    def test_script_runs_with_completed_group_stage_and_four_knockout_predictions(self):
+        self.insert_teams_and_ratings()
+        fixtures = build_fixtures(load_teams())
+        self.insert_match_rows(
+            [
+                {
+                    "id": fixture.id,
+                    "match_number": fixture.number,
+                    "tournament_stage": "Group Stage",
+                    "kickoff": fixture.kickoff.isoformat(),
+                    "home_team_id": fixture.home_team_id,
+                    "away_team_id": fixture.away_team_id,
+                    "home_score": 0,
+                    "away_score": 0,
+                    "status": "FT",
+                }
+                for fixture in fixtures
+            ]
+            + [
+                {
+                    "id": f"qf-{index}",
+                    "match_number": 96 + index,
+                    "tournament_stage": "Quarter-finals",
+                    "kickoff": f"2026-07-{8 + index:02d}T20:00:00+00:00",
+                    "home_team_id": home_id,
+                    "away_team_id": away_id,
+                    "status": "NS",
+                    "provider_name": "api_football",
+                    "provider_payload": world_cup_provider_payload(),
+                    "api_football_fixture_id": 90000 + index,
+                }
+                for index, (home_id, away_id) in enumerate(
+                    [("MEX", "CAN"), ("USA", "BRA"), ("ARG", "FRA"), ("ESP", "GER")],
+                    start=1,
+                )
+            ]
+        )
+        self.insert_prediction_rows(
+            {
+                f"qf-{index}": certain_home_win_prediction()
+                for index in range(1, 5)
+            }
+        )
+
+        result = self.run_script()
+
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertIn("group_completed=72", result.stderr)
+        self.assertIn("knockout_upcoming=4", result.stderr)
 
     def test_script_stores_one_result_per_team(self):
         self.insert_predictions()

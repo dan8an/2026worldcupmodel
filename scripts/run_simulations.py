@@ -43,6 +43,7 @@ STAGES = (
     "champion",
 )
 COMPLETED_MATCH_STATUSES = {"completed", "finished", "ft", "aet", "pen"}
+GROUP_STAGE_ALIASES = {"group", "group stage", "group_stage", "first round"}
 KNOCKOUT_STAGES = (
     "round_of_32",
     "round_of_16",
@@ -50,6 +51,24 @@ KNOCKOUT_STAGES = (
     "semifinal",
     "final",
 )
+KNOCKOUT_STAGE_LIMITS = {
+    "round_of_32": 16,
+    "round_of_16": 8,
+    "quarterfinal": 4,
+    "semifinal": 2,
+    "final": 1,
+}
+KNOCKOUT_MATCH_NUMBER_RANGES = {
+    "round_of_32": range(73, 89),
+    "round_of_16": range(89, 97),
+    "quarterfinal": range(97, 101),
+    "semifinal": range(101, 103),
+    "final": range(104, 105),
+}
+GROUP_WINDOW_START = datetime(2026, 6, 11, tzinfo=timezone.utc)
+GROUP_WINDOW_END = datetime(2026, 6, 28, tzinfo=timezone.utc)
+KNOCKOUT_WINDOW_START = datetime(2026, 6, 28, tzinfo=timezone.utc)
+KNOCKOUT_WINDOW_END = datetime(2026, 7, 20, tzinfo=timezone.utc)
 
 
 @dataclass(frozen=True)
@@ -123,16 +142,109 @@ def _integer(value: Any) -> int | None:
 
 
 def _parse_timestamp(value: Any) -> datetime | None:
-    if value is None or isinstance(value, datetime):
-        return value
-    try:
-        return datetime.fromisoformat(str(value).replace("Z", "+00:00"))
-    except ValueError:
+    if value is None:
         return None
+    if isinstance(value, datetime):
+        parsed = value
+    else:
+        try:
+            parsed = datetime.fromisoformat(str(value).replace("Z", "+00:00"))
+        except ValueError:
+            return None
+    return parsed if parsed.tzinfo else parsed.replace(tzinfo=timezone.utc)
+
+
+def _timestamp_floor(value: Any) -> datetime:
+    return _parse_timestamp(value) or datetime.min.replace(tzinfo=timezone.utc)
+
+
+def _has_score(row: dict[str, Any]) -> bool:
+    return row.get("home_score") is not None and row.get("away_score") is not None
+
+
+def _row_payload(row: dict[str, Any]) -> dict[str, Any]:
+    payload = (
+        _json_value(row.get("provider_payload"))
+        or _json_value(row.get("raw_payload"))
+        or _json_value(row.get("raw"))
+        or {}
+    )
+    return payload if isinstance(payload, dict) else {}
+
+
+def _is_world_cup_2026_provider_row(row: dict[str, Any]) -> bool:
+    payload = _row_payload(row)
+    league = payload.get("league") if isinstance(payload.get("league"), dict) else {}
+    return (
+        str(row.get("provider_name") or "").lower() == "api_football"
+        and str(league.get("id") or "") == "1"
+        and str(league.get("season") or "") == "2026"
+    )
+
+
+def _official_match_number(row: dict[str, Any], stage: str) -> int | None:
+    number = _integer(row.get("match_number") or row.get("number"))
+    if stage == "group":
+        return number if number is not None and 1 <= number <= 72 else None
+    if number is not None and number in KNOCKOUT_MATCH_NUMBER_RANGES.get(stage, ()):
+        return number
+    return None
+
+
+def _official_group_id(row: dict[str, Any]) -> str | None:
+    for value in (row.get("id"), row.get("canonical_match_id"), row.get("match_id")):
+        raw = str(value or "")
+        if raw.startswith("WC26-"):
+            number = _integer(raw.removeprefix("WC26-"))
+            if number is not None and 1 <= number <= 72:
+                return f"WC26-{number:03d}"
+    number = _official_match_number(row, "group")
+    return f"WC26-{number:03d}" if number is not None else None
+
+
+def _logical_row_id(row: dict[str, Any]) -> str:
+    return str(
+        row.get("id")
+        or row.get("api_football_fixture_id")
+        or row.get("provider_fixture_id")
+        or row.get("canonical_match_id")
+        or row.get("match_id")
+        or "unknown"
+    )
+
+
+def _exclusion_reason(row: dict[str, Any], reason: str) -> str:
+    return f"{_logical_row_id(row)}:{reason}"
+
+
+def _row_rank(row: dict[str, Any], number: int | None) -> tuple[Any, ...]:
+    return (
+        _is_completed_match(row),
+        _has_score(row),
+        number is not None,
+        _timestamp_floor(row.get("updated_at") or row.get("created_at")),
+    )
+
+
+def _knockout_logical_key(
+    row: dict[str, Any],
+    stage: str,
+    number: int | None,
+    kickoff: datetime,
+    home_id: str,
+    away_id: str,
+) -> tuple[Any, ...]:
+    if number is not None:
+        return ("number", stage, number)
+    provider_fixture_id = row.get("api_football_fixture_id") or row.get("provider_fixture_id")
+    if provider_fixture_id is not None:
+        return ("provider", str(provider_fixture_id))
+    return ("teams", stage, kickoff.isoformat(), home_id, away_id)
 
 
 def _stage_from_value(value: Any) -> str:
-    raw = str(value or "").lower()
+    raw = str(value or "").strip().lower()
+    normalized = raw.replace("-", " ").replace("_", " ")
     if "round of 32" in raw or "round_of_32" in raw:
         return "round_of_32"
     if "round of 16" in raw or "round_of_16" in raw:
@@ -145,12 +257,14 @@ def _stage_from_value(value: Any) -> str:
         return "third_place"
     if "final" in raw:
         return "final"
-    return "group" if "group" in raw else raw
+    if normalized in GROUP_STAGE_ALIASES or "group stage" in normalized:
+        return "group"
+    return "group" if "group" in normalized else raw
 
 
 def _is_completed_match(row: dict[str, Any]) -> bool:
     status = str(row.get("status") or "").strip().lower()
-    return bool(row.get("completed")) or status in COMPLETED_MATCH_STATUSES
+    return bool(row.get("completed")) or status in COMPLETED_MATCH_STATUSES or _has_score(row)
 
 
 def _penalty_scores(row: dict[str, Any]) -> tuple[int | None, int | None]:
@@ -423,6 +537,7 @@ def simulate_tournaments(
     ]
     if missing:
         teams_by_id = {team.id: team.name for team in teams}
+        detected = sorted(completed_groups)
         raise ValueError(
             f"Latest prediction run is missing {len(missing)} group fixtures: "
             + ", ".join(
@@ -433,6 +548,13 @@ def simulate_tournaments(
                 )
                 for fixture in missing
             )
+            + f". Official completed group fixtures detected={len(detected)}/72"
+            + (
+                f" examples={', '.join(detected[:8])}"
+                if detected
+                else " examples=none"
+            )
+            + ". Check simulation logs for excluded group-row reasons."
         )
 
     team_groups = {team.id: team.group for team in teams}
@@ -556,8 +678,9 @@ def simulate_tournaments(
 
 
 class SimulationRepository:
-    def __init__(self, engine: Engine) -> None:
+    def __init__(self, engine: Engine, logger: logging.Logger | None = None) -> None:
         self.engine = engine
+        self.logger = logger or logging.getLogger(__name__)
         self.schema = None if engine.dialect.name == "sqlite" else "public"
         self.metadata = MetaData()
         self.tables: dict[str, Table] = {}
@@ -613,63 +736,236 @@ class SimulationRepository:
         with self.engine.connect() as connection:
             rows = [dict(row) for row in connection.execute(select(matches)).mappings()]
 
+        states = self._official_group_states(
+            rows,
+            database_to_canonical_team,
+            fixtures_by_number,
+            fixtures_by_key,
+            fixture_ids,
+        )
+        states.extend(
+            self._official_knockout_states(rows, database_to_canonical_team)
+        )
+        completed_groups = sum(
+            1 for match in states if match.stage == "group" and match.completed
+        )
+        completed_knockouts = sum(
+            1 for match in states if match.stage in KNOCKOUT_STAGES and match.completed
+        )
+        upcoming_knockouts = sum(
+            1 for match in states if match.stage in KNOCKOUT_STAGES and not match.completed
+        )
+        self.logger.info("[simulation] Raw match rows loaded=%d", len(rows))
+        self.logger.info(
+            "[simulation] Filtered official tournament state: "
+            "group_completed=%d knockout_completed=%d knockout_upcoming=%d",
+            completed_groups,
+            completed_knockouts,
+            upcoming_knockouts,
+        )
+        return states
+
+    def _official_group_states(
+        self,
+        rows: list[dict[str, Any]],
+        database_to_canonical_team: dict[str, str],
+        fixtures_by_number: dict[int, Any],
+        fixtures_by_key: dict[tuple[datetime, str, str], Any],
+        fixture_ids: set[str],
+    ) -> list[MatchState]:
+        selected: dict[str, tuple[dict[str, Any], Any]] = {}
+        selected_numbers: dict[str, int | None] = {}
+        excluded: list[str] = []
+
+        for row in rows:
+            stage = _stage_from_value(row.get("stage") or row.get("tournament_stage"))
+            if stage != "group":
+                excluded.append(_exclusion_reason(row, "non_group_stage"))
+                continue
+            home_id = database_to_canonical_team.get(str(row.get("home_team_id")))
+            away_id = database_to_canonical_team.get(str(row.get("away_team_id")))
+            if home_id is None or away_id is None:
+                excluded.append(_exclusion_reason(row, "unmapped_team"))
+                continue
+            kickoff = _parse_timestamp(row.get("kickoff") or row.get("match_date"))
+            if kickoff is None or not (GROUP_WINDOW_START <= kickoff < GROUP_WINDOW_END):
+                excluded.append(_exclusion_reason(row, "outside_group_window"))
+                continue
+            group_id = _official_group_id(row)
+            number = _official_match_number(row, "group")
+            fixture = None
+            if group_id is not None and group_id in fixture_ids:
+                fixture = next(item for item in build_fixtures() if item.id == group_id)
+            if fixture is None and number is not None:
+                fixture = fixtures_by_number.get(number)
+            if fixture is None:
+                fixture = fixtures_by_key.get((kickoff, home_id, away_id))
+            if fixture is None:
+                excluded.append(_exclusion_reason(row, "not_official_group_fixture"))
+                continue
+            if (
+                fixture.home_team_id != home_id
+                or fixture.away_team_id != away_id
+            ):
+                excluded.append(_exclusion_reason(row, "group_team_mismatch"))
+                continue
+            existing = selected.get(fixture.id)
+            if existing is None:
+                selected[fixture.id] = (row, fixture)
+                selected_numbers[fixture.id] = number
+                continue
+            if _row_rank(row, number) > _row_rank(existing[0], selected_numbers[fixture.id]):
+                excluded.append(_exclusion_reason(existing[0], "duplicate_lower_rank"))
+                selected[fixture.id] = (row, fixture)
+                selected_numbers[fixture.id] = number
+            else:
+                excluded.append(_exclusion_reason(row, "duplicate_lower_rank"))
+
         states = []
+        for row, fixture in selected.values():
+            states.append(
+                self._match_state_from_row(
+                    row,
+                    fixture.id,
+                    "group",
+                    fixture.home_team_id,
+                    fixture.away_team_id,
+                    fixture.number,
+                    fixture.kickoff,
+                )
+            )
+        self._log_exclusions("group", excluded)
+        return sorted(states, key=lambda match: match.match_number or 0)
+
+    def _official_knockout_states(
+        self,
+        rows: list[dict[str, Any]],
+        database_to_canonical_team: dict[str, str],
+    ) -> list[MatchState]:
+        selected: dict[tuple[Any, ...], dict[str, Any]] = {}
+        selected_numbers: dict[tuple[Any, ...], int | None] = {}
+        selected_kickoffs: dict[tuple[Any, ...], datetime] = {}
+        selected_home_ids: dict[tuple[Any, ...], str] = {}
+        selected_away_ids: dict[tuple[Any, ...], str] = {}
+        excluded: list[str] = []
+
         for index, row in enumerate(rows, start=1):
             stage = _stage_from_value(row.get("stage") or row.get("tournament_stage"))
-            if stage == "third_place":
+            if stage not in KNOCKOUT_STAGE_LIMITS:
+                if stage != "group":
+                    excluded.append(_exclusion_reason(row, "non_knockout_stage"))
                 continue
-            home_team_id = database_to_canonical_team.get(str(row.get("home_team_id")))
-            away_team_id = database_to_canonical_team.get(str(row.get("away_team_id")))
-            if home_team_id is None or away_team_id is None:
+            home_id = database_to_canonical_team.get(str(row.get("home_team_id")))
+            away_id = database_to_canonical_team.get(str(row.get("away_team_id")))
+            if home_id is None or away_id is None:
+                excluded.append(_exclusion_reason(row, "unmapped_team"))
                 continue
-            completed = _is_completed_match(row)
-            home_score = _integer(row.get("home_score"))
-            away_score = _integer(row.get("away_score"))
-            if completed and (home_score is None or away_score is None):
-                continue
-            match_number = _integer(row.get("match_number") or row.get("number"))
             kickoff = _parse_timestamp(row.get("kickoff") or row.get("match_date"))
-            if stage == "group":
-                fixture = None
-                row_id = str(row.get("id") or "")
-                if row_id in fixture_ids:
-                    fixture = next(item for item in fixtures if item.id == row_id)
-                if fixture is None and match_number is not None:
-                    fixture = fixtures_by_number.get(match_number)
-                if fixture is None and kickoff is not None:
-                    fixture = fixtures_by_key.get((kickoff, home_team_id, away_team_id))
-                if fixture is None:
-                    continue
-                match_id = fixture.id
-                match_number = fixture.number
-            elif stage in KNOCKOUT_STAGES:
+            if kickoff is None or not (KNOCKOUT_WINDOW_START <= kickoff < KNOCKOUT_WINDOW_END):
+                excluded.append(_exclusion_reason(row, "outside_knockout_window"))
+                continue
+            number = _official_match_number(row, stage)
+            if number is None and not _is_world_cup_2026_provider_row(row):
+                excluded.append(_exclusion_reason(row, "unofficial_provider_row"))
+                continue
+            key = _knockout_logical_key(row, stage, number, kickoff, home_id, away_id)
+            existing = selected.get(key)
+            if existing is None:
+                selected[key] = {**row, "_knockout_stage": stage, "_knockout_index": index}
+                selected_numbers[key] = number
+                selected_kickoffs[key] = kickoff
+                selected_home_ids[key] = home_id
+                selected_away_ids[key] = away_id
+                continue
+            if _row_rank(row, number) > _row_rank(existing, selected_numbers[key]):
+                excluded.append(_exclusion_reason(existing, "duplicate_lower_rank"))
+                selected[key] = {**row, "_knockout_stage": stage, "_knockout_index": index}
+                selected_numbers[key] = number
+                selected_kickoffs[key] = kickoff
+                selected_home_ids[key] = home_id
+                selected_away_ids[key] = away_id
+            else:
+                excluded.append(_exclusion_reason(row, "duplicate_lower_rank"))
+
+        states = []
+        for stage in KNOCKOUT_STAGE_LIMITS:
+            stage_items = [
+                (
+                    row,
+                    selected_numbers[key],
+                    selected_kickoffs[key],
+                    selected_home_ids[key],
+                    selected_away_ids[key],
+                )
+                for key, row in selected.items()
+                if row["_knockout_stage"] == stage
+            ]
+            ordered = sorted(
+                stage_items,
+                key=lambda item: (
+                    item[1] is None,
+                    item[1] if item[1] is not None else 999,
+                    item[2],
+                ),
+            )
+            for row, number, kickoff, home_id, away_id in ordered[
+                : KNOCKOUT_STAGE_LIMITS[stage]
+            ]:
                 match_id = str(
                     row.get("id")
                     or row.get("api_football_fixture_id")
                     or row.get("provider_fixture_id")
                     or row.get("canonical_match_id")
-                    or f"provider-knockout-{index}"
+                    or f"provider-knockout-{row['_knockout_index']}"
                 )
-            else:
-                continue
-
-            home_penalty_score, away_penalty_score = _penalty_scores(row)
-            states.append(
-                MatchState(
-                    id=match_id,
-                    stage=stage,
-                    home_team_id=home_team_id,
-                    away_team_id=away_team_id,
-                    completed=completed,
-                    home_score=home_score,
-                    away_score=away_score,
-                    home_penalty_score=home_penalty_score,
-                    away_penalty_score=away_penalty_score,
-                    match_number=match_number,
-                    kickoff=kickoff,
+                states.append(
+                    self._match_state_from_row(
+                        row,
+                        match_id,
+                        stage,
+                        home_id,
+                        away_id,
+                        number,
+                        kickoff,
+                    )
                 )
-            )
+        self._log_exclusions("knockout", excluded)
         return states
+
+    @staticmethod
+    def _match_state_from_row(
+        row: dict[str, Any],
+        match_id: str,
+        stage: str,
+        home_id: str,
+        away_id: str,
+        match_number: int | None,
+        kickoff: datetime | None,
+    ) -> MatchState:
+        home_penalty_score, away_penalty_score = _penalty_scores(row)
+        return MatchState(
+            id=match_id,
+            stage=stage,
+            home_team_id=home_id,
+            away_team_id=away_id,
+            completed=_is_completed_match(row),
+            home_score=_integer(row.get("home_score")),
+            away_score=_integer(row.get("away_score")),
+            home_penalty_score=home_penalty_score,
+            away_penalty_score=away_penalty_score,
+            match_number=match_number,
+            kickoff=kickoff,
+        )
+
+    def _log_exclusions(self, label: str, excluded: list[str]) -> None:
+        if not excluded:
+            return
+        self.logger.info(
+            "[simulation] Excluded %d unofficial/duplicate %s rows; examples=%s",
+            len(excluded),
+            label,
+            ", ".join(excluded[:8]),
+        )
 
     def load_latest_predictions(
         self,
