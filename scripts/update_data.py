@@ -32,10 +32,48 @@ KNOCKOUT_STAGE_KEYWORDS = {
     "final",
 }
 
+COMPLETED_PROVIDER_STATUSES = {"FT", "AET", "PEN"}
+
 
 def is_knockout_fixture(match: dict) -> bool:
     stage = str(match.get("round") or match.get("tournament_stage") or "").lower()
     return any(keyword in stage for keyword in KNOCKOUT_STAGE_KEYWORDS)
+
+
+def is_completed_provider_fixture(match: dict) -> bool:
+    return (
+        str(match.get("status") or "").strip().upper() in COMPLETED_PROVIDER_STATUSES
+        or (
+            match.get("home_score") is not None
+            and match.get("away_score") is not None
+        )
+    )
+
+
+def merge_provider_fixtures(
+    completed_matches: list[dict],
+    provider_fixtures: list[dict],
+) -> list[dict]:
+    merged: dict[int, dict] = {}
+    for match in [*provider_fixtures, *completed_matches]:
+        fixture_id = match["provider_fixture_id"]
+        existing = merged.get(fixture_id)
+        if existing is None:
+            merged[fixture_id] = match
+            continue
+        if is_completed_provider_fixture(match) and not is_completed_provider_fixture(existing):
+            merged[fixture_id] = match
+            continue
+        if (
+            match.get("home_score") is not None
+            and match.get("away_score") is not None
+            and (
+                existing.get("home_score") is None
+                or existing.get("away_score") is None
+            )
+        ):
+            merged[fixture_id] = {**existing, **match}
+    return list(merged.values())
 
 
 def load_environment() -> dict[str, str]:
@@ -203,16 +241,40 @@ def main() -> int:
         upcoming_knockouts = [
             match
             for match in real_knockout_fixtures
-            if str(match.get("status") or "").strip().upper()
-            not in {"FT", "AET", "PEN"}
+            if not is_completed_provider_fixture(match)
+        ]
+        completed_knockouts = [
+            match
+            for match in real_knockout_fixtures
+            if is_completed_provider_fixture(match)
         ]
         skipped_non_knockout = len(provider_fixtures) - len(real_knockout_fixtures)
         logger.info(
-            "Real knockout fixtures loaded=%d upcoming=%d skipped_non_knockout=%d",
+            "Real knockout fixtures loaded=%d upcoming=%d completed=%d skipped_non_knockout=%d",
             len(real_knockout_fixtures),
             len(upcoming_knockouts),
+            len(completed_knockouts),
             skipped_non_knockout,
         )
+        if completed_knockouts:
+            logger.info(
+                "Provider completed knockout fixtures fetched: %s",
+                ", ".join(
+                    (
+                        f"{match['provider_fixture_id']} "
+                        f"{match.get('status')} "
+                        f"{match.get('home_score')}-{match.get('away_score')}"
+                    )
+                    for match in completed_knockouts
+                ),
+            )
+        for match in completed_knockouts:
+            if match.get("home_score") is None or match.get("away_score") is None:
+                logger.warning(
+                    "Skipped completed knockout score extraction for fixture %s: "
+                    "missing score fields in provider payload",
+                    match["provider_fixture_id"],
+                )
         if upcoming_knockouts:
             logger.info(
                 "Real upcoming knockout fixture IDs: %s",
@@ -220,10 +282,10 @@ def main() -> int:
             )
 
         logger.info("[step 4/6] Upserting provider teams and real fixtures")
-        fixtures_to_upsert = {
-            match["provider_fixture_id"]: match
-            for match in [*completed_matches, *real_knockout_fixtures]
-        }
+        fixtures_to_upsert = merge_provider_fixtures(
+            completed_matches,
+            real_knockout_fixtures,
+        )
         if not fixtures_to_upsert:
             logger.info(
                 "[daily-ingestion] SUCCESS: no completed matches or real "
@@ -235,7 +297,12 @@ def main() -> int:
                 ),
             )
             return 0
-        repository.upsert_provider_matches(list(fixtures_to_upsert.values()))
+        repository.upsert_provider_matches(fixtures_to_upsert)
+        if completed_knockouts:
+            logger.info(
+                "Completed knockout fixtures upserted=%d",
+                len(completed_knockouts),
+            )
         fixtures_by_id = {
             match["provider_fixture_id"]: match for match in completed_matches
         }

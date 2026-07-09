@@ -62,4 +62,29 @@ describe("Match detail prediction states", () => {
     expect(html).not.toContain("The forecast API is unavailable");
     expect(html).not.toContain("Group null");
   });
+
+  it("shows final score for a completed knockout match without prediction", () => {
+    const queryClient = new QueryClient({
+      defaultOptions: { queries: { staleTime: Infinity } },
+    });
+    queryClient.setQueryData(["match", "provider-qf-90101"], {
+      ...knockoutMatch,
+      status: "FT",
+      home_score: 2,
+      away_score: 0,
+    });
+
+    const html = renderToString(
+      <QueryClientProvider client={queryClient}>
+        <MemoryRouter initialEntries={["/match/provider-qf-90101"]}>
+          <App />
+        </MemoryRouter>
+      </QueryClientProvider>,
+    ).replaceAll("<!-- -->", "");
+
+    expect(html).toContain("Final score");
+    expect(html).toContain("2 : 0");
+    expect(html).toContain("Prediction not available yet.");
+    expect(html).not.toContain("The forecast API is unavailable");
+  });
 });

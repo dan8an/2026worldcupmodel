@@ -18,6 +18,7 @@ import {
   primaryFactors,
   predictionSummary,
 } from "../prediction-display";
+import { hasFinalScore, matchScores } from "../match-status";
 
 export function MatchDetail() {
   const { id = "" } = useParams();
@@ -29,6 +30,8 @@ export function MatchDetail() {
   const match = query.data;
   const prediction = match.prediction;
   if (!prediction) {
+    const score = matchScores(match);
+    const finalScore = hasFinalScore(match);
     return (
       <section>
         <div className="match-hero">
@@ -40,8 +43,12 @@ export function MatchDetail() {
               {match.home_team && <small className="team-code">{match.home_team.id}</small>}
             </div>
             <div>
-              <span>Kickoff</span>
-              <strong>{new Date(match.kickoff).toLocaleString()}</strong>
+              <span>{finalScore ? "Final score" : "Kickoff"}</span>
+              <strong>
+                {finalScore
+                  ? `${score.home} : ${score.away}`
+                  : new Date(match.kickoff).toLocaleString()}
+              </strong>
             </div>
             <div>
               <span className="flag match-flag" aria-hidden="true">{match.away_team?.flag}</span>

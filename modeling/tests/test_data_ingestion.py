@@ -19,7 +19,7 @@ from scripts.database import (
     create_database_engine,
     sqlalchemy_database_url,
 )
-from scripts.update_data import main, parse_args
+from scripts.update_data import main, merge_provider_fixtures, parse_args
 
 
 class DataIngestionTests(unittest.TestCase):
@@ -184,6 +184,40 @@ class DataIngestionTests(unittest.TestCase):
                 "to": "2022-12-18",
             },
         )
+
+    def test_api_provider_fixture_listing_preserves_final_scores_and_penalties(self):
+        provider = ApiFootballProvider("test-key")
+        provider._request = lambda path, **params: [
+            {
+                "fixture": {
+                    "id": 90101,
+                    "date": "2026-07-09T20:00:00+00:00",
+                    "status": {"short": "PEN"},
+                },
+                "league": {
+                    "id": 1,
+                    "name": "World Cup",
+                    "season": 2026,
+                    "round": "Quarter-finals",
+                },
+                "teams": {
+                    "home": {"id": 1, "name": "Mexico"},
+                    "away": {"id": 2, "name": "South Africa"},
+                },
+                "goals": {"home": 1, "away": 1},
+                "score": {"penalty": {"home": 4, "away": 3}},
+            }
+        ]
+
+        [fixture] = provider.get_fixtures(league_id=1, season=2026)
+
+        self.assertEqual(fixture["provider_fixture_id"], 90101)
+        self.assertEqual(fixture["status"], "PEN")
+        self.assertEqual(fixture["home_score"], 1)
+        self.assertEqual(fixture["away_score"], 1)
+        self.assertEqual(fixture["home_penalty_score"], 4)
+        self.assertEqual(fixture["away_penalty_score"], 3)
+        self.assertEqual(fixture["raw"]["score"]["penalty"]["home"], 4)
 
     def test_api_provider_normalizes_competitions_and_seasons(self):
         provider = ApiFootballProvider("test-key")
@@ -587,13 +621,37 @@ class DataIngestionTests(unittest.TestCase):
         self.assertEqual(Repository.stored, [real_fixture])
         self.assertEqual(Repository.missing_stats_requests, [[90073]])
 
+    def test_completed_knockout_fixture_wins_merge_over_scheduled_listing(self):
+        scheduled = {
+            "provider_fixture_id": 90101,
+            "date": "2026-07-09T20:00:00+00:00",
+            "status": "NS",
+            "round": "Quarter-finals",
+            "home_team": {"provider_id": 1, "name": "Mexico"},
+            "away_team": {"provider_id": 2, "name": "South Africa"},
+        }
+        completed = {
+            **scheduled,
+            "status": "FT",
+            "home_score": 2,
+            "away_score": 0,
+        }
+
+        [merged] = merge_provider_fixtures([completed], [scheduled])
+
+        self.assertEqual(merged["status"], "FT")
+        self.assertEqual(merged["home_score"], 2)
+        self.assertEqual(merged["away_score"], 0)
+
     def test_completed_upsert_updates_existing_provider_fixture(self):
         connection = Mock()
+        connection.execute.return_value.scalar_one_or_none.return_value = False
         DataIngestionRepository._upsert_match(
             connection,
             {
                 "provider_fixture_id": 1489370,
                 "date": "2026-06-13T01:00:00+00:00",
+                "status": "FT",
                 "round": "Group Stage - 1",
                 "home_team": {"name": "USA"},
                 "away_team": {"name": "Paraguay"},
@@ -611,12 +669,14 @@ class DataIngestionTests(unittest.TestCase):
         self.assertIn("do update set", sql)
         self.assertIn("completed = excluded.completed", sql)
         self.assertIs(parameters["completed"], True)
+        self.assertEqual(parameters["status"], "FT")
         self.assertEqual(parameters["fixture_id"], 1489370)
         self.assertEqual(parameters["home_score"], 4)
         self.assertEqual(parameters["away_score"], 1)
 
     def test_scheduled_upsert_preserves_incomplete_provider_fixture(self):
         connection = Mock()
+        connection.execute.return_value.scalar_one_or_none.return_value = None
         DataIngestionRepository._upsert_match(
             connection,
             {
@@ -634,8 +694,38 @@ class DataIngestionTests(unittest.TestCase):
 
         _statement, parameters = connection.execute.call_args.args
         self.assertIs(parameters["completed"], False)
+        self.assertEqual(parameters["status"], "NS")
         self.assertIsNone(parameters["home_score"])
         self.assertIsNone(parameters["away_score"])
+
+    def test_penalties_status_marks_provider_fixture_completed(self):
+        connection = Mock()
+        connection.execute.return_value.scalar_one_or_none.return_value = False
+        result = DataIngestionRepository._upsert_match(
+            connection,
+            {
+                "provider_fixture_id": 90101,
+                "date": "2026-07-09T20:00:00+00:00",
+                "status": "PEN",
+                "round": "Quarter-finals",
+                "home_team": {"name": "Mexico"},
+                "away_team": {"name": "South Africa"},
+                "home_score": 1,
+                "away_score": 1,
+                "home_penalty_score": 4,
+                "away_penalty_score": 3,
+                "raw": {"score": {"penalty": {"home": 4, "away": 3}}},
+            },
+            "mexico-id",
+            "south-africa-id",
+        )
+
+        _statement, parameters = connection.execute.call_args.args
+        self.assertIs(parameters["completed"], True)
+        self.assertEqual(parameters["status"], "PEN")
+        self.assertEqual(parameters["home_score"], 1)
+        self.assertEqual(parameters["away_score"], 1)
+        self.assertIs(result["updated_from_scheduled"], True)
 
 
 if __name__ == "__main__":

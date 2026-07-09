@@ -83,12 +83,22 @@ class DataIngestionRepository:
             for match in matches:
                 home_team_id = self._upsert_team(active_connection, match["home_team"])
                 away_team_id = self._upsert_team(active_connection, match["away_team"])
-                self._upsert_match(
+                result = self._upsert_match(
                     active_connection,
                     match,
                     home_team_id,
                     away_team_id,
                 )
+                if result["completed"]:
+                    self.logger.info(
+                        "Upserted completed provider fixture %s status=%s "
+                        "score=%s-%s previous_completed=%s",
+                        match["provider_fixture_id"],
+                        result["status"],
+                        result["home_score"],
+                        result["away_score"],
+                        result["previous_completed"],
+                    )
         return len(matches)
 
     def find_completed_matches_missing_stats(
@@ -348,7 +358,7 @@ class DataIngestionRepository:
         match: dict[str, Any],
         home_team_id: Any,
         away_team_id: Any,
-    ) -> None:
+    ) -> dict[str, Any]:
         status = str(match.get("status") or "").strip()
         completed = (
             status in COMPLETED_STATUSES
@@ -357,18 +367,28 @@ class DataIngestionRepository:
                 and match.get("away_score") is not None
             )
         )
+        existing_completed = connection.execute(
+            text(
+                """
+                select completed from public.matches
+                where api_football_fixture_id = :fixture_id
+                """
+            ),
+            {"fixture_id": match["provider_fixture_id"]},
+        ).scalar_one_or_none()
         connection.execute(
             text(
                 """
                 insert into public.matches (
                   home_team, away_team, match_date, tournament_stage,
                   home_score, away_score, completed, home_team_id, away_team_id,
-                  api_football_fixture_id, provider_name, provider_payload, updated_at
+                  status, api_football_fixture_id, provider_name, provider_payload,
+                  updated_at
                 )
                 values (
                   :home_name, :away_name, :match_date, :stage,
                   :home_score, :away_score, :completed, :home_team_id, :away_team_id,
-                  :fixture_id, 'api_football', cast(:raw as jsonb), now()
+                  :status, :fixture_id, 'api_football', cast(:raw as jsonb), now()
                 )
                 on conflict (api_football_fixture_id)
                   where api_football_fixture_id is not null
@@ -382,6 +402,7 @@ class DataIngestionRepository:
                   completed = excluded.completed,
                   home_team_id = excluded.home_team_id,
                   away_team_id = excluded.away_team_id,
+                  status = excluded.status,
                   provider_payload = excluded.provider_payload,
                   updated_at = now()
                 """
@@ -396,10 +417,19 @@ class DataIngestionRepository:
                 "completed": completed,
                 "home_team_id": home_team_id,
                 "away_team_id": away_team_id,
+                "status": status or ("completed" if completed else "scheduled"),
                 "fixture_id": match["provider_fixture_id"],
                 "raw": json.dumps(match.get("raw", {})),
             },
         )
+        return {
+            "completed": completed,
+            "status": status or ("completed" if completed else "scheduled"),
+            "home_score": match.get("home_score"),
+            "away_score": match.get("away_score"),
+            "previous_completed": existing_completed,
+            "updated_from_scheduled": completed and existing_completed is False,
+        }
 
     @staticmethod
     def _upsert_player(

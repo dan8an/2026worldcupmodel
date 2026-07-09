@@ -228,4 +228,55 @@ describe("Matches page", () => {
     expect(html).toContain("MEX");
     expect(html).not.toContain("Winner Group A");
   });
+
+  it("hides completed real knockout fixtures from active matches", () => {
+    vi.setSystemTime(new Date("2026-07-09T22:00:00+00:00"));
+    const queryClient = new QueryClient({
+      defaultOptions: { queries: { staleTime: Infinity } },
+    });
+    queryClient.setQueryData(["matches"], [
+      matchFixture({
+        id: "provider-qf-90101",
+        number: 97,
+        stage: "quarterfinal",
+        kickoff: "2026-07-09T20:00:00+00:00",
+        group: null,
+        status: "FT",
+        home_score: 2,
+        away_score: 0,
+        home_team: {
+          id: "MEX",
+          name: "Mexico",
+          flag: "🇲🇽",
+          group: "A",
+          position: 1,
+          rank: 14,
+          host: true,
+          elo: 1900,
+        },
+        away_team: {
+          id: "RSA",
+          name: "South Africa",
+          flag: "🇿🇦",
+          group: "A",
+          position: 2,
+          rank: 55,
+          host: false,
+          elo: 1700,
+        },
+      }),
+    ]);
+
+    const html = renderToString(
+      <QueryClientProvider client={queryClient}>
+        <MemoryRouter initialEntries={["/matches"]}>
+          <App />
+        </MemoryRouter>
+      </QueryClientProvider>,
+    ).replaceAll("<!-- -->", "");
+
+    expect(html).not.toContain("Quarterfinal");
+    expect(html).not.toContain("Mexico");
+    expect(html).toContain("No active matches match these filters.");
+  });
 });

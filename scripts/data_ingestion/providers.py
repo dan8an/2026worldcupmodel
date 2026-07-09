@@ -117,6 +117,37 @@ def _team(payload: dict[str, Any] | None) -> dict[str, Any]:
     }
 
 
+def _normalized_fixture(item: dict[str, Any]) -> dict[str, Any] | None:
+    fixture = item.get("fixture") or {}
+    teams = item.get("teams") or {}
+    home = teams.get("home") or {}
+    away = teams.get("away") or {}
+    if (
+        fixture.get("id") is None
+        or home.get("id") is None
+        or away.get("id") is None
+    ):
+        return None
+    goals = item.get("goals") or {}
+    score = item.get("score") or {}
+    return {
+        "provider_fixture_id": int(fixture["id"]),
+        "date": fixture.get("date"),
+        "status": (fixture.get("status") or {}).get("short"),
+        "competition": (item.get("league") or {}).get("name"),
+        "league_id": (item.get("league") or {}).get("id"),
+        "season": (item.get("league") or {}).get("season"),
+        "round": (item.get("league") or {}).get("round"),
+        "home_team": _team(home),
+        "away_team": _team(away),
+        "home_score": goals.get("home"),
+        "away_score": goals.get("away"),
+        "home_penalty_score": (score.get("penalty") or {}).get("home"),
+        "away_penalty_score": (score.get("penalty") or {}).get("away"),
+        "raw": item,
+    }
+
+
 class ApiFootballProvider(SportsProvider):
     name = "api_football"
 
@@ -233,22 +264,9 @@ class ApiFootballProvider(SportsProvider):
                 and int(response_league_id) != league_id
             ):
                 continue
-            matches.append(
-                {
-                    "provider_fixture_id": int(item["fixture"]["id"]),
-                    "date": item["fixture"]["date"],
-                    "status": status,
-                    "competition": item.get("league", {}).get("name"),
-                    "league_id": item.get("league", {}).get("id"),
-                    "season": item.get("league", {}).get("season"),
-                    "round": item.get("league", {}).get("round"),
-                    "home_team": _team(item.get("teams", {}).get("home")),
-                    "away_team": _team(item.get("teams", {}).get("away")),
-                    "home_score": item.get("goals", {}).get("home"),
-                    "away_score": item.get("goals", {}).get("away"),
-                    "raw": item,
-                }
-            )
+            normalized = _normalized_fixture(item)
+            if normalized is not None:
+                matches.append(normalized)
         return matches
 
     def get_completed_matches(self, date: str) -> list[dict[str, Any]]:
@@ -291,30 +309,9 @@ class ApiFootballProvider(SportsProvider):
             league=league_id,
             season=season,
         ):
-            fixture = item.get("fixture") or {}
-            teams = item.get("teams") or {}
-            home = teams.get("home") or {}
-            away = teams.get("away") or {}
-            if (
-                fixture.get("id") is None
-                or home.get("id") is None
-                or away.get("id") is None
-            ):
-                continue
-            rows.append(
-                {
-                    "provider_fixture_id": int(fixture["id"]),
-                    "date": fixture.get("date"),
-                    "status": (fixture.get("status") or {}).get("short"),
-                    "competition": (item.get("league") or {}).get("name"),
-                    "league_id": (item.get("league") or {}).get("id"),
-                    "season": (item.get("league") or {}).get("season"),
-                    "round": (item.get("league") or {}).get("round"),
-                    "home_team": _team(home),
-                    "away_team": _team(away),
-                    "raw": item,
-                }
-            )
+            normalized = _normalized_fixture(item)
+            if normalized is not None:
+                rows.append(normalized)
         return rows
 
     def get_competitions(self) -> list[dict[str, Any]]:
