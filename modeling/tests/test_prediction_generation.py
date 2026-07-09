@@ -475,6 +475,56 @@ class PredictionScriptTests(unittest.TestCase):
         self.assertEqual(len(matches), 72)
         self.assertEqual(matches[0]["canonical_match_id"], "WC26-001")
 
+    def test_canonical_source_does_not_generate_knockouts_after_group_stage(self):
+        matches = load_canonical_future_matches(
+            datetime(2026, 6, 28, 12, tzinfo=timezone.utc)
+        )
+
+        self.assertEqual(matches, [])
+
+    def test_canonical_source_includes_real_known_upcoming_knockout(self):
+        matches = load_canonical_future_matches(
+            datetime(2026, 6, 28, 12, tzinfo=timezone.utc),
+            database_matches=[
+                {
+                    "id": "provider-r32",
+                    "match_number": 73,
+                    "match_date": "2026-06-28T16:00:00+00:00",
+                    "tournament_stage": "Round of 32",
+                    "home_team_id": "mexico-db",
+                    "away_team_id": "south-africa-db",
+                }
+            ],
+            database_team_ids={
+                "MEX": "mexico-db",
+                "RSA": "south-africa-db",
+            },
+        )
+
+        self.assertEqual(len(matches), 1)
+        self.assertEqual(matches[0]["canonical_match_id"], "provider-r32")
+        self.assertEqual(matches[0]["stage"], "round_of_32")
+        self.assertEqual(matches[0]["home_team_id"], "MEX")
+        self.assertEqual(matches[0]["away_team_id"], "RSA")
+
+    def test_canonical_source_skips_unknown_knockout_placeholders(self):
+        matches = load_canonical_future_matches(
+            datetime(2026, 6, 28, 12, tzinfo=timezone.utc),
+            database_matches=[
+                {
+                    "id": "placeholder-r32",
+                    "match_number": 73,
+                    "match_date": "2026-06-28T16:00:00+00:00",
+                    "tournament_stage": "Round of 32",
+                    "home_team": "Winner Group A",
+                    "away_team": "Runner-up Group B",
+                }
+            ],
+            database_team_ids={},
+        )
+
+        self.assertEqual(matches, [])
+
     def test_incomplete_generation_reports_exact_missing_fixtures(self):
         predictions = [
             {"canonical_match_id": f"WC26-{number:03d}"}

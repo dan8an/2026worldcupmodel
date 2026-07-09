@@ -1,5 +1,5 @@
 import json
-from datetime import datetime, timedelta, timezone
+from datetime import datetime, timezone
 from pathlib import Path
 
 from .domain import Match, Team
@@ -64,55 +64,14 @@ def build_fixtures(teams: list[Team] | None = None) -> list[Match]:
                 )
                 number += 1
 
-    round_specs = (
-        ("round_of_32", 16, datetime(2026, 6, 28, 16, tzinfo=timezone.utc)),
-        ("round_of_16", 8, datetime(2026, 7, 4, 16, tzinfo=timezone.utc)),
-        ("quarterfinal", 4, datetime(2026, 7, 9, 19, tzinfo=timezone.utc)),
-        ("semifinal", 2, datetime(2026, 7, 14, 19, tzinfo=timezone.utc)),
-        ("third_place", 1, datetime(2026, 7, 18, 19, tzinfo=timezone.utc)),
-        ("final", 1, datetime(2026, 7, 19, 19, tzinfo=timezone.utc)),
-    )
-    previous_numbers: list[int] = []
-    semifinal_numbers: list[int] = []
-    for stage, count, start in round_specs:
-        current_numbers = list(range(number, number + count))
-        for index, match_number in enumerate(current_numbers):
-            if stage == "round_of_32":
-                home_slot, away_slot = f"R32-H{index + 1}", f"R32-A{index + 1}"
-            elif stage == "third_place":
-                home_slot = f"Loser M{semifinal_numbers[0]}"
-                away_slot = f"Loser M{semifinal_numbers[1]}"
-            elif stage == "final":
-                home_slot = f"Winner M{semifinal_numbers[0]}"
-                away_slot = f"Winner M{semifinal_numbers[1]}"
-            else:
-                parent_a = previous_numbers[index * 2]
-                parent_b = previous_numbers[index * 2 + 1]
-                home_slot, away_slot = f"Winner M{parent_a}", f"Winner M{parent_b}"
-            fixtures.append(
-                Match(
-                    id=f"WC26-{match_number:03d}",
-                    number=match_number,
-                    stage=stage,
-                    kickoff=start + timedelta(days=index // 3, hours=(index % 3) * 3),
-                    venue_id=VENUE_IDS[(match_number - 1) % len(VENUE_IDS)],
-                    home_slot=home_slot,
-                    away_slot=away_slot,
-                )
-            )
-        if stage == "semifinal":
-            semifinal_numbers = current_numbers
-        if stage != "third_place":
-            previous_numbers = current_numbers
-        number += count
     return sorted(fixtures, key=lambda match: (match.kickoff, match.number))
 
 
 def validate_tournament(teams: list[Team], fixtures: list[Match]) -> None:
     if len(teams) != 48 or len({team.id for team in teams}) != 48:
         raise ValueError("Tournament must contain 48 unique teams")
-    if len(fixtures) != 104 or len({match.id for match in fixtures}) != 104:
-        raise ValueError("Tournament must contain 104 unique fixtures")
+    if len(fixtures) != 72 or len({match.id for match in fixtures}) != 72:
+        raise ValueError("Canonical fixture catalog must contain 72 unique group fixtures")
     for group in "ABCDEFGHIJKL":
         members = [team for team in teams if team.group == group]
         if len(members) != 4 or {team.position for team in members} != {1, 2, 3, 4}:

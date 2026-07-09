@@ -138,7 +138,7 @@ describe("Dashboard match filtering", () => {
     queryClient.setQueryData(["matches"], [
       {
         ...completedMatch,
-        id: "WC26-073",
+        id: "provider-r32-90073",
         number: 73,
         stage: "round_of_32",
         kickoff: "2026-06-28T16:00:00+00:00",
@@ -146,8 +146,28 @@ describe("Dashboard match filtering", () => {
         status: "scheduled",
         home_score: null,
         away_score: null,
-        home_slot: "Winner Group A",
-        away_slot: "Runner-up Group B",
+        home_team: {
+          id: "MEX",
+          name: "Mexico",
+          flag: "🇲🇽",
+          group: "A",
+          position: 1,
+          rank: 14,
+          host: true,
+          elo: 1900,
+        },
+        away_team: {
+          id: "RSA",
+          name: "South Africa",
+          flag: "🇿🇦",
+          group: "A",
+          position: 2,
+          rank: 55,
+          host: false,
+          elo: 1700,
+        },
+        home_slot: null,
+        away_slot: null,
       },
     ]);
     queryClient.setQueryData(["simulation"], simulation);
@@ -162,8 +182,9 @@ describe("Dashboard match filtering", () => {
     ).replaceAll("<!-- -->", "");
 
     expect(html).toContain("Round of 32 · Match 1");
-    expect(html).toContain("Winner Group A");
-    expect(html).toContain("Runner-up Group B");
+    expect(html).toContain("Mexico");
+    expect(html).toContain("South Africa");
     expect(html).not.toContain("Group null");
+    expect(html).not.toContain("Winner Group A");
   });
 });

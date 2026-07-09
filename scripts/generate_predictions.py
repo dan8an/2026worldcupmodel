@@ -194,56 +194,117 @@ def load_canonical_future_matches(
     database_matches: list[dict[str, Any]] | None = None,
     database_team_ids: dict[str, Any] | None = None,
 ) -> list[dict[str, Any]]:
-    """Load the complete active group-stage catalog, then enrich it.
+    """Load active canonical group fixtures plus real known database knockouts.
 
     Tournament simulations require all 72 group fixtures. Keep already-started
     group matches in prediction snapshots until the group stage is complete.
+    Knockout matches are never generated here; they are included only when a
+    database/provider row already exists and both participating teams are known.
     """
     teams = load_teams()
     fixtures = build_fixtures(teams)
     validate_tournament(teams, fixtures)
     group_fixtures = [fixture for fixture in fixtures if fixture.stage == "group"]
-    if all(fixture.kickoff <= now for fixture in group_fixtures):
-        return []
     database_matches = database_matches or []
     database_team_ids = database_team_ids or {}
+    database_to_canonical_team = {
+        str(database_id): team_id
+        for team_id, database_id in database_team_ids.items()
+        if database_id is not None
+    }
 
     by_id = {str(row["id"]): row for row in database_matches}
     enriched = []
-    for fixture in group_fixtures:
-        if fixture.home_team_id is None or fixture.away_team_id is None:
+    if not all(fixture.kickoff <= now for fixture in group_fixtures):
+        for fixture in group_fixtures:
+            if fixture.home_team_id is None or fixture.away_team_id is None:
+                continue
+
+            database_match = by_id.get(fixture.id)
+            if database_match is None:
+                home_database_id = database_team_ids.get(fixture.home_team_id)
+                away_database_id = database_team_ids.get(fixture.away_team_id)
+                for row in database_matches:
+                    kickoff = _parse_timestamp(row.get("kickoff") or row.get("match_date"))
+                    if (
+                        kickoff
+                        and kickoff == fixture.kickoff
+                        and row.get("home_team_id") == home_database_id
+                        and row.get("away_team_id") == away_database_id
+                    ):
+                        database_match = row
+                        break
+
+            enriched.append(
+                {
+                    "id": fixture.id,
+                    "canonical_match_id": fixture.id,
+                    "number": fixture.number,
+                    "stage": fixture.stage,
+                    "kickoff": fixture.kickoff,
+                    "home_team_id": fixture.home_team_id,
+                    "away_team_id": fixture.away_team_id,
+                    "database_match_id": (
+                        database_match.get("id") if database_match is not None else None
+                    ),
+                }
+            )
+    knockout_stages = {
+        "round_of_32",
+        "round_of_16",
+        "quarterfinal",
+        "semifinal",
+        "third_place",
+        "final",
+    }
+    for index, row in enumerate(database_matches, start=1):
+        stage = _stage_from_value(row.get("stage") or row.get("tournament_stage"))
+        if stage not in knockout_stages:
             continue
-
-        database_match = by_id.get(fixture.id)
-        if database_match is None:
-            home_database_id = database_team_ids.get(fixture.home_team_id)
-            away_database_id = database_team_ids.get(fixture.away_team_id)
-            for row in database_matches:
-                kickoff = _parse_timestamp(row.get("kickoff") or row.get("match_date"))
-                if (
-                    kickoff
-                    and kickoff == fixture.kickoff
-                    and row.get("home_team_id") == home_database_id
-                    and row.get("away_team_id") == away_database_id
-                ):
-                    database_match = row
-                    break
-
+        kickoff = _parse_timestamp(row.get("kickoff") or row.get("match_date"))
+        if kickoff is None or kickoff <= now:
+            continue
+        home_team_id = database_to_canonical_team.get(str(row.get("home_team_id")))
+        away_team_id = database_to_canonical_team.get(str(row.get("away_team_id")))
+        if home_team_id is None or away_team_id is None:
+            continue
+        match_id = str(
+            row.get("id")
+            or row.get("api_football_fixture_id")
+            or row.get("provider_fixture_id")
+            or row.get("canonical_match_id")
+            or f"provider-knockout-{index}"
+        )
         enriched.append(
             {
-                "id": fixture.id,
-                "canonical_match_id": fixture.id,
-                "number": fixture.number,
-                "stage": fixture.stage,
-                "kickoff": fixture.kickoff,
-                "home_team_id": fixture.home_team_id,
-                "away_team_id": fixture.away_team_id,
-                "database_match_id": (
-                    database_match.get("id") if database_match is not None else None
-                ),
+                "id": match_id,
+                "canonical_match_id": match_id,
+                "number": int(row.get("match_number") or row.get("number") or 72 + index),
+                "stage": stage,
+                "kickoff": kickoff,
+                "home_team_id": home_team_id,
+                "away_team_id": away_team_id,
+                "database_match_id": row.get("id"),
             }
         )
     return enriched
+
+
+def _stage_from_value(value: Any) -> str:
+    raw = str(value or "").lower()
+    if "round of 32" in raw or "round_of_32" in raw:
+        return "round_of_32"
+    if "round of 16" in raw or "round_of_16" in raw:
+        return "round_of_16"
+    if "quarter" in raw:
+        return "quarterfinal"
+    if "semi" in raw:
+        return "semifinal"
+    if "third" in raw or "3rd" in raw:
+        return "third_place"
+    if "final" in raw:
+        return "final"
+    return "group" if "group" in raw else raw
 
 
 def missing_canonical_group_fixtures(
@@ -1298,7 +1359,8 @@ def main() -> int:
                 "[prediction-generation] SUCCESS: no future matches have both team ratings"
             )
             return 0
-        assert_complete_group_predictions(predictions)
+        if any(match["stage"] == "group" for match in matches):
+            assert_complete_group_predictions(predictions)
         logger.info(
             "[prediction-generation] Legacy v4.1 draw distribution: %s",
             draw_probability_distribution(legacy_draw_predictions),

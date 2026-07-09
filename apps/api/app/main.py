@@ -77,17 +77,22 @@ def matches(
     group: str | None = Query(default=None, min_length=1, max_length=1),
     team_id: str | None = Query(default=None),
 ) -> list[dict]:
+    rows = service.current_match_rows()
     fixtures = service.fixtures
     if stage:
         fixtures = [match for match in fixtures if match.stage == stage]
     if group:
         fixtures = [match for match in fixtures if match.group == group.upper()]
     prediction_run = service.current_prediction_run()
-    match_results = service.current_match_results()
+    match_results = service.current_match_results(rows)
     payload = [
         service.match_payload(match.id, prediction_run, match_results)
         for match in fixtures
     ]
+    if not group:
+        payload.extend(service.database_match_payloads(rows, prediction_run))
+    if stage:
+        payload = [match for match in payload if match["stage"] == stage]
     if team_id:
         payload = [
             match
@@ -98,7 +103,7 @@ def matches(
                 (match["away_team"] or {}).get("id"),
             )
         ]
-    return payload
+    return sorted(payload, key=lambda match: (match["kickoff"], match["number"]))
 
 
 @app.get(
@@ -108,12 +113,24 @@ def matches(
 )
 @app.get("/v1/matches/{match_id}", response_model=MatchResponse)
 def match(match_id: str) -> dict:
-    if not any(fixture.id == match_id for fixture in service.fixtures):
-        raise HTTPException(status_code=404, detail="Match not found")
-    return service.match_payload(
-        match_id,
-        match_results=service.current_match_results(),
+    rows = service.current_match_rows()
+    if any(fixture.id == match_id for fixture in service.fixtures):
+        return service.match_payload(
+            match_id,
+            match_results=service.current_match_results(rows),
+        )
+    prediction_run = service.current_prediction_run()
+    database_match = next(
+        (
+            item
+            for item in service.database_match_payloads(rows, prediction_run)
+            if item["id"] == match_id
+        ),
+        None,
     )
+    if database_match is None:
+        raise HTTPException(status_code=404, detail="Match not found")
+    return database_match
 
 
 @app.get("/v1/predictions/latest")

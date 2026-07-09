@@ -19,13 +19,13 @@ from modeling.src.standings import build_table
 
 
 class TournamentDataTests(unittest.TestCase):
-    def test_seed_has_official_shape(self):
+    def test_seed_has_canonical_group_fixture_shape(self):
         teams = load_teams()
         fixtures = build_fixtures(teams)
         validate_tournament(teams, fixtures)
         self.assertEqual(len(teams), 48)
-        self.assertEqual(len(fixtures), 104)
-        self.assertEqual(sum(match.stage == "group" for match in fixtures), 72)
+        self.assertEqual(len(fixtures), 72)
+        self.assertTrue(all(match.stage == "group" for match in fixtures))
         group_dates = [match.kickoff.date() for match in fixtures if match.stage == "group"]
         self.assertEqual(str(min(group_dates)), "2026-06-11")
         self.assertEqual(str(max(group_dates)), "2026-06-27")

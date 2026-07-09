@@ -64,24 +64,6 @@ const VENUE_IDS = [
   "ATL", "MIA", "NYNJ", "PHI", "SEA", "VAN", "GDL", "MTY",
 ];
 
-const KNOCKOUT_ROUNDS = [
-  ["round_of_32", 16, Date.UTC(2026, 5, 28, 16)],
-  ["round_of_16", 8, Date.UTC(2026, 6, 4, 16)],
-  ["quarterfinal", 4, Date.UTC(2026, 6, 9, 19)],
-  ["semifinal", 2, Date.UTC(2026, 6, 14, 19)],
-  ["third_place", 1, Date.UTC(2026, 6, 18, 19)],
-  ["final", 1, Date.UTC(2026, 6, 19, 19)],
-];
-
-const COMPLETED_STATUSES = new Set([
-  "completed",
-  "finished",
-  "full_time",
-  "ft",
-  "aet",
-  "pen",
-]);
-
 const normalizeName = (value = "") =>
   value.toLowerCase().replace(/[^a-z0-9]/g, "");
 
@@ -110,133 +92,20 @@ const stageFromValue = (value) => {
   return value ?? "group";
 };
 
-const knockoutRoundName = (number) => {
-  if (number <= 88) return ["Round of 32", number - 72];
-  if (number <= 96) return ["Round of 16", number - 88];
-  if (number <= 100) return ["Quarterfinal", number - 96];
-  if (number <= 102) return ["Semifinal", number - 100];
-  if (number === 103) return ["Third-place Match", 1];
-  return ["Final", 1];
-};
+const KNOCKOUT_STAGES = new Set([
+  "round_of_32",
+  "round_of_16",
+  "quarterfinal",
+  "semifinal",
+  "third_place",
+  "final",
+]);
 
 const friendlySlot = (slot) => {
   if (slot == null || slot === "") return "TBD";
   const raw = String(slot).trim();
   if (/^\d+$/.test(raw)) return "TBD";
-
-  const groupSlot = raw.match(/^(Winner|Runner-up|Third(?:-place)?) Group ([A-L])$/i);
-  if (groupSlot) return `${groupSlot[1]} Group ${groupSlot[2].toUpperCase()}`;
-
-  const matchSlot = raw.match(/^(Winner|Loser) M(?:atch )?(\d+)$/i);
-  if (matchSlot) {
-    const [, outcome, rawNumber] = matchSlot;
-    const [round, index] = knockoutRoundName(Number(rawNumber));
-    return `${outcome} ${round}${round === "Final" || round === "Third-place Match" ? "" : ` Match ${index}`}`;
-  }
-
-  const r32Slot = raw.match(/^R32-([HA])(\d+)$/i);
-  if (r32Slot) {
-    const side = r32Slot[1].toUpperCase() === "H" ? "home" : "away";
-    return `Round of 32 ${side} qualifier ${Number(r32Slot[2])}`;
-  }
-
   return raw;
-};
-
-const isCompletedMatch = (match) =>
-  match.completed === true ||
-  COMPLETED_STATUSES.has(String(match.status ?? "").toLowerCase()) ||
-  (match.home_score != null && match.away_score != null);
-
-const winnerTeam = (match) => {
-  if (!isCompletedMatch(match)) return null;
-  if (match.winner_team) return match.winner_team;
-  if (!match.home_team || !match.away_team) return null;
-  const homeScore = numberOrNull(match.home_score);
-  const awayScore = numberOrNull(match.away_score);
-  if (homeScore == null || awayScore == null || homeScore === awayScore) return null;
-  return homeScore > awayScore ? match.home_team : match.away_team;
-};
-
-const loserTeam = (match) => {
-  if (!isCompletedMatch(match)) return null;
-  if (!match.home_team || !match.away_team) return null;
-  const winner = winnerTeam(match);
-  if (!winner) return null;
-  return winner.id === match.home_team.id ? match.away_team : match.home_team;
-};
-
-const rankGroup = (teams, groupMatches) => {
-  const rows = new Map(
-    teams.map((team) => [team.id, {
-      team,
-      points: 0,
-      goals_for: 0,
-      goals_against: 0,
-    }]),
-  );
-  groupMatches.forEach((match) => {
-    if (!isCompletedMatch(match) || !match.home_team || !match.away_team) return;
-    const home = rows.get(match.home_team.id);
-    const away = rows.get(match.away_team.id);
-    const homeScore = numberOrNull(match.home_score);
-    const awayScore = numberOrNull(match.away_score);
-    if (!home || !away || homeScore == null || awayScore == null) return;
-    home.goals_for += homeScore;
-    home.goals_against += awayScore;
-    away.goals_for += awayScore;
-    away.goals_against += homeScore;
-    if (homeScore > awayScore) home.points += 3;
-    else if (awayScore > homeScore) away.points += 3;
-    else {
-      home.points += 1;
-      away.points += 1;
-    }
-  });
-  return [...rows.values()].sort((left, right) =>
-    right.points - left.points ||
-    (right.goals_for - right.goals_against) - (left.goals_for - left.goals_against) ||
-    right.goals_for - left.goals_for ||
-    left.team.id.localeCompare(right.team.id)
-  );
-};
-
-const qualificationKey = (row) => [
-  -row.points,
-  -(row.goals_for - row.goals_against),
-  -row.goals_for,
-  row.team.id,
-];
-
-const compareQualification = (left, right) => {
-  const a = qualificationKey(left);
-  const b = qualificationKey(right);
-  for (let index = 0; index < a.length; index += 1) {
-    if (a[index] < b[index]) return -1;
-    if (a[index] > b[index]) return 1;
-  }
-  return 0;
-};
-
-const buildRoundOf32Pairings = (groupTables) => {
-  const groups = "ABCDEFGHIJKL".split("");
-  const winners = groups.map((group) => groupTables.get(group)[0]);
-  const runners = groups.map((group) => groupTables.get(group)[1]);
-  const bestThirds = groups
-    .map((group) => groupTables.get(group)[2])
-    .sort(compareQualification)
-    .slice(0, 8);
-  const rankedRunners = [...runners].sort(compareQualification);
-  const seeded = [...winners, ...rankedRunners.slice(0, 4)];
-  const unseeded = [...rankedRunners.slice(4), ...bestThirds];
-  return seeded.map((seed) => {
-    const opponentIndex = Math.max(
-      0,
-      unseeded.findIndex((opponent) => opponent.team.group !== seed.team.group),
-    );
-    const [opponent] = unseeded.splice(opponentIndex, 1);
-    return [seed.team, opponent.team];
-  });
 };
 
 const explanationFields = (prediction = {}) => ({
@@ -364,8 +233,6 @@ export const buildPlaceholderMatches = (teams = mergeTeams()) => {
           away_team: teamsByGroupPosition.get(`${group}-${awayPosition}`) ?? null,
           home_slot: null,
           away_slot: null,
-          home_slot_key: null,
-          away_slot_key: null,
           status: "scheduled",
           home_score: null,
           away_score: null,
@@ -375,51 +242,6 @@ export const buildPlaceholderMatches = (teams = mergeTeams()) => {
       });
     });
   }
-
-  let previousNumbers = [];
-  let semifinalNumbers = [];
-  KNOCKOUT_ROUNDS.forEach(([stage, count, start]) => {
-    const currentNumbers = Array.from({ length: count }, (_, index) => number + index);
-    currentNumbers.forEach((matchNumber, index) => {
-      let homeSlot;
-      let awaySlot;
-      if (stage === "round_of_32") {
-        homeSlot = `R32-H${index + 1}`;
-        awaySlot = `R32-A${index + 1}`;
-      } else if (stage === "third_place") {
-        homeSlot = `Loser M${semifinalNumbers[0]}`;
-        awaySlot = `Loser M${semifinalNumbers[1]}`;
-      } else if (stage === "final") {
-        homeSlot = `Winner M${semifinalNumbers[0]}`;
-        awaySlot = `Winner M${semifinalNumbers[1]}`;
-      } else {
-        homeSlot = `Winner M${previousNumbers[index * 2]}`;
-        awaySlot = `Winner M${previousNumbers[index * 2 + 1]}`;
-      }
-      const kickoff = new Date(start + Math.floor(index / 3) * 24 * 60 * 60 * 1000 + (index % 3) * 3 * 60 * 60 * 1000);
-      fixtures.push({
-        id: `WC26-${String(matchNumber).padStart(3, "0")}`,
-        number: matchNumber,
-        stage,
-        kickoff: kickoff.toISOString(),
-        venue_id: VENUE_IDS[(matchNumber - 1) % VENUE_IDS.length],
-        group: null,
-        home_team: null,
-        away_team: null,
-        home_slot: friendlySlot(homeSlot),
-        away_slot: friendlySlot(awaySlot),
-        home_slot_key: homeSlot,
-        away_slot_key: awaySlot,
-        status: "scheduled",
-        home_score: null,
-        away_score: null,
-        prediction: predictionByMatchId.get(`WC26-${String(matchNumber).padStart(3, "0")}`) ?? null,
-      });
-    });
-    if (stage === "semifinal") semifinalNumbers = currentNumbers;
-    if (stage !== "third_place") previousNumbers = currentNumbers;
-    number += count;
-  });
 
   return fixtures.sort((a, b) =>
     a.kickoff.localeCompare(b.kickoff) || a.number - b.number
@@ -454,7 +276,10 @@ export const normalizeDatabaseMatches = (
   });
 
   return matchRows.map((row, index) => {
-    const canonicalId = row.canonical_match_id ?? row.match_id;
+    const stage = stageFromValue(row.stage ?? row.tournament_stage ?? "group");
+    const canonicalId = stage === "group"
+      ? row.canonical_match_id ?? row.match_id
+      : row.id ?? row.api_football_fixture_id ?? row.provider_fixture_id ?? row.canonical_match_id ?? row.match_id;
     const matchNumber = Number(
       row.match_number ?? row.number ?? String(canonicalId ?? row.id).match(/\d+$/)?.[0] ?? index + 1,
     );
@@ -528,7 +353,7 @@ export const normalizeDatabaseMatches = (
       id,
       number: matchNumber,
       provider_fixture_id: row.api_football_fixture_id ?? row.provider_fixture_id ?? null,
-      stage: stageFromValue(row.stage ?? row.tournament_stage ?? "group"),
+      stage,
       kickoff: new Date(row.kickoff ?? row.match_date).toISOString(),
       venue_id: row.venue_id ?? "TBD",
       group: row.group_code ?? row.group ?? homeTeam?.group ?? null,
@@ -536,8 +361,6 @@ export const normalizeDatabaseMatches = (
       away_team: awayTeam,
       home_slot: homeTeam ? null : friendlySlot(row.home_slot ?? row.home_team ?? null),
       away_slot: awayTeam ? null : friendlySlot(row.away_slot ?? row.away_team ?? null),
-      home_slot_key: row.home_slot ?? row.home_team ?? null,
-      away_slot_key: row.away_slot ?? row.away_team ?? null,
       status: row.status ?? (row.completed ? "completed" : "scheduled"),
       home_score: row.home_score ?? null,
       away_score: row.away_score ?? null,
@@ -553,15 +376,6 @@ const hoursBetween = (left, right) =>
 
 const matchesCanonicalFixture = (canonical, databaseMatch) => {
   if (canonical.id === databaseMatch.id) return true;
-  if (
-    canonical.number === databaseMatch.number &&
-    canonical.stage === databaseMatch.stage
-  ) return true;
-  if (
-    canonical.stage !== "group" &&
-    databaseMatch.stage === canonical.stage &&
-    hoursBetween(databaseMatch.kickoff, canonical.kickoff) <= 36
-  ) return true;
   if (!canonical.home_team || !canonical.away_team) return false;
   return databaseMatch.home_team?.id === canonical.home_team.id &&
     databaseMatch.away_team?.id === canonical.away_team.id &&
@@ -605,85 +419,22 @@ export const mergeDatabaseMatches = (canonicalMatches, databaseMatches) => {
       away_team: databaseMatch.away_team ?? canonical.away_team,
       home_slot: databaseMatch.home_team ? null : databaseMatch.home_slot ?? canonical.home_slot,
       away_slot: databaseMatch.away_team ? null : databaseMatch.away_slot ?? canonical.away_slot,
-      home_slot_key: databaseMatch.home_team ? null : databaseMatch.home_slot_key ?? canonical.home_slot_key,
-      away_slot_key: databaseMatch.away_team ? null : databaseMatch.away_slot_key ?? canonical.away_slot_key,
       status: databaseMatch.status ?? canonical.status,
       home_score: databaseMatch.home_score ?? canonical.home_score ?? null,
       away_score: databaseMatch.away_score ?? canonical.away_score ?? null,
       prediction,
     };
   });
-  return resolveKnockoutParticipants(merged);
-};
-
-export const resolveKnockoutParticipants = (matches) => {
-  const byNumber = new Map(matches.map((match) => [match.number, match]));
-  const groupTables = new Map();
-  const groupComplete = new Set();
-  "ABCDEFGHIJKL".split("").forEach((group) => {
-    const groupMatches = matches.filter((match) => match.stage === "group" && match.group === group);
-    const teams = [...new Map(
-      groupMatches
-        .flatMap((match) => [match.home_team, match.away_team])
-        .filter(Boolean)
-        .map((team) => [team.id, team]),
-    ).values()];
-    if (teams.length === 4 && groupMatches.length === 6) {
-      groupTables.set(group, rankGroup(teams, groupMatches));
-      if (groupMatches.every(isCompletedMatch)) groupComplete.add(group);
-    }
-  });
-  const allGroupsComplete = groupComplete.size === 12;
-  const r32Pairings = allGroupsComplete ? buildRoundOf32Pairings(groupTables) : [];
-
-  const resolveSlot = (slot, matchNumber, side) => {
-    const raw = String(slot ?? "");
-    const r32 = raw.match(/^R32-([HA])(\d+)$/i);
-    if (r32) {
-      const index = Number(r32[2]) - 1;
-      if (allGroupsComplete) return r32Pairings[index]?.[side === "home" ? 0 : 1] ?? null;
-      if (side === "home") {
-        const group = "ABCDEFGHIJKL"[index];
-        if (groupComplete.has(group)) return groupTables.get(group)?.[0]?.team ?? null;
-      }
-      return null;
-    }
-    const groupSlot = raw.match(/^(Winner|Runner-up|Third(?:-place)?) Group ([A-L])$/i);
-    if (groupSlot) {
-      const group = groupSlot[2].toUpperCase();
-      if (!groupComplete.has(group)) return null;
-      const position = groupSlot[1].toLowerCase().startsWith("winner")
-        ? 0
-        : groupSlot[1].toLowerCase().startsWith("runner")
-          ? 1
-          : 2;
-      return groupTables.get(group)?.[position]?.team ?? null;
-    }
-    const parentSlot = raw.match(/^(Winner|Loser) M(?:atch )?(\d+)$/i);
-    if (parentSlot) {
-      const parent = byNumber.get(Number(parentSlot[2]));
-      if (!parent) return null;
-      return parentSlot[1].toLowerCase() === "winner"
-        ? winnerTeam(parent)
-        : loserTeam(parent);
-    }
-    return null;
-  };
-
-  return matches.map((match) => {
-    if (match.stage === "group") return match;
-    const home = match.home_team ?? resolveSlot(match.home_slot_key ?? match.home_slot, match.number, "home");
-    const away = match.away_team ?? resolveSlot(match.away_slot_key ?? match.away_slot, match.number, "away");
-    const resolved = {
-      ...match,
-      home_team: home,
-      away_team: away,
-      home_slot: home ? null : friendlySlot(match.home_slot),
-      away_slot: away ? null : friendlySlot(match.away_slot),
-    };
-    byNumber.set(resolved.number, resolved);
-    return resolved;
-  });
+  const usedIds = new Set(merged.map((match) => match.id));
+  const providerKnockouts = databaseMatches.filter((match) =>
+    KNOCKOUT_STAGES.has(match.stage) &&
+    match.home_team &&
+    match.away_team &&
+    !usedIds.has(match.id)
+  );
+  return [...merged, ...providerKnockouts].sort((a, b) =>
+    a.kickoff.localeCompare(b.kickoff) || a.number - b.number
+  );
 };
 
 export const mergeCanonicalPredictions = (matches, predictionRows = []) => {

@@ -209,7 +209,7 @@ def test_tournament_shape():
     response = client.get("/v1/tournament")
     assert response.status_code == 200
     assert response.json()["team_count"] == 48
-    assert response.json()["match_count"] == 104
+    assert response.json()["match_count"] == 72
 
 
 def test_teams_return_non_empty_names():
@@ -246,14 +246,14 @@ def test_group_matches_are_chronological():
     assert [match["group"] for match in matches[:5]] == ["A", "A", "B", "D", "B"]
 
 
-def test_api_exposes_full_104_match_tournament_catalog():
+def test_api_exposes_group_catalog_without_inferred_knockout_fixtures():
     response = client.get("/v1/matches")
     matches = response.json()
 
     assert response.status_code == 200
-    assert len(matches) == 104
-    assert sum(match["stage"] == "group" for match in matches) == 72
-    assert any(match["stage"] == "round_of_32" for match in matches)
+    assert len(matches) == 72
+    assert all(match["stage"] == "group" for match in matches)
+    assert client.get("/v1/matches?stage=round_of_32").json() == []
 
 
 def test_model_performance_is_published():
@@ -309,74 +309,118 @@ def _completed_group_results(service):
     }
 
 
-def test_completed_group_stage_resolves_round_of_32_teams():
+def test_completed_group_stage_does_not_infer_round_of_32_fixture():
     service = PredictionService(match_result_source=None)
     results = _completed_group_results(service)
 
-    payload = service.match_payload("WC26-073", match_results=results)
-
-    assert payload["home_team"]["name"]
-    assert payload["home_team"]["flag"]
-    assert payload["away_team"]["id"].isalpha()
-    assert payload["home_slot"] is None
-    assert payload["away_slot"] is None
-
-
-def test_partial_group_stage_resolves_known_team_and_keeps_friendly_unknown_slot():
-    service = PredictionService(match_result_source=None)
-    results = {
-        match.id: {"status": "completed", "home_score": 1, "away_score": 0}
-        for match in service.fixtures
-        if match.stage == "group" and match.group == "A"
-    }
-
-    payload = service.match_payload("WC26-073", match_results=results)
-
-    assert payload["home_team"]["name"]
-    assert payload["home_slot"] is None
-    assert payload["away_team"] is None
-    assert payload["away_slot"] == "Round of 32 away qualifier 1"
-    assert not payload["away_slot"].isdigit()
+    assert all(match.stage == "group" for match in service.fixtures)
+    assert not any(match.id == "WC26-073" for match in service.fixtures)
+    try:
+        service.match_payload("WC26-073", match_results=results)
+    except StopIteration:
+        pass
+    else:
+        raise AssertionError("inferred Round of 32 fixture should not exist")
 
 
-def test_later_knockout_round_inherits_completed_match_winner():
-    service = PredictionService(match_result_source=None)
-    results = _completed_group_results(service)
-    home, away = service.resolve_match_participants(results)["WC26-073"]
-    results["WC26-073"] = {
-        "status": "completed",
-        "home_score": 3,
-        "away_score": 1,
-        "home_team_id": home,
-        "away_team_id": away,
-    }
+def test_provider_round_of_32_fixture_appears_exactly_as_provided(monkeypatch):
+    class MatchResultSource:
+        def load(self):
+            return [
+                {
+                    "id": "provider-r32-90073",
+                    "api_football_fixture_id": 90073,
+                    "match_number": 73,
+                    "match_date": "2026-06-28T16:00:00+00:00",
+                    "tournament_stage": "Round of 32",
+                    "home_team_name": "Mexico",
+                    "away_team_name": "South Africa",
+                    "status": "scheduled",
+                }
+            ]
 
-    payload = service.match_payload("WC26-089", match_results=results)
-
-    assert payload["home_team"]["id"] == home
-    assert payload["home_slot"] is None
-    assert payload["away_team"] is None
-    assert payload["away_slot"] == "Winner Round of 32 Match 2"
-
-
-def test_team_match_filter_includes_resolved_knockout_fixtures(monkeypatch):
-    service = PredictionService(match_result_source=None, prediction_cache_seconds=0)
-    results = _completed_group_results(service)
-    resolved_home, _ = service.resolve_match_participants(results)["WC26-073"]
+    service = PredictionService(
+        match_result_source=MatchResultSource(),
+        prediction_cache_seconds=0,
+    )
     monkeypatch.setattr(main_module, "service", service)
-    monkeypatch.setattr(service, "current_match_results", lambda: results)
 
-    response = client.get(f"/v1/matches?team_id={resolved_home}")
+    response = client.get("/v1/matches?stage=round_of_32")
     payload = response.json()
 
     assert response.status_code == 200
-    assert any(match["id"] == "WC26-073" for match in payload)
-    knockout = next(match for match in payload if match["id"] == "WC26-073")
-    assert resolved_home in (
-        knockout["home_team"]["id"],
-        knockout["away_team"]["id"],
+    assert len(payload) == 1
+    assert payload[0]["id"] == "provider-r32-90073"
+    assert payload[0]["number"] == 73
+    assert payload[0]["home_team"]["name"] == "Mexico"
+    assert payload[0]["away_team"]["name"] == "South Africa"
+    assert payload[0]["home_slot"] is None
+    assert payload[0]["away_slot"] is None
+
+
+def test_completed_real_knockout_fixture_is_available_as_result(monkeypatch):
+    class MatchResultSource:
+        def load(self):
+            return [
+                {
+                    "id": "provider-r16-90089",
+                    "match_number": 89,
+                    "match_date": "2026-07-04T16:00:00+00:00",
+                    "tournament_stage": "Round of 16",
+                    "home_team_name": "Mexico",
+                    "away_team_name": "South Africa",
+                    "status": "finished",
+                    "home_score": 2,
+                    "away_score": 1,
+                }
+            ]
+
+    service = PredictionService(
+        match_result_source=MatchResultSource(),
+        prediction_cache_seconds=0,
     )
-    assert knockout["home_slot"] is None or knockout["away_slot"] is None
+    monkeypatch.setattr(main_module, "service", service)
+
+    response = client.get("/v1/matches/provider-r16-90089")
+    payload = response.json()
+
+    assert response.status_code == 200
+    assert payload["stage"] == "round_of_16"
+    assert payload["status"] == "finished"
+    assert payload["home_score"] == 2
+    assert payload["away_score"] == 1
+
+
+def test_team_match_filter_includes_real_provider_knockout_only(monkeypatch):
+    class MatchResultSource:
+        def load(self):
+            return [
+                {
+                    "id": "provider-r32-90073",
+                    "match_number": 73,
+                    "match_date": "2026-06-28T16:00:00+00:00",
+                    "tournament_stage": "Round of 32",
+                    "home_team_name": "Mexico",
+                    "away_team_name": "South Africa",
+                    "status": "scheduled",
+                }
+            ]
+
+    service = PredictionService(
+        match_result_source=MatchResultSource(),
+        prediction_cache_seconds=0,
+    )
+    monkeypatch.setattr(main_module, "service", service)
+
+    response = client.get("/v1/matches?team_id=MEX")
+    payload = response.json()
+
+    assert response.status_code == 200
+    assert any(match["id"] == "provider-r32-90073" for match in payload)
+    assert not any(
+        match["stage"] != "group" and match["id"] != "provider-r32-90073"
+        for match in payload
+    )
 
 
 def test_completed_match_results_are_merged_into_canonical_fixtures(monkeypatch):

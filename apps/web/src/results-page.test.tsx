@@ -131,7 +131,7 @@ describe("Results page", () => {
     queryClient.setQueryData(["matches"], [
       {
         ...completedMatch,
-        id: "WC26-073",
+        id: "provider-r32-90073",
         number: 73,
         stage: "round_of_32",
         group: null,
