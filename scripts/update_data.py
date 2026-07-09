@@ -16,6 +16,7 @@ if str(ROOT) not in sys.path:
 from scripts.data_ingestion import (
     DataIngestionRepository,
     RateLimitError,
+    SchemaValidationError,
     create_sports_provider,
 )
 from scripts.database import create_database_engine
@@ -405,6 +406,9 @@ def main() -> int:
             error,
         )
         return 0
+    except SchemaValidationError as error:
+        logger.error("[daily-ingestion] FAILED: %s", error)
+        return 2
     except Exception:
         logger.exception("[daily-ingestion] FAILED: unexpected ingestion error")
         return 1

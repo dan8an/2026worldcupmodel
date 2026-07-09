@@ -18,6 +18,7 @@ alter table public.teams
 alter table public.matches
   add column if not exists home_team_id uuid,
   add column if not exists away_team_id uuid,
+  add column if not exists status text,
   add column if not exists api_football_fixture_id bigint,
   add column if not exists provider_name text,
   add column if not exists provider_payload jsonb not null default '{}'::jsonb,

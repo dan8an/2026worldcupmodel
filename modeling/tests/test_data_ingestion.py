@@ -13,7 +13,7 @@ from scripts.data_ingestion.providers import (
     SampleSportsProvider,
     create_sports_provider,
 )
-from scripts.data_ingestion.repository import DataIngestionRepository
+from scripts.data_ingestion.repository import DataIngestionRepository, SchemaValidationError
 from scripts.database import (
     configure_database_timeouts,
     create_database_engine,
@@ -23,6 +23,38 @@ from scripts.update_data import main, merge_provider_fixtures, parse_args
 
 
 class DataIngestionTests(unittest.TestCase):
+    def _provider_schema_connection(
+        self,
+        columns: dict[str, str],
+        has_fixture_index: bool = True,
+    ):
+        class Result:
+            def __init__(self, rows=None, scalar=None):
+                self.rows = rows or []
+                self.scalar = scalar
+
+            def mappings(self):
+                return self.rows
+
+            def scalar_one(self):
+                return self.scalar
+
+        class Connection:
+            def execute(self, statement, parameters=None):
+                sql = str(statement)
+                if "information_schema.columns" in sql:
+                    return Result(
+                        [
+                            {"column_name": name, "data_type": data_type}
+                            for name, data_type in columns.items()
+                        ]
+                    )
+                if "pg_index" in sql:
+                    return Result(scalar=has_fixture_index)
+                raise AssertionError(f"unexpected schema query: {sql}")
+
+        return Connection()
+
     def test_missing_key_uses_sample_provider(self):
         provider = create_sports_provider({"SPORTS_PROVIDER": "api_football"})
         self.assertIsInstance(provider, SampleSportsProvider)
@@ -666,8 +698,10 @@ class DataIngestionTests(unittest.TestCase):
         statement, parameters = connection.execute.call_args.args
         sql = str(statement)
         self.assertIn("on conflict (api_football_fixture_id)", sql)
+        self.assertIn("status, api_football_fixture_id", sql)
         self.assertIn("do update set", sql)
         self.assertIn("completed = excluded.completed", sql)
+        self.assertIn("status = excluded.status", sql)
         self.assertIs(parameters["completed"], True)
         self.assertEqual(parameters["status"], "FT")
         self.assertEqual(parameters["fixture_id"], 1489370)
@@ -726,6 +760,38 @@ class DataIngestionTests(unittest.TestCase):
         self.assertEqual(parameters["home_score"], 1)
         self.assertEqual(parameters["away_score"], 1)
         self.assertIs(result["updated_from_scheduled"], True)
+
+    def test_provider_schema_validation_reports_missing_matches_status(self):
+        connection = self._provider_schema_connection(
+            {
+                "api_football_fixture_id": "bigint",
+                "provider_name": "text",
+                "provider_payload": "jsonb",
+            }
+        )
+
+        with self.assertRaisesRegex(
+            SchemaValidationError,
+            "missing required matches columns: status",
+        ) as raised:
+            DataIngestionRepository.assert_provider_match_schema(connection)
+
+        self.assertIn(
+            "202606120002_matches_provider_schema_repair.sql",
+            str(raised.exception),
+        )
+
+    def test_provider_schema_validation_accepts_status_and_provider_columns(self):
+        connection = self._provider_schema_connection(
+            {
+                "status": "text",
+                "api_football_fixture_id": "bigint",
+                "provider_name": "text",
+                "provider_payload": "jsonb",
+            }
+        )
+
+        DataIngestionRepository.assert_provider_match_schema(connection)
 
 
 if __name__ == "__main__":

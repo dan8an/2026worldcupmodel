@@ -28,6 +28,35 @@ def _stat(stats: dict[str, Any], *names: str) -> Any:
 
 
 COMPLETED_STATUSES = {"FT", "AET", "PEN", "completed", "finished"}
+PROVIDER_MATCH_COLUMNS = {
+    "status": {"text"},
+    "api_football_fixture_id": {"bigint", "integer"},
+    "provider_name": {"text"},
+    "provider_payload": {"jsonb"},
+}
+PROVIDER_MATCH_MIGRATION = (
+    "supabase/migrations/202606120002_matches_provider_schema_repair.sql"
+)
+
+
+class SchemaValidationError(RuntimeError):
+    """Raised when the deployed database is missing ingestion schema."""
+
+
+def _provider_schema_error(missing: list[str], invalid: list[str]) -> SchemaValidationError:
+    details = []
+    if missing:
+        details.append(f"missing required matches columns: {', '.join(missing)}")
+    if invalid:
+        details.append(f"invalid matches column types: {', '.join(invalid)}")
+    return SchemaValidationError(
+        "Daily pipeline schema is missing provider match support "
+        f"({'; '.join(details)}). Apply {PROVIDER_MATCH_MIGRATION} in Supabase, "
+        "then rerun the cron. Required columns are "
+        "public.matches.status text, api_football_fixture_id bigint/integer, "
+        "provider_name text, provider_payload jsonb, plus a unique partial index "
+        "on api_football_fixture_id where it is not null."
+    )
 
 
 class DataIngestionRepository:
@@ -37,6 +66,7 @@ class DataIngestionRepository:
 
     def assert_schema(self) -> None:
         with self.engine.connect() as connection:
+            self.assert_provider_match_schema(connection)
             schema = connection.execute(
                 text(
                     """
@@ -44,12 +74,6 @@ class DataIngestionRepository:
                       to_regclass('public.players') is not null as players,
                       to_regclass('public.team_match_stats') is not null as team_stats,
                       to_regclass('public.player_match_stats') is not null as player_stats,
-                      exists (
-                        select 1 from information_schema.columns
-                        where table_schema = 'public'
-                          and table_name = 'matches'
-                          and column_name = 'api_football_fixture_id'
-                      ) as provider_fixture_id,
                       (
                         select count(*) = 5
                         from information_schema.columns
@@ -67,11 +91,62 @@ class DataIngestionRepository:
                 )
             ).mappings().one()
         if not all(schema.values()):
-            raise RuntimeError(
+            raise SchemaValidationError(
                 "Daily pipeline schema is missing. Apply "
                 "supabase/migrations/202606100001_daily_prediction_pipeline.sql and "
                 "supabase/migrations/202606110003_xg_proxy_v4.sql first."
             )
+
+    @staticmethod
+    def assert_provider_match_schema(connection: Connection) -> None:
+        columns = {
+            row["column_name"]: row["data_type"]
+            for row in connection.execute(
+                text(
+                    """
+                    select column_name, data_type
+                    from information_schema.columns
+                    where table_schema = 'public'
+                      and table_name = 'matches'
+                      and column_name = any(:columns)
+                    """
+                ),
+                {"columns": list(PROVIDER_MATCH_COLUMNS)},
+            ).mappings()
+        }
+        missing = [
+            name for name in PROVIDER_MATCH_COLUMNS if name not in columns
+        ]
+        invalid = [
+            f"{name} ({columns[name]})"
+            for name, allowed_types in PROVIDER_MATCH_COLUMNS.items()
+            if name in columns and columns[name] not in allowed_types
+        ]
+        has_fixture_index = connection.execute(
+            text(
+                """
+                select exists (
+                  select 1
+                  from pg_index i
+                  join pg_class t on t.oid = i.indrelid
+                  join pg_namespace n on n.oid = t.relnamespace
+                  where n.nspname = 'public'
+                    and t.relname = 'matches'
+                    and i.indisunique
+                    and i.indpred is not null
+                    and pg_get_indexdef(i.indexrelid) ilike '%api_football_fixture_id%'
+                    and pg_get_expr(i.indpred, i.indrelid) ilike
+                      '%api_football_fixture_id IS NOT NULL%'
+                )
+                """
+            )
+        ).scalar_one()
+        if not has_fixture_index:
+            missing.append(
+                "unique partial index on api_football_fixture_id where not null"
+            )
+        if missing or invalid:
+            raise _provider_schema_error(missing, invalid)
 
     def upsert_provider_matches(
         self,
@@ -80,6 +155,7 @@ class DataIngestionRepository:
     ) -> int:
         context = nullcontext(connection) if connection is not None else self.engine.begin()
         with context as active_connection:
+            self.assert_provider_match_schema(active_connection)
             for match in matches:
                 home_team_id = self._upsert_team(active_connection, match["home_team"])
                 away_team_id = self._upsert_team(active_connection, match["away_team"])

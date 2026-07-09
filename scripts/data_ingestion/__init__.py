@@ -6,12 +6,13 @@ from .providers import (
     SportsProvider,
     create_sports_provider,
 )
-from .repository import DataIngestionRepository
+from .repository import DataIngestionRepository, SchemaValidationError
 
 __all__ = [
     "DataIngestionRepository",
     "RateLimitError",
     "RequestLimitError",
+    "SchemaValidationError",
     "SportsProvider",
     "create_sports_provider",
 ]
