@@ -142,6 +142,21 @@ run the persisted tournament simulation:
 python scripts/run_simulations.py
 ```
 
+If production contains legacy/provider group-result rows without canonical
+fixture identity, apply `supabase/migrations/202607100001_wc26_group_match_identity.sql`
+and inspect the repair before committing it:
+
+```bash
+python scripts/repair_wc26_group_matches.py
+python scripts/repair_wc26_group_matches.py --apply
+python scripts/repair_wc26_group_matches.py
+```
+
+The command reports the official completed group count, missing `WC26-001`
+through `WC26-072` identifiers, scored rows lacking official identity, and
+duplicate rows to merge. Seed fixtures provide identity and schedule only;
+the repair copies scores solely from completed rows already in the database.
+
 The command reads the latest canonical prediction run and simulates 50,000
 tournaments by default. For a smaller manual check, use
 `python scripts/run_simulations.py --simulations 1000 --seed 2026`.
