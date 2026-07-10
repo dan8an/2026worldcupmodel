@@ -11,12 +11,18 @@ import json
 import logging
 import os
 import re
+import sys
 from dataclasses import dataclass
 from datetime import datetime, timezone
+from pathlib import Path
 from typing import Any
 
 from sqlalchemy import MetaData, Table, inspect, select, text
 from sqlalchemy.engine import Connection, Engine
+
+ROOT = Path(__file__).resolve().parents[1]
+if str(ROOT) not in sys.path:
+    sys.path.insert(0, str(ROOT))
 
 from modeling.src.data import build_fixtures, load_teams
 from scripts.database import create_database_engine
