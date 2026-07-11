@@ -3,18 +3,21 @@
 from __future__ import annotations
 
 import argparse
+import json
 import logging
 import math
 import sys
 import warnings
 from collections import defaultdict
 from dataclasses import dataclass
-from datetime import datetime, timedelta, timezone
+from datetime import date, datetime, timedelta, timezone
+from decimal import Decimal
+from enum import Enum
 from pathlib import Path
 from typing import Any, Iterable
-from uuid import uuid4
+from uuid import UUID, uuid4
 
-from sqlalchemy import MetaData, Table, inspect, select
+from sqlalchemy import JSON, MetaData, Table, inspect, select
 from sqlalchemy.engine import Engine
 from sqlalchemy.exc import SAWarning
 
@@ -46,6 +49,29 @@ LOGGER = logging.getLogger("historical-knockout-backfill")
 TARGET_STAGES = {"round_of_32", "round_of_16"}
 COMPLETED_STATUSES = {"completed", "finished", "ft", "aet", "pen"}
 SAFETY_MARGIN = timedelta(seconds=1)
+
+
+def json_safe(value: Any) -> Any:
+    """Recursively convert a value to JSON-native primitives."""
+    if value is None or isinstance(value, (str, int, float, bool)):
+        return value
+    if isinstance(value, UUID):
+        return str(value)
+    if isinstance(value, (datetime, date)):
+        return value.isoformat()
+    if isinstance(value, Decimal):
+        return float(value)
+    if isinstance(value, Path):
+        return str(value)
+    if isinstance(value, Enum):
+        return json_safe(value.value)
+    if isinstance(value, dict):
+        return {str(key): json_safe(item) for key, item in value.items()}
+    if isinstance(value, (list, tuple)):
+        return [json_safe(item) for item in value]
+    if isinstance(value, (set, frozenset)):
+        return [json_safe(item) for item in sorted(value, key=repr)]
+    raise TypeError(f"Object of type {type(value).__name__} is not JSON serializable")
 
 
 @dataclass(frozen=True)
@@ -296,11 +322,31 @@ class HistoricalBackfillRepository:
         with self.engine.connect() as connection:
             return [dict(row) for row in connection.execute(select(*columns).join(matches, matches.c.id == stats.c.match_id)).mappings()]
 
+    @staticmethod
+    def _insert_values(table: Table, values: dict[str, Any]) -> dict[str, Any]:
+        """Filter table values and sanitize JSON columns without coercing SQL types."""
+        compatible = PredictionRepository._compatible_values(table, values)
+        for key in list(compatible):
+            if not isinstance(table.c[key].type, JSON):
+                continue
+            try:
+                compatible[key] = json_safe(compatible[key])
+                # Validate here so failures identify the exact field instead of
+                # surfacing later from a dialect JSON serializer.
+                json.dumps(compatible[key])
+            except (TypeError, ValueError):
+                LOGGER.exception(
+                    "JSON serialization failed table=%s field=%s value_type=%s",
+                    table.name, key, type(values.get(key)).__name__,
+                )
+                raise
+        return compatible
+
     def store(self, prediction: dict[str, Any], generated_at: datetime) -> str:
         runs, predictions = self.table("model_runs"), self.table("predictions")
         run_id = str(uuid4())
         now = generated_at.isoformat()
-        run_values = PredictionRepository._compatible_values(runs, {
+        run_values = self._insert_values(runs, {
             "id": run_id, "run_date": generated_at.date().isoformat(), "model_version": MODEL_VERSION,
             "notes": MODEL_DESCRIPTION, "data_cutoff": prediction["historical_cutoff"],
             "status": "completed", "random_seed": 0, "generated_at": now,
@@ -309,9 +355,10 @@ class HistoricalBackfillRepository:
                 "database_match_id": prediction.get("database_match_id"),
                 "provider_fixture_id": prediction.get("provider_fixture_id"),
                 "canonical_match_id": prediction.get("canonical_match_id"),
+                "provenance": prediction.get("run_metadata", {}),
             },
         })
-        values = PredictionRepository._compatible_values(predictions, {
+        values = self._insert_values(predictions, {
             **prediction, "id": str(uuid4()), "model_run_id": run_id,
             "prediction_timestamp": now, "model_version": MODEL_VERSION,
             "data_cutoff": prediction["historical_cutoff"], "created_at": now, "updated_at": now,

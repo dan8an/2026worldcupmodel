@@ -1,13 +1,23 @@
 from __future__ import annotations
 
-from datetime import datetime, timezone
+from datetime import date, datetime, timezone
+from decimal import Decimal
+from enum import Enum
+from pathlib import Path
+from uuid import uuid4
 
 import pytest
+from sqlalchemy import (
+    JSON, CheckConstraint, Column, Float, Integer, MetaData, String,
+    Table, create_engine, func, select,
+)
 
 from scripts.backfill_historical_knockout_predictions import (
     build_historical_state,
     is_authentic_prediction,
+    json_safe,
     main,
+    HistoricalBackfillRepository,
     resolve_knockout_identity,
     target_matches,
 )
@@ -263,3 +273,156 @@ def test_all_identities_missing_skips_clearly_without_crashing(monkeypatch, capl
     assert "reason=no_stable_fixture_identity" in caplog.text
     assert "teams=USA_vs_MEX" in caplog.text
     assert "kickoff=2026-07-04T20:00:00+00:00" in caplog.text
+
+
+class ExampleMode(Enum):
+    BACKFILL = "historical_backfill"
+
+
+def test_json_safe_recursively_converts_uuid_datetime_and_supported_types():
+    identifier = uuid4()
+    occurred_at = datetime(2026, 7, 4, 20, tzinfo=timezone.utc)
+    value = {
+        "metadata": {
+            "fixture": identifier,
+            "nested": [occurred_at, date(2026, 7, 4), Decimal("1.25")],
+            "mode": ExampleMode.BACKFILL,
+            "path": Path("reports/backfill.json"),
+            "set": {identifier},
+        }
+    }
+    safe = json_safe(value)
+    assert safe["metadata"]["fixture"] == str(identifier)
+    assert safe["metadata"]["nested"] == [
+        "2026-07-04T20:00:00+00:00", "2026-07-04", 1.25,
+    ]
+    assert safe["metadata"]["mode"] == "historical_backfill"
+    assert safe["metadata"]["path"] == "reports/backfill.json"
+    assert safe["metadata"]["set"] == [str(identifier)]
+
+
+def repository_schema():
+    engine = create_engine("sqlite://")
+    metadata = MetaData()
+    Table(
+        "model_runs", metadata,
+        Column("id", String, primary_key=True),
+        Column("run_date", String),
+        Column("model_version", String),
+        Column("notes", String),
+        Column("data_cutoff", String),
+        Column("status", String),
+        Column("random_seed", Integer),
+        Column("generated_at", String),
+        Column("metadata", JSON),
+    )
+    Table(
+        "predictions", metadata,
+        Column("id", String, primary_key=True),
+        Column("model_run_id", String, nullable=False),
+        Column("match_id", String),
+        Column("provider_fixture_id", Integer),
+        Column("canonical_match_id", String),
+        Column("model_version", String),
+        Column("generation_mode", String),
+        Column("historical_cutoff", String),
+        Column("backfilled_at", String),
+        Column("prediction_timestamp", String),
+        Column("created_at", String),
+        Column("updated_at", String),
+        Column("data_cutoff", String),
+        Column("home_win_probability", Float),
+        Column("draw_probability", Float),
+        Column("away_win_probability", Float),
+        Column("provenance", JSON),
+        CheckConstraint("home_win_probability >= 0", name="valid_home_probability"),
+    )
+    metadata.create_all(engine)
+    return engine
+
+
+def stored_prediction(match_id: str, home_probability=0.5):
+    provenance_uuid = uuid4()
+    return {
+        "database_match_id": match_id,
+        "match_id": match_id,
+        "provider_fixture_id": 99089,
+        "canonical_match_id": None,
+        "historical_cutoff": "2026-07-04T19:59:59+00:00",
+        "home_win_probability": home_probability,
+        "draw_probability": 0.25,
+        "away_win_probability": 0.25,
+        "provenance": {
+            "fixture_uuid": provenance_uuid,
+            "generated_for": datetime(2026, 7, 4, 20, tzinfo=timezone.utc),
+        },
+        "_expected_provenance_uuid": provenance_uuid,
+    }
+
+
+def table_count(engine, name):
+    table = Table(name, MetaData(), autoload_with=engine)
+    with engine.connect() as connection:
+        return connection.execute(select(func.count()).select_from(table)).scalar_one()
+
+
+def test_store_sanitizes_nested_run_metadata_and_prediction_provenance():
+    engine = repository_schema()
+    repository = HistoricalBackfillRepository(engine)
+    match_id = str(uuid4())
+    payload = stored_prediction(match_id)
+    expected_provenance_uuid = payload.pop("_expected_provenance_uuid")
+    nested_run_uuid = uuid4()
+    payload["run_metadata"] = {
+        "nested": {"fixture_uuid": nested_run_uuid},
+        "prepared_at": datetime(2026, 7, 10, 11, tzinfo=timezone.utc),
+    }
+    run_id = repository.store(
+        payload,
+        datetime(2026, 7, 10, 12, tzinfo=timezone.utc),
+    )
+    assert run_id != "skipped_existing_backfill"
+    assert table_count(engine, "model_runs") == 1
+    assert table_count(engine, "predictions") == 1
+
+    runs = repository.table("model_runs")
+    predictions = repository.table("predictions")
+    with engine.connect() as connection:
+        metadata = connection.execute(select(runs.c.metadata)).scalar_one()
+        provenance = connection.execute(select(predictions.c.provenance)).scalar_one()
+    assert metadata["database_match_id"] == match_id
+    assert metadata["provenance"] == {
+        "nested": {"fixture_uuid": str(nested_run_uuid)},
+        "prepared_at": "2026-07-10T11:00:00+00:00",
+    }
+    assert provenance == {
+        "fixture_uuid": str(expected_provenance_uuid),
+        "generated_for": "2026-07-04T20:00:00+00:00",
+    }
+
+
+def test_store_rolls_back_prediction_failure_then_reruns_idempotently():
+    engine = repository_schema()
+    repository = HistoricalBackfillRepository(engine)
+    match_id = str(uuid4())
+    generated_at = datetime(2026, 7, 10, 12, tzinfo=timezone.utc)
+
+    with pytest.raises(Exception):
+        failed = stored_prediction(match_id, home_probability=-1)
+        failed.pop("_expected_provenance_uuid")
+        repository.store(failed, generated_at)
+    assert table_count(engine, "model_runs") == 0
+    assert table_count(engine, "predictions") == 0
+
+    successful = stored_prediction(match_id)
+    successful.pop("_expected_provenance_uuid")
+    run_id = repository.store(successful, generated_at)
+    assert run_id != "skipped_existing_backfill"
+    assert table_count(engine, "model_runs") == 1
+    assert table_count(engine, "predictions") == 1
+
+    duplicate = stored_prediction(match_id)
+    duplicate.pop("_expected_provenance_uuid")
+    assert repository.store(duplicate, generated_at) == "skipped_existing_backfill"
+    assert table_count(engine, "model_runs") == 1
+    assert table_count(engine, "predictions") == 1
