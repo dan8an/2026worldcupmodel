@@ -1,6 +1,7 @@
 import unittest
 
 from modeling.src.data import build_fixtures, load_teams
+from scripts.generate_predictions import map_database_team_ids
 from scripts.repair_wc26_group_matches import diagnostic_report, plan_repairs
 
 
@@ -74,6 +75,48 @@ class GroupMatchRepairTests(unittest.TestCase):
         action = plan_repairs([provider], self.team_ids)[0]
 
         self.assertIs(action.score_source, provider)
+
+    def test_maps_production_team_name_and_code_variants(self):
+        variants = {
+            "BIH": ["BIH", "Bosnia and Herzegovina"],
+            "COD": ["COD", "DR Congo", "Congo DR"],
+            "CPV": ["CPV", "Cape Verde", "Cabo Verde"],
+            "CUW": ["CUW", "Curaçao", "Curacao"],
+            "CZE": ["CZE", "Czechia", "Czech Republic"],
+            "TUR": ["TUR", "Turkey", "Türkiye"],
+            "USA": ["USA", "United States", "United States of America"],
+        }
+        for code, names in variants.items():
+            for name in names:
+                with self.subTest(code=code, name=name):
+                    mapping = map_database_team_ids([
+                        {"id": f"database-{code}", "name": name,
+                         "api_football_team_id": 1000}
+                    ])
+                    self.assertEqual(mapping[code], f"database-{code}")
+
+    def test_team_mapping_rejects_ambiguous_alias_rows(self):
+        rows = [
+            {"id": "usa-one", "name": "USA", "api_football_team_id": 1},
+            {"id": "usa-two", "name": "USA", "api_football_team_id": 2},
+        ]
+
+        with self.assertRaisesRegex(
+            RuntimeError,
+            "Canonical team USA maps to multiple database teams:.*usa-one.*usa-two",
+        ):
+            map_database_team_ids(rows)
+
+    def test_team_mapping_prefers_single_provider_linked_alias_row(self):
+        rows = [
+            {"id": "legacy", "name": "United States", "api_football_team_id": None},
+            {"id": "provider", "name": "USA", "api_football_team_id": 2384},
+        ]
+
+        mapping = map_database_team_ids(rows)
+
+        # Canonical-code identity has priority over display-name identity.
+        self.assertEqual(mapping["USA"], "provider")
 
 
 if __name__ == "__main__":

@@ -189,6 +189,54 @@ def load_team_aliases() -> dict[str, list[str]]:
     return payload
 
 
+def map_database_team_ids(rows: list[dict[str, Any]]) -> dict[str, Any]:
+    """Map canonical codes to existing rows using validated aliases."""
+    aliases = load_team_aliases()
+    database_ids = {str(row["id"]): row["id"] for row in rows}
+    database_by_name: dict[str, list[dict[str, Any]]] = defaultdict(list)
+    for row in rows:
+        if row.get("name"):
+            database_by_name[_normalize_name(row["name"])].append(row)
+
+    mapping: dict[str, Any] = {}
+    for team in load_teams():
+        direct = database_ids.get(team.id)
+        if direct is not None:
+            mapping[team.id] = direct
+            continue
+
+        # A canonical code stored as the name is more stable than a display name.
+        code_rows = database_by_name.get(_normalize_name(team.id), [])
+        alias_rows: dict[str, dict[str, Any]] = {}
+        for name in (team.name, *aliases[team.id]):
+            for row in database_by_name.get(_normalize_name(name), []):
+                alias_rows[str(row["id"])] = row
+        candidates = code_rows or list(alias_rows.values())
+        if len(candidates) > 1:
+            provider_rows = [
+                row for row in candidates
+                if row.get("api_football_team_id") is not None
+            ]
+            if len(provider_rows) == 1:
+                candidates = provider_rows
+            else:
+                raise RuntimeError(
+                    f"Canonical team {team.id} maps to multiple database teams: "
+                    f"{sorted(str(row['id']) for row in candidates)}"
+                )
+        mapping[team.id] = candidates[0]["id"] if candidates else None
+
+    mapped_ids = [str(team_id) for team_id in mapping.values() if team_id is not None]
+    collisions = [
+        team_id for team_id, count in Counter(mapped_ids).items() if count > 1
+    ]
+    if collisions:
+        raise RuntimeError(
+            f"Database team IDs map to multiple canonical teams: {collisions}"
+        )
+    return mapping
+
+
 def load_canonical_future_matches(
     now: datetime,
     database_matches: list[dict[str, Any]] | None = None,
@@ -960,39 +1008,7 @@ class PredictionRepository:
         teams = self._table("teams")
         with self.engine.connect() as connection:
             rows = [dict(row) for row in connection.execute(select(teams)).mappings()]
-        canonical_teams = load_teams()
-        aliases = load_team_aliases()
-        database_by_name: dict[str, list[Any]] = defaultdict(list)
-        for row in rows:
-            if row.get("name"):
-                database_by_name[_normalize_name(row["name"])].append(row["id"])
-        database_ids = {str(row["id"]): row["id"] for row in rows}
-        mapping = {}
-        for team in canonical_teams:
-            direct = database_ids.get(team.id)
-            candidates = {direct} if direct is not None else set()
-            for name in (team.name, *aliases[team.id]):
-                candidates.update(database_by_name.get(_normalize_name(name), []))
-            if len(candidates) > 1:
-                raise RuntimeError(
-                    f"Canonical team {team.id} maps to multiple database teams: "
-                    f"{sorted(str(candidate) for candidate in candidates)}"
-                )
-            mapping[team.id] = next(iter(candidates), None)
-
-        mapped_ids = [
-            str(team_id) for team_id in mapping.values() if team_id is not None
-        ]
-        collisions = [
-            team_id
-            for team_id, count in Counter(mapped_ids).items()
-            if count > 1
-        ]
-        if collisions:
-            raise RuntimeError(
-                f"Database team IDs map to multiple canonical teams: {collisions}"
-            )
-        return mapping
+        return map_database_team_ids(rows)
 
     def load_current_team_ratings(
         self,

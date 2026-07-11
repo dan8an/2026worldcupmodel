@@ -12,29 +12,29 @@ import logging
 import os
 import re
 import sys
+import warnings
 from dataclasses import dataclass
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
 
-from sqlalchemy import MetaData, Table, inspect, select, text
+from sqlalchemy import MetaData, Table, select, text
 from sqlalchemy.engine import Connection, Engine
+from sqlalchemy.exc import SAWarning
 
 ROOT = Path(__file__).resolve().parents[1]
-sys.path.insert(0, str(ROOT))
+if str(ROOT) not in sys.path:
+    sys.path.insert(0, str(ROOT))
 
 from modeling.src.data import build_fixtures, load_teams
 from scripts.database import create_database_engine
+from scripts.generate_predictions import map_database_team_ids
 from scripts.run_simulations import _is_completed_match, _parse_timestamp, _stage_from_value
 
 LOGGER = logging.getLogger("repair_wc26_group_matches")
 OFFICIAL_IDS = tuple(f"WC26-{number:03d}" for number in range(1, 73))
 GROUP_START = datetime(2026, 6, 1, tzinfo=timezone.utc)
 GROUP_END = datetime(2026, 6, 28, tzinfo=timezone.utc)
-
-
-def _normalized(value: Any) -> str:
-    return re.sub(r"[^a-z0-9]", "", str(value or "").casefold())
 
 
 def _official_id(row: dict[str, Any]) -> str | None:
@@ -142,23 +142,37 @@ class GroupMatchRepair:
         self.engine = engine
         self.schema = None if engine.dialect.name == "sqlite" else "public"
         self.metadata = MetaData()
-        self.matches = Table("matches", self.metadata, schema=self.schema, autoload_with=engine)
-        self.teams = Table("teams", self.metadata, schema=self.schema, autoload_with=engine)
+        # Some deployed PostgREST/Supabase index metadata is returned with a
+        # literal ``dialect_options`` key. Older SQLAlchemy releases warn while
+        # reconstructing that reflected index even though its columns are fine.
+        # Do not traverse foreign-key tables, and suppress only that known,
+        # harmless reflection warning.
+        with warnings.catch_warnings():
+            warnings.filterwarnings(
+                "ignore",
+                message=r"Can't validate argument 'dialect_options'.*",
+                category=SAWarning,
+            )
+            self.matches = Table(
+                "matches", self.metadata, schema=self.schema, autoload_with=engine,
+                resolve_fks=False,
+            )
+            self.teams = Table(
+                "teams", self.metadata, schema=self.schema, autoload_with=engine,
+                resolve_fks=False,
+            )
 
     def _team_ids(self, connection: Connection) -> dict[str, Any]:
-        canonical = {_normalized(team.name): team.id for team in load_teams()}
-        result: dict[str, Any] = {}
-        for row in connection.execute(select(self.teams)).mappings():
-            row = dict(row)
-            direct = str(row.get("id"))
-            if direct in {team.id for team in load_teams()}:
-                result[direct] = row["id"]
-            name = row.get("name") or row.get("display_name")
-            if _normalized(name) in canonical:
-                result[canonical[_normalized(name)]] = row["id"]
+        rows = [dict(row) for row in connection.execute(select(self.teams)).mappings()]
+        result = map_database_team_ids(rows)
         missing = sorted({team.id for team in load_teams()} - result.keys())
+        missing.extend(
+            sorted(team_id for team_id, database_id in result.items() if database_id is None)
+        )
         if missing:
-            raise RuntimeError(f"Cannot map canonical teams to public.teams: {missing}")
+            raise RuntimeError(
+                f"Cannot map canonical teams to public.teams: {sorted(set(missing))}"
+            )
         return result
 
     def _merge_references(self, connection: Connection, old_id: Any, new_id: Any) -> None:
