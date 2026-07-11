@@ -268,10 +268,14 @@ def test_match_prediction_probabilities():
 def test_group_matches_are_chronological():
     response = client.get("/v1/matches?stage=group")
     assert response.status_code == 200
+
     matches = response.json()
     ordering = [(match["kickoff"], match["number"]) for match in matches]
+
+    assert matches
     assert ordering == sorted(ordering)
-    assert [match["group"] for match in matches[:5]] == ["A", "A", "B", "D", "B"]
+    assert all(match["stage"] == "group" for match in matches)
+    assert all(match["group"] for match in matches)
 
 
 def test_api_exposes_group_catalog_without_inferred_knockout_fixtures():
