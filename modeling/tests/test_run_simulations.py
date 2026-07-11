@@ -359,6 +359,85 @@ class SimulationCalculationTests(unittest.TestCase):
         self.assertEqual(results["MEX"]["champion_probability"], 1.0)
         self.assertEqual(results["CAN"]["champion_probability"], 0.0)
 
+    def test_mixed_quarterfinal_and_semifinal_state_uses_bracket_slots(self):
+        match_states, quarterfinals = july_9_knockout_state()
+        match_states = [
+            state for state in match_states if state.stage != "quarterfinal"
+        ]
+        for index, (home_id, away_id) in enumerate(quarterfinals, start=1):
+            match_states.append(
+                MatchState(
+                    id=f"qf-{index}",
+                    stage="quarterfinal",
+                    home_team_id=home_id,
+                    away_team_id=away_id,
+                    completed=index <= 2,
+                    home_score=1 if index <= 2 else None,
+                    away_score=0 if index <= 2 else None,
+                    match_number=96 + index,
+                )
+            )
+        known_semifinal = (quarterfinals[0][0], quarterfinals[1][0])
+        match_states.append(
+            MatchState(
+                id="sf-1",
+                stage="semifinal",
+                home_team_id=known_semifinal[0],
+                away_team_id=known_semifinal[1],
+                completed=False,
+                match_number=101,
+            )
+        )
+        predictions = {
+            "qf-3": certain_home_win_prediction(),
+            "qf-4": certain_home_win_prediction(),
+            "sf-1": certain_home_win_prediction(),
+        }
+
+        results = {
+            row["team_id"]: row
+            for row in simulate_tournaments(
+                predictions,
+                20,
+                7,
+                lambda _home, _away: certain_home_win_prediction(),
+                match_states,
+            )
+        }
+
+        # Completed QFs are fixed, the known SF occupies slot 101, and slot 102
+        # is built only from winners of QF99 and QF100.
+        self.assertEqual(results[quarterfinals[0][0]]["semifinal_probability"], 1.0)
+        self.assertEqual(results[quarterfinals[0][1]]["semifinal_probability"], 0.0)
+        self.assertEqual(results[quarterfinals[1][0]]["semifinal_probability"], 1.0)
+        self.assertEqual(results[quarterfinals[1][1]]["semifinal_probability"], 0.0)
+        self.assertAlmostEqual(
+            sum(row["semifinal_probability"] for row in results.values()), 4.0
+        )
+        self.assertAlmostEqual(
+            sum(row["final_probability"] for row in results.values()), 2.0
+        )
+        self.assertAlmostEqual(
+            sum(row["champion_probability"] for row in results.values()), 1.0
+        )
+
+    def test_odd_dynamic_round_raises_detailed_bracket_error(self):
+        full_state, _quarterfinals = july_9_knockout_state()
+        match_states = [
+            state for state in full_state
+            if state.stage == "group"
+            or (state.stage == "round_of_32" and state.match_number != 88)
+        ]
+
+        with self.assertRaisesRegex(
+            ValueError,
+            r"Invalid knockout bracket state: stage=round_of_16 "
+            r"current_team_count=15.*dynamic child-winner list is odd",
+        ):
+            simulate_tournaments(
+                {}, 1, 7, canonical_knockout_prediction(), match_states
+            )
+
     def test_incomplete_predictions_report_exact_missing_fixtures(self):
         predictions = canonical_predictions()
         del predictions["WC26-001"]

@@ -577,6 +577,7 @@ def simulate_tournaments(
     }
     counts = {stage: Counter() for stage in STAGES}
     rng = random.Random(seed)
+    simulation_logger = logging.getLogger("run_simulations")
 
     def resolve_knockout_stage(
         stage: str,
@@ -606,7 +607,87 @@ def simulate_tournaments(
             winners.append(knockout_winner(home_id, away_id, prediction, rng))
         return winners
 
-    for _ in range(num_simulations):
+    def bracket_pairings(
+        stage: str,
+        child_winners: list[str],
+    ) -> list[tuple[str, str]]:
+        """Fill official round slots from fixed fixtures and child-slot edges."""
+        known = known_knockouts[stage]
+        expected_matches = KNOCKOUT_STAGE_LIMITS[stage]
+        completed_ids = [match.id for match in known if match.completed]
+        upcoming_ids = [match.id for match in known if not match.completed]
+        if len(child_winners) % 2:
+            raise ValueError(
+                "Invalid knockout bracket state: "
+                f"stage={stage} current_team_count={len(child_winners)} "
+                f"current_teams={child_winners} completed_fixtures={completed_ids} "
+                f"upcoming_fixtures={upcoming_ids}; dynamic child-winner list is odd"
+            )
+        if len(child_winners) != expected_matches * 2:
+            raise ValueError(
+                "Invalid knockout bracket state: "
+                f"stage={stage} current_team_count={len(child_winners)} "
+                f"expected_team_count={expected_matches * 2} "
+                f"current_teams={child_winners} completed_fixtures={completed_ids} "
+                f"upcoming_fixtures={upcoming_ids}"
+            )
+
+        # Slot n consumes child winner slots 2n and 2n+1. This is the official
+        # advancement edge; list adjacency is never inferred from a partial
+        # collection of current-stage fixtures.
+        dynamic = [
+            (child_winners[slot * 2], child_winners[slot * 2 + 1])
+            for slot in range(expected_matches)
+        ]
+        if len(known) == expected_matches:
+            return [(match.home_team_id, match.away_team_id) for match in known]
+
+        first_number = KNOCKOUT_MATCH_NUMBER_RANGES[stage].start
+        fixed_by_slot: dict[int, MatchState] = {}
+        for match in known:
+            slot = (
+                match.match_number - first_number
+                if match.match_number is not None
+                and match.match_number in KNOCKOUT_MATCH_NUMBER_RANGES[stage]
+                else None
+            )
+            if slot is None:
+                matching_slots = [
+                    index for index, pairing in enumerate(dynamic)
+                    if {match.home_team_id, match.away_team_id} == set(pairing)
+                ]
+                if len(matching_slots) != 1:
+                    raise ValueError(
+                        "Invalid knockout bracket state: cannot place known fixture "
+                        f"stage={stage} fixture_id={match.id} "
+                        f"teams={[match.home_team_id, match.away_team_id]} "
+                        f"candidate_slots={matching_slots} current_teams={child_winners}"
+                    )
+                slot = matching_slots[0]
+            if slot in fixed_by_slot:
+                raise ValueError(
+                    "Invalid knockout bracket state: duplicate fixed slot "
+                    f"stage={stage} slot={slot} fixture_ids="
+                    f"{[fixed_by_slot[slot].id, match.id]}"
+                )
+            expected_pair = dynamic[slot]
+            if {match.home_team_id, match.away_team_id} != set(expected_pair):
+                raise ValueError(
+                    "Invalid knockout bracket state: fixed fixture does not match "
+                    f"official advancement edge stage={stage} slot={slot} "
+                    f"fixture_id={match.id} fixture_teams="
+                    f"{[match.home_team_id, match.away_team_id]} "
+                    f"child_winners={list(expected_pair)}"
+                )
+            fixed_by_slot[slot] = match
+
+        return [
+            (fixed_by_slot[slot].home_team_id, fixed_by_slot[slot].away_team_id)
+            if slot in fixed_by_slot else dynamic[slot]
+            for slot in range(expected_matches)
+        ]
+
+    for simulation_index in range(num_simulations):
         results_by_group: dict[str, list[tuple[str, str, int, int]]] = defaultdict(list)
         for fixture in group_fixtures:
             completed = completed_groups.get(fixture.id)
@@ -651,14 +732,17 @@ def simulate_tournaments(
         current = resolve_knockout_stage("round_of_32", pairings)
         for stage in ("round_of_16", "quarterfinal", "semifinal", "final"):
             stage_matches = known_knockouts[stage]
-            pairings = (
-                [(match.home_team_id, match.away_team_id) for match in stage_matches]
-                if stage_matches
-                else [
-                    (current[index], current[index + 1])
-                    for index in range(0, len(current), 2)
-                ]
-            )
+            if simulation_index == 0:
+                simulation_logger.info(
+                    "[simulation] Bracket stage=%s current_team_count=%d "
+                    "current_teams=%s completed_fixtures=%s upcoming_fixtures=%s",
+                    stage,
+                    len(current),
+                    current,
+                    [match.id for match in stage_matches if match.completed],
+                    [match.id for match in stage_matches if not match.completed],
+                )
+            pairings = bracket_pairings(stage, current)
             stage_teams = {team_id for pairing in pairings for team_id in pairing}
             counts[stage].update(stage_teams)
             current = resolve_knockout_stage(stage, pairings)
