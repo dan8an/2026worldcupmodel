@@ -31,6 +31,11 @@ create index if not exists predictions_canonical_history_idx
 create unique index if not exists predictions_historical_backfill_match_uidx
   on public.predictions (match_id, model_version)
   where generation_mode = 'historical_backfill' and match_id is not null;
+create unique index if not exists predictions_historical_backfill_provider_uidx
+  on public.predictions (provider_fixture_id, model_version)
+  where generation_mode = 'historical_backfill'
+    and match_id is null
+    and provider_fixture_id is not null;
 
 comment on column public.predictions.historical_cutoff is
   'Exclusive source-data cutoff used to reconstruct historical model inputs.';

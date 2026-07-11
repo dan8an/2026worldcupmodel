@@ -3,11 +3,10 @@
 from __future__ import annotations
 
 import argparse
-import json
 import logging
 import math
-import os
 import sys
+import warnings
 from collections import defaultdict
 from dataclasses import dataclass
 from datetime import datetime, timedelta, timezone
@@ -15,8 +14,9 @@ from pathlib import Path
 from typing import Any, Iterable
 from uuid import uuid4
 
-from sqlalchemy import JSON, MetaData, Table, inspect, select, text
+from sqlalchemy import MetaData, Table, inspect, select
 from sqlalchemy.engine import Engine
+from sqlalchemy.exc import SAWarning
 
 ROOT = Path(__file__).resolve().parents[1]
 if str(ROOT) not in sys.path:
@@ -37,11 +37,71 @@ from scripts.generate_predictions import (
     map_database_team_ids,
 )
 from scripts.update_ratings import calculate_player_ratings, calculate_team_ratings
+from scripts.run_simulations import (
+    _is_world_cup_2026_provider_row,
+    _official_match_number,
+)
 
 LOGGER = logging.getLogger("historical-knockout-backfill")
 TARGET_STAGES = {"round_of_32", "round_of_16"}
 COMPLETED_STATUSES = {"completed", "finished", "ft", "aet", "pen"}
 SAFETY_MARGIN = timedelta(seconds=1)
+
+
+@dataclass(frozen=True)
+class KnockoutIdentity:
+    database_match_id: Any | None
+    canonical_match_id: str | None
+    official_match_number: int | None
+    provider_fixture_id: Any | None
+    stable_key: tuple[str, str] | None
+
+
+def _valid_canonical_match_id(value: Any, stage: str) -> str | None:
+    raw = str(value or "").strip().upper()
+    if not raw.startswith("WC26-"):
+        return None
+    try:
+        number = int(raw.removeprefix("WC26-"))
+    except ValueError:
+        return None
+    if number not in range(73, 97) or number not in {
+        "round_of_32": range(73, 89),
+        "round_of_16": range(89, 97),
+    }.get(stage, ()):
+        return None
+    return f"WC26-{number:03d}"
+
+
+def resolve_knockout_identity(row: dict[str, Any], stage: str) -> KnockoutIdentity:
+    """Resolve identity exactly as the official knockout loaders do.
+
+    Provider-only official rows are stable by provider fixture ID, but that ID
+    is not an official match number and therefore never becomes a WC26 ID.
+    """
+    database_match_id = row.get("id") or row.get("match_id")
+    provider_fixture_id = (
+        row.get("api_football_fixture_id") or row.get("provider_fixture_id")
+    )
+    canonical = _valid_canonical_match_id(row.get("canonical_match_id"), stage)
+    number = _official_match_number(row, stage)
+    if canonical is not None:
+        try:
+            number = int(canonical.removeprefix("WC26-"))
+        except ValueError:  # guarded by _valid_canonical_match_id
+            number = None
+    elif number is not None:
+        canonical = f"WC26-{number:03d}"
+
+    if database_match_id is not None:
+        stable_key = ("match", str(database_match_id))
+    elif provider_fixture_id is not None and _is_world_cup_2026_provider_row(row):
+        stable_key = ("provider", str(provider_fixture_id))
+    else:
+        stable_key = None
+    return KnockoutIdentity(
+        database_match_id, canonical, number, provider_fixture_id, stable_key
+    )
 
 
 def timestamp(value: Any) -> datetime | None:
@@ -197,7 +257,18 @@ class HistoricalBackfillRepository:
 
     def table(self, name: str) -> Table:
         if name not in self.tables:
-            self.tables[name] = Table(name, self.metadata, schema=self.schema, autoload_with=self.engine)
+            # Supabase may expose a literal dialect_options key for a reflected
+            # index. Suppress only SQLAlchemy's known harmless warning.
+            with warnings.catch_warnings():
+                warnings.filterwarnings(
+                    "ignore",
+                    message=r"Can't validate argument 'dialect_options'.*",
+                    category=SAWarning,
+                )
+                self.tables[name] = Table(
+                    name, self.metadata, schema=self.schema,
+                    autoload_with=self.engine, resolve_fks=False,
+                )
         return self.tables[name]
 
     def assert_schema(self, apply: bool = False) -> None:
@@ -233,7 +304,12 @@ class HistoricalBackfillRepository:
             "id": run_id, "run_date": generated_at.date().isoformat(), "model_version": MODEL_VERSION,
             "notes": MODEL_DESCRIPTION, "data_cutoff": prediction["historical_cutoff"],
             "status": "completed", "random_seed": 0, "generated_at": now,
-            "metadata": {"generation_mode": "historical_backfill", "matches_predicted": 1},
+            "metadata": {
+                "generation_mode": "historical_backfill", "matches_predicted": 1,
+                "database_match_id": prediction.get("database_match_id"),
+                "provider_fixture_id": prediction.get("provider_fixture_id"),
+                "canonical_match_id": prediction.get("canonical_match_id"),
+            },
         })
         values = PredictionRepository._compatible_values(predictions, {
             **prediction, "id": str(uuid4()), "model_run_id": run_id,
@@ -246,8 +322,19 @@ class HistoricalBackfillRepository:
             "away_win_prob": prediction["away_win_probability"],
         })
         with self.engine.begin() as connection:
+            identity_conditions = []
+            if prediction.get("database_match_id") is not None:
+                identity_conditions.append(
+                    predictions.c.match_id == prediction["database_match_id"]
+                )
+            elif prediction.get("provider_fixture_id") is not None:
+                identity_conditions.append(
+                    predictions.c.provider_fixture_id == prediction["provider_fixture_id"]
+                )
+            if not identity_conditions:
+                raise ValueError("Backfill prediction has no stable fixture identity")
             existing = connection.execute(select(predictions.c.id).where(
-                predictions.c.match_id == prediction["database_match_id"],
+                *identity_conditions,
                 predictions.c.generation_mode == "historical_backfill",
                 predictions.c.model_version == MODEL_VERSION,
             )).scalar_one_or_none()
@@ -274,24 +361,10 @@ def target_matches(matches: list[dict[str, Any]], predictions: list[dict[str, An
         )
         if kickoff is None:
             continue
-        try:
-            match_number = int(row.get("match_number"))
-        except (TypeError, ValueError):
-            match_number = None
-        payload = row.get("provider_payload") or {}
-        if isinstance(payload, str):
-            try:
-                payload = json.loads(payload)
-            except (TypeError, ValueError):
-                payload = {}
-        league = payload.get("league", {}) if isinstance(payload, dict) else {}
+        identity = resolve_knockout_identity(row, stage)
         official = (
-            match_number in range(73, 97)
-            or (
-                str(row.get("provider_name") or "").lower() == "api_football"
-                and str(league.get("id") or "") == "1"
-                and str(league.get("season") or "") == "2026"
-            )
+            identity.official_match_number is not None
+            or _is_world_cup_2026_provider_row(row)
         )
         in_tournament_window = (
             datetime(2026, 6, 28, tzinfo=timezone.utc)
@@ -302,7 +375,10 @@ def target_matches(matches: list[dict[str, Any]], predictions: list[dict[str, An
             continue
         identities = [row.get("id"), row.get("canonical_match_id"), row.get("api_football_fixture_id"), row.get("provider_fixture_id")]
         related = {id(candidate): candidate for identity in identities if identity is not None for candidate in by_match[str(identity)]}.values()
-        targets.append({**row, "_stage": stage, "_kickoff": kickoff, "_authentic": any(is_authentic_prediction(p, kickoff) for p in related)})
+        targets.append({
+            **row, "_stage": stage, "_kickoff": kickoff, "_identity": identity,
+            "_authentic": any(is_authentic_prediction(p, kickoff) for p in related),
+        })
     return sorted(targets, key=lambda row: (row["_kickoff"], str(row.get("id"))))
 
 
@@ -350,16 +426,32 @@ def main(argv: list[str] | None = None) -> int:
     canonical_teams = {team.id: team for team in load_teams()}
     for fixture in selected:
         kickoff, cutoff = fixture["_kickoff"], fixture["_kickoff"] - SAFETY_MARGIN
-        provider_id = fixture.get("api_football_fixture_id") or fixture.get("provider_fixture_id")
+        identity = fixture.get("_identity") or resolve_knockout_identity(
+            fixture, fixture["_stage"]
+        )
+        provider_id = identity.provider_fixture_id
         home = database_to_canonical.get(fixture.get("home_team_id"))
         away = database_to_canonical.get(fixture.get("away_team_id"))
         if fixture["_authentic"]:
             LOGGER.info("match=%s provider=%s kickoff=%s authentic=yes action=skip", fixture.get("id"), provider_id, kickoff.isoformat())
             continue
         if home is None or away is None:
-            LOGGER.warning("match=%s provider=%s action=skip reason=unmapped_team", fixture.get("id"), provider_id)
+            LOGGER.warning(
+                "match=%s provider=%s teams=%s_vs_%s kickoff=%s action=skip reason=unmapped_team",
+                identity.database_match_id, provider_id, home, away, kickoff.isoformat(),
+            )
             continue
-        state = build_historical_state(teams=teams, matches=matches, team_stats=team_stats, player_stats=player_stats, cutoff=cutoff, target_match_id=fixture["id"])
+        if identity.stable_key is None:
+            LOGGER.warning(
+                "match=%s provider=%s teams=%s_vs_%s kickoff=%s action=skip reason=no_stable_fixture_identity",
+                identity.database_match_id, provider_id, home, away, kickoff.isoformat(),
+            )
+            continue
+        state = build_historical_state(
+            teams=teams, matches=matches, team_stats=team_stats,
+            player_stats=player_stats, cutoff=cutoff,
+            target_match_id=(identity.database_match_id or provider_id),
+        )
         prediction = calculate_prediction(
             state.team_ratings[canonical_ids[home]], state.team_ratings[canonical_ids[away]],
             state.player_team_averages.get(canonical_ids[home]), state.player_team_averages.get(canonical_ids[away]),
@@ -370,15 +462,17 @@ def main(argv: list[str] | None = None) -> int:
         triple = (prediction["home_win_probability"], prediction["draw_probability"], prediction["away_win_probability"])
         assert math.isclose(sum(triple), 1.0, abs_tol=1e-12)
         payload = {
-            **prediction, "canonical_match_id": fixture.get("canonical_match_id") or f"WC26-{int(fixture.get('match_number')):03d}",
-            "database_match_id": fixture["id"], "match_id": fixture["id"], "provider_fixture_id": provider_id,
+            **prediction, "canonical_match_id": identity.canonical_match_id,
+            "database_match_id": identity.database_match_id,
+            "match_id": identity.database_match_id,
+            "provider_fixture_id": provider_id,
             "home_team_id": home, "away_team_id": away, "kickoff": kickoff.isoformat(),
             "historical_cutoff": cutoff.isoformat(),
             "maximum_source_timestamp": state.maximum_source_timestamp.isoformat() if state.maximum_source_timestamp else None,
         }
         LOGGER.info(
             "match=%s provider=%s teams=%s_vs_%s kickoff=%s authentic=no counts=matches:%d,team_stats:%d,player_stats:%d max_source=%s probabilities=(%.6f,%.6f,%.6f) action=%s",
-            fixture["id"], provider_id, home, away, kickoff.isoformat(), state.completed_match_count,
+            identity.database_match_id, provider_id, home, away, kickoff.isoformat(), state.completed_match_count,
             state.team_stat_count, state.player_stat_count, payload["maximum_source_timestamp"], *triple,
             "insert" if args.apply else "would_insert",
         )

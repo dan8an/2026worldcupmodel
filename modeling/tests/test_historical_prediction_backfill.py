@@ -7,6 +7,8 @@ import pytest
 from scripts.backfill_historical_knockout_predictions import (
     build_historical_state,
     is_authentic_prediction,
+    main,
+    resolve_knockout_identity,
     target_matches,
 )
 from scripts.generate_predictions import MODEL_VERSION, calculate_prediction
@@ -139,3 +141,125 @@ def test_penalty_and_aet_target_fields_do_not_change_inputs():
     plain = match("target", "2026-07-01T12:00:01Z", status="ft")
     penalties = match("target", "2026-07-01T12:00:01Z", status="pen", home_score=8, away_score=7, penalty_home=6, penalty_away=5)
     assert state([prior, plain], rows) == state([prior, penalties], rows)
+
+
+def official_provider_fields():
+    return {
+        "provider_name": "api_football",
+        "provider_payload": {"league": {"id": 1, "season": 2026}},
+    }
+
+
+def test_identity_prefers_valid_canonical_match_id():
+    identity = resolve_knockout_identity(
+        {"id": "db-1", "canonical_match_id": "WC26-089", "match_number": 90},
+        "round_of_16",
+    )
+    assert identity.canonical_match_id == "WC26-089"
+    assert identity.official_match_number == 89
+    assert identity.stable_key == ("match", "db-1")
+
+
+def test_identity_uses_official_match_number_when_present():
+    identity = resolve_knockout_identity(
+        {"id": "db-2", "match_number": "73"}, "round_of_32"
+    )
+    assert identity.canonical_match_id == "WC26-073"
+    assert identity.official_match_number == 73
+
+
+def test_provider_only_official_identity_does_not_fabricate_canonical_id():
+    identity = resolve_knockout_identity(
+        {"api_football_fixture_id": 99089, **official_provider_fields()},
+        "round_of_16",
+    )
+    assert identity.canonical_match_id is None
+    assert identity.provider_fixture_id == 99089
+    assert identity.stable_key == ("provider", "99089")
+
+
+class FakeBackfillRepository:
+    def __init__(self, fixture):
+        self.fixture = fixture
+        self.stored = []
+
+    def assert_schema(self, apply=False):
+        self.apply_checked = apply
+
+    def rows(self, name):
+        return {
+            "matches": [self.fixture],
+            "teams": TEAMS,
+            "predictions": [],
+        }[name]
+
+    def load_stats(self, _name):
+        return []
+
+    def store(self, payload, generated_at):
+        self.stored.append((payload, generated_at))
+        return "run"
+
+
+@pytest.mark.parametrize("apply", [False, True])
+def test_dry_run_and_apply_complete_for_provider_only_identity(monkeypatch, apply):
+    fixture = match(
+        "db-provider", "2026-07-04T20:00:00Z", stage="round_of_16",
+        match_number=None, canonical_match_id=None,
+        api_football_fixture_id=99089, **official_provider_fields(),
+    )
+    repository = FakeBackfillRepository(fixture)
+    monkeypatch.setattr(
+        "scripts.backfill_historical_knockout_predictions.load_environment",
+        lambda: {"DATABASE_URL": "sqlite://"},
+    )
+    monkeypatch.setattr(
+        "scripts.backfill_historical_knockout_predictions.create_database_engine",
+        lambda _url: object(),
+    )
+    monkeypatch.setattr(
+        "scripts.backfill_historical_knockout_predictions.HistoricalBackfillRepository",
+        lambda _engine: repository,
+    )
+    monkeypatch.setattr(
+        "scripts.backfill_historical_knockout_predictions.map_database_team_ids",
+        lambda _teams: {"USA": "A", "MEX": "B"},
+    )
+    assert main(["--apply"] if apply else []) == 0
+    assert len(repository.stored) == int(apply)
+    if apply:
+        payload = repository.stored[0][0]
+        assert payload["canonical_match_id"] is None
+        assert payload["provider_fixture_id"] == 99089
+        assert payload["match_id"] == "db-provider"
+
+
+def test_all_identities_missing_skips_clearly_without_crashing(monkeypatch, caplog):
+    fixture = match(
+        None, "2026-07-04T20:00:00Z", stage="round_of_16",
+        match_number=None, canonical_match_id=None,
+        **official_provider_fields(),
+    )
+    repository = FakeBackfillRepository(fixture)
+    monkeypatch.setattr(
+        "scripts.backfill_historical_knockout_predictions.load_environment",
+        lambda: {"DATABASE_URL": "sqlite://"},
+    )
+    monkeypatch.setattr(
+        "scripts.backfill_historical_knockout_predictions.create_database_engine",
+        lambda _url: object(),
+    )
+    monkeypatch.setattr(
+        "scripts.backfill_historical_knockout_predictions.HistoricalBackfillRepository",
+        lambda _engine: repository,
+    )
+    monkeypatch.setattr(
+        "scripts.backfill_historical_knockout_predictions.map_database_team_ids",
+        lambda _teams: {"USA": "A", "MEX": "B"},
+    )
+    with caplog.at_level("WARNING"):
+        assert main([]) == 0
+    assert not repository.stored
+    assert "reason=no_stable_fixture_identity" in caplog.text
+    assert "teams=USA_vs_MEX" in caplog.text
+    assert "kickoff=2026-07-04T20:00:00+00:00" in caplog.text
