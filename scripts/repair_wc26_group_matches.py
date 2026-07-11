@@ -14,7 +14,7 @@ import re
 import sys
 import warnings
 from dataclasses import dataclass
-from datetime import datetime, timezone
+from datetime import datetime, timedelta, timezone
 from pathlib import Path
 from typing import Any
 
@@ -34,7 +34,9 @@ from scripts.run_simulations import _is_completed_match, _parse_timestamp, _stag
 LOGGER = logging.getLogger("repair_wc26_group_matches")
 OFFICIAL_IDS = tuple(f"WC26-{number:03d}" for number in range(1, 73))
 GROUP_START = datetime(2026, 6, 1, tzinfo=timezone.utc)
-GROUP_END = datetime(2026, 6, 28, tzinfo=timezone.utc)
+# June 27 local evening fixtures can finish after midnight on June 28 UTC.
+GROUP_END = datetime(2026, 6, 29, tzinfo=timezone.utc)
+FIXTURE_KICKOFF_TOLERANCE = timedelta(hours=12)
 
 
 def _official_id(row: dict[str, Any]) -> str | None:
@@ -144,6 +146,23 @@ def _row_rank(row: dict[str, Any]) -> tuple[Any, ...]:
     )
 
 
+def _fixture_timing_reason(kickoff: datetime | None, expected: datetime) -> str | None:
+    """Return the accepted timing evidence, or None when safely out of range.
+
+    Seed fixture timestamps encode the host-date schedule and a nominal time.
+    Provider timestamps are UTC, so evening host fixtures can move to the next
+    UTC date. A bounded timestamp delta handles that conversion without making
+    calendar-date equality part of fixture identity.
+    """
+    if kickoff is None:
+        return None
+    if kickoff == expected:
+        return "exact_canonical_kickoff"
+    if abs(kickoff - expected) <= FIXTURE_KICKOFF_TOLERANCE:
+        return "kickoff_within_12h_tolerance"
+    return None
+
+
 @dataclass(frozen=True)
 class CandidateEvaluation:
     row: dict[str, Any]
@@ -179,14 +198,15 @@ def plan_repairs(
                 continue
             kickoff = _parse_timestamp(row.get("kickoff") or row.get("match_date"))
             in_window = kickoff is not None and GROUP_START <= kickoff < GROUP_END
-            expected_date = kickoff is not None and kickoff.date() == fixture.kickoff.date()
+            timing_reason = _fixture_timing_reason(kickoff, fixture.kickoff)
+            timing_match = timing_reason is not None
             home_id, away_id = resolver.side(row, "home"), resolver.side(row, "away")
             team_match = home_id == fixture.home_team_id and away_id == fixture.away_team_id
             identified = _official_id(row) == official_id
             groupish = _stage_from_value(row.get("stage") or row.get("tournament_stage")) == "group"
             provider_wc26 = _is_wc26_provider_row(row)
             accepted = identified or (
-                team_match and in_window and expected_date and (groupish or provider_wc26)
+                team_match and in_window and timing_match and (groupish or provider_wc26)
             )
             reasons = []
             if identified:
@@ -195,8 +215,10 @@ def plan_repairs(
                 reasons.append(f"team_mismatch:{home_id or 'unknown'}_vs_{away_id or 'unknown'}")
             if not in_window:
                 reasons.append("outside_group_window")
-            elif not expected_date:
-                reasons.append("fixture_date_mismatch")
+            elif not timing_match:
+                reasons.append("outside_kickoff_tolerance")
+            else:
+                reasons.append(timing_reason)
             if not groupish and not provider_wc26:
                 reasons.append("no_group_stage_provenance")
             if groupish:

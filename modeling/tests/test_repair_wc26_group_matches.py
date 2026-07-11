@@ -1,4 +1,5 @@
 import unittest
+from datetime import timedelta
 
 from modeling.src.data import build_fixtures, load_teams
 from scripts.generate_predictions import map_database_team_ids
@@ -183,6 +184,82 @@ class GroupMatchRepairTests(unittest.TestCase):
             report["unresolved_fixture_details"][0]["candidate_row_ids"],
             ["candidate-1", "candidate-2"],
         )
+
+    def test_local_date_fixture_crossing_midnight_utc_is_accepted(self):
+        fixture = next(item for item in self.fixtures if item.number == 2)
+        row = {
+            "id": "rollover-002",
+            "match_date": fixture.kickoff + timedelta(hours=6),
+            "home_team": "South Korea", "away_team": "Czechia",
+            "home_score": 1, "away_score": 0, "status": "FT",
+            "provider_payload": {"league": {"id": 1, "season": 2026}},
+        }
+
+        action = next(
+            item for item in plan_repairs([row], self.team_ids)
+            if item.fixture.number == 2
+        )
+
+        self.assertIs(action.keeper, row)
+        self.assertIn("kickoff_within_12h_tolerance", action.evaluations[0].reasons)
+
+    def test_june_27_local_fixture_on_june_28_utc_is_in_group_window(self):
+        fixture = next(item for item in self.fixtures if item.number == 59)
+        row = {
+            "id": "rollover-059",
+            "match_date": fixture.kickoff + timedelta(hours=9),
+            "home_team": "Jordan", "away_team": "Argentina",
+            "home_score": 1, "away_score": 2, "status": "FT",
+            "tournament_stage": "Group Stage",
+        }
+
+        action = next(
+            item for item in plan_repairs([row], self.team_ids)
+            if item.fixture.number == 59
+        )
+
+        self.assertIs(action.keeper, row)
+        self.assertNotIn("outside_group_window", action.evaluations[0].reasons)
+
+    def test_wrong_teams_are_rejected_inside_kickoff_tolerance(self):
+        fixture = next(item for item in self.fixtures if item.number == 2)
+        row = {
+            "id": "wrong-teams",
+            "match_date": fixture.kickoff + timedelta(hours=6),
+            "home_team": "Mexico", "away_team": "Czechia",
+            "home_score": 1, "away_score": 0, "status": "FT",
+            "provider_payload": {"league": {"id": 1, "season": 2026}},
+        }
+
+        action = next(
+            item for item in plan_repairs([row], self.team_ids)
+            if item.fixture.number == 2
+        )
+
+        self.assertIsNone(action.keeper)
+        self.assertFalse(action.evaluations[0].accepted)
+        self.assertTrue(any(reason.startswith("team_mismatch") for reason in action.evaluations[0].reasons))
+
+    def test_ambiguous_rollover_candidates_remain_unresolved(self):
+        fixture = next(item for item in self.fixtures if item.number == 60)
+        rows = [
+            {
+                "id": f"rollover-060-{index}",
+                "match_date": fixture.kickoff + timedelta(hours=6),
+                "home_team": "Algeria", "away_team": "Austria",
+                "home_score": index, "away_score": 0, "status": "FT",
+                "provider_payload": {"league": {"id": 1, "season": 2026}},
+            }
+            for index in (1, 2)
+        ]
+
+        action = next(
+            item for item in plan_repairs(rows, self.team_ids)
+            if item.fixture.number == 60
+        )
+
+        self.assertIsNone(action.keeper)
+        self.assertIsNone(action.score_source)
 
 
 if __name__ == "__main__":
