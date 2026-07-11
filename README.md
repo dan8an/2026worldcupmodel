@@ -1,8 +1,8 @@
 # 2026 World Cup Model
 
-An educational prediction and analytics app for the 2026 FIFA World Cup.
-It combines an Elo-informed Poisson score model, tournament simulation,
-a FastAPI API, and a React dashboard.
+A prediction and analytics app for the 2026 FIFA World Cup.
+The app uses an Elo-informed Poisson score model, tournament simulation,
+a FastAPI API, and a React dashboard to create informed, reliable, adn data-driven predictions.
 
 The model does not provide betting recommendations.
 
