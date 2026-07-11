@@ -37,6 +37,7 @@ GROUP_START = datetime(2026, 6, 1, tzinfo=timezone.utc)
 # June 27 local evening fixtures can finish after midnight on June 28 UTC.
 GROUP_END = datetime(2026, 6, 29, tzinfo=timezone.utc)
 FIXTURE_KICKOFF_TOLERANCE = timedelta(hours=12)
+PROVIDER_REQUIRED_FIXTURE_IDS = {"WC26-008", "WC26-020"}
 
 
 def _official_id(row: dict[str, Any]) -> str | None:
@@ -205,8 +206,13 @@ def plan_repairs(
             identified = _official_id(row) == official_id
             groupish = _stage_from_value(row.get("stage") or row.get("tournament_stage")) == "group"
             provider_wc26 = _is_wc26_provider_row(row)
+            provenance_match = (
+                provider_wc26
+                if official_id in PROVIDER_REQUIRED_FIXTURE_IDS
+                else groupish or provider_wc26
+            )
             accepted = identified or (
-                team_match and in_window and timing_match and (groupish or provider_wc26)
+                team_match and in_window and timing_match and provenance_match
             )
             reasons = []
             if identified:
@@ -219,7 +225,7 @@ def plan_repairs(
                 reasons.append("outside_kickoff_tolerance")
             else:
                 reasons.append(timing_reason)
-            if not groupish and not provider_wc26:
+            if not provenance_match:
                 reasons.append("no_group_stage_provenance")
             if groupish:
                 reasons.append("group_stage")

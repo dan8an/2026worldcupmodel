@@ -34,7 +34,7 @@ class TournamentDataTests(unittest.TestCase):
             sorted(fixtures, key=lambda match: (match.kickoff, match.number)),
         )
         first_groups = [match.group for match in fixtures[:5]]
-        self.assertEqual(first_groups, ["A", "A", "B", "D", "B"])
+        self.assertEqual(first_groups, ["A", "A", "B", "D", "C"])
 
 
 class PoissonTests(unittest.TestCase):

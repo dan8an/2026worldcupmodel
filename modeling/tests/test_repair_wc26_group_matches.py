@@ -261,6 +261,68 @@ class GroupMatchRepairTests(unittest.TestCase):
         self.assertIsNone(action.keeper)
         self.assertIsNone(action.score_source)
 
+    def test_authoritative_overrides_map_only_expected_provider_rows(self):
+        expected = {
+            8: (
+                "9482f662-0f3e-447f-9367-5eba1ad7d5e0",
+                "Qatar", "Switzerland", "2026-06-13T19:00:00+00:00",
+            ),
+            20: (
+                "7b1fc893-14e9-46d7-94b0-0aa4cf34c1f8",
+                "Australia", "Turkey", "2026-06-14T04:00:00+00:00",
+            ),
+        }
+        for number, (row_id, home, away, kickoff) in expected.items():
+            with self.subTest(number=number):
+                fixture = next(item for item in self.fixtures if item.number == number)
+                self.assertEqual(fixture.kickoff.isoformat(), kickoff)
+                correct = {
+                    "id": row_id, "match_date": kickoff,
+                    "home_team": home, "away_team": away,
+                    "home_score": 1 if number == 8 else 2,
+                    "away_score": 1 if number == 8 else 0,
+                    "status": "FT", "tournament_stage": "Group Stage - 1",
+                    "provider_name": "api_football",
+                    "provider_payload": {"league": {"id": 1, "season": 2026}},
+                }
+                wrong_teams = {
+                    **correct,
+                    "id": f"wrong-teams-{number}",
+                    "home_team": "Mexico",
+                }
+
+                action = next(
+                    item for item in plan_repairs([correct, wrong_teams], self.team_ids)
+                    if item.fixture.number == number
+                )
+
+                self.assertEqual(action.keeper["id"], row_id)
+                wrong_evaluation = next(
+                    evaluation for evaluation in action.evaluations
+                    if evaluation.row["id"] == f"wrong-teams-{number}"
+                )
+                self.assertFalse(wrong_evaluation.accepted)
+                self.assertTrue(any(
+                    reason.startswith("team_mismatch")
+                    for reason in wrong_evaluation.reasons
+                ))
+
+    def test_override_rows_require_wc26_provider_provenance(self):
+        fixture = next(item for item in self.fixtures if item.number == 8)
+        group_only = {
+            "id": "group-only-008", "match_date": fixture.kickoff,
+            "home_team": "Qatar", "away_team": "Switzerland",
+            "home_score": 1, "away_score": 1, "status": "FT",
+            "tournament_stage": "Group Stage - 1",
+        }
+
+        action = next(
+            item for item in plan_repairs([group_only], self.team_ids)
+            if item.fixture.number == 8
+        )
+
+        self.assertIsNone(action.keeper)
+
 
 if __name__ == "__main__":
     unittest.main()

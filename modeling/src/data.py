@@ -27,6 +27,14 @@ VENUE_IDS = [
 ]
 GROUP_PAIRINGS = (((1, 2), (3, 4)), ((1, 3), (4, 2)), ((4, 1), (2, 3)))
 
+# The generated group calendar is a host-date scaffold. These two fixtures
+# have authoritative timezone-aware API-Football kickoffs that differ by more
+# than the safe repair tolerance, so keep their official UTC times explicitly.
+CANONICAL_KICKOFF_OVERRIDES = {
+    "WC26-008": datetime(2026, 6, 13, 19, tzinfo=timezone.utc),
+    "WC26-020": datetime(2026, 6, 14, 4, tzinfo=timezone.utc),
+}
+
 
 def load_teams() -> list[Team]:
     payload = json.loads((SEED_DIR / "teams.json").read_text())
@@ -49,10 +57,14 @@ def build_fixtures(teams: list[Team] | None = None) -> list[Match]:
         for matchday, pairings in enumerate(GROUP_PAIRINGS):
             day = GROUP_MATCH_DATES[group][matchday]
             for index, (home_position, away_position) in enumerate(pairings):
-                kickoff = datetime(2026, 6, day, 17 + index * 3, tzinfo=timezone.utc)
+                fixture_id = f"WC26-{number:03d}"
+                kickoff = CANONICAL_KICKOFF_OVERRIDES.get(
+                    fixture_id,
+                    datetime(2026, 6, day, 17 + index * 3, tzinfo=timezone.utc),
+                )
                 fixtures.append(
                     Match(
-                        id=f"WC26-{number:03d}",
+                        id=fixture_id,
                         number=number,
                         stage="group",
                         kickoff=kickoff,
