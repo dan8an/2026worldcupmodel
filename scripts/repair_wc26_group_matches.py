@@ -21,8 +21,7 @@ from sqlalchemy import MetaData, Table, inspect, select, text
 from sqlalchemy.engine import Connection, Engine
 
 ROOT = Path(__file__).resolve().parents[1]
-if str(ROOT) not in sys.path:
-    sys.path.insert(0, str(ROOT))
+sys.path.insert(0, str(ROOT))
 
 from modeling.src.data import build_fixtures, load_teams
 from scripts.database import create_database_engine
