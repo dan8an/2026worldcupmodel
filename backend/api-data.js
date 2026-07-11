@@ -374,6 +374,81 @@ const resolveTeam = (value, teams, databaseRows) => {
   ) ?? null;
 };
 
+const predictionTime = (prediction) => {
+  const value = prediction.prediction_timestamp ?? prediction.created_at ??
+    prediction.generated_at;
+  const timestamp = value ? new Date(value).getTime() : Number.NaN;
+  return Number.isFinite(timestamp) ? timestamp : null;
+};
+
+const resolveKnockoutPrediction = (
+  row,
+  predictionRows,
+  matchId,
+  matchNumber,
+  kickoff,
+  homeTeam,
+  awayTeam,
+) => {
+  const kickoffTime = new Date(kickoff).getTime();
+  const providerId = row.api_football_fixture_id ?? row.provider_fixture_id;
+  const canonicalId = row.canonical_match_id;
+  const officialId = matchNumber >= 73 && matchNumber <= 104
+    ? `WC26-${String(matchNumber).padStart(3, "0")}`
+    : null;
+  const candidates = [];
+
+  predictionRows.forEach((prediction) => {
+    const timestamp = predictionTime(prediction);
+    if (timestamp == null || timestamp > kickoffTime) return;
+    const predictionProvider = prediction.provider_fixture_id ??
+      prediction.api_football_fixture_id;
+    const predictionNumber = Number(
+      prediction.match_number ?? prediction.number ?? Number.NaN,
+    );
+    let priority = null;
+    if (String(prediction.match_id ?? "") === String(matchId)) {
+      priority = 0;
+    } else if (
+      providerId != null && predictionProvider != null &&
+      String(providerId) === String(predictionProvider)
+    ) {
+      priority = 1;
+    } else if (
+      (canonicalId != null &&
+        String(prediction.canonical_match_id ?? "") === String(canonicalId)) ||
+      (officialId != null &&
+        String(prediction.canonical_match_id ?? "") === officialId) ||
+      (Number.isFinite(predictionNumber) && predictionNumber === matchNumber)
+    ) {
+      priority = 2;
+    } else {
+      const predictionKickoff = prediction.kickoff ?? prediction.match_date;
+      const predictionKickoffTime = predictionKickoff
+        ? new Date(predictionKickoff).getTime()
+        : Number.NaN;
+      const predictionHome = prediction.home_team_id ?? prediction.home_team;
+      const predictionAway = prediction.away_team_id ?? prediction.away_team;
+      if (
+        homeTeam && awayTeam && Number.isFinite(predictionKickoffTime) &&
+        (String(predictionHome) === homeTeam.id ||
+          normalizeName(predictionHome) === normalizeName(homeTeam.name)) &&
+        (String(predictionAway) === awayTeam.id ||
+          normalizeName(predictionAway) === normalizeName(awayTeam.name)) &&
+        Math.abs(predictionKickoffTime - kickoffTime) <= 3 * 60 * 60 * 1000
+      ) {
+        priority = 3;
+      }
+    }
+    if (priority != null) candidates.push({ priority, timestamp, prediction });
+  });
+
+  candidates.sort((left, right) =>
+    left.priority - right.priority || right.timestamp - left.timestamp
+  );
+  return candidates[0]?.prediction ?? null;
+};
+
 export const normalizeDatabaseMatches = (
   matchRows,
   predictionRows,
@@ -399,7 +474,6 @@ export const normalizeDatabaseMatches = (
       row.match_number ?? row.number ?? String(canonicalId ?? row.id).match(/\d+$/)?.[0] ?? index + 1,
     );
     const id = String(canonicalId ?? row.id);
-    const databasePrediction = predictionsByMatchId.get(id);
     const homeTeam = resolveTeam(
       row.home_team_id ?? row.home_team,
       teams,
@@ -410,6 +484,17 @@ export const normalizeDatabaseMatches = (
       teams,
       databaseTeamRows,
     );
+    const databasePrediction = stage === "group"
+      ? predictionsByMatchId.get(id)
+      : resolveKnockoutPrediction(
+        row,
+        predictionRows,
+        id,
+        matchNumber,
+        row.kickoff ?? row.match_date,
+        homeTeam,
+        awayTeam,
+      );
     const snapshotPrediction = predictionByMatchId.get(id);
     const prediction = databasePrediction
       ? {

@@ -139,6 +139,24 @@ class DatabasePredictionSource:
                     {"model_run_id": latest["model_run_id"]},
                 ).mappings()
             ]
+            history = [
+                dict(row)
+                for row in connection.execute(
+                    text(
+                        f"""
+                        select p.*,
+                               mr.model_version as run_model_version,
+                               mr.generated_at as run_generated_at,
+                               mr.data_cutoff as run_data_cutoff
+                        from {table_prefix}predictions p
+                        join {table_prefix}model_runs mr on mr.id = p.model_run_id
+                        where coalesce(mr.status, 'completed') = 'completed'
+                        order by coalesce(p.prediction_timestamp,
+                                          mr.generated_at) desc
+                        """
+                    )
+                ).mappings()
+            ]
         return {
             "model_run_id": latest["model_run_id"],
             "model_version": latest["model_version"],
@@ -146,6 +164,7 @@ class DatabasePredictionSource:
             "data_cutoff": latest.get("data_cutoff")
             or latest["generated_at"],
             "predictions": self._prediction_lookup(rows),
+            "prediction_history": history,
         }
 
     @staticmethod
@@ -740,11 +759,13 @@ class PredictionService:
         self,
         match_id: str,
         prediction_run: dict[str, Any] | None = None,
+        database_prediction_override: dict[str, Any] | None = None,
+        allow_run_lookup: bool = True,
     ) -> dict | None:
         prediction_run = prediction_run or self.current_prediction_run()
-        database_prediction = (
+        database_prediction = database_prediction_override or (
             prediction_run["predictions"].get(match_id)
-            if prediction_run["model_run_id"] is not None
+            if allow_run_lookup and prediction_run["model_run_id"] is not None
             else None
         )
         prediction = self.static_predictions.get(match_id)
@@ -862,13 +883,121 @@ class PredictionService:
                     [],
                 ),
                 "model_version": database_prediction.get("model_version")
+                or database_prediction.get("run_model_version")
                 or prediction_run["model_version"],
-                "generated_at": str(prediction_run["generated_at"]),
-                "data_cutoff": str(prediction_run["data_cutoff"]),
+                "generated_at": str(
+                    database_prediction.get("prediction_timestamp")
+                    or database_prediction.get("created_at")
+                    or database_prediction.get("run_generated_at")
+                    or prediction_run["generated_at"]
+                ),
+                "data_cutoff": str(
+                    database_prediction.get("data_cutoff")
+                    or database_prediction.get("run_data_cutoff")
+                    or database_prediction.get("prediction_timestamp")
+                    or prediction_run["data_cutoff"]
+                ),
                 "source": "database_latest",
             }
         )
         return payload
+
+    @staticmethod
+    def _prediction_timestamp(row: dict[str, Any]) -> datetime | None:
+        value = (
+            row.get("prediction_timestamp") or row.get("created_at")
+            or row.get("run_generated_at")
+        )
+        if value is None:
+            return None
+        try:
+            parsed = value if isinstance(value, datetime) else datetime.fromisoformat(
+                str(value).replace("Z", "+00:00")
+            )
+        except ValueError:
+            return None
+        return parsed if parsed.tzinfo else parsed.replace(tzinfo=timezone.utc)
+
+    def _historical_knockout_prediction(
+        self,
+        row: dict[str, Any],
+        match_id: str,
+        kickoff: datetime,
+        home_id: str,
+        away_id: str,
+        prediction_run: dict[str, Any],
+    ) -> dict[str, Any] | None:
+        history = list(prediction_run.get("prediction_history", []))
+        history.extend(
+            {
+                **prediction,
+                "run_model_version": prediction_run.get("model_version"),
+                "run_generated_at": prediction_run.get("generated_at"),
+                "run_data_cutoff": prediction_run.get("data_cutoff"),
+            }
+            for prediction in prediction_run.get("predictions", {}).values()
+            if isinstance(prediction, dict)
+        )
+        current_provider = row.get("api_football_fixture_id") or row.get("provider_fixture_id")
+        current_canonical = row.get("canonical_match_id")
+        number = row.get("_official_match_number")
+        official_id = f"WC26-{number:03d}" if number is not None else None
+        candidates: list[tuple[int, datetime, dict[str, Any], str]] = []
+        for prediction in history:
+            timestamp = self._prediction_timestamp(prediction)
+            if timestamp is None or timestamp > kickoff:
+                continue
+            prediction_match = prediction.get("match_id")
+            prediction_provider = prediction.get("provider_fixture_id") or prediction.get("api_football_fixture_id")
+            prediction_canonical = prediction.get("canonical_match_id")
+            prediction_number = _integer_value(prediction.get("match_number") or prediction.get("number"))
+            priority = None
+            reason = ""
+            if str(prediction_match or "") == match_id:
+                priority, reason = 0, "exact_match_id"
+            elif current_provider is not None and str(prediction_provider or "") == str(current_provider):
+                priority, reason = 1, "provider_fixture_id"
+            elif (
+                current_canonical is not None
+                and str(prediction_canonical or "") == str(current_canonical)
+            ) or (
+                official_id is not None
+                and str(prediction_canonical or "") == official_id
+            ) or (number is not None and prediction_number == number):
+                priority, reason = 2, "canonical_knockout_identity"
+            else:
+                prediction_home = self._row_team_id(prediction, "home")
+                prediction_away = self._row_team_id(prediction, "away")
+                prediction_kickoff = prediction.get("kickoff") or prediction.get("match_date")
+                try:
+                    prediction_kickoff_dt = (
+                        datetime.fromisoformat(str(prediction_kickoff).replace("Z", "+00:00"))
+                        if prediction_kickoff is not None else None
+                    )
+                except ValueError:
+                    prediction_kickoff_dt = None
+                if (
+                    prediction_home == home_id and prediction_away == away_id
+                    and prediction_kickoff_dt is not None
+                    and abs((prediction_kickoff_dt - kickoff).total_seconds()) <= 3 * 3600
+                ):
+                    priority, reason = 3, "teams_and_kickoff"
+            if priority is not None:
+                candidates.append((priority, timestamp, prediction, reason))
+        if not candidates:
+            return None
+        priority, _timestamp, prediction, reason = min(
+            candidates, key=lambda item: (item[0], -item[1].timestamp())
+        )
+        LOGGER.info(
+            "Resolved knockout prediction: reason=%s matches.id=%s "
+            "prediction.match_id=%s api_fixture=%s prediction_provider_fixture=%s "
+            "canonical=%s prediction_canonical=%s match_number=%s teams=%s_vs_%s",
+            reason, match_id, prediction.get("match_id"), current_provider,
+            prediction.get("provider_fixture_id"), current_canonical,
+            prediction.get("canonical_match_id"), number, home_id, away_id,
+        )
+        return prediction
 
     def database_match_payloads(
         self,
@@ -899,6 +1028,9 @@ class PredictionService:
             kickoff_dt = row["_kickoff_dt"]
             status = self._knockout_status(row)
             number = row["_official_match_number"]
+            database_prediction = self._historical_knockout_prediction(
+                row, match_id, kickoff_dt, home_id, away_id, prediction_run
+            )
             payloads.append(
                 {
                     "id": match_id,
@@ -922,7 +1054,10 @@ class PredictionService:
                         if row.get("away_score") is not None
                         else None
                     ),
-                    "prediction": self.prediction_payload(match_id, prediction_run),
+                    "prediction": self.prediction_payload(
+                        match_id, prediction_run, database_prediction,
+                        allow_run_lookup=False,
+                    ),
                 }
             )
             if payloads[-1]["prediction"] is None:

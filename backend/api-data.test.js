@@ -259,6 +259,119 @@ test("scheduled and completed knockout database rows are appended as real fixtur
   assert.equal(completed.home_team.name, "Mexico");
 });
 
+test("completed knockout prediction survives UUID dedupe via provider fixture identity", () => {
+  const teams = mergeTeams();
+  const databaseTeams = [
+    { id: "mexico-uuid", name: "Mexico" },
+    { id: "south-africa-uuid", name: "South Africa" },
+  ];
+  const predictions = [
+    {
+      match_id: "current-qf-uuid",
+      provider_fixture_id: 99097,
+      prediction_timestamp: "2026-07-09T22:00:00Z",
+      home_win_probability: 0.99,
+      draw_probability: 0.005,
+      away_win_probability: 0.005,
+    },
+    {
+      match_id: "old-qf-uuid",
+      provider_fixture_id: 99097,
+      prediction_timestamp: "2026-07-09T18:00:00Z",
+      home_win_probability: 0.63,
+      draw_probability: 0.22,
+      away_win_probability: 0.15,
+    },
+  ];
+  const matches = normalizeDatabaseMatches(
+    [{
+      id: "current-qf-uuid",
+      api_football_fixture_id: 99097,
+      match_number: 97,
+      home_team_id: "mexico-uuid",
+      away_team_id: "south-africa-uuid",
+      match_date: "2026-07-09T20:00:00Z",
+      tournament_stage: "Quarter-finals",
+      status: "FT",
+      home_score: 2,
+      away_score: 1,
+    }],
+    predictions,
+    teams,
+    databaseTeams,
+  );
+
+  assert.equal(matches[0].prediction.probabilities.home_win, 0.63);
+  assert.equal(matches[0].prediction.generated_at, "2026-07-09T18:00:00Z");
+});
+
+test("knockout prediction resolves by official canonical number", () => {
+  const teams = mergeTeams();
+  const databaseTeams = [
+    { id: "argentina-uuid", name: "Argentina" },
+    { id: "france-uuid", name: "France" },
+  ];
+  const matches = normalizeDatabaseMatches(
+    [{
+      id: "current-qf-98",
+      match_number: 98,
+      home_team_id: "argentina-uuid",
+      away_team_id: "france-uuid",
+      match_date: "2026-07-10T20:00:00Z",
+      tournament_stage: "Quarter-finals",
+      status: "AET",
+    }],
+    [{
+      canonical_match_id: "WC26-098",
+      prediction_timestamp: "2026-07-10T17:00:00Z",
+      home_win_probability: 0.44,
+      draw_probability: 0.30,
+      away_win_probability: 0.26,
+    }],
+    teams,
+    databaseTeams,
+  );
+
+  assert.equal(matches[0].prediction.probabilities.home_win, 0.44);
+});
+
+test("post-kickoff and similar-fixture predictions do not attach to knockout", () => {
+  const teams = mergeTeams();
+  const databaseTeams = [
+    { id: "mexico-uuid", name: "Mexico" },
+    { id: "south-africa-uuid", name: "South Africa" },
+  ];
+  const matches = normalizeDatabaseMatches(
+    [{
+      id: "current-qf-uuid",
+      match_number: 97,
+      home_team_id: "mexico-uuid",
+      away_team_id: "south-africa-uuid",
+      match_date: "2026-07-09T20:00:00Z",
+      tournament_stage: "Quarter-finals",
+      status: "FT",
+    }],
+    [
+      {
+        match_id: "current-qf-uuid",
+        prediction_timestamp: "2026-07-09T21:00:00Z",
+        home_win_probability: 0.9,
+      },
+      {
+        home_team_id: "MEX",
+        away_team_id: "RSA",
+        kickoff: "2026-07-12T20:00:00Z",
+        prediction_timestamp: "2026-07-09T18:00:00Z",
+        home_win_probability: 0.8,
+      },
+    ],
+    teams,
+    databaseTeams,
+  );
+
+  assert.equal(matches[0].prediction, null);
+});
+
 test("provider knockout fixture does not duplicate a generated placeholder", () => {
   const teams = mergeTeams();
   const databaseTeams = [

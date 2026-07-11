@@ -483,6 +483,129 @@ def test_completed_real_knockout_fixture_is_available_as_result(monkeypatch):
     assert payload["away_score"] == 1
 
 
+def test_completed_knockout_prediction_survives_deduped_uuid_via_provider_id():
+    pre_match = {
+        "match_id": "old-knockout-uuid",
+        "provider_fixture_id": 99097,
+        "prediction_timestamp": "2026-07-09T18:00:00+00:00",
+        "model_version": "elo-context-v4.2.1",
+        "home_win_probability": 0.63,
+        "draw_probability": 0.22,
+        "away_win_probability": 0.15,
+    }
+    post_match = {
+        **pre_match,
+        "match_id": "current-knockout-uuid",
+        "prediction_timestamp": "2026-07-09T22:00:00+00:00",
+        "home_win_probability": 0.99,
+    }
+
+    class PredictionSource:
+        def load_latest(self):
+            return {
+                "model_run_id": "later-run", "model_version": "elo-context-v4.2.1",
+                "generated_at": "2026-07-10T00:00:00+00:00",
+                "data_cutoff": "2026-07-10T00:00:00+00:00",
+                "predictions": {"unrelated-latest": post_match},
+                "prediction_history": [pre_match, post_match],
+            }
+
+    service = PredictionService(
+        prediction_source=PredictionSource(), prediction_cache_seconds=0
+    )
+    payload = service.database_match_payloads([
+        {
+            "id": "current-knockout-uuid",
+            "api_football_fixture_id": 99097,
+            "match_number": 97,
+            "match_date": "2026-07-09T20:00:00+00:00",
+            "tournament_stage": "Quarter-finals",
+            "home_team_name": "Mexico", "away_team_name": "South Africa",
+            "status": "FT", "home_score": 2, "away_score": 1,
+        }
+    ])[0]
+
+    assert payload["prediction"]["probabilities"]["home_win"] == 0.63
+    assert payload["prediction"]["generated_at"] == "2026-07-09T18:00:00+00:00"
+
+
+def test_completed_knockout_prediction_resolves_canonical_number_only():
+    prediction = {
+        "canonical_match_id": "WC26-098",
+        "prediction_timestamp": "2026-07-10T17:00:00+00:00",
+        "home_win_probability": 0.44,
+        "draw_probability": 0.30,
+        "away_win_probability": 0.26,
+    }
+
+    class PredictionSource:
+        def load_latest(self):
+            return {
+                "model_run_id": "new-run", "model_version": "elo-context-v4.2.1",
+                "generated_at": "2026-07-11T00:00:00+00:00",
+                "data_cutoff": "2026-07-11T00:00:00+00:00",
+                "predictions": {"unrelated": {"match_id": "unrelated"}},
+                "prediction_history": [prediction],
+            }
+
+    service = PredictionService(
+        prediction_source=PredictionSource(), prediction_cache_seconds=0
+    )
+    payload = service.database_match_payloads([
+        {
+            "id": "new-qf-uuid", "match_number": 98,
+            "match_date": "2026-07-10T20:00:00+00:00",
+            "tournament_stage": "Quarter-finals",
+            "home_team_name": "Argentina", "away_team_name": "France",
+            "status": "AET", "home_score": 1, "away_score": 0,
+        }
+    ])[0]
+
+    assert payload["prediction"]["probabilities"]["home_win"] == 0.44
+
+
+def test_knockout_prediction_does_not_attach_similar_fixture_or_post_kickoff():
+    history = [
+        {
+            "match_id": "current-qf", "prediction_timestamp": "2026-07-09T21:00:00Z",
+            "home_win_probability": 0.9, "draw_probability": 0.05,
+            "away_win_probability": 0.05,
+        },
+        {
+            "home_team_id": "MEX", "away_team_id": "RSA",
+            "kickoff": "2026-07-12T20:00:00Z",
+            "prediction_timestamp": "2026-07-09T18:00:00Z",
+            "home_win_probability": 0.8, "draw_probability": 0.1,
+            "away_win_probability": 0.1,
+        },
+    ]
+
+    class PredictionSource:
+        def load_latest(self):
+            return {
+                "model_run_id": "run", "model_version": "v",
+                "generated_at": "2026-07-10T00:00:00Z",
+                "data_cutoff": "2026-07-10T00:00:00Z",
+                "predictions": {"unrelated": {"match_id": "unrelated"}},
+                "prediction_history": history,
+            }
+
+    service = PredictionService(
+        prediction_source=PredictionSource(), prediction_cache_seconds=0
+    )
+    payload = service.database_match_payloads([
+        {
+            "id": "current-qf", "match_number": 97,
+            "match_date": "2026-07-09T20:00:00Z",
+            "tournament_stage": "Quarter-finals",
+            "home_team_name": "Mexico", "away_team_name": "South Africa",
+            "status": "FT", "home_score": 1, "away_score": 0,
+        }
+    ])[0]
+
+    assert payload["prediction"] is None
+
+
 def test_bracket_rows_are_official_deduped_and_scoreful(monkeypatch):
     stage_numbers = {
         "Round of 32": range(73, 89),
