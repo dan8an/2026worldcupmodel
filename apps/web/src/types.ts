@@ -124,6 +124,9 @@ export type Prediction = {
   model_version: string;
   generated_at: string;
   data_cutoff: string;
+  generation_mode?: "standard" | "historical_backfill";
+  historical_cutoff?: string | null;
+  backfilled_at?: string | null;
 };
 
 export type Match = {

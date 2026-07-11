@@ -135,6 +135,22 @@ V4 preserves the complete v3 pipeline and adds only the validated
 `shot_volume_rating` ablation at weight `0.2`. Shot quality, defensive
 suppression, and the combined all-feature xG-proxy model remain research-only.
 
+For completed Round of 32 or Round of 16 fixtures that predate knockout
+prediction generation, first apply
+`supabase/migrations/202607100002_historical_prediction_backfill.sql`, then
+inspect the leakage-safe historical rebuild (dry-run is the default):
+
+```bash
+python scripts/backfill_historical_knockout_predictions.py
+python scripts/backfill_historical_knockout_predictions.py --stage round_of_16 --limit 2
+python scripts/backfill_historical_knockout_predictions.py --apply
+```
+
+The backfill rebuilds team, player, and shot-volume ratings independently for
+each kickoff from source rows that existed before its exclusive one-second
+safety cutoff. It never reads current rating tables or overwrites an authentic
+pre-kickoff prediction.
+
 After applying `supabase/migrations/202606100005_tournament_simulation.sql`,
 run the persisted tournament simulation:
 

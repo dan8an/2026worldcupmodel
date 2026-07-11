@@ -103,6 +103,15 @@ class DatabasePredictionSource:
 
     def load_latest(self) -> dict[str, Any] | None:
         table_prefix = "public." if self.engine.dialect.name == "postgresql" else ""
+        schema = "public" if self.engine.dialect.name == "postgresql" else None
+        prediction_columns = {
+            column["name"]
+            for column in inspect(self.engine).get_columns("predictions", schema=schema)
+        }
+        standard_prediction_filter = (
+            "and coalesce(p.generation_mode, 'standard') <> 'historical_backfill'"
+            if "generation_mode" in prediction_columns else ""
+        )
         with self.engine.connect() as connection:
             latest = connection.execute(
                 text(
@@ -118,6 +127,7 @@ class DatabasePredictionSource:
                         select 1
                         from {table_prefix}predictions p
                         where p.model_run_id = mr.id
+                        {standard_prediction_filter}
                       )
                     order by mr.generated_at desc nulls last, mr.id desc
                     limit 1
@@ -898,6 +908,18 @@ class PredictionService:
                     or prediction_run["data_cutoff"]
                 ),
                 "source": "database_latest",
+                "generation_mode": database_prediction.get("generation_mode")
+                or "standard",
+                "historical_cutoff": (
+                    str(database_prediction.get("historical_cutoff"))
+                    if database_prediction.get("historical_cutoff") is not None
+                    else None
+                ),
+                "backfilled_at": (
+                    str(database_prediction.get("backfilled_at"))
+                    if database_prediction.get("backfilled_at") is not None
+                    else None
+                ),
             }
         )
         return payload
@@ -908,6 +930,19 @@ class PredictionService:
             row.get("prediction_timestamp") or row.get("created_at")
             or row.get("run_generated_at")
         )
+        if value is None:
+            return None
+        try:
+            parsed = value if isinstance(value, datetime) else datetime.fromisoformat(
+                str(value).replace("Z", "+00:00")
+            )
+        except ValueError:
+            return None
+        return parsed if parsed.tzinfo else parsed.replace(tzinfo=timezone.utc)
+
+    @staticmethod
+    def _historical_cutoff(row: dict[str, Any]) -> datetime | None:
+        value = row.get("historical_cutoff")
         if value is None:
             return None
         try:
@@ -942,10 +977,16 @@ class PredictionService:
         current_canonical = row.get("canonical_match_id")
         number = row.get("_official_match_number")
         official_id = f"WC26-{number:03d}" if number is not None else None
-        candidates: list[tuple[int, datetime, dict[str, Any], str]] = []
+        candidates: list[tuple[int, int, datetime, dict[str, Any], str]] = []
         for prediction in history:
             timestamp = self._prediction_timestamp(prediction)
-            if timestamp is None or timestamp > kickoff:
+            backfilled = prediction.get("generation_mode") == "historical_backfill"
+            cutoff = self._historical_cutoff(prediction)
+            if timestamp is None or (
+                not backfilled and timestamp >= kickoff
+            ) or (
+                backfilled and (cutoff is None or cutoff >= kickoff)
+            ):
                 continue
             prediction_match = prediction.get("match_id")
             prediction_provider = prediction.get("provider_fixture_id") or prediction.get("api_football_fixture_id")
@@ -983,11 +1024,13 @@ class PredictionService:
                 ):
                     priority, reason = 3, "teams_and_kickoff"
             if priority is not None:
-                candidates.append((priority, timestamp, prediction, reason))
+                # Authentic predictions always beat backfills for the same
+                # fixture, regardless of which identity field matched.
+                candidates.append((int(backfilled), priority, timestamp, prediction, reason))
         if not candidates:
             return None
-        priority, _timestamp, prediction, reason = min(
-            candidates, key=lambda item: (item[0], -item[1].timestamp())
+        _backfilled, priority, _timestamp, prediction, reason = min(
+            candidates, key=lambda item: (item[0], item[1], -item[2].timestamp())
         )
         LOGGER.info(
             "Resolved knockout prediction: reason=%s matches.id=%s "

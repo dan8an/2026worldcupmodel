@@ -1,3 +1,5 @@
+from datetime import datetime, timezone
+
 from fastapi.testclient import TestClient
 from sqlalchemy import create_engine, text
 
@@ -604,6 +606,33 @@ def test_knockout_prediction_does_not_attach_similar_fixture_or_post_kickoff():
     ])[0]
 
     assert payload["prediction"] is None
+
+
+def test_authentic_knockout_prediction_precedes_historical_backfill():
+    kickoff = datetime(2026, 7, 9, 20, tzinfo=timezone.utc)
+    service = PredictionService(prediction_source=LatestV4PredictionSource(), prediction_cache_seconds=0)
+    row = {
+        "id": "ko", "api_football_fixture_id": 77, "_official_match_number": 89,
+        "canonical_match_id": "WC26-089",
+    }
+    base = {"match_id": "ko", "canonical_match_id": "WC26-089", "home_win_probability": .5, "draw_probability": .25, "away_win_probability": .25}
+    authentic = {**base, "prediction_timestamp": "2026-07-09T19:00:00Z", "generation_mode": "standard"}
+    backfill = {**base, "home_win_probability": .7, "prediction_timestamp": "2026-07-10T19:00:00Z", "generation_mode": "historical_backfill", "historical_cutoff": "2026-07-09T19:59:59Z"}
+    run = {"predictions": {}, "prediction_history": [backfill, authentic], "model_version": "elo-context-v4.2.1", "generated_at": kickoff, "data_cutoff": kickoff}
+    selected = service._historical_knockout_prediction(row, "ko", kickoff, "USA", "MEX", run)
+    assert selected is authentic
+
+
+def test_historical_backfill_is_selectable_despite_actual_generation_after_kickoff():
+    kickoff = datetime(2026, 7, 9, 20, tzinfo=timezone.utc)
+    service = PredictionService(prediction_source=LatestV4PredictionSource(), prediction_cache_seconds=0)
+    backfill = {
+        "match_id": "ko", "prediction_timestamp": "2026-07-10T19:00:00Z",
+        "generation_mode": "historical_backfill", "historical_cutoff": "2026-07-09T19:59:59Z",
+    }
+    run = {"predictions": {}, "prediction_history": [backfill], "model_version": "elo-context-v4.2.1", "generated_at": kickoff, "data_cutoff": kickoff}
+    selected = service._historical_knockout_prediction({"id": "ko", "_official_match_number": None}, "ko", kickoff, "USA", "MEX", run)
+    assert selected is backfill
 
 
 def test_bracket_rows_are_official_deduped_and_scoreful(monkeypatch):

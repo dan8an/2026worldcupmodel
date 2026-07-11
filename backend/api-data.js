@@ -400,7 +400,15 @@ const resolveKnockoutPrediction = (
 
   predictionRows.forEach((prediction) => {
     const timestamp = predictionTime(prediction);
-    if (timestamp == null || timestamp > kickoffTime) return;
+    const backfilled = prediction.generation_mode === "historical_backfill";
+    const historicalCutoff = prediction.historical_cutoff
+      ? new Date(prediction.historical_cutoff).getTime()
+      : Number.NaN;
+    if (
+      timestamp == null ||
+      (!backfilled && timestamp >= kickoffTime) ||
+      (backfilled && (!Number.isFinite(historicalCutoff) || historicalCutoff >= kickoffTime))
+    ) return;
     const predictionProvider = prediction.provider_fixture_id ??
       prediction.api_football_fixture_id;
     const predictionNumber = Number(
@@ -440,10 +448,16 @@ const resolveKnockoutPrediction = (
         priority = 3;
       }
     }
-    if (priority != null) candidates.push({ priority, timestamp, prediction });
+    if (priority != null) candidates.push({
+      backfillPriority: backfilled ? 1 : 0,
+      priority,
+      timestamp,
+      prediction,
+    });
   });
 
   candidates.sort((left, right) =>
+    left.backfillPriority - right.backfillPriority ||
     left.priority - right.priority || right.timestamp - left.timestamp
   );
   return candidates[0]?.prediction ?? null;
@@ -546,6 +560,9 @@ export const normalizeDatabaseMatches = (
           data_cutoff: databasePrediction.data_cutoff ??
             databasePrediction.created_at ??
             new Date().toISOString(),
+          generation_mode: databasePrediction.generation_mode ?? "standard",
+          historical_cutoff: databasePrediction.historical_cutoff ?? null,
+          backfilled_at: databasePrediction.backfilled_at ?? null,
         }
       : snapshotPrediction ?? null;
 
@@ -671,6 +688,9 @@ export const mergeCanonicalPredictions = (matches, predictionRows = []) => {
         data_cutoff: prediction.data_cutoff ??
           prediction.prediction_timestamp ??
           new Date().toISOString(),
+        generation_mode: prediction.generation_mode ?? "standard",
+        historical_cutoff: prediction.historical_cutoff ?? null,
+        backfilled_at: prediction.backfilled_at ?? null,
       },
     };
   });

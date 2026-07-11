@@ -305,6 +305,36 @@ test("completed knockout prediction survives UUID dedupe via provider fixture id
   assert.equal(matches[0].prediction.generated_at, "2026-07-09T18:00:00Z");
 });
 
+test("authentic prediction precedes a selectable historical backfill", () => {
+  const teams = mergeTeams();
+  const databaseTeams = [
+    { id: "mexico-uuid", name: "Mexico" },
+    { id: "south-africa-uuid", name: "South Africa" },
+  ];
+  const row = {
+    id: "r16-uuid", match_number: 89,
+    home_team_id: "mexico-uuid", away_team_id: "south-africa-uuid",
+    match_date: "2026-07-04T20:00:00Z", tournament_stage: "Round of 16", status: "FT",
+  };
+  const backfill = {
+    match_id: "r16-uuid", prediction_timestamp: "2026-07-10T00:00:00Z",
+    generation_mode: "historical_backfill", historical_cutoff: "2026-07-04T19:59:59Z",
+    home_win_probability: 0.7, draw_probability: 0.2, away_win_probability: 0.1,
+  };
+  const onlyBackfill = normalizeDatabaseMatches([row], [backfill], teams, databaseTeams);
+  assert.equal(onlyBackfill[0].prediction.probabilities.home_win, 0.7);
+  assert.equal(onlyBackfill[0].prediction.generation_mode, "historical_backfill");
+
+  const authentic = {
+    match_id: "r16-uuid", prediction_timestamp: "2026-07-04T18:00:00Z",
+    generation_mode: "standard", home_win_probability: 0.5,
+    draw_probability: 0.3, away_win_probability: 0.2,
+  };
+  const both = normalizeDatabaseMatches([row], [backfill, authentic], teams, databaseTeams);
+  assert.equal(both[0].prediction.probabilities.home_win, 0.5);
+  assert.equal(both[0].prediction.generation_mode, "standard");
+});
+
 test("knockout prediction resolves by official canonical number", () => {
   const teams = mergeTeams();
   const databaseTeams = [

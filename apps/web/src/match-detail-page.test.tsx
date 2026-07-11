@@ -43,6 +43,31 @@ const knockoutMatch: Match = {
 };
 
 describe("Match detail prediction states", () => {
+  it("labels historical backfills clearly", () => {
+    const queryClient = new QueryClient({
+      defaultOptions: { queries: { staleTime: Infinity } },
+    });
+    queryClient.setQueryData(["match", "provider-qf-90101"], {
+        ...knockoutMatch,
+        prediction: {
+          match_id: "ko", home_team_id: "USA", away_team_id: "MEX",
+          home_xg: 1.2, away_xg: 1.1,
+          probabilities: { home_win: .4, draw: .3, away_win: .3 },
+          top_scores: [], confidence: "Medium", key_factors: [], top_factors: [],
+          context: { home_form_elo: 0, away_form_elo: 0, home_h2h_elo: 0, away_h2h_elo: 0, home_availability_elo: 0, away_availability_elo: 0, historical_matches_home: 0, historical_matches_away: 0, h2h_matches: 0, availability_reports: 0, data_cutoff: null },
+          model_version: "elo-context-v4.2.1", generated_at: "2026-07-10T00:00:00Z", data_cutoff: "2026-07-09T19:59:59Z",
+          generation_mode: "historical_backfill",
+        },
+    });
+    const html = renderToString(
+      <QueryClientProvider client={queryClient}>
+        <MemoryRouter initialEntries={["/match/provider-qf-90101"]}>
+          <App />
+        </MemoryRouter>
+      </QueryClientProvider>,
+    );
+    expect(html).toContain("Backfilled pre-match prediction");
+  });
   it("shows a clear missing-prediction state without API unavailable copy", () => {
     const queryClient = new QueryClient({
       defaultOptions: { queries: { staleTime: Infinity } },

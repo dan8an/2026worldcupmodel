@@ -91,6 +91,9 @@ export function MatchDetail() {
         </div>
         <ProbabilityBar match={match} />
         <div className="match-meta">
+          {prediction.generation_mode === "historical_backfill" && (
+            <span className="prediction-provenance">Backfilled pre-match prediction</span>
+          )}
           <span>{new Date(match.kickoff).toLocaleString()}</span>
           <span className={`confidence-pill ${confidence.toLowerCase().replace(" ", "-")}`}>
             {confidence} confidence

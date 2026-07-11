@@ -106,6 +106,9 @@ export function MatchCard({
       </div>
       {match.prediction && (
         <>
+          {match.prediction.generation_mode === "historical_backfill" && (
+            <span className="result-prediction-label">Backfilled pre-match prediction</span>
+          )}
           <ProbabilityBar match={match} />
           <div className="match-meta">
             <span>

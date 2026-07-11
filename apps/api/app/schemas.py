@@ -66,6 +66,9 @@ class PredictionResponse(BaseModel):
     source: str
     generated_at: str
     data_cutoff: str
+    generation_mode: str = "standard"
+    historical_cutoff: str | None = None
+    backfilled_at: str | None = None
 
 
 class MatchResponse(BaseModel):
