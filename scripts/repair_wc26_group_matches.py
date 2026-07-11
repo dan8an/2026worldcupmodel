@@ -28,7 +28,7 @@ if str(ROOT) not in sys.path:
 
 from modeling.src.data import build_fixtures, load_teams
 from scripts.database import create_database_engine
-from scripts.generate_predictions import map_database_team_ids
+from scripts.generate_predictions import load_team_aliases, map_database_team_ids
 from scripts.run_simulations import _is_completed_match, _parse_timestamp, _stage_from_value
 
 LOGGER = logging.getLogger("repair_wc26_group_matches")
@@ -47,6 +47,54 @@ def _official_id(row: dict[str, Any]) -> str | None:
     except (TypeError, ValueError):
         return None
     return f"WC26-{number:03d}" if 1 <= number <= 72 else None
+
+
+def _normalize_name(value: Any) -> str:
+    return "".join(character for character in str(value or "").casefold() if character.isalnum())
+
+
+def _is_wc26_provider_row(row: dict[str, Any]) -> bool:
+    league = _payload(row).get("league")
+    return isinstance(league, dict) and str(league.get("id")) == "1" and str(league.get("season")) == "2026"
+
+
+class TeamResolver:
+    def __init__(self, team_ids: dict[str, Any], database_teams: list[dict[str, Any]] | None = None):
+        self.by_database_id = {
+            str(database_id): canonical_id
+            for canonical_id, database_id in team_ids.items()
+            if database_id is not None
+        }
+        aliases = load_team_aliases()
+        self.by_name = {
+            _normalize_name(name): team.id
+            for team in load_teams()
+            for name in (team.id, team.name, *aliases[team.id])
+        }
+        self.by_provider_id: dict[str, str] = {}
+        for row in database_teams or []:
+            canonical_id = self.by_database_id.get(str(row.get("id")))
+            provider_id = row.get("api_football_team_id")
+            if canonical_id and provider_id is not None:
+                self.by_provider_id[str(provider_id)] = canonical_id
+
+    def side(self, row: dict[str, Any], side: str) -> str | None:
+        canonical = self.by_database_id.get(str(row.get(f"{side}_team_id")))
+        if canonical:
+            return canonical
+        payload_team = _payload(row).get("teams", {}).get(side, {})
+        if isinstance(payload_team, dict):
+            canonical = self.by_provider_id.get(str(payload_team.get("id")))
+            if canonical:
+                return canonical
+        for value in (
+            row.get(f"{side}_team"), row.get(f"{side}_team_name"),
+            payload_team.get("name") if isinstance(payload_team, dict) else None,
+        ):
+            canonical = self.by_name.get(_normalize_name(value))
+            if canonical:
+                return canonical
+        return None
 
 
 def _has_score(row: dict[str, Any]) -> bool:
@@ -97,43 +145,86 @@ def _row_rank(row: dict[str, Any]) -> tuple[Any, ...]:
 
 
 @dataclass(frozen=True)
+class CandidateEvaluation:
+    row: dict[str, Any]
+    accepted: bool
+    reasons: tuple[str, ...]
+
+
+@dataclass(frozen=True)
 class RepairAction:
     official_id: str
     fixture: Any
     keeper: dict[str, Any] | None
     score_source: dict[str, Any] | None
     duplicates: tuple[dict[str, Any], ...]
+    evaluations: tuple[CandidateEvaluation, ...] = ()
 
 
 def plan_repairs(
-    rows: list[dict[str, Any]], team_ids: dict[str, Any]
+    rows: list[dict[str, Any]], team_ids: dict[str, Any],
+    database_teams: list[dict[str, Any]] | None = None,
 ) -> list[RepairAction]:
     """Return deterministic repair actions; exposed separately for testing."""
     actions = []
     claimed: set[Any] = set()
+    resolver = TeamResolver(team_ids, database_teams)
     for fixture in sorted(build_fixtures(load_teams()), key=lambda item: item.number):
         official_id = fixture.id
         candidates = []
+        evaluations = []
         for row in rows:
             row_id = row.get("id")
             if row_id in claimed:
                 continue
             kickoff = _parse_timestamp(row.get("kickoff") or row.get("match_date"))
             in_window = kickoff is not None and GROUP_START <= kickoff < GROUP_END
-            team_match = (
-                str(row.get("home_team_id")) == str(team_ids.get(fixture.home_team_id))
-                and str(row.get("away_team_id")) == str(team_ids.get(fixture.away_team_id))
-            )
+            expected_date = kickoff is not None and kickoff.date() == fixture.kickoff.date()
+            home_id, away_id = resolver.side(row, "home"), resolver.side(row, "away")
+            team_match = home_id == fixture.home_team_id and away_id == fixture.away_team_id
             identified = _official_id(row) == official_id
             groupish = _stage_from_value(row.get("stage") or row.get("tournament_stage")) == "group"
-            if identified or (team_match and in_window and groupish):
+            provider_wc26 = _is_wc26_provider_row(row)
+            accepted = identified or (
+                team_match and in_window and expected_date and (groupish or provider_wc26)
+            )
+            reasons = []
+            if identified:
+                reasons.append("official_identifier")
+            if not team_match:
+                reasons.append(f"team_mismatch:{home_id or 'unknown'}_vs_{away_id or 'unknown'}")
+            if not in_window:
+                reasons.append("outside_group_window")
+            elif not expected_date:
+                reasons.append("fixture_date_mismatch")
+            if not groupish and not provider_wc26:
+                reasons.append("no_group_stage_provenance")
+            if groupish:
+                reasons.append("group_stage")
+            if provider_wc26:
+                reasons.append("provider_world_cup_2026")
+            expected_side = (
+                home_id in {fixture.home_team_id, fixture.away_team_id}
+                or away_id in {fixture.home_team_id, fixture.away_team_id}
+            )
+            relevant = identified or team_match or (
+                in_window and expected_side and (groupish or provider_wc26)
+            )
+            if relevant:
+                evaluations.append(CandidateEvaluation(row, accepted, tuple(reasons)))
+            if accepted:
                 candidates.append(row)
-        keeper = max(candidates, key=_row_rank) if candidates else None
+        identified_candidates = [row for row in candidates if _official_id(row) == official_id]
+        ambiguous = not identified_candidates and len(candidates) > 1
+        keeper = None if ambiguous else (max(candidates, key=_row_rank) if candidates else None)
         scored = [row for row in candidates if _completed_with_score(row)]
-        score_source = max(scored, key=_row_rank) if scored else None
-        duplicates = tuple(row for row in candidates if row is not keeper)
-        claimed.update(row.get("id") for row in candidates)
-        actions.append(RepairAction(official_id, fixture, keeper, score_source, duplicates))
+        score_source = None if ambiguous else (max(scored, key=_row_rank) if scored else None)
+        duplicates = () if ambiguous else tuple(row for row in candidates if row is not keeper)
+        if not ambiguous:
+            claimed.update(row.get("id") for row in candidates)
+        actions.append(RepairAction(
+            official_id, fixture, keeper, score_source, duplicates, tuple(evaluations)
+        ))
     return actions
 
 
@@ -164,6 +255,7 @@ class GroupMatchRepair:
 
     def _team_ids(self, connection: Connection) -> dict[str, Any]:
         rows = [dict(row) for row in connection.execute(select(self.teams)).mappings()]
+        self.database_teams = rows
         result = map_database_team_ids(rows)
         missing = sorted({team.id for team in load_teams()} - result.keys())
         missing.extend(
@@ -206,14 +298,14 @@ class GroupMatchRepair:
         with self.engine.begin() as connection:
             team_ids = self._team_ids(connection)
             rows = [dict(row) for row in connection.execute(select(self.matches)).mappings()]
-            actions = plan_repairs(rows, team_ids)
+            actions = plan_repairs(rows, team_ids, self.database_teams)
             if apply:
                 for action in actions:
                     self._apply_action(connection, action, team_ids)
                 repaired_rows = [
                     dict(row) for row in connection.execute(select(self.matches)).mappings()
                 ]
-                actions = plan_repairs(repaired_rows, team_ids)
+                actions = plan_repairs(repaired_rows, team_ids, self.database_teams)
                 rows = repaired_rows
             report = diagnostic_report(actions, rows)
             return report
@@ -280,19 +372,56 @@ def diagnostic_report(
 ) -> dict[str, Any]:
     completed = [a.official_id for a in actions if a.score_source is not None]
     missing = [a.official_id for a in actions if a.keeper is None]
-    diagnostic_rows = rows if rows is not None else [
-        row for action in actions for row in (action.keeper,) + action.duplicates if row
-    ]
+    plausible_rows = {
+        str(evaluation.row.get("id")): evaluation.row
+        for action in actions
+        for evaluation in action.evaluations
+        if evaluation.accepted
+    }
     dirty_scored = sorted({
-        str(row.get("id")) for row in diagnostic_rows
+        row_id for row_id, row in plausible_rows.items()
         if _has_score(row) and _official_id(row) is None
-        and _stage_from_value(row.get("stage") or row.get("tournament_stage")) == "group"
     })
+    unresolved_details = []
+    team_names = {team.id: team.name for team in load_teams()}
+    for action in actions:
+        if action.keeper is not None:
+            continue
+        candidates = []
+        for evaluation in action.evaluations:
+            row = evaluation.row
+            payload = _payload(row)
+            league = payload.get("league") if isinstance(payload.get("league"), dict) else {}
+            fixture_payload = payload.get("fixture") if isinstance(payload.get("fixture"), dict) else {}
+            provider_status = fixture_payload.get("status")
+            if isinstance(provider_status, dict):
+                provider_status = provider_status.get("short")
+            candidates.append({
+                "row_id": str(row.get("id")),
+                "score": _score(row),
+                "status": row.get("status") or provider_status,
+                "stage": row.get("stage") or row.get("tournament_stage"),
+                "kickoff": str(row.get("kickoff") or row.get("match_date") or ""),
+                "provider_name": row.get("provider_name"),
+                "provider_league_id": league.get("id"),
+                "provider_season": league.get("season"),
+                "accepted": evaluation.accepted,
+                "reasons": list(evaluation.reasons),
+            })
+        unresolved_details.append({
+            "official_id": action.official_id,
+            "expected_home": f"{action.fixture.home_team_id} ({team_names[action.fixture.home_team_id]})",
+            "expected_away": f"{action.fixture.away_team_id} ({team_names[action.fixture.away_team_id]})",
+            "expected_date": action.fixture.kickoff.date().isoformat(),
+            "candidate_row_ids": [candidate["row_id"] for candidate in candidates],
+            "candidates": candidates,
+        })
     return {
         "official_completed_group_count": len(completed),
         "missing_official_group_identifiers": missing,
         "rows_with_scores_but_no_official_identifier": dirty_scored,
         "duplicate_rows_to_merge": sum(len(action.duplicates) for action in actions),
+        "unresolved_fixture_details": unresolved_details,
     }
 
 

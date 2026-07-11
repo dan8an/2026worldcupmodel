@@ -118,6 +118,72 @@ class GroupMatchRepairTests(unittest.TestCase):
         # Canonical-code identity has priority over display-name identity.
         self.assertEqual(mapping["USA"], "provider")
 
+    def test_recovers_59_and_60_from_wc26_provider_rows_with_legacy_stage(self):
+        expected = {
+            59: ("Jordan", "Argentina", 1, 2),
+            60: ("Algeria", "Austria", 0, 0),
+        }
+        rows = []
+        for number, (home, away, home_score, away_score) in expected.items():
+            fixture = next(item for item in self.fixtures if item.number == number)
+            rows.append({
+                "id": f"provider-{number}",
+                "match_date": fixture.kickoff,
+                "home_team": home,
+                "away_team": away,
+                "home_score": home_score,
+                "away_score": away_score,
+                "status": "FT",
+                "tournament_stage": "FIFA World Cup",
+                "provider_name": "api_football",
+                "provider_payload": {"league": {"id": 1, "season": 2026}},
+            })
+
+        actions = plan_repairs(rows, self.team_ids)
+
+        for number in expected:
+            action = next(item for item in actions if item.fixture.number == number)
+            self.assertEqual(action.keeper["id"], f"provider-{number}")
+            self.assertIs(action.score_source, action.keeper)
+
+    def test_historical_scored_rows_are_excluded_from_dirty_diagnostic(self):
+        historical = {
+            "id": "historical", "match_date": "2022-12-18T15:00:00Z",
+            "home_team": "Argentina", "away_team": "France",
+            "home_score": 3, "away_score": 3, "status": "FT",
+            "tournament_stage": "Group Stage",
+        }
+
+        actions = plan_repairs([historical], self.team_ids)
+        report = diagnostic_report(actions, [historical])
+
+        self.assertEqual(report["rows_with_scores_but_no_official_identifier"], [])
+
+    def test_ambiguous_recovery_candidates_remain_unresolved(self):
+        fixture = next(item for item in self.fixtures if item.number == 59)
+        rows = [
+            {
+                "id": f"candidate-{index}", "match_date": fixture.kickoff,
+                "home_team": "Jordan", "away_team": "Argentina",
+                "home_score": index, "away_score": 0, "status": "FT",
+                "provider_payload": {"league": {"id": 1, "season": 2026}},
+            }
+            for index in (1, 2)
+        ]
+
+        action = next(
+            item for item in plan_repairs(rows, self.team_ids)
+            if item.fixture.number == 59
+        )
+        report = diagnostic_report([action], rows)
+
+        self.assertIsNone(action.keeper)
+        self.assertIsNone(action.score_source)
+        self.assertEqual(
+            report["unresolved_fixture_details"][0]["candidate_row_ids"],
+            ["candidate-1", "candidate-2"],
+        )
+
 
 if __name__ == "__main__":
     unittest.main()
