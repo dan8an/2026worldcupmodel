@@ -1,0 +1,19 @@
+{
+  "artifact_version": 1,
+  "locked_at": "2026-07-14T00:36:22.256604+00:00",
+  "model_version": "elo-context-v4.4-opponent-adjusted-xg-experimental",
+  "status": "locked_experimental_awaiting_new_data",
+  "selected_candidate": "ridge_poisson_glm",
+  "parameters_path": "data/evaluation/elo_context_v44_parameters.json",
+  "parameters_sha256": "da072a17b4bdfdc93020b2ee03a405db3151ac259a67d0b5561b8f852b4db28f",
+  "preholdout_path": "data/evaluation/elo_context_v44_preholdout.json",
+  "preholdout_sha256": "9e3a68133b4e5e2c05317caeb4cae4e16c4c314550dce4e78717c66e57fa380a",
+  "confirmation_eligibility": {
+    "played_after": "2026-06-08",
+    "minimum_matches": 150,
+    "match_ids_must_be_locked_before_evaluation": true
+  },
+  "production_gate": "unchanged_from_v4.3.1",
+  "promotion_allowed_without_confirmation": false,
+  "plan_sha256": "adcd9d4dfe39b6e2d1b39c6771e5e62b2e5c4b68e8a2f420b76b8b0edfe765c0"
+}

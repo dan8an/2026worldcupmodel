@@ -1,0 +1,54 @@
+{
+  "model_version": "elo-context-v4.4-opponent-adjusted-xg-experimental",
+  "fitted_through": "2024-12-31",
+  "glm": {
+    "type": "ridge_poisson_glm",
+    "coefficients": [
+      0.19580120640622395,
+      0.5284362274034998,
+      0.2271139073736451,
+      0.16430769681916504,
+      0.05307981896457082,
+      0.15131411305882334,
+      0.2530253216472377,
+      -0.15549700828168267,
+      0.035112591012303844,
+      0.11369644788354978,
+      -0.12912688735701675
+    ],
+    "feature_names": [
+      "intercept",
+      "elo_side_gap",
+      "long_attack",
+      "opponent_defense_weakness",
+      "short_attack",
+      "opponent_short_defense_weakness",
+      "home_non_neutral",
+      "qualification",
+      "nations_league",
+      "world_cup",
+      "other_competitive"
+    ],
+    "ridge": 1.0
+  },
+  "competition_multipliers": {
+    "friendly": 1.051919627620562,
+    "world_cup": 1.0532963891454457,
+    "nations_league": 1.1,
+    "continental_or_other_competitive": 0.9,
+    "qualification": 0.9152300882637961
+  },
+  "fixed_parameters": {
+    "opponent_adjustment_weight": 0.25,
+    "short_term_weight": 0.3,
+    "long_half_life_days": 730,
+    "short_half_life_days": 180,
+    "small_sample_prior_matches": 8,
+    "goal_difference_amplification": 1.15,
+    "xg_bounds": [
+      0.2,
+      4.5
+    ]
+  },
+  "dataset_sha256": "208834ed9039fbe6ab61612894d58b467925eb11c65655c307148d92b00423c2"
+}

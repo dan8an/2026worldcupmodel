@@ -1,0 +1,244 @@
+{
+  "artifact_version": 1,
+  "generated_at": "2026-07-13T23:16:46.983419+00:00",
+  "scope": "pre_frozen_only_through_2024_12_31",
+  "frozen_matches_accessed": 0,
+  "candidate_list": [
+    "current_v421",
+    "current_v421_temperature",
+    "dixon_coles_only",
+    "dixon_coles_temperature",
+    "dixon_coles_multinomial",
+    "current_v421_multinomial"
+  ],
+  "regularization_grid": [
+    0.01,
+    0.1,
+    1.0,
+    10.0
+  ],
+  "selected_regularization": 10.0,
+  "folds": [
+    {
+      "validation_year": 2022,
+      "architecture_matches": 314,
+      "calibration_matches": 127,
+      "validation_matches": 155,
+      "rho": 0.065,
+      "temperature": {
+        "current": 1.038139270543057,
+        "dixon_coles": 1.054091423290738
+      },
+      "metrics": {
+        "current_v421": {
+          "multiclass_brier": 0.5845377013439805,
+          "log_loss": 0.9843146233158775
+        },
+        "current_v421_temperature": {
+          "multiclass_brier": 0.5857542497797404,
+          "log_loss": 0.9859810133524599
+        },
+        "dixon_coles_only": {
+          "multiclass_brier": 0.5844004217371848,
+          "log_loss": 0.9835613828922214
+        },
+        "dixon_coles_temperature": {
+          "multiclass_brier": 0.5860018828135598,
+          "log_loss": 0.9857527781925544
+        },
+        "current_v421_multinomial": {
+          "multiclass_brier": 0.57421030443388,
+          "log_loss": 0.980058013746477
+        },
+        "dixon_coles_multinomial": {
+          "multiclass_brier": 0.574653396041588,
+          "log_loss": 0.9804330232441208
+        }
+      },
+      "draw_ablation_metrics": {
+        "base_without_draw_adjustment": {
+          "multiclass_brier": 0.5848764537485449,
+          "log_loss": 0.98400012361802
+        },
+        "base_plus_v421_draw_adjustment": {
+          "multiclass_brier": 0.5845377013439805,
+          "log_loss": 0.9843146233158775
+        },
+        "base_plus_dixon_coles": {
+          "multiclass_brier": 0.5844004217371848,
+          "log_loss": 0.9835613828922214
+        },
+        "base_plus_both": {
+          "multiclass_brier": 0.583341998478818,
+          "log_loss": 0.9825116425889229
+        }
+      }
+    },
+    {
+      "validation_year": 2023,
+      "architecture_matches": 441,
+      "calibration_matches": 155,
+      "validation_matches": 98,
+      "rho": 0.033,
+      "temperature": {
+        "current": 0.7547129842602799,
+        "dixon_coles": 0.757858283255199
+      },
+      "metrics": {
+        "current_v421": {
+          "multiclass_brier": 0.5932033356770476,
+          "log_loss": 0.9942958605057389
+        },
+        "current_v421_temperature": {
+          "multiclass_brier": 0.5936525588819084,
+          "log_loss": 0.9929542579915033
+        },
+        "dixon_coles_only": {
+          "multiclass_brier": 0.5995197461923114,
+          "log_loss": 1.0053401435838607
+        },
+        "dixon_coles_temperature": {
+          "multiclass_brier": 0.6008835538231638,
+          "log_loss": 1.0071467615135927
+        },
+        "current_v421_multinomial": {
+          "multiclass_brier": 0.6285403326158091,
+          "log_loss": 1.0451930325265637
+        },
+        "dixon_coles_multinomial": {
+          "multiclass_brier": 0.6280252398482254,
+          "log_loss": 1.0442643877540985
+        }
+      },
+      "draw_ablation_metrics": {
+        "base_without_draw_adjustment": {
+          "multiclass_brier": 0.5991169284251741,
+          "log_loss": 1.0045529862999258
+        },
+        "base_plus_v421_draw_adjustment": {
+          "multiclass_brier": 0.5932033356770476,
+          "log_loss": 0.9942958605057389
+        },
+        "base_plus_dixon_coles": {
+          "multiclass_brier": 0.5995197461923114,
+          "log_loss": 1.0053401435838607
+        },
+        "base_plus_both": {
+          "multiclass_brier": 0.5936537610514881,
+          "log_loss": 0.9948464795348446
+        }
+      }
+    },
+    {
+      "validation_year": 2024,
+      "architecture_matches": 596,
+      "calibration_matches": 98,
+      "validation_matches": 139,
+      "rho": 0.014499999999999985,
+      "temperature": {
+        "current": 0.8397314929441402,
+        "dixon_coles": 0.8790395609117869
+      },
+      "metrics": {
+        "current_v421": {
+          "multiclass_brier": 0.6378767168827327,
+          "log_loss": 1.0587130382178407
+        },
+        "current_v421_temperature": {
+          "multiclass_brier": 0.6451845890926763,
+          "log_loss": 1.0693227470759012
+        },
+        "dixon_coles_only": {
+          "multiclass_brier": 0.6389762208523563,
+          "log_loss": 1.059511741796223
+        },
+        "dixon_coles_temperature": {
+          "multiclass_brier": 0.6436338329314364,
+          "log_loss": 1.0660992565278926
+        },
+        "current_v421_multinomial": {
+          "multiclass_brier": 0.6378767168827327,
+          "log_loss": 1.0587130382178407
+        },
+        "dixon_coles_multinomial": {
+          "multiclass_brier": 0.6389762208523563,
+          "log_loss": 1.059511741796223
+        }
+      },
+      "draw_ablation_metrics": {
+        "base_without_draw_adjustment": {
+          "multiclass_brier": 0.63730577239421,
+          "log_loss": 1.0563967200017983
+        },
+        "base_plus_v421_draw_adjustment": {
+          "multiclass_brier": 0.6378767168827327,
+          "log_loss": 1.0587130382178407
+        },
+        "base_plus_dixon_coles": {
+          "multiclass_brier": 0.6389762208523563,
+          "log_loss": 1.059511741796223
+        },
+        "base_plus_both": {
+          "multiclass_brier": 0.6388877051905303,
+          "log_loss": 1.0605291148783684
+        }
+      }
+    }
+  ],
+  "aggregate": {
+    "current_v421": {
+      "mean_brier": 0.6052059179679203,
+      "median_brier": 0.5932033356770476,
+      "mean_log_loss": 1.0124411740131523,
+      "median_log_loss": 0.9942958605057389
+    },
+    "current_v421_temperature": {
+      "mean_brier": 0.608197132584775,
+      "median_brier": 0.5936525588819084,
+      "mean_log_loss": 1.0160860061399548,
+      "median_log_loss": 0.9929542579915033
+    },
+    "dixon_coles_only": {
+      "mean_brier": 0.6076321295939509,
+      "median_brier": 0.5995197461923114,
+      "mean_log_loss": 1.0161377560907683,
+      "median_log_loss": 1.0053401435838607
+    },
+    "dixon_coles_temperature": {
+      "mean_brier": 0.6101730898560533,
+      "median_brier": 0.6008835538231638,
+      "mean_log_loss": 1.0196662654113466,
+      "median_log_loss": 1.0071467615135927
+    },
+    "dixon_coles_multinomial": {
+      "mean_brier": 0.6138849522473899,
+      "median_brier": 0.6280252398482254,
+      "mean_log_loss": 1.0280697175981475,
+      "median_log_loss": 1.0442643877540985
+    },
+    "current_v421_multinomial": {
+      "mean_brier": 0.6135424513108073,
+      "median_brier": 0.6285403326158091,
+      "mean_log_loss": 1.027988028163627,
+      "median_log_loss": 1.0451930325265637
+    }
+  },
+  "draw_ablation_aggregate": {
+    "base_without_draw_adjustment": {
+      "multiclass_brier": 0.6070997181893096,
+      "log_loss": 1.0149832766399147
+    },
+    "base_plus_v421_draw_adjustment": {
+      "multiclass_brier": 0.6052059179679203,
+      "log_loss": 1.0124411740131523
+    },
+    "base_plus_dixon_coles": {
+      "multiclass_brier": 0.6076321295939509,
+      "log_loss": 1.0161377560907683
+    },
+    "base_plus_both": {
+      "multiclass_brier": 0.6052944882402788,
+      "log_loss": 1.012629079000712
+    }
+  }
+}

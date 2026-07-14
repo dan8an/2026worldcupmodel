@@ -1,0 +1,19 @@
+{
+  "model_version": "elo-context-v4.4-opponent-adjusted-xg-experimental",
+  "point_in_time_rule": "strictly before match date; same-day updates batched",
+  "features": {
+    "elo_side_gap": "chronologically reconstructed Elo gap divided by 400",
+    "long_attack": "opponent-adjusted scoring residual, 730-day half-life, eight-match shrinkage prior",
+    "opponent_defense_weakness": "opponent-adjusted concession residual with identical shrinkage",
+    "short_attack": "180-day attack residual",
+    "opponent_short_defense_weakness": "180-day defense residual",
+    "home_non_neutral": "one only for non-neutral listed-home team",
+    "competition_indicators": "historical categories; coefficients ridge regularized",
+    "confederation": "not included because canonical historical confederation metadata is unavailable"
+  },
+  "margin_handling": "log1p absolute margin capped at 2.0 for diagnostics; raw capped goal residuals drive attack/defense histories",
+  "xg_bounds": [
+    0.2,
+    4.5
+  ]
+}

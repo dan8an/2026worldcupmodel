@@ -1,0 +1,3029 @@
+{
+  "artifact_version": 1,
+  "generated_at": "2026-07-14T00:36:22.253605+00:00",
+  "scope": "pre_2025_only_no_confirmation_holdout_access",
+  "candidate_version": "elo-context-v4.4-opponent-adjusted-xg-experimental",
+  "current_production_model": "elo-context-v4.2.1",
+  "candidate_list": [
+    "current_v421",
+    "opponent_adjusted",
+    "opponent_plus_recency",
+    "opponent_recency_separation",
+    "opponent_recency_separation_competition",
+    "ridge_poisson_glm"
+  ],
+  "folds": [
+    {
+      "validation_year": 2022,
+      "training_matches": 441,
+      "validation_matches": 155,
+      "competition_multipliers": {
+        "friendly": 1.0201921697977916,
+        "world_cup": 1.0810172570390557,
+        "nations_league": 1.1,
+        "continental_or_other_competitive": 0.9,
+        "qualification": 0.9690463215258855
+      },
+      "glm": {
+        "type": "ridge_poisson_glm",
+        "coefficients": [
+          0.14820848069776496,
+          0.49553819926414583,
+          0.25659113130529193,
+          0.16904034146270047,
+          0.0396644838325607,
+          0.14842435445953708,
+          0.23744068573313992,
+          -0.07324160555565581,
+          0.11215422472424849,
+          0.161919955091971,
+          -0.16497876840389467
+        ],
+        "feature_names": [
+          "intercept",
+          "elo_side_gap",
+          "long_attack",
+          "opponent_defense_weakness",
+          "short_attack",
+          "opponent_short_defense_weakness",
+          "home_non_neutral",
+          "qualification",
+          "nations_league",
+          "world_cup",
+          "other_competitive"
+        ],
+        "ridge": 1.0
+      },
+      "metrics": {
+        "current_v421": {
+          "matches": 155,
+          "multiclass_brier": 0.5845377013439805,
+          "log_loss": 0.9843146233158775,
+          "accuracy": 0.5290322580645161,
+          "mean_home_xg": 1.4207529032258064,
+          "actual_home_goals": 1.5612903225806452,
+          "mean_away_xg": 1.337905806451613,
+          "actual_away_goals": 0.9870967741935484,
+          "home_goal_mae": 1.0113090322580645,
+          "away_goal_mae": 0.8817664516129032,
+          "total_goal_error": 0.21027161290322605,
+          "goal_difference_error": -0.49134645161290336,
+          "poisson_deviance_per_team": 1.2169191083863147,
+          "mean_max_probability": 0.4891780992655639,
+          "predicted_class_rates": {
+            "home": 0.397711810019106,
+            "draw": 0.24740377872359282,
+            "away": 0.35488441125730114
+          },
+          "actual_class_rates": {
+            "home": 0.5032258064516129,
+            "draw": 0.22580645161290322,
+            "away": 0.2709677419354839
+          },
+          "confidence_buckets": {
+            "below_40": {
+              "matches": 35,
+              "accuracy": 0.34285714285714286
+            },
+            "40_50": {
+              "matches": 56,
+              "accuracy": 0.48214285714285715
+            },
+            "50_60": {
+              "matches": 38,
+              "accuracy": 0.631578947368421
+            },
+            "60_70": {
+              "matches": 25,
+              "accuracy": 0.72
+            },
+            "70_80": {
+              "matches": 1,
+              "accuracy": 1.0
+            },
+            "above_80": {
+              "matches": 0,
+              "accuracy": null
+            }
+          },
+          "xg_difference_distribution": {
+            "below_0_10": 21,
+            "below_0_25": 46,
+            "below_0_50": 92,
+            "above_0_75": 30,
+            "above_1_00": 12
+          },
+          "goal_count_rates": {
+            "predicted": {
+              "0": 0.2618742138734362,
+              "1": 0.3410452700355108,
+              "2": 0.23141558302843837,
+              "3": 0.10906981250982431,
+              "4_plus": 0.056595120552790555
+            },
+            "observed": {
+              "0": 0.3193548387096774,
+              "1": 0.32903225806451614,
+              "2": 0.2032258064516129,
+              "3": 0.08387096774193549,
+              "4_plus": 0.06451612903225806
+            }
+          },
+          "goal_margin_rates": {
+            "predicted": {
+              "underdog_by_2_plus": 0.11077350617025873,
+              "underdog_by_1": 0.16378376869671724,
+              "draw": 0.2440501978079807,
+              "favorite_by_1": 0.22709271825224553,
+              "favorite_by_2_plus": 0.2542248953568762
+            },
+            "observed": {
+              "underdog_by_2_plus": 0.07741935483870968,
+              "underdog_by_1": 0.17419354838709677,
+              "draw": 0.22580645161290322,
+              "favorite_by_1": 0.2,
+              "favorite_by_2_plus": 0.3225806451612903
+            }
+          },
+          "segments": {
+            "neutral": {
+              "matches": 81,
+              "brier": 0.607388825576042,
+              "log_loss": 1.0176975569490785
+            },
+            "non_neutral": {
+              "matches": 74,
+              "brier": 0.5595249842791565,
+              "log_loss": 0.9477738446092656
+            },
+            "close_elo": {
+              "matches": 62,
+              "brier": 0.6752519306050095,
+              "log_loss": 1.1104113711719485
+            },
+            "moderate_elo": {
+              "matches": 71,
+              "brier": 0.5506945402998394,
+              "log_loss": 0.9372652848018961
+            },
+            "strong_favorite": {
+              "matches": 22,
+              "brier": 0.43810962043262675,
+              "log_loss": 0.7807921081984365
+            },
+            "by_competition": {
+              "continental_or_other_competitive": {
+                "matches": 11,
+                "brier": 0.6616881078964,
+                "log_loss": 1.0915691341760676
+              },
+              "friendly": {
+                "matches": 50,
+                "brier": 0.5329496473020129,
+                "log_loss": 0.9124081975997812
+              },
+              "nations_league": {
+                "matches": 25,
+                "brier": 0.6559493674131633,
+                "log_loss": 1.082023450015158
+              },
+              "qualification": {
+                "matches": 23,
+                "brier": 0.5842466641194662,
+                "log_loss": 0.9790143442099056
+              },
+              "world_cup": {
+                "matches": 46,
+                "brier": 0.5834974933973729,
+                "log_loss": 0.9863734802354012
+              }
+            },
+            "confederation_matchup": null
+          }
+        },
+        "opponent_adjusted": {
+          "matches": 155,
+          "multiclass_brier": 0.5846034198930913,
+          "log_loss": 0.9841049858896,
+          "accuracy": 0.5161290322580645,
+          "mean_home_xg": 1.3931806090423424,
+          "actual_home_goals": 1.5612903225806452,
+          "mean_away_xg": 1.2869923220570936,
+          "actual_away_goals": 0.9870967741935484,
+          "home_goal_mae": 0.9949780813010674,
+          "away_goal_mae": 0.8638816656795337,
+          "total_goal_error": 0.1317858343252425,
+          "goal_difference_error": -0.46800526140184795,
+          "poisson_deviance_per_team": 1.1860873100078473,
+          "mean_max_probability": 0.5125418065738998,
+          "predicted_class_rates": {
+            "home": 0.39995617279317236,
+            "draw": 0.2482759588346762,
+            "away": 0.3517678683721514
+          },
+          "actual_class_rates": {
+            "home": 0.5032258064516129,
+            "draw": 0.22580645161290322,
+            "away": 0.2709677419354839
+          },
+          "confidence_buckets": {
+            "below_40": {
+              "matches": 27,
+              "accuracy": 0.2962962962962963
+            },
+            "40_50": {
+              "matches": 53,
+              "accuracy": 0.39622641509433965
+            },
+            "50_60": {
+              "matches": 33,
+              "accuracy": 0.696969696969697
+            },
+            "60_70": {
+              "matches": 36,
+              "accuracy": 0.6388888888888888
+            },
+            "70_80": {
+              "matches": 6,
+              "accuracy": 0.8333333333333334
+            },
+            "above_80": {
+              "matches": 0,
+              "accuracy": null
+            }
+          },
+          "xg_difference_distribution": {
+            "below_0_10": 14,
+            "below_0_25": 35,
+            "below_0_50": 69,
+            "above_0_75": 53,
+            "above_1_00": 30
+          },
+          "goal_count_rates": {
+            "predicted": {
+              "0": 0.28034998942286576,
+              "1": 0.33881873640916954,
+              "2": 0.2210023680958833,
+              "3": 0.10354711298784676,
+              "4_plus": 0.05628179308423489
+            },
+            "observed": {
+              "0": 0.3193548387096774,
+              "1": 0.32903225806451614,
+              "2": 0.2032258064516129,
+              "3": 0.08387096774193549,
+              "4_plus": 0.06451612903225806
+            }
+          },
+          "goal_margin_rates": {
+            "predicted": {
+              "underdog_by_2_plus": 0.09210857037508509,
+              "underdog_by_1": 0.15102533886234687,
+              "draw": 0.24104578473257227,
+              "favorite_by_1": 0.23437472926511818,
+              "favorite_by_2_plus": 0.2813322715874739
+            },
+            "observed": {
+              "underdog_by_2_plus": 0.08387096774193549,
+              "underdog_by_1": 0.17419354838709677,
+              "draw": 0.22580645161290322,
+              "favorite_by_1": 0.2,
+              "favorite_by_2_plus": 0.3161290322580645
+            }
+          },
+          "segments": {
+            "neutral": {
+              "matches": 81,
+              "brier": 0.6091448660423234,
+              "log_loss": 1.0220292874229404
+            },
+            "non_neutral": {
+              "matches": 74,
+              "brier": 0.5577404855946074,
+              "log_loss": 0.9425932504274294
+            },
+            "close_elo": {
+              "matches": 62,
+              "brier": 0.6791972063502747,
+              "log_loss": 1.1161462098599475
+            },
+            "moderate_elo": {
+              "matches": 71,
+              "brier": 0.5498204904478039,
+              "log_loss": 0.9359224528477379
+            },
+            "strong_favorite": {
+              "matches": 22,
+              "brier": 0.43027493035991055,
+              "log_loss": 0.7674869840628102
+            },
+            "by_competition": {
+              "continental_or_other_competitive": {
+                "matches": 11,
+                "brier": 0.6684212504142842,
+                "log_loss": 1.1049566471669314
+              },
+              "friendly": {
+                "matches": 50,
+                "brier": 0.5227700155343972,
+                "log_loss": 0.8964076007988957
+              },
+              "nations_league": {
+                "matches": 25,
+                "brier": 0.6681095160662314,
+                "log_loss": 1.093775136435812
+              },
+              "qualification": {
+                "matches": 23,
+                "brier": 0.5874712709362084,
+                "log_loss": 0.9816049415057853
+              },
+              "world_cup": {
+                "matches": 46,
+                "brier": 0.5849525743252957,
+                "log_loss": 0.9921755997517083
+              }
+            },
+            "confederation_matchup": null
+          }
+        },
+        "opponent_plus_recency": {
+          "matches": 155,
+          "multiclass_brier": 0.5865826875822746,
+          "log_loss": 0.9867621738497354,
+          "accuracy": 0.5161290322580645,
+          "mean_home_xg": 1.3885592469660846,
+          "actual_home_goals": 1.5612903225806452,
+          "mean_away_xg": 1.2815434970692114,
+          "actual_away_goals": 0.9870967741935484,
+          "home_goal_mae": 0.9945180725405429,
+          "away_goal_mae": 0.8653396694674671,
+          "total_goal_error": 0.12171564726110251,
+          "goal_difference_error": -0.4671777984902237,
+          "poisson_deviance_per_team": 1.186920873868187,
+          "mean_max_probability": 0.5127456758194479,
+          "predicted_class_rates": {
+            "home": 0.4000881142284589,
+            "draw": 0.24859753655971037,
+            "away": 0.35131434921183075
+          },
+          "actual_class_rates": {
+            "home": 0.5032258064516129,
+            "draw": 0.22580645161290322,
+            "away": 0.2709677419354839
+          },
+          "confidence_buckets": {
+            "below_40": {
+              "matches": 30,
+              "accuracy": 0.3
+            },
+            "40_50": {
+              "matches": 53,
+              "accuracy": 0.4339622641509434
+            },
+            "50_60": {
+              "matches": 30,
+              "accuracy": 0.6666666666666666
+            },
+            "60_70": {
+              "matches": 37,
+              "accuracy": 0.6486486486486487
+            },
+            "70_80": {
+              "matches": 5,
+              "accuracy": 0.8
+            },
+            "above_80": {
+              "matches": 0,
+              "accuracy": null
+            }
+          },
+          "xg_difference_distribution": {
+            "below_0_10": 16,
+            "below_0_25": 34,
+            "below_0_50": 68,
+            "above_0_75": 52,
+            "above_1_00": 29
+          },
+          "goal_count_rates": {
+            "predicted": {
+              "0": 0.2819162974699599,
+              "1": 0.3390338894790874,
+              "2": 0.22028517300007477,
+              "3": 0.10292482037756576,
+              "4_plus": 0.0558398196733121
+            },
+            "observed": {
+              "0": 0.3193548387096774,
+              "1": 0.32903225806451614,
+              "2": 0.2032258064516129,
+              "3": 0.08387096774193549,
+              "4_plus": 0.06451612903225806
+            }
+          },
+          "goal_margin_rates": {
+            "predicted": {
+              "underdog_by_2_plus": 0.09152913072866145,
+              "underdog_by_1": 0.15095209541826135,
+              "draw": 0.24171106785451588,
+              "favorite_by_1": 0.23484358652048426,
+              "favorite_by_2_plus": 0.28085027242872956
+            },
+            "observed": {
+              "underdog_by_2_plus": 0.08387096774193549,
+              "underdog_by_1": 0.17419354838709677,
+              "draw": 0.22580645161290322,
+              "favorite_by_1": 0.2,
+              "favorite_by_2_plus": 0.3161290322580645
+            }
+          },
+          "segments": {
+            "neutral": {
+              "matches": 81,
+              "brier": 0.6098857490003601,
+              "log_loss": 1.0225610997826136
+            },
+            "non_neutral": {
+              "matches": 74,
+              "brier": 0.5610752825165327,
+              "log_loss": 0.9475768630313144
+            },
+            "close_elo": {
+              "matches": 62,
+              "brier": 0.680507575512837,
+              "log_loss": 1.1180286422523125
+            },
+            "moderate_elo": {
+              "matches": 71,
+              "brier": 0.5527364983258743,
+              "log_loss": 0.9396372168305478
+            },
+            "strong_favorite": {
+              "matches": 22,
+              "brier": 0.4311161596508906,
+              "log_loss": 0.7689144878225775
+            },
+            "by_competition": {
+              "continental_or_other_competitive": {
+                "matches": 11,
+                "brier": 0.6684176428166705,
+                "log_loss": 1.1054061844722378
+              },
+              "friendly": {
+                "matches": 50,
+                "brier": 0.5239943437026039,
+                "log_loss": 0.8973941593175155
+              },
+              "nations_league": {
+                "matches": 25,
+                "brier": 0.6721739146587816,
+                "log_loss": 1.1000915085856489
+              },
+              "qualification": {
+                "matches": 23,
+                "brier": 0.5912487795514503,
+                "log_loss": 0.9874489856126244
+              },
+              "world_cup": {
+                "matches": 46,
+                "brier": 0.5861942504996979,
+                "log_loss": 0.993594490606673
+              }
+            },
+            "confederation_matchup": null
+          }
+        },
+        "opponent_recency_separation": {
+          "matches": 155,
+          "multiclass_brier": 0.5854007332134226,
+          "log_loss": 0.9853160252607983,
+          "accuracy": 0.5161290322580645,
+          "mean_home_xg": 1.4140776581083179,
+          "actual_home_goals": 1.5612903225806452,
+          "mean_away_xg": 1.29025224114531,
+          "actual_away_goals": 0.9870967741935484,
+          "home_goal_mae": 0.9866773334204479,
+          "away_goal_mae": 0.8719058119797293,
+          "total_goal_error": 0.15594280247943404,
+          "goal_difference_error": -0.4503681314240888,
+          "poisson_deviance_per_team": 1.179636589955045,
+          "mean_max_probability": 0.5312675146528449,
+          "predicted_class_rates": {
+            "home": 0.40473108470401553,
+            "draw": 0.24551871985486903,
+            "away": 0.3497501954411154
+          },
+          "actual_class_rates": {
+            "home": 0.5032258064516129,
+            "draw": 0.22580645161290322,
+            "away": 0.2709677419354839
+          },
+          "confidence_buckets": {
+            "below_40": {
+              "matches": 24,
+              "accuracy": 0.25
+            },
+            "40_50": {
+              "matches": 46,
+              "accuracy": 0.3695652173913043
+            },
+            "50_60": {
+              "matches": 36,
+              "accuracy": 0.6666666666666666
+            },
+            "60_70": {
+              "matches": 35,
+              "accuracy": 0.6571428571428571
+            },
+            "70_80": {
+              "matches": 14,
+              "accuracy": 0.7142857142857143
+            },
+            "above_80": {
+              "matches": 0,
+              "accuracy": null
+            }
+          },
+          "xg_difference_distribution": {
+            "below_0_10": 14,
+            "below_0_25": 32,
+            "below_0_50": 56,
+            "above_0_75": 62,
+            "above_1_00": 42
+          },
+          "goal_count_rates": {
+            "predicted": {
+              "0": 0.2832047838515663,
+              "1": 0.3342385381001429,
+              "2": 0.21779644476761328,
+              "3": 0.10420658808372361,
+              "4_plus": 0.06055364519695383
+            },
+            "observed": {
+              "0": 0.3193548387096774,
+              "1": 0.32903225806451614,
+              "2": 0.2032258064516129,
+              "3": 0.08387096774193549,
+              "4_plus": 0.06451612903225806
+            }
+          },
+          "goal_margin_rates": {
+            "predicted": {
+              "underdog_by_2_plus": 0.08458058647888436,
+              "underdog_by_1": 0.1430241120450903,
+              "draw": 0.23474726514931835,
+              "favorite_by_1": 0.23518192144210473,
+              "favorite_by_2_plus": 0.30228467788019575
+            },
+            "observed": {
+              "underdog_by_2_plus": 0.08387096774193549,
+              "underdog_by_1": 0.17419354838709677,
+              "draw": 0.22580645161290322,
+              "favorite_by_1": 0.2,
+              "favorite_by_2_plus": 0.3161290322580645
+            }
+          },
+          "segments": {
+            "neutral": {
+              "matches": 81,
+              "brier": 0.6109507048819132,
+              "log_loss": 1.0262352096880087
+            },
+            "non_neutral": {
+              "matches": 74,
+              "brier": 0.5574338723330473,
+              "log_loss": 0.940526107171554
+            },
+            "close_elo": {
+              "matches": 62,
+              "brier": 0.6831575855843987,
+              "log_loss": 1.1214860686764543
+            },
+            "moderate_elo": {
+              "matches": 71,
+              "brier": 0.5486688020716312,
+              "log_loss": 0.9349548368876609
+            },
+            "strong_favorite": {
+              "matches": 22,
+              "brier": 0.4284481088528152,
+              "log_loss": 0.7640933744754375
+            },
+            "by_competition": {
+              "continental_or_other_competitive": {
+                "matches": 11,
+                "brier": 0.673246142407151,
+                "log_loss": 1.1139838311559265
+              },
+              "friendly": {
+                "matches": 50,
+                "brier": 0.5179290343869024,
+                "log_loss": 0.8882090386543343
+              },
+              "nations_league": {
+                "matches": 25,
+                "brier": 0.6799247874007486,
+                "log_loss": 1.1102371207960304
+              },
+              "qualification": {
+                "matches": 23,
+                "brier": 0.5886636018478364,
+                "log_loss": 0.9794402272106318
+              },
+              "world_cup": {
+                "matches": 46,
+                "brier": 0.5847298224942988,
+                "log_loss": 0.9951447085705765
+              }
+            },
+            "confederation_matchup": null
+          }
+        },
+        "opponent_recency_separation_competition": {
+          "matches": 155,
+          "multiclass_brier": 0.5858149530041693,
+          "log_loss": 0.9862129775551086,
+          "accuracy": 0.5161290322580645,
+          "mean_home_xg": 1.465383335557268,
+          "actual_home_goals": 1.5612903225806452,
+          "mean_away_xg": 1.3370236143251217,
+          "actual_away_goals": 0.9870967741935484,
+          "home_goal_mae": 0.9970760277397289,
+          "away_goal_mae": 0.8771952120125753,
+          "total_goal_error": 0.2540198531081965,
+          "goal_difference_error": -0.44583382715495046,
+          "poisson_deviance_per_team": 1.1812847946558451,
+          "mean_max_probability": 0.5349011492313412,
+          "predicted_class_rates": {
+            "home": 0.4066454394935979,
+            "draw": 0.24238461433311295,
+            "away": 0.35096994617328914
+          },
+          "actual_class_rates": {
+            "home": 0.5032258064516129,
+            "draw": 0.22580645161290322,
+            "away": 0.2709677419354839
+          },
+          "confidence_buckets": {
+            "below_40": {
+              "matches": 24,
+              "accuracy": 0.25
+            },
+            "40_50": {
+              "matches": 44,
+              "accuracy": 0.38636363636363635
+            },
+            "50_60": {
+              "matches": 37,
+              "accuracy": 0.6486486486486487
+            },
+            "60_70": {
+              "matches": 35,
+              "accuracy": 0.6285714285714286
+            },
+            "70_80": {
+              "matches": 15,
+              "accuracy": 0.7333333333333333
+            },
+            "above_80": {
+              "matches": 0,
+              "accuracy": null
+            }
+          },
+          "xg_difference_distribution": {
+            "below_0_10": 14,
+            "below_0_25": 31,
+            "below_0_50": 56,
+            "above_0_75": 64,
+            "above_1_00": 47
+          },
+          "goal_count_rates": {
+            "predicted": {
+              "0": 0.2726683697242545,
+              "1": 0.3297876507464665,
+              "2": 0.22099747647599724,
+              "3": 0.10923844479757876,
+              "4_plus": 0.06730805825570335
+            },
+            "observed": {
+              "0": 0.3193548387096774,
+              "1": 0.32903225806451614,
+              "2": 0.2032258064516129,
+              "3": 0.08387096774193549,
+              "4_plus": 0.06451612903225806
+            }
+          },
+          "goal_margin_rates": {
+            "predicted": {
+              "underdog_by_2_plus": 0.08613293826092255,
+              "underdog_by_1": 0.14127700309415298,
+              "draw": 0.22967877364035139,
+              "favorite_by_1": 0.2318416804894899,
+              "favorite_by_2_plus": 0.310813540167786
+            },
+            "observed": {
+              "underdog_by_2_plus": 0.08387096774193549,
+              "underdog_by_1": 0.17419354838709677,
+              "draw": 0.22580645161290322,
+              "favorite_by_1": 0.2,
+              "favorite_by_2_plus": 0.3161290322580645
+            }
+          },
+          "segments": {
+            "neutral": {
+              "matches": 81,
+              "brier": 0.611003130193226,
+              "log_loss": 1.0269580062043977
+            },
+            "non_neutral": {
+              "matches": 74,
+              "brier": 0.5582441104053364,
+              "log_loss": 0.941613689438995
+            },
+            "close_elo": {
+              "matches": 62,
+              "brier": 0.685358513913903,
+              "log_loss": 1.124592617773135
+            },
+            "moderate_elo": {
+              "matches": 71,
+              "brier": 0.5474459971655351,
+              "log_loss": 0.933369447464216
+            },
+            "strong_favorite": {
+              "matches": 22,
+              "brier": 0.4291101842832379,
+              "log_loss": 0.7667744749612797
+            },
+            "by_competition": {
+              "continental_or_other_competitive": {
+                "matches": 11,
+                "brier": 0.6713216430956576,
+                "log_loss": 1.112853360906162
+              },
+              "friendly": {
+                "matches": 50,
+                "brier": 0.5177192376576257,
+                "log_loss": 0.8879896265070575
+              },
+              "nations_league": {
+                "matches": 25,
+                "brier": 0.6808865417541269,
+                "log_loss": 1.1099079336351223
+              },
+              "qualification": {
+                "matches": 23,
+                "brier": 0.5910659978827636,
+                "log_loss": 0.9838148470536678
+              },
+              "world_cup": {
+                "matches": 46,
+                "brier": 0.5850899187729559,
+                "log_loss": 0.996667465274103
+              }
+            },
+            "confederation_matchup": null
+          }
+        },
+        "ridge_poisson_glm": {
+          "matches": 155,
+          "multiclass_brier": 0.574569191871525,
+          "log_loss": 0.9729878204545996,
+          "accuracy": 0.5548387096774193,
+          "mean_home_xg": 1.3952811337261253,
+          "actual_home_goals": 1.5612903225806452,
+          "mean_away_xg": 1.144046856566328,
+          "actual_away_goals": 0.9870967741935484,
+          "home_goal_mae": 1.0050766094258863,
+          "away_goal_mae": 0.8071296256287872,
+          "total_goal_error": -0.00905910648174002,
+          "goal_difference_error": -0.3229592712272995,
+          "poisson_deviance_per_team": 1.1540917570337754,
+          "mean_max_probability": 0.5162112451343799,
+          "predicted_class_rates": {
+            "home": 0.42491329386124893,
+            "draw": 0.2574964468771996,
+            "away": 0.3175902592615515
+          },
+          "actual_class_rates": {
+            "home": 0.5032258064516129,
+            "draw": 0.22580645161290322,
+            "away": 0.2709677419354839
+          },
+          "confidence_buckets": {
+            "below_40": {
+              "matches": 33,
+              "accuracy": 0.36363636363636365
+            },
+            "40_50": {
+              "matches": 44,
+              "accuracy": 0.5
+            },
+            "50_60": {
+              "matches": 36,
+              "accuracy": 0.6388888888888888
+            },
+            "60_70": {
+              "matches": 31,
+              "accuracy": 0.6451612903225806
+            },
+            "70_80": {
+              "matches": 11,
+              "accuracy": 0.8181818181818182
+            },
+            "above_80": {
+              "matches": 0,
+              "accuracy": null
+            }
+          },
+          "xg_difference_distribution": {
+            "below_0_10": 16,
+            "below_0_25": 34,
+            "below_0_50": 68,
+            "above_0_75": 60,
+            "above_1_00": 32
+          },
+          "goal_count_rates": {
+            "predicted": {
+              "0": 0.30627294751272566,
+              "1": 0.3388741536255875,
+              "2": 0.20826123956206724,
+              "3": 0.09467762808890556,
+              "4_plus": 0.05191403121071396
+            },
+            "observed": {
+              "0": 0.3193548387096774,
+              "1": 0.32903225806451614,
+              "2": 0.2032258064516129,
+              "3": 0.08387096774193549,
+              "4_plus": 0.06451612903225806
+            }
+          },
+          "goal_margin_rates": {
+            "predicted": {
+              "underdog_by_2_plus": 0.08241136080236346,
+              "underdog_by_1": 0.14831292452080994,
+              "draw": 0.24968237572386712,
+              "favorite_by_1": 0.23973868220850322,
+              "favorite_by_2_plus": 0.27972188201964304
+            },
+            "observed": {
+              "underdog_by_2_plus": 0.06451612903225806,
+              "underdog_by_1": 0.15483870967741936,
+              "draw": 0.22580645161290322,
+              "favorite_by_1": 0.21935483870967742,
+              "favorite_by_2_plus": 0.33548387096774196
+            }
+          },
+          "segments": {
+            "neutral": {
+              "matches": 81,
+              "brier": 0.6087525939780589,
+              "log_loss": 1.0220214790415398
+            },
+            "non_neutral": {
+              "matches": 74,
+              "brier": 0.5371522247008593,
+              "log_loss": 0.9193158428121382
+            },
+            "close_elo": {
+              "matches": 62,
+              "brier": 0.6626770274376432,
+              "log_loss": 1.0903572583346957
+            },
+            "moderate_elo": {
+              "matches": 71,
+              "brier": 0.5468606978814411,
+              "log_loss": 0.9388540662887374
+            },
+            "strong_favorite": {
+              "matches": 22,
+              "brier": 0.4156881586077343,
+              "log_loss": 0.7523783385096133
+            },
+            "by_competition": {
+              "continental_or_other_competitive": {
+                "matches": 11,
+                "brier": 0.6488191212395789,
+                "log_loss": 1.0858369793001308
+              },
+              "friendly": {
+                "matches": 50,
+                "brier": 0.51425540451264,
+                "log_loss": 0.8826898042063652
+              },
+              "nations_league": {
+                "matches": 25,
+                "brier": 0.6799715752789246,
+                "log_loss": 1.1281154044512447
+              },
+              "qualification": {
+                "matches": 23,
+                "brier": 0.5265329083856884,
+                "log_loss": 0.8959380158459788
+              },
+              "world_cup": {
+                "matches": 46,
+                "brier": 0.5891064762168486,
+                "log_loss": 0.9983686024370577
+              }
+            },
+            "confederation_matchup": null
+          }
+        }
+      },
+      "representative_largest_predefined_elo_gap_examples": [
+        {
+          "date": "2022-11-17",
+          "home": "JOR",
+          "away": "ESP",
+          "score": [
+            1,
+            3
+          ],
+          "current_xg": [
+            0.7895,
+            2.3085
+          ],
+          "ridge_poisson_xg": [
+            0.6600138387122648,
+            2.4010753164850067
+          ]
+        },
+        {
+          "date": "2022-11-22",
+          "home": "ARG",
+          "away": "KSA",
+          "score": [
+            1,
+            2
+          ],
+          "current_xg": [
+            2.1188,
+            0.8602
+          ],
+          "ridge_poisson_xg": [
+            2.0688365841862675,
+            0.5683097584872593
+          ]
+        },
+        {
+          "date": "2022-02-01",
+          "home": "BRA",
+          "away": "PAR",
+          "score": [
+            4,
+            0
+          ],
+          "current_xg": [
+            2.1174,
+            0.8607
+          ],
+          "ridge_poisson_xg": [
+            2.1333568953623128,
+            0.4803400488676655
+          ]
+        },
+        {
+          "date": "2022-11-29",
+          "home": "QAT",
+          "away": "NED",
+          "score": [
+            0,
+            2
+          ],
+          "current_xg": [
+            0.8752,
+            2.0823
+          ],
+          "ridge_poisson_xg": [
+            0.9073253076962295,
+            2.691149938956673
+          ]
+        },
+        {
+          "date": "2022-09-23",
+          "home": "BRA",
+          "away": "GHA",
+          "score": [
+            3,
+            0
+          ],
+          "current_xg": [
+            2.071,
+            0.88
+          ],
+          "ridge_poisson_xg": [
+            2.052475061034636,
+            0.5549233265930047
+          ]
+        }
+      ]
+    },
+    {
+      "validation_year": 2023,
+      "training_matches": 596,
+      "validation_matches": 98,
+      "competition_multipliers": {
+        "friendly": 1.0179032976827094,
+        "world_cup": 1.0756734940974675,
+        "nations_league": 1.1,
+        "continental_or_other_competitive": 0.9,
+        "qualification": 0.9431981218207903
+      },
+      "glm": {
+        "type": "ridge_poisson_glm",
+        "coefficients": [
+          0.13928304441758096,
+          0.5853866208386791,
+          0.218521236642886,
+          0.15817776375586542,
+          0.02785921726053842,
+          0.10400183957868009,
+          0.2640190479554441,
+          -0.11216007506488132,
+          0.07383643116208977,
+          0.15629565606965773,
+          -0.1647528670356927
+        ],
+        "feature_names": [
+          "intercept",
+          "elo_side_gap",
+          "long_attack",
+          "opponent_defense_weakness",
+          "short_attack",
+          "opponent_short_defense_weakness",
+          "home_non_neutral",
+          "qualification",
+          "nations_league",
+          "world_cup",
+          "other_competitive"
+        ],
+        "ridge": 1.0
+      },
+      "metrics": {
+        "current_v421": {
+          "matches": 98,
+          "multiclass_brier": 0.5932033356770476,
+          "log_loss": 0.9942958605057389,
+          "accuracy": 0.4897959183673469,
+          "mean_home_xg": 1.4360244897959185,
+          "actual_home_goals": 1.6326530612244898,
+          "mean_away_xg": 1.325745918367347,
+          "actual_away_goals": 1.2346938775510203,
+          "home_goal_mae": 1.0378795918367347,
+          "away_goal_mae": 0.9403520408163265,
+          "total_goal_error": -0.10557653061224492,
+          "goal_difference_error": -0.28768061224489805,
+          "poisson_deviance_per_team": 1.2074384440224697,
+          "mean_max_probability": 0.4921542550536269,
+          "predicted_class_rates": {
+            "home": 0.40355519436185555,
+            "draw": 0.2446336883829908,
+            "away": 0.3518111172551536
+          },
+          "actual_class_rates": {
+            "home": 0.41836734693877553,
+            "draw": 0.23469387755102042,
+            "away": 0.3469387755102041
+          },
+          "confidence_buckets": {
+            "below_40": {
+              "matches": 27,
+              "accuracy": 0.37037037037037035
+            },
+            "40_50": {
+              "matches": 29,
+              "accuracy": 0.3793103448275862
+            },
+            "50_60": {
+              "matches": 19,
+              "accuracy": 0.47368421052631576
+            },
+            "60_70": {
+              "matches": 21,
+              "accuracy": 0.7619047619047619
+            },
+            "70_80": {
+              "matches": 2,
+              "accuracy": 1.0
+            },
+            "above_80": {
+              "matches": 0,
+              "accuracy": null
+            }
+          },
+          "xg_difference_distribution": {
+            "below_0_10": 14,
+            "below_0_25": 36,
+            "below_0_50": 57,
+            "above_0_75": 22,
+            "above_1_00": 7
+          },
+          "goal_count_rates": {
+            "predicted": {
+              "0": 0.2620052384260586,
+              "1": 0.34065909307300446,
+              "2": 0.23115773686056013,
+              "3": 0.109132155193693,
+              "4_plus": 0.05704577644668364
+            },
+            "observed": {
+              "0": 0.2755102040816326,
+              "1": 0.3010204081632653,
+              "2": 0.25,
+              "3": 0.09693877551020408,
+              "4_plus": 0.07653061224489796
+            }
+          },
+          "goal_margin_rates": {
+            "predicted": {
+              "underdog_by_2_plus": 0.11146551851674681,
+              "underdog_by_1": 0.16383690952780283,
+              "draw": 0.2435067094688363,
+              "favorite_by_1": 0.22638029851085523,
+              "favorite_by_2_plus": 0.25472624752149176
+            },
+            "observed": {
+              "underdog_by_2_plus": 0.1326530612244898,
+              "underdog_by_1": 0.12244897959183673,
+              "draw": 0.23469387755102042,
+              "favorite_by_1": 0.20408163265306123,
+              "favorite_by_2_plus": 0.30612244897959184
+            }
+          },
+          "segments": {
+            "neutral": {
+              "matches": 22,
+              "brier": 0.5970280630629001,
+              "log_loss": 1.0048304733896127
+            },
+            "non_neutral": {
+              "matches": 76,
+              "brier": 0.592096177749564,
+              "log_loss": 0.9912463673025125
+            },
+            "close_elo": {
+              "matches": 44,
+              "brier": 0.6664721897190269,
+              "log_loss": 1.0951846023978156
+            },
+            "moderate_elo": {
+              "matches": 38,
+              "brier": 0.5594794736853262,
+              "log_loss": 0.9481239599623968
+            },
+            "strong_favorite": {
+              "matches": 16,
+              "brier": 0.47180815929194486,
+              "log_loss": 0.8265100840929648
+            },
+            "by_competition": {
+              "continental_or_other_competitive": {
+                "matches": 11,
+                "brier": 0.6112297754618863,
+                "log_loss": 1.0173736883296771
+              },
+              "friendly": {
+                "matches": 48,
+                "brier": 0.5900209748752742,
+                "log_loss": 0.9896604226968351
+              },
+              "nations_league": {
+                "matches": 8,
+                "brier": 0.5076002155212624,
+                "log_loss": 0.875281423637548
+              },
+              "qualification": {
+                "matches": 31,
+                "brier": 0.6138255112286027,
+                "log_loss": 1.0239978090125
+              }
+            },
+            "confederation_matchup": null
+          }
+        },
+        "opponent_adjusted": {
+          "matches": 98,
+          "multiclass_brier": 0.5872865124085921,
+          "log_loss": 0.9852556306197183,
+          "accuracy": 0.5204081632653061,
+          "mean_home_xg": 1.4324326246377557,
+          "actual_home_goals": 1.6326530612244898,
+          "mean_away_xg": 1.2911004577639866,
+          "actual_away_goals": 1.2346938775510203,
+          "home_goal_mae": 1.0322660397203136,
+          "away_goal_mae": 0.9069455962142375,
+          "total_goal_error": -0.1438138563737681,
+          "goal_difference_error": -0.25662701679970046,
+          "poisson_deviance_per_team": 1.172000320940923,
+          "mean_max_probability": 0.5124522191643077,
+          "predicted_class_rates": {
+            "home": 0.40441136475100947,
+            "draw": 0.24408803399859663,
+            "away": 0.3515006012503939
+          },
+          "actual_class_rates": {
+            "home": 0.41836734693877553,
+            "draw": 0.23469387755102042,
+            "away": 0.3469387755102041
+          },
+          "confidence_buckets": {
+            "below_40": {
+              "matches": 21,
+              "accuracy": 0.47619047619047616
+            },
+            "40_50": {
+              "matches": 29,
+              "accuracy": 0.3793103448275862
+            },
+            "50_60": {
+              "matches": 19,
+              "accuracy": 0.5263157894736842
+            },
+            "60_70": {
+              "matches": 25,
+              "accuracy": 0.64
+            },
+            "70_80": {
+              "matches": 4,
+              "accuracy": 1.0
+            },
+            "above_80": {
+              "matches": 0,
+              "accuracy": null
+            }
+          },
+          "xg_difference_distribution": {
+            "below_0_10": 15,
+            "below_0_25": 28,
+            "below_0_50": 46,
+            "above_0_75": 37,
+            "above_1_00": 21
+          },
+          "goal_count_rates": {
+            "predicted": {
+              "0": 0.2763409262443624,
+              "1": 0.3363683865613323,
+              "2": 0.22208747173553728,
+              "3": 0.10571291718476172,
+              "4_plus": 0.05949029827400629
+            },
+            "observed": {
+              "0": 0.2755102040816326,
+              "1": 0.3010204081632653,
+              "2": 0.25,
+              "3": 0.09693877551020408,
+              "4_plus": 0.07653061224489796
+            }
+          },
+          "goal_margin_rates": {
+            "predicted": {
+              "underdog_by_2_plus": 0.09573752695847776,
+              "underdog_by_1": 0.151289098094891,
+              "draw": 0.23784574450039778,
+              "favorite_by_1": 0.23094207786768559,
+              "favorite_by_2_plus": 0.2840154097059784
+            },
+            "observed": {
+              "underdog_by_2_plus": 0.14285714285714285,
+              "underdog_by_1": 0.10204081632653061,
+              "draw": 0.23469387755102042,
+              "favorite_by_1": 0.22448979591836735,
+              "favorite_by_2_plus": 0.29591836734693877
+            }
+          },
+          "segments": {
+            "neutral": {
+              "matches": 22,
+              "brier": 0.5953684374884243,
+              "log_loss": 1.005588107886495
+            },
+            "non_neutral": {
+              "matches": 76,
+              "brier": 0.5849470077802198,
+              "log_loss": 0.9793699135161781
+            },
+            "close_elo": {
+              "matches": 44,
+              "brier": 0.6551505722623633,
+              "log_loss": 1.0783541571281638
+            },
+            "moderate_elo": {
+              "matches": 38,
+              "brier": 0.5573116854630477,
+              "log_loss": 0.9434444976432064
+            },
+            "strong_favorite": {
+              "matches": 16,
+              "brier": 0.47185056180638996,
+              "log_loss": 0.8285361235407105
+            },
+            "by_competition": {
+              "continental_or_other_competitive": {
+                "matches": 11,
+                "brier": 0.6279948861008929,
+                "log_loss": 1.0374465254265954
+              },
+              "friendly": {
+                "matches": 48,
+                "brier": 0.5786099839143098,
+                "log_loss": 0.9722612182145731
+              },
+              "nations_league": {
+                "matches": 8,
+                "brier": 0.4767721265990461,
+                "log_loss": 0.8336372224486963
+              },
+              "qualification": {
+                "matches": 31,
+                "brier": 0.6147960718791281,
+                "log_loss": 1.025983992488735
+              }
+            },
+            "confederation_matchup": null
+          }
+        },
+        "opponent_plus_recency": {
+          "matches": 98,
+          "multiclass_brier": 0.5861409758024849,
+          "log_loss": 0.9835394703389373,
+          "accuracy": 0.5306122448979592,
+          "mean_home_xg": 1.4411529519961443,
+          "actual_home_goals": 1.6326530612244898,
+          "mean_away_xg": 1.2976295968696048,
+          "actual_away_goals": 1.2346938775510203,
+          "home_goal_mae": 1.0322352330659006,
+          "away_goal_mae": 0.907257522532061,
+          "total_goal_error": -0.12856438990976127,
+          "goal_difference_error": -0.2544358285469299,
+          "poisson_deviance_per_team": 1.1713527168734656,
+          "mean_max_probability": 0.5128224326691928,
+          "predicted_class_rates": {
+            "home": 0.40488713795231907,
+            "draw": 0.24354105221215855,
+            "away": 0.3515718098355224
+          },
+          "actual_class_rates": {
+            "home": 0.41836734693877553,
+            "draw": 0.23469387755102042,
+            "away": 0.3469387755102041
+          },
+          "confidence_buckets": {
+            "below_40": {
+              "matches": 24,
+              "accuracy": 0.5
+            },
+            "40_50": {
+              "matches": 27,
+              "accuracy": 0.37037037037037035
+            },
+            "50_60": {
+              "matches": 18,
+              "accuracy": 0.5555555555555556
+            },
+            "60_70": {
+              "matches": 25,
+              "accuracy": 0.64
+            },
+            "70_80": {
+              "matches": 4,
+              "accuracy": 1.0
+            },
+            "above_80": {
+              "matches": 0,
+              "accuracy": null
+            }
+          },
+          "xg_difference_distribution": {
+            "below_0_10": 15,
+            "below_0_25": 29,
+            "below_0_50": 47,
+            "above_0_75": 37,
+            "above_1_00": 22
+          },
+          "goal_count_rates": {
+            "predicted": {
+              "0": 0.2747173671262728,
+              "1": 0.3356907856132978,
+              "2": 0.22257846848993662,
+              "3": 0.10647120832325281,
+              "4_plus": 0.06054217044723996
+            },
+            "observed": {
+              "0": 0.2755102040816326,
+              "1": 0.3010204081632653,
+              "2": 0.25,
+              "3": 0.09693877551020408,
+              "4_plus": 0.07653061224489796
+            }
+          },
+          "goal_margin_rates": {
+            "predicted": {
+              "underdog_by_2_plus": 0.09609820799152857,
+              "underdog_by_1": 0.15106322371596748,
+              "draw": 0.23701755386777523,
+              "favorite_by_1": 0.23034114851351511,
+              "favorite_by_2_plus": 0.28529188459372173
+            },
+            "observed": {
+              "underdog_by_2_plus": 0.1326530612244898,
+              "underdog_by_1": 0.10204081632653061,
+              "draw": 0.23469387755102042,
+              "favorite_by_1": 0.22448979591836735,
+              "favorite_by_2_plus": 0.30612244897959184
+            }
+          },
+          "segments": {
+            "neutral": {
+              "matches": 22,
+              "brier": 0.5954694152150698,
+              "log_loss": 1.0064230142591362
+            },
+            "non_neutral": {
+              "matches": 76,
+              "brier": 0.5834406380777895,
+              "log_loss": 0.9769152865725643
+            },
+            "close_elo": {
+              "matches": 44,
+              "brier": 0.6506076714610362,
+              "log_loss": 1.0720710629909256
+            },
+            "moderate_elo": {
+              "matches": 38,
+              "brier": 0.5601831614859998,
+              "log_loss": 0.9471786212073524
+            },
+            "strong_favorite": {
+              "matches": 16,
+              "brier": 0.47050737174312174,
+              "log_loss": 0.8264346072334848
+            },
+            "by_competition": {
+              "continental_or_other_competitive": {
+                "matches": 11,
+                "brier": 0.6301451999204215,
+                "log_loss": 1.0398660189628393
+              },
+              "friendly": {
+                "matches": 48,
+                "brier": 0.5784974776230131,
+                "log_loss": 0.9722977711907298
+              },
+              "nations_league": {
+                "matches": 8,
+                "brier": 0.46937800086385145,
+                "log_loss": 0.8239067656358622
+              },
+              "qualification": {
+                "matches": 31,
+                "brier": 0.6124940482807568,
+                "log_loss": 1.02215466910912
+              }
+            },
+            "confederation_matchup": null
+          }
+        },
+        "opponent_recency_separation": {
+          "matches": 98,
+          "multiclass_brier": 0.5874252241707759,
+          "log_loss": 0.9861044825462364,
+          "accuracy": 0.5306122448979592,
+          "mean_home_xg": 1.472933824911377,
+          "actual_home_goals": 1.6326530612244898,
+          "mean_away_xg": 1.304010137553482,
+          "actual_away_goals": 1.2346938775510203,
+          "home_goal_mae": 1.0386877464503816,
+          "away_goal_mae": 0.9045915995011728,
+          "total_goal_error": -0.09040297631065108,
+          "goal_difference_error": -0.22903549631557452,
+          "poisson_deviance_per_team": 1.1679955588765374,
+          "mean_max_probability": 0.5301354599441281,
+          "predicted_class_rates": {
+            "home": 0.40792352404216703,
+            "draw": 0.24094873681180412,
+            "away": 0.35112773914602885
+          },
+          "actual_class_rates": {
+            "home": 0.41836734693877553,
+            "draw": 0.23469387755102042,
+            "away": 0.3469387755102041
+          },
+          "confidence_buckets": {
+            "below_40": {
+              "matches": 22,
+              "accuracy": 0.5
+            },
+            "40_50": {
+              "matches": 23,
+              "accuracy": 0.391304347826087
+            },
+            "50_60": {
+              "matches": 16,
+              "accuracy": 0.4375
+            },
+            "60_70": {
+              "matches": 25,
+              "accuracy": 0.68
+            },
+            "70_80": {
+              "matches": 12,
+              "accuracy": 0.6666666666666666
+            },
+            "above_80": {
+              "matches": 0,
+              "accuracy": null
+            }
+          },
+          "xg_difference_distribution": {
+            "below_0_10": 14,
+            "below_0_25": 25,
+            "below_0_50": 43,
+            "above_0_75": 40,
+            "above_1_00": 31
+          },
+          "goal_count_rates": {
+            "predicted": {
+              "0": 0.2761888369674854,
+              "1": 0.3307454565068836,
+              "2": 0.21972428147570447,
+              "3": 0.10752158369707285,
+              "4_plus": 0.06581984135285361
+            },
+            "observed": {
+              "0": 0.2755102040816326,
+              "1": 0.3010204081632653,
+              "2": 0.25,
+              "3": 0.09693877551020408,
+              "4_plus": 0.07653061224489796
+            }
+          },
+          "goal_margin_rates": {
+            "predicted": {
+              "underdog_by_2_plus": 0.08956796864739566,
+              "underdog_by_1": 0.14352391483542712,
+              "draw": 0.22998706798544455,
+              "favorite_by_1": 0.2298686221612814,
+              "favorite_by_2_plus": 0.30671328996682556
+            },
+            "observed": {
+              "underdog_by_2_plus": 0.1326530612244898,
+              "underdog_by_1": 0.10204081632653061,
+              "draw": 0.23469387755102042,
+              "favorite_by_1": 0.22448979591836735,
+              "favorite_by_2_plus": 0.30612244897959184
+            }
+          },
+          "segments": {
+            "neutral": {
+              "matches": 22,
+              "brier": 0.595203136318145,
+              "log_loss": 1.0095589450517122
+            },
+            "non_neutral": {
+              "matches": 76,
+              "brier": 0.5851737232860114,
+              "log_loss": 0.979315032873599
+            },
+            "close_elo": {
+              "matches": 44,
+              "brier": 0.6511559213369854,
+              "log_loss": 1.072648344468008
+            },
+            "moderate_elo": {
+              "matches": 38,
+              "brier": 0.5604099852888842,
+              "log_loss": 0.9463722406000749
+            },
+            "strong_favorite": {
+              "matches": 16,
+              "brier": 0.4763269993081927,
+              "log_loss": 0.8424729368835013
+            },
+            "by_competition": {
+              "continental_or_other_competitive": {
+                "matches": 11,
+                "brier": 0.6360502435546052,
+                "log_loss": 1.0456525749755612
+              },
+              "friendly": {
+                "matches": 48,
+                "brier": 0.5778123580758187,
+                "log_loss": 0.9721281865092394
+              },
+              "nations_league": {
+                "matches": 8,
+                "brier": 0.45324477260848295,
+                "log_loss": 0.8012248820092986
+              },
+              "qualification": {
+                "matches": 31,
+                "brier": 0.6196828361654265,
+                "log_loss": 1.0343260953639397
+              }
+            },
+            "confederation_matchup": null
+          }
+        },
+        "opponent_recency_separation_competition": {
+          "matches": 98,
+          "multiclass_brier": 0.5865220871025485,
+          "log_loss": 0.9853893544851624,
+          "accuracy": 0.5306122448979592,
+          "mean_home_xg": 1.4561137753306173,
+          "actual_home_goals": 1.6326530612244898,
+          "mean_away_xg": 1.28744412872186,
+          "actual_away_goals": 1.2346938775510203,
+          "home_goal_mae": 1.0350999750495882,
+          "away_goal_mae": 0.9009705975132566,
+          "total_goal_error": -0.12378903472303282,
+          "goal_difference_error": -0.22928953706471233,
+          "poisson_deviance_per_team": 1.1648308413805109,
+          "mean_max_probability": 0.5283147487017497,
+          "predicted_class_rates": {
+            "home": 0.407248905651212,
+            "draw": 0.2425986025027134,
+            "away": 0.35015249184607455
+          },
+          "actual_class_rates": {
+            "home": 0.41836734693877553,
+            "draw": 0.23469387755102042,
+            "away": 0.3469387755102041
+          },
+          "confidence_buckets": {
+            "below_40": {
+              "matches": 21,
+              "accuracy": 0.5238095238095238
+            },
+            "40_50": {
+              "matches": 26,
+              "accuracy": 0.34615384615384615
+            },
+            "50_60": {
+              "matches": 15,
+              "accuracy": 0.4666666666666667
+            },
+            "60_70": {
+              "matches": 24,
+              "accuracy": 0.7083333333333334
+            },
+            "70_80": {
+              "matches": 12,
+              "accuracy": 0.6666666666666666
+            },
+            "above_80": {
+              "matches": 0,
+              "accuracy": null
+            }
+          },
+          "xg_difference_distribution": {
+            "below_0_10": 14,
+            "below_0_25": 26,
+            "below_0_50": 42,
+            "above_0_75": 40,
+            "above_1_00": 26
+          },
+          "goal_count_rates": {
+            "predicted": {
+              "0": 0.28092380055565813,
+              "1": 0.33163264061804415,
+              "2": 0.2178239999222312,
+              "3": 0.1055761087303259,
+              "4_plus": 0.06404345017374036
+            },
+            "observed": {
+              "0": 0.2755102040816326,
+              "1": 0.3010204081632653,
+              "2": 0.25,
+              "3": 0.09693877551020408,
+              "4_plus": 0.07653061224489796
+            }
+          },
+          "goal_margin_rates": {
+            "predicted": {
+              "underdog_by_2_plus": 0.08894729578250049,
+              "underdog_by_1": 0.14413503391829177,
+              "draw": 0.23250678489854018,
+              "favorite_by_1": 0.2311082776265505,
+              "favorite_by_2_plus": 0.3029509226599943
+            },
+            "observed": {
+              "underdog_by_2_plus": 0.1326530612244898,
+              "underdog_by_1": 0.10204081632653061,
+              "draw": 0.23469387755102042,
+              "favorite_by_1": 0.22448979591836735,
+              "favorite_by_2_plus": 0.30612244897959184
+            }
+          },
+          "segments": {
+            "neutral": {
+              "matches": 22,
+              "brier": 0.5977149666800309,
+              "log_loss": 1.0151143963483173
+            },
+            "non_neutral": {
+              "matches": 76,
+              "brier": 0.5832820430143298,
+              "log_loss": 0.9767847371037227
+            },
+            "close_elo": {
+              "matches": 44,
+              "brier": 0.6532415603409809,
+              "log_loss": 1.0762894928177413
+            },
+            "moderate_elo": {
+              "matches": 38,
+              "brier": 0.5557826585705088,
+              "log_loss": 0.9403644429264684
+            },
+            "strong_favorite": {
+              "matches": 16,
+              "brier": 0.47604967846045354,
+              "log_loss": 0.8423481390224685
+            },
+            "by_competition": {
+              "continental_or_other_competitive": {
+                "matches": 11,
+                "brier": 0.6380882552047971,
+                "log_loss": 1.0520839946460077
+              },
+              "friendly": {
+                "matches": 48,
+                "brier": 0.5782692609867831,
+                "log_loss": 0.972894676886474
+              },
+              "nations_league": {
+                "matches": 8,
+                "brier": 0.4440790445879607,
+                "log_loss": 0.7886118305220824
+              },
+              "qualification": {
+                "matches": 31,
+                "brier": 0.6177624788621846,
+                "log_loss": 1.0318514085068524
+              }
+            },
+            "confederation_matchup": null
+          }
+        },
+        "ridge_poisson_glm": {
+          "matches": 98,
+          "multiclass_brier": 0.596110548403167,
+          "log_loss": 0.9923274354658849,
+          "accuracy": 0.46938775510204084,
+          "mean_home_xg": 1.4671553295472997,
+          "actual_home_goals": 1.6326530612244898,
+          "mean_away_xg": 1.0583115627635227,
+          "actual_away_goals": 1.2346938775510203,
+          "home_goal_mae": 1.0244113586245103,
+          "away_goal_mae": 0.8830226334689477,
+          "total_goal_error": -0.34188004646468784,
+          "goal_difference_error": 0.010884583110307489,
+          "poisson_deviance_per_team": 1.1693834063803588,
+          "mean_max_probability": 0.5226005147157086,
+          "predicted_class_rates": {
+            "home": 0.45098303079547997,
+            "draw": 0.2548960002948251,
+            "away": 0.2941209689096949
+          },
+          "actual_class_rates": {
+            "home": 0.41836734693877553,
+            "draw": 0.23469387755102042,
+            "away": 0.3469387755102041
+          },
+          "confidence_buckets": {
+            "below_40": {
+              "matches": 20,
+              "accuracy": 0.4
+            },
+            "40_50": {
+              "matches": 29,
+              "accuracy": 0.2413793103448276
+            },
+            "50_60": {
+              "matches": 22,
+              "accuracy": 0.5
+            },
+            "60_70": {
+              "matches": 14,
+              "accuracy": 0.7142857142857143
+            },
+            "70_80": {
+              "matches": 12,
+              "accuracy": 0.75
+            },
+            "above_80": {
+              "matches": 1,
+              "accuracy": 1.0
+            }
+          },
+          "xg_difference_distribution": {
+            "below_0_10": 8,
+            "below_0_25": 25,
+            "below_0_50": 46,
+            "above_0_75": 36,
+            "above_1_00": 22
+          },
+          "goal_count_rates": {
+            "predicted": {
+              "0": 0.3136334390809371,
+              "1": 0.33668731299479754,
+              "2": 0.20376070255881878,
+              "3": 0.09234619403214507,
+              "4_plus": 0.05357235133330138
+            },
+            "observed": {
+              "0": 0.2755102040816326,
+              "1": 0.3010204081632653,
+              "2": 0.25,
+              "3": 0.09693877551020408,
+              "4_plus": 0.07653061224489796
+            }
+          },
+          "goal_margin_rates": {
+            "predicted": {
+              "underdog_by_2_plus": 0.08076247691269531,
+              "underdog_by_1": 0.14546581216132423,
+              "draw": 0.24521606386546385,
+              "favorite_by_1": 0.237543296107437,
+              "favorite_by_2_plus": 0.2905990189125879
+            },
+            "observed": {
+              "underdog_by_2_plus": 0.14285714285714285,
+              "underdog_by_1": 0.15306122448979592,
+              "draw": 0.23469387755102042,
+              "favorite_by_1": 0.17346938775510204,
+              "favorite_by_2_plus": 0.29591836734693877
+            }
+          },
+          "segments": {
+            "neutral": {
+              "matches": 22,
+              "brier": 0.5943511623238059,
+              "log_loss": 1.0060086297261892
+            },
+            "non_neutral": {
+              "matches": 76,
+              "brier": 0.5966198443735085,
+              "log_loss": 0.9883670897589544
+            },
+            "close_elo": {
+              "matches": 44,
+              "brier": 0.6963838467260481,
+              "log_loss": 1.1364559963854763
+            },
+            "moderate_elo": {
+              "matches": 38,
+              "brier": 0.5425159831428761,
+              "log_loss": 0.9181925238484989
+            },
+            "strong_favorite": {
+              "matches": 16,
+              "brier": 0.447646070508436,
+              "log_loss": 0.7720443080282969
+            },
+            "by_competition": {
+              "continental_or_other_competitive": {
+                "matches": 11,
+                "brier": 0.6473201399167502,
+                "log_loss": 1.0572377801964377
+              },
+              "friendly": {
+                "matches": 48,
+                "brier": 0.5809931425982499,
+                "log_loss": 0.9679754505450336
+              },
+              "nations_league": {
+                "matches": 8,
+                "brier": 0.4738658964623472,
+                "log_loss": 0.8320284544981691
+              },
+              "qualification": {
+                "matches": 31,
+                "brier": 0.6328940060648826,
+                "log_loss": 1.0483685106886735
+              }
+            },
+            "confederation_matchup": null
+          }
+        }
+      },
+      "representative_largest_predefined_elo_gap_examples": [
+        {
+          "date": "2023-03-28",
+          "home": "ARG",
+          "away": "CUW",
+          "score": [
+            7,
+            0
+          ],
+          "current_xg": [
+            2.4786,
+            0.7353
+          ],
+          "ridge_poisson_xg": [
+            3.813068148369029,
+            0.4034285656577193
+          ]
+        },
+        {
+          "date": "2023-03-23",
+          "home": "ARG",
+          "away": "PAN",
+          "score": [
+            2,
+            0
+          ],
+          "current_xg": [
+            2.3982,
+            0.76
+          ],
+          "ridge_poisson_xg": [
+            3.5978792203040433,
+            0.47747597512047407
+          ]
+        },
+        {
+          "date": "2023-10-12",
+          "home": "ARG",
+          "away": "PAR",
+          "score": [
+            1,
+            0
+          ],
+          "current_xg": [
+            1.9783,
+            0.9213
+          ],
+          "ridge_poisson_xg": [
+            2.2403384747844055,
+            0.5088108562133371
+          ]
+        },
+        {
+          "date": "2023-06-20",
+          "home": "BRA",
+          "away": "SEN",
+          "score": [
+            2,
+            4
+          ],
+          "current_xg": [
+            1.9721,
+            0.9241
+          ],
+          "ridge_poisson_xg": [
+            1.9652743357217244,
+            0.6153466510621074
+          ]
+        },
+        {
+          "date": "2023-06-16",
+          "home": "SWE",
+          "away": "NZL",
+          "score": [
+            4,
+            1
+          ],
+          "current_xg": [
+            1.9553,
+            0.9321
+          ],
+          "ridge_poisson_xg": [
+            2.79119067706052,
+            0.6339605143620737
+          ]
+        }
+      ]
+    },
+    {
+      "validation_year": 2024,
+      "training_matches": 694,
+      "validation_matches": 139,
+      "competition_multipliers": {
+        "friendly": 1.0430969799287189,
+        "world_cup": 1.0581964515135749,
+        "nations_league": 1.0942753363687523,
+        "continental_or_other_competitive": 0.9,
+        "qualification": 0.9439300148360362
+      },
+      "glm": {
+        "type": "ridge_poisson_glm",
+        "coefficients": [
+          0.18109361199534918,
+          0.5493771431273267,
+          0.23649253732679537,
+          0.18177899623270993,
+          0.03835966852024357,
+          0.13156002165548916,
+          0.2589583429971101,
+          -0.12167671854652079,
+          0.03401210407367498,
+          0.12776259380462587,
+          -0.17907262314296324
+        ],
+        "feature_names": [
+          "intercept",
+          "elo_side_gap",
+          "long_attack",
+          "opponent_defense_weakness",
+          "short_attack",
+          "opponent_short_defense_weakness",
+          "home_non_neutral",
+          "qualification",
+          "nations_league",
+          "world_cup",
+          "other_competitive"
+        ],
+        "ridge": 1.0
+      },
+      "metrics": {
+        "current_v421": {
+          "matches": 139,
+          "multiclass_brier": 0.6378767168827327,
+          "log_loss": 1.0587130382178407,
+          "accuracy": 0.460431654676259,
+          "mean_home_xg": 1.427378417266187,
+          "actual_home_goals": 1.5107913669064748,
+          "mean_away_xg": 1.334794964028777,
+          "actual_away_goals": 1.1366906474820144,
+          "home_goal_mae": 1.0142187050359712,
+          "away_goal_mae": 0.8448755395683453,
+          "total_goal_error": 0.11469136690647508,
+          "goal_difference_error": -0.2815172661870504,
+          "poisson_deviance_per_team": 1.1745503909706394,
+          "mean_max_probability": 0.5019800876115469,
+          "predicted_class_rates": {
+            "home": 0.4040509068397488,
+            "draw": 0.24191449258897055,
+            "away": 0.3540346005712806
+          },
+          "actual_class_rates": {
+            "home": 0.39568345323741005,
+            "draw": 0.3381294964028777,
+            "away": 0.26618705035971224
+          },
+          "confidence_buckets": {
+            "below_40": {
+              "matches": 24,
+              "accuracy": 0.4166666666666667
+            },
+            "40_50": {
+              "matches": 51,
+              "accuracy": 0.35294117647058826
+            },
+            "50_60": {
+              "matches": 32,
+              "accuracy": 0.5
+            },
+            "60_70": {
+              "matches": 31,
+              "accuracy": 0.6129032258064516
+            },
+            "70_80": {
+              "matches": 1,
+              "accuracy": 1.0
+            },
+            "above_80": {
+              "matches": 0,
+              "accuracy": null
+            }
+          },
+          "xg_difference_distribution": {
+            "below_0_10": 15,
+            "below_0_25": 40,
+            "below_0_50": 76,
+            "above_0_75": 34,
+            "above_1_00": 10
+          },
+          "goal_count_rates": {
+            "predicted": {
+              "0": 0.26203389546665967,
+              "1": 0.34048904771672217,
+              "2": 0.23112779645586157,
+              "3": 0.10925617801470099,
+              "4_plus": 0.057093082346055625
+            },
+            "observed": {
+              "0": 0.2805755395683453,
+              "1": 0.35251798561151076,
+              "2": 0.23381294964028776,
+              "3": 0.07553956834532374,
+              "4_plus": 0.05755395683453238
+            }
+          },
+          "goal_margin_rates": {
+            "predicted": {
+              "underdog_by_2_plus": 0.10790905280303723,
+              "underdog_by_1": 0.1616726718900805,
+              "draw": 0.24315354025279298,
+              "favorite_by_1": 0.22830693712147693,
+              "favorite_by_2_plus": 0.2588814300575855
+            },
+            "observed": {
+              "underdog_by_2_plus": 0.04316546762589928,
+              "underdog_by_1": 0.17266187050359713,
+              "draw": 0.3381294964028777,
+              "favorite_by_1": 0.22302158273381295,
+              "favorite_by_2_plus": 0.22302158273381295
+            }
+          },
+          "segments": {
+            "neutral": {
+              "matches": 60,
+              "brier": 0.6344026218672275,
+              "log_loss": 1.0534178398532552
+            },
+            "non_neutral": {
+              "matches": 79,
+              "brier": 0.6405152700590664,
+              "log_loss": 1.0627347078618306
+            },
+            "close_elo": {
+              "matches": 52,
+              "brier": 0.6625696660887178,
+              "log_loss": 1.0940321577675585
+            },
+            "moderate_elo": {
+              "matches": 66,
+              "brier": 0.6079860849995055,
+              "log_loss": 1.0180660313373637
+            },
+            "strong_favorite": {
+              "matches": 21,
+              "brier": 0.6706742571485333,
+              "log_loss": 1.0990039066714705
+            },
+            "by_competition": {
+              "continental_or_other_competitive": {
+                "matches": 62,
+                "brier": 0.672530958415682,
+                "log_loss": 1.1074421765013258
+              },
+              "friendly": {
+                "matches": 33,
+                "brier": 0.570174587212181,
+                "log_loss": 0.9610536613992298
+              },
+              "nations_league": {
+                "matches": 20,
+                "brier": 0.5240720256368715,
+                "log_loss": 0.8992889475464221
+              },
+              "qualification": {
+                "matches": 24,
+                "brier": 0.7362809305911755,
+                "log_loss": 1.1999644830039464
+              }
+            },
+            "confederation_matchup": null
+          }
+        },
+        "opponent_adjusted": {
+          "matches": 139,
+          "multiclass_brier": 0.6418413579029767,
+          "log_loss": 1.0627208543389348,
+          "accuracy": 0.4316546762589928,
+          "mean_home_xg": 1.4380108775960685,
+          "actual_home_goals": 1.5107913669064748,
+          "mean_away_xg": 1.3099475522787587,
+          "actual_away_goals": 1.1366906474820144,
+          "home_goal_mae": 0.9972325059889631,
+          "away_goal_mae": 0.8429422234449625,
+          "total_goal_error": 0.10047641548633779,
+          "goal_difference_error": -0.24603739410715053,
+          "poisson_deviance_per_team": 1.1515444445448266,
+          "mean_max_probability": 0.525942565633329,
+          "predicted_class_rates": {
+            "home": 0.4069940305308938,
+            "draw": 0.24011560995727357,
+            "away": 0.3528903595118327
+          },
+          "actual_class_rates": {
+            "home": 0.39568345323741005,
+            "draw": 0.3381294964028777,
+            "away": 0.26618705035971224
+          },
+          "confidence_buckets": {
+            "below_40": {
+              "matches": 19,
+              "accuracy": 0.2631578947368421
+            },
+            "40_50": {
+              "matches": 45,
+              "accuracy": 0.3333333333333333
+            },
+            "50_60": {
+              "matches": 32,
+              "accuracy": 0.375
+            },
+            "60_70": {
+              "matches": 36,
+              "accuracy": 0.6388888888888888
+            },
+            "70_80": {
+              "matches": 7,
+              "accuracy": 0.7142857142857143
+            },
+            "above_80": {
+              "matches": 0,
+              "accuracy": null
+            }
+          },
+          "xg_difference_distribution": {
+            "below_0_10": 11,
+            "below_0_25": 29,
+            "below_0_50": 56,
+            "above_0_75": 54,
+            "above_1_00": 33
+          },
+          "goal_count_rates": {
+            "predicted": {
+              "0": 0.2738266320127967,
+              "1": 0.3349242192564323,
+              "2": 0.22274584682664736,
+              "3": 0.10724915818581847,
+              "4_plus": 0.061254143718305176
+            },
+            "observed": {
+              "0": 0.2805755395683453,
+              "1": 0.35251798561151076,
+              "2": 0.23381294964028776,
+              "3": 0.07553956834532374,
+              "4_plus": 0.05755395683453238
+            }
+          },
+          "goal_margin_rates": {
+            "predicted": {
+              "underdog_by_2_plus": 0.09009979852182318,
+              "underdog_by_1": 0.14679760884871554,
+              "draw": 0.2352520818835783,
+              "favorite_by_1": 0.2332177489235142,
+              "favorite_by_2_plus": 0.2944898393693339
+            },
+            "observed": {
+              "underdog_by_2_plus": 0.04316546762589928,
+              "underdog_by_1": 0.18705035971223022,
+              "draw": 0.3381294964028777,
+              "favorite_by_1": 0.20863309352517986,
+              "favorite_by_2_plus": 0.22302158273381295
+            }
+          },
+          "segments": {
+            "neutral": {
+              "matches": 60,
+              "brier": 0.6373829961054498,
+              "log_loss": 1.0551668457701864
+            },
+            "non_neutral": {
+              "matches": 79,
+              "brier": 0.6452274554707176,
+              "log_loss": 1.0684580760367193
+            },
+            "close_elo": {
+              "matches": 52,
+              "brier": 0.6666637195484201,
+              "log_loss": 1.0998176059294607
+            },
+            "moderate_elo": {
+              "matches": 66,
+              "brier": 0.6062712617175894,
+              "log_loss": 1.014437910358614
+            },
+            "strong_favorite": {
+              "matches": 21,
+              "brier": 0.6921681932683312,
+              "log_loss": 1.122608626719596
+            },
+            "by_competition": {
+              "continental_or_other_competitive": {
+                "matches": 62,
+                "brier": 0.6798815983883011,
+                "log_loss": 1.117417481148508
+              },
+              "friendly": {
+                "matches": 33,
+                "brier": 0.5730947290286907,
+                "log_loss": 0.9634384302838976
+              },
+              "nations_league": {
+                "matches": 20,
+                "brier": 0.5163804589613568,
+                "log_loss": 0.8799791408250746
+              },
+              "qualification": {
+                "matches": 24,
+                "brier": 0.7426481004693796,
+                "log_loss": 1.2102193294180994
+              }
+            },
+            "confederation_matchup": null
+          }
+        },
+        "opponent_plus_recency": {
+          "matches": 139,
+          "multiclass_brier": 0.6431765967058076,
+          "log_loss": 1.0644535317378023,
+          "accuracy": 0.4244604316546763,
+          "mean_home_xg": 1.447602813904506,
+          "actual_home_goals": 1.5107913669064748,
+          "mean_away_xg": 1.31501602696939,
+          "actual_away_goals": 1.1366906474820144,
+          "home_goal_mae": 0.9944781798702598,
+          "away_goal_mae": 0.8459059276664139,
+          "total_goal_error": 0.1151368264854069,
+          "goal_difference_error": -0.24151393248934427,
+          "poisson_deviance_per_team": 1.1483505769600555,
+          "mean_max_probability": 0.5269843111593484,
+          "predicted_class_rates": {
+            "home": 0.40786454298327124,
+            "draw": 0.23965138979849018,
+            "away": 0.35248406721823855
+          },
+          "actual_class_rates": {
+            "home": 0.39568345323741005,
+            "draw": 0.3381294964028777,
+            "away": 0.26618705035971224
+          },
+          "confidence_buckets": {
+            "below_40": {
+              "matches": 18,
+              "accuracy": 0.2222222222222222
+            },
+            "40_50": {
+              "matches": 47,
+              "accuracy": 0.3191489361702128
+            },
+            "50_60": {
+              "matches": 31,
+              "accuracy": 0.3870967741935484
+            },
+            "60_70": {
+              "matches": 35,
+              "accuracy": 0.6285714285714286
+            },
+            "70_80": {
+              "matches": 8,
+              "accuracy": 0.75
+            },
+            "above_80": {
+              "matches": 0,
+              "accuracy": null
+            }
+          },
+          "xg_difference_distribution": {
+            "below_0_10": 9,
+            "below_0_25": 32,
+            "below_0_50": 55,
+            "above_0_75": 53,
+            "above_1_00": 36
+          },
+          "goal_count_rates": {
+            "predicted": {
+              "0": 0.27258493178381016,
+              "1": 0.33407073590937353,
+              "2": 0.22297205259992278,
+              "3": 0.107941109505519,
+              "4_plus": 0.06243117020137432
+            },
+            "observed": {
+              "0": 0.2805755395683453,
+              "1": 0.35251798561151076,
+              "2": 0.23381294964028776,
+              "3": 0.07553956834532374,
+              "4_plus": 0.05755395683453238
+            }
+          },
+          "goal_margin_rates": {
+            "predicted": {
+              "underdog_by_2_plus": 0.09008585462300876,
+              "underdog_by_1": 0.14628514742829496,
+              "draw": 0.23427008478031952,
+              "favorite_by_1": 0.2326583238279685,
+              "favorite_by_2_plus": 0.2965429228520133
+            },
+            "observed": {
+              "underdog_by_2_plus": 0.04316546762589928,
+              "underdog_by_1": 0.19424460431654678,
+              "draw": 0.3381294964028777,
+              "favorite_by_1": 0.2014388489208633,
+              "favorite_by_2_plus": 0.22302158273381295
+            }
+          },
+          "segments": {
+            "neutral": {
+              "matches": 60,
+              "brier": 0.639860509081288,
+              "log_loss": 1.0583154452744008
+            },
+            "non_neutral": {
+              "matches": 79,
+              "brier": 0.6456951442687348,
+              "log_loss": 1.0691153695581075
+            },
+            "close_elo": {
+              "matches": 52,
+              "brier": 0.6700725712583748,
+              "log_loss": 1.1047031850890239
+            },
+            "moderate_elo": {
+              "matches": 66,
+              "brier": 0.6066462724545445,
+              "log_loss": 1.0151561287564206
+            },
+            "strong_favorite": {
+              "matches": 21,
+              "brier": 0.6913866311748519,
+              "log_loss": 1.1197224185238823
+            },
+            "by_competition": {
+              "continental_or_other_competitive": {
+                "matches": 62,
+                "brier": 0.6825420650790975,
+                "log_loss": 1.1212529102056845
+              },
+              "friendly": {
+                "matches": 33,
+                "brier": 0.5745089677905861,
+                "log_loss": 0.9657968051752293
+              },
+              "nations_league": {
+                "matches": 20,
+                "brier": 0.5134818990959265,
+                "log_loss": 0.875048688178585
+              },
+              "qualification": {
+                "matches": 24,
+                "brier": 0.7439793745081412,
+                "log_loss": 1.211212172685325
+              }
+            },
+            "confederation_matchup": null
+          }
+        },
+        "opponent_recency_separation": {
+          "matches": 139,
+          "multiclass_brier": 0.6479764906005073,
+          "log_loss": 1.070539157092961,
+          "accuracy": 0.4244604316546763,
+          "mean_home_xg": 1.478266860104097,
+          "actual_home_goals": 1.5107913669064748,
+          "mean_away_xg": 1.3237839506112647,
+          "actual_away_goals": 1.1366906474820144,
+          "home_goal_mae": 0.9983439290248339,
+          "away_goal_mae": 0.8553216876153092,
+          "total_goal_error": 0.1545687963268727,
+          "goal_difference_error": -0.21961780993162816,
+          "poisson_deviance_per_team": 1.1519530449226714,
+          "mean_max_probability": 0.545943868874402,
+          "predicted_class_rates": {
+            "home": 0.4120572432964971,
+            "draw": 0.23690657921990232,
+            "away": 0.3510361774836005
+          },
+          "actual_class_rates": {
+            "home": 0.39568345323741005,
+            "draw": 0.3381294964028777,
+            "away": 0.26618705035971224
+          },
+          "confidence_buckets": {
+            "below_40": {
+              "matches": 17,
+              "accuracy": 0.23529411764705882
+            },
+            "40_50": {
+              "matches": 39,
+              "accuracy": 0.3333333333333333
+            },
+            "50_60": {
+              "matches": 35,
+              "accuracy": 0.37142857142857144
+            },
+            "60_70": {
+              "matches": 29,
+              "accuracy": 0.6896551724137931
+            },
+            "70_80": {
+              "matches": 19,
+              "accuracy": 0.47368421052631576
+            },
+            "above_80": {
+              "matches": 0,
+              "accuracy": null
+            }
+          },
+          "xg_difference_distribution": {
+            "below_0_10": 9,
+            "below_0_25": 23,
+            "below_0_50": 54,
+            "above_0_75": 67,
+            "above_1_00": 46
+          },
+          "goal_count_rates": {
+            "predicted": {
+              "0": 0.2741929747192594,
+              "1": 0.32879000750642284,
+              "2": 0.2198628409727207,
+              "3": 0.10913244095714603,
+              "4_plus": 0.06802173584445073
+            },
+            "observed": {
+              "0": 0.2805755395683453,
+              "1": 0.35251798561151076,
+              "2": 0.23381294964028776,
+              "3": 0.07553956834532374,
+              "4_plus": 0.05755395683453238
+            }
+          },
+          "goal_margin_rates": {
+            "predicted": {
+              "underdog_by_2_plus": 0.08285506075767869,
+              "underdog_by_1": 0.13798760264282464,
+              "draw": 0.22658581276074288,
+              "favorite_by_1": 0.23225520161801513,
+              "favorite_by_2_plus": 0.3200661602146534
+            },
+            "observed": {
+              "underdog_by_2_plus": 0.04316546762589928,
+              "underdog_by_1": 0.19424460431654678,
+              "draw": 0.3381294964028777,
+              "favorite_by_1": 0.2014388489208633,
+              "favorite_by_2_plus": 0.22302158273381295
+            }
+          },
+          "segments": {
+            "neutral": {
+              "matches": 60,
+              "brier": 0.6437987910663724,
+              "log_loss": 1.061076201198683
+            },
+            "non_neutral": {
+              "matches": 79,
+              "brier": 0.6511494269555469,
+              "log_loss": 1.0777262122025384
+            },
+            "close_elo": {
+              "matches": 52,
+              "brier": 0.6710068436280776,
+              "log_loss": 1.105961221278563
+            },
+            "moderate_elo": {
+              "matches": 66,
+              "brier": 0.6106184746499486,
+              "log_loss": 1.01848324867069
+            },
+            "strong_favorite": {
+              "matches": 21,
+              "brier": 0.7083598570435191,
+              "log_loss": 1.1464316627224145
+            },
+            "by_competition": {
+              "continental_or_other_competitive": {
+                "matches": 62,
+                "brier": 0.6892638162436439,
+                "log_loss": 1.1307091978386823
+              },
+              "friendly": {
+                "matches": 33,
+                "brier": 0.5747810294012984,
+                "log_loss": 0.9632015712432341
+              },
+              "nations_league": {
+                "matches": 20,
+                "brier": 0.5063965644808308,
+                "log_loss": 0.8596635726948445
+              },
+              "qualification": {
+                "matches": 24,
+                "brier": 0.7599445969377153,
+                "log_loss": 1.2384187193749843
+              }
+            },
+            "confederation_matchup": null
+          }
+        },
+        "opponent_recency_separation_competition": {
+          "matches": 139,
+          "multiclass_brier": 0.6422052168299022,
+          "log_loss": 1.0606875994436449,
+          "accuracy": 0.4172661870503597,
+          "mean_home_xg": 1.4362305643420772,
+          "actual_home_goals": 1.5107913669064748,
+          "mean_away_xg": 1.284104431780509,
+          "actual_away_goals": 1.1366906474820144,
+          "home_goal_mae": 0.9694249178621952,
+          "away_goal_mae": 0.8490092766493058,
+          "total_goal_error": 0.07285298173409727,
+          "goal_difference_error": -0.22197458686289218,
+          "poisson_deviance_per_team": 1.1355097134614844,
+          "mean_max_probability": 0.5415452809125265,
+          "predicted_class_rates": {
+            "home": 0.4092441192254648,
+            "draw": 0.24200558371065492,
+            "away": 0.3487502970638803
+          },
+          "actual_class_rates": {
+            "home": 0.39568345323741005,
+            "draw": 0.3381294964028777,
+            "away": 0.26618705035971224
+          },
+          "confidence_buckets": {
+            "below_40": {
+              "matches": 18,
+              "accuracy": 0.16666666666666666
+            },
+            "40_50": {
+              "matches": 40,
+              "accuracy": 0.3
+            },
+            "50_60": {
+              "matches": 33,
+              "accuracy": 0.42424242424242425
+            },
+            "60_70": {
+              "matches": 30,
+              "accuracy": 0.6666666666666666
+            },
+            "70_80": {
+              "matches": 18,
+              "accuracy": 0.5
+            },
+            "above_80": {
+              "matches": 0,
+              "accuracy": null
+            }
+          },
+          "xg_difference_distribution": {
+            "below_0_10": 9,
+            "below_0_25": 21,
+            "below_0_50": 54,
+            "above_0_75": 62,
+            "above_1_00": 44
+          },
+          "goal_count_rates": {
+            "predicted": {
+              "0": 0.28597016519132534,
+              "1": 0.33105827445609465,
+              "2": 0.2148368003282501,
+              "3": 0.10419579445611876,
+              "4_plus": 0.06393896556821096
+            },
+            "observed": {
+              "0": 0.2805755395683453,
+              "1": 0.35251798561151076,
+              "2": 0.23381294964028776,
+              "3": 0.07553956834532374,
+              "4_plus": 0.05755395683453238
+            }
+          },
+          "goal_margin_rates": {
+            "predicted": {
+              "underdog_by_2_plus": 0.080716164422557,
+              "underdog_by_1": 0.13945078968808178,
+              "draw": 0.23254468009300922,
+              "favorite_by_1": 0.23490197077350009,
+              "favorite_by_2_plus": 0.3121367012007474
+            },
+            "observed": {
+              "underdog_by_2_plus": 0.04316546762589928,
+              "underdog_by_1": 0.19424460431654678,
+              "draw": 0.3381294964028777,
+              "favorite_by_1": 0.2014388489208633,
+              "favorite_by_2_plus": 0.22302158273381295
+            }
+          },
+          "segments": {
+            "neutral": {
+              "matches": 60,
+              "brier": 0.6363376919774576,
+              "log_loss": 1.049548193744361
+            },
+            "non_neutral": {
+              "matches": 79,
+              "brier": 0.6466615648191012,
+              "log_loss": 1.0691479075696835
+            },
+            "close_elo": {
+              "matches": 52,
+              "brier": 0.6689621280421746,
+              "log_loss": 1.1020023486840727
+            },
+            "moderate_elo": {
+              "matches": 66,
+              "brier": 0.6010126239304193,
+              "log_loss": 1.0036629974554199
+            },
+            "strong_favorite": {
+              "matches": 21,
+              "brier": 0.7054124429407471,
+              "log_loss": 1.1376045885255786
+            },
+            "by_competition": {
+              "continental_or_other_competitive": {
+                "matches": 62,
+                "brier": 0.680913968049232,
+                "log_loss": 1.1171064548059315
+              },
+              "friendly": {
+                "matches": 33,
+                "brier": 0.574959124046076,
+                "log_loss": 0.9625366813007079
+              },
+              "nations_league": {
+                "matches": 20,
+                "brier": 0.5033172898469969,
+                "log_loss": 0.853491032172454
+              },
+              "qualification": {
+                "matches": 24,
+                "brier": 0.7504109262434837,
+                "log_loss": 1.2225602082636022
+              }
+            },
+            "confederation_matchup": null
+          }
+        },
+        "ridge_poisson_glm": {
+          "matches": 139,
+          "multiclass_brier": 0.6292433969753036,
+          "log_loss": 1.040813093022412,
+          "accuracy": 0.4316546762589928,
+          "mean_home_xg": 1.4003866698903196,
+          "actual_home_goals": 1.5107913669064748,
+          "mean_away_xg": 1.0646023260200603,
+          "actual_away_goals": 1.1366906474820144,
+          "home_goal_mae": 0.9731499451162714,
+          "away_goal_mae": 0.817187059142842,
+          "total_goal_error": -0.18249301847810928,
+          "goal_difference_error": -0.03831637555420109,
+          "poisson_deviance_per_team": 1.1302503800628272,
+          "mean_max_probability": 0.5327659120479036,
+          "predicted_class_rates": {
+            "home": 0.43729445520356647,
+            "draw": 0.25749455448540065,
+            "away": 0.3052109903110328
+          },
+          "actual_class_rates": {
+            "home": 0.39568345323741005,
+            "draw": 0.3381294964028777,
+            "away": 0.26618705035971224
+          },
+          "confidence_buckets": {
+            "below_40": {
+              "matches": 28,
+              "accuracy": 0.32142857142857145
+            },
+            "40_50": {
+              "matches": 33,
+              "accuracy": 0.24242424242424243
+            },
+            "50_60": {
+              "matches": 29,
+              "accuracy": 0.4827586206896552
+            },
+            "60_70": {
+              "matches": 33,
+              "accuracy": 0.48484848484848486
+            },
+            "70_80": {
+              "matches": 16,
+              "accuracy": 0.8125
+            },
+            "above_80": {
+              "matches": 0,
+              "accuracy": null
+            }
+          },
+          "xg_difference_distribution": {
+            "below_0_10": 11,
+            "below_0_25": 30,
+            "below_0_50": 56,
+            "above_0_75": 57,
+            "above_1_00": 39
+          },
+          "goal_count_rates": {
+            "predicted": {
+              "0": 0.3255550272749724,
+              "1": 0.3352511184491762,
+              "2": 0.19771541801113113,
+              "3": 0.08933275654314704,
+              "4_plus": 0.05214567972157342
+            },
+            "observed": {
+              "0": 0.2805755395683453,
+              "1": 0.35251798561151076,
+              "2": 0.23381294964028776,
+              "3": 0.07553956834532374,
+              "4_plus": 0.05755395683453238
+            }
+          },
+          "goal_margin_rates": {
+            "predicted": {
+              "underdog_by_2_plus": 0.07249024446467195,
+              "underdog_by_1": 0.14110440424587445,
+              "draw": 0.2498950622096447,
+              "favorite_by_1": 0.24290230570947352,
+              "favorite_by_2_plus": 0.293384140911752
+            },
+            "observed": {
+              "underdog_by_2_plus": 0.02877697841726619,
+              "underdog_by_1": 0.17985611510791366,
+              "draw": 0.3381294964028777,
+              "favorite_by_1": 0.2158273381294964,
+              "favorite_by_2_plus": 0.23741007194244604
+            }
+          },
+          "segments": {
+            "neutral": {
+              "matches": 60,
+              "brier": 0.6209534804558107,
+              "log_loss": 1.0264799184057398
+            },
+            "non_neutral": {
+              "matches": 79,
+              "brier": 0.6355395361040325,
+              "log_loss": 1.0516990484274795
+            },
+            "close_elo": {
+              "matches": 52,
+              "brier": 0.6581080321956988,
+              "log_loss": 1.0842607515988436
+            },
+            "moderate_elo": {
+              "matches": 66,
+              "brier": 0.5914564325226052,
+              "log_loss": 0.9885688575596503
+            },
+            "strong_favorite": {
+              "matches": 21,
+              "brier": 0.6765280932809011,
+              "log_loss": 1.09742458323993
+            },
+            "by_competition": {
+              "continental_or_other_competitive": {
+                "matches": 62,
+                "brier": 0.6640103675710441,
+                "log_loss": 1.091827504062594
+              },
+              "friendly": {
+                "matches": 33,
+                "brier": 0.5899275496211119,
+                "log_loss": 0.9883651556625717
+              },
+              "nations_league": {
+                "matches": 20,
+                "brier": 0.45038947149128833,
+                "log_loss": 0.7866469673997865
+              },
+              "qualification": {
+                "matches": 24,
+                "brier": 0.7425329509516669,
+                "log_loss": 1.1929468830572452
+              }
+            },
+            "confederation_matchup": null
+          }
+        }
+      },
+      "representative_largest_predefined_elo_gap_examples": [
+        {
+          "date": "2024-07-06",
+          "home": "COL",
+          "away": "PAN",
+          "score": [
+            5,
+            0
+          ],
+          "current_xg": [
+            2.172,
+            0.8391
+          ],
+          "ridge_poisson_xg": [
+            1.9944225092854795,
+            0.4742567954234822
+          ]
+        },
+        {
+          "date": "2024-06-23",
+          "home": "URU",
+          "away": "PAN",
+          "score": [
+            3,
+            1
+          ],
+          "current_xg": [
+            2.0701,
+            0.8804
+          ],
+          "ridge_poisson_xg": [
+            1.8901004185809511,
+            0.4616667223002617
+          ]
+        },
+        {
+          "date": "2024-07-09",
+          "home": "ARG",
+          "away": "CAN",
+          "score": [
+            2,
+            0
+          ],
+          "current_xg": [
+            2.0531,
+            0.8877
+          ],
+          "ridge_poisson_xg": [
+            1.7364126736943581,
+            0.487330441093171
+          ]
+        },
+        {
+          "date": "2024-06-20",
+          "home": "ARG",
+          "away": "CAN",
+          "score": [
+            2,
+            0
+          ],
+          "current_xg": [
+            2.0527,
+            0.8878
+          ],
+          "ridge_poisson_xg": [
+            1.7127491170404325,
+            0.4849443161484629
+          ]
+        },
+        {
+          "date": "2024-06-09",
+          "home": "FRA",
+          "away": "CAN",
+          "score": [
+            0,
+            0
+          ],
+          "current_xg": [
+            2.0479,
+            0.8899
+          ],
+          "ridge_poisson_xg": [
+            2.872667113260069,
+            0.6922095560895167
+          ]
+        }
+      ]
+    }
+  ],
+  "aggregate": {
+    "current_v421": {
+      "multiclass_brier": 0.6052059179679203,
+      "log_loss": 1.0124411740131523,
+      "accuracy": 0.493086610369374,
+      "poisson_deviance_per_team": 1.1996359811264745,
+      "mean_max_probability": 0.49443748064357923
+    },
+    "opponent_adjusted": {
+      "multiclass_brier": 0.6045770967348867,
+      "log_loss": 1.0106938236160845,
+      "accuracy": 0.4893972905941211,
+      "poisson_deviance_per_team": 1.1698773584978657,
+      "mean_max_probability": 0.5169788637905122
+    },
+    "opponent_plus_recency": {
+      "multiclass_brier": 0.6053000866968558,
+      "log_loss": 1.0115850586421584,
+      "accuracy": 0.49040056960356665,
+      "poisson_deviance_per_team": 1.168874722567236,
+      "mean_max_probability": 0.5175174732159964
+    },
+    "opponent_recency_separation": {
+      "multiclass_brier": 0.6069341493282353,
+      "log_loss": 1.0139865549666651,
+      "accuracy": 0.49040056960356665,
+      "poisson_deviance_per_team": 1.1665283979180845,
+      "mean_max_probability": 0.535782281157125
+    },
+    "opponent_recency_separation_competition": {
+      "multiclass_brier": 0.6048474189788733,
+      "log_loss": 1.0107633104946387,
+      "accuracy": 0.4880024880687945,
+      "poisson_deviance_per_team": 1.1605417831659468,
+      "mean_max_probability": 0.5349203929485391
+    },
+    "ridge_poisson_glm": {
+      "multiclass_brier": 0.5999743790833318,
+      "log_loss": 1.0020427829809655,
+      "accuracy": 0.4852937136794843,
+      "poisson_deviance_per_team": 1.1512418478256539,
+      "mean_max_probability": 0.5238592239659974
+    }
+  },
+  "leading_preholdout_candidate": "ridge_poisson_glm",
+  "holdout_availability": {
+    "available": false,
+    "reason": "All completed 2025-2026 matches were previously consumed by v4.3 experiments; no newer completed matches exist in the repository.",
+    "future_protocol": "Accumulate completed matches after 2026-06-08 without model changes, then lock stable match IDs before one confirmation run."
+  },
+  "promotion_recommendation": "keep_v4.2.1"
+}

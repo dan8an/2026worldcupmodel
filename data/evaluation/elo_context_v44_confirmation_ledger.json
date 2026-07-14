@@ -1,0 +1,8 @@
+{
+  "model_version": "elo-context-v4.4-opponent-adjusted-xg-experimental",
+  "attempts": 0,
+  "status": "awaiting_genuinely_untouched_completed_matches",
+  "eligible_after": "2026-06-08",
+  "minimum_matches": 150,
+  "raw_metrics_persisted": false
+}

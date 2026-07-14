@@ -204,6 +204,12 @@ export type ModelMetrics = {
 export type ModelPerformance = {
   status: string;
   message: string;
+  readiness: {
+    status: "pass" | "fail";
+    ready: boolean;
+    message: string;
+    failed_conditions: string[];
+  };
   generated_at: string;
   protocol: {
     start_year: number;

@@ -1,0 +1,73 @@
+{
+  "artifact_version": 1,
+  "locked_at": "2026-07-13T23:18:41.637369+00:00",
+  "model_version": "elo-context-v4.3.1-locked-research",
+  "current_production_model": "elo-context-v4.2.1",
+  "frozen_membership": {
+    "start_after": "2024-12-31",
+    "expected_matches": 165,
+    "immutable": true
+  },
+  "candidate_list": [
+    "current_v421",
+    "current_v421_temperature",
+    "dixon_coles_only",
+    "dixon_coles_temperature",
+    "dixon_coles_multinomial",
+    "current_v421_multinomial"
+  ],
+  "architecture": {
+    "poisson": "production v4.2.1 Elo/attack/defense means",
+    "dixon_coles": "standard four-cell correction replacing the hand draw layer for DC candidates",
+    "rho_grid": {
+      "minimum": -0.2,
+      "maximum": 0.2,
+      "step": 0.0005
+    }
+  },
+  "calibration": {
+    "temperature_grid": {
+      "minimum": 0.25,
+      "maximum": 4.0,
+      "points": 2001
+    },
+    "multinomial_features": [
+      "intercept",
+      "log(home/away)",
+      "log(draw/away)"
+    ],
+    "regularization_grid": [
+      0.01,
+      0.1,
+      1.0,
+      10.0
+    ],
+    "selected_regularization": 10.0,
+    "identity_fallback": true
+  },
+  "diagnostic_temperatures": "learned calibration temperature multiplied by [0.9, 1.0, 1.1]; diagnostic only, never selectable from frozen results",
+  "bootstrap": {
+    "samples": 2000,
+    "seed": 43026
+  },
+  "reliability": {
+    "official_fixed_width_bins": 10,
+    "adaptive_minimum_count": 20,
+    "official_gate_uses_fixed_width_mce": true
+  },
+  "promotion_gate": {
+    "minimum_test_matches": 150,
+    "brier_better_than_baseline": true,
+    "log_loss_max_regression": 0.01,
+    "bootstrap_brier_upper_max": 0.01,
+    "bootstrap_log_loss_upper_max": 0.01,
+    "ece_max": 0.08,
+    "mce_max": 0.2,
+    "draw_brier_max": 0.22,
+    "all_conditions_required": true
+  },
+  "prefrozen_validation_path": "data/evaluation/elo_context_v431_prefrozen_validation.json",
+  "prefrozen_validation_sha256": "cced4a2015b887b2addd2b0f210670b893f6adeda351f650e96ea74c6250827e",
+  "post_lock_modification_prohibited": true,
+  "plan_sha256": "77ecc1b3660bceb2e5f0193f2cf188a81561d2c70ed8fcb89ebb48f6c12253d9"
+}

@@ -1,0 +1,11 @@
+{
+  "type": "temperature_scaling",
+  "temperature": 1.1064973530922724,
+  "model_version": "elo-context-v4.3-dixon-coles-calibrated",
+  "rho": 0.014499999999999985,
+  "fitted_on": {
+    "start": "2023-01-09",
+    "end": "2024-12-28",
+    "matches": 237
+  }
+}

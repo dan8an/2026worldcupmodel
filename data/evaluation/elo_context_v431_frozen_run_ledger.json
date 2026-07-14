@@ -1,0 +1,11 @@
+{
+  "runs": 1,
+  "status": "failed_during_artifact_serialization",
+  "experiment_plan_sha256": "77ecc1b3660bceb2e5f0193f2cf188a81561d2c70ed8fcb89ebb48f6c12253d9",
+  "frozen_membership_expected_matches": 165,
+  "metrics_persisted": false,
+  "failure": "Relative experiment-plan path could not be made relative to the absolute repository root while constructing the final report.",
+  "rerun_permitted": false,
+  "production_model_unchanged": "elo-context-v4.2.1",
+  "post_frozen_model_code_or_parameter_changes": false
+}

@@ -13,9 +13,8 @@ export function Methodology() {
       <span className="eyebrow">Model card</span>
       <h1>Transparent by design</h1>
       <p className="lead">
-        This release is an Elo-informed, context-adjusted Poisson model. It is
-        useful for exploring uncertainty, but it has not yet passed the
-        calibration gate required for a production model.
+        {report?.readiness.message ??
+          "This Elo-informed model has not yet passed the project’s production calibration gate."}
       </p>
       <h2>How a match is modeled</h2>
       <p>
@@ -62,6 +61,9 @@ export function Methodology() {
             {report.message} Evaluation covers {report.protocol.start_year} through{" "}
             {report.protocol.end_date}; same-day results are updated only after
             all predictions for that date.
+            {!report.readiness.ready && report.readiness.failed_conditions.length > 0
+              ? ` Main blocker: ${report.readiness.failed_conditions[0]}`
+              : ""}
           </div>
         </>
       ) : (

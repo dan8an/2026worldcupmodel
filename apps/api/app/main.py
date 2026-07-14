@@ -9,6 +9,9 @@ from fastapi.middleware.cors import CORSMiddleware
 from .schemas import MatchResponse, SimulationRequest, TeamResponse
 from .service import STATIC_MODEL_VERSION, service
 from modeling.src.simulation import simulate_tournament
+from modeling.src.readiness import load_readiness
+
+READINESS_PATH = Path(__file__).resolve().parents[3] / "data" / "evaluation" / "elo_context_v43_readiness.json"
 
 # Local development, production, and optional deployment-specific frontend origins.
 allowed_origins = [
@@ -162,12 +165,14 @@ def custom_simulation(request: SimulationRequest) -> dict:
 @app.get("/v1/model/versions/current")
 def model_version() -> dict:
     current_version = service.current_prediction_run()["model_version"]
+    readiness = load_readiness(READINESS_PATH, current_version)
     return {
         "name": "Context-adjusted Poisson model",
         "semantic_version": current_version,
         "feature_schema_version": "1",
         "training_cutoff": None,
-        "status": "experimental",
+        "status": "production_calibrated" if readiness["ready"] else "experimental",
+        "readiness": readiness,
     }
 
 
@@ -181,13 +186,13 @@ def model_performance() -> dict:
             "metrics": {},
         }
     report = json.loads(report_path.read_text())
+    readiness = load_readiness(
+        READINESS_PATH, service.current_prediction_run()["model_version"]
+    )
     return {
         "status": "evaluated",
-        "message": (
-            "Context model passed the promotion gate."
-            if report["promotion_gate"]["status"] == "pass"
-            else "Context model did not beat walk-forward Elo and remains experimental."
-        ),
+        "message": readiness["message"],
+        "readiness": readiness,
         **report,
     }
 

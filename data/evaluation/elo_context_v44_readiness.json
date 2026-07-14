@@ -1,0 +1,26 @@
+{
+  "candidate_model_version": "elo-context-v4.4-opponent-adjusted-xg-experimental",
+  "current_production_model_version": "elo-context-v4.2.1",
+  "gate": {
+    "overall_status": "fail",
+    "conditions": [
+      {
+        "name": "new_confirmation_holdout_available",
+        "threshold": true,
+        "measured_value": false,
+        "passed": false,
+        "required": true,
+        "explanation": "No genuinely untouched completed matches remain."
+      },
+      {
+        "name": "immutable_raw_confirmation_metrics",
+        "threshold": true,
+        "measured_value": false,
+        "passed": false,
+        "required": true,
+        "explanation": "Confirmation has not run."
+      }
+    ]
+  },
+  "promotion_recommendation": "keep_current_experimental_candidate"
+}
